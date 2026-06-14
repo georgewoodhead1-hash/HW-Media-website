@@ -1,0 +1,368 @@
+@import "tailwindcss";
+
+:root {
+  --black: #050505;
+  --black-2: #0a0a0a;
+  --cream: #f9f6e4;
+  --ink: #171717;
+  --paper-text: #f5f1e6;
+  --gold: #bfaa53;
+  --red: #bfaa53; /* George: no red anywhere — every red accent now resolves to gold */
+  --tint-w: rgba(255, 255, 255, 0.1);
+  --tint-b: rgba(0, 0, 0, 0.1);
+  --hairline-dark: rgba(245, 241, 230, 0.14);
+  --hairline-light: #d8d2bd;
+  --ease-expo: cubic-bezier(0.19, 1, 0.22, 1);
+  --dur-fast: 0.2s;
+  --dur-base: 0.4s;
+  --dur-slow: 0.6s;
+  --dur-slower: 0.8s;
+  --dur-slowest: 1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0s;
+    --dur-base: 0s;
+    --dur-slow: 0s;
+    --dur-slower: 0s;
+    --dur-slowest: 0s;
+  }
+}
+
+@theme inline {
+  --color-black: var(--black);
+  --color-black-2: var(--black-2);
+  --color-cream: var(--cream);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper-text);
+  --color-gold: var(--gold);
+  --color-brand-red: var(--red);
+}
+
+/* ---- Global mode (user toggle, bottom-left) ----
+   ONE surface for the whole site. Gold + red never change; only the
+   background/foreground contrast flips. Legacy vars (--ink, --paper-text,
+   --hairline-*) are set literally per mode so every existing component
+   follows without edits. */
+html,
+html[data-mode="dark"] {
+  --bg: var(--black);
+  --fg: #f5f1e6;
+  --ink: #f5f1e6;
+  --paper-text: #f5f1e6;
+  --hairline-dark: rgba(245, 241, 230, 0.14);
+  --hairline-light: rgba(245, 241, 230, 0.14);
+}
+html[data-mode="light"] {
+  --bg: var(--cream);
+  --fg: #171717;
+  --ink: #171717;
+  --paper-text: #171717;
+  --hairline-dark: rgba(23, 23, 23, 0.16);
+  --hairline-light: #d8d2bd;
+}
+
+/* always-cinema surfaces (lens stage, menu overlay, text over footage):
+   locked to dark regardless of mode */
+.on-media {
+  --bg: #050505;
+  --fg: #f5f1e6;
+  --ink: #f5f1e6;
+  --paper-text: #f5f1e6;
+  --hairline-dark: rgba(245, 241, 230, 0.14);
+  --hairline-light: rgba(245, 241, 230, 0.14);
+  color: #f5f1e6;
+}
+
+html {
+  background: var(--bg);
+  color: var(--fg);
+  transition: background 0.5s var(--ease-expo), color 0.5s var(--ease-expo);
+}
+
+body {
+  font-family: var(--font-body), sans-serif;
+  font-weight: 400;
+}
+
+/* ---- Type roles ----
+   Display voice = Archivo Expanded Black (George's pick over the client Playfair kit).
+   Normal keeps Archivo — compare :3003 vs :3004. */
+.font-display {
+  font-family: var(--font-archivo), sans-serif;
+  font-variation-settings: "wdth" 125;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.03em;
+  line-height: 0.82;
+}
+
+/* Editorial-restraint display scale — nothing on the site exceeds display-xl. */
+.display-xl {
+  font-size: clamp(2.45rem, 1.1rem + 4.6vw, 6rem); /* 39 → 96px */
+  line-height: 0.86;
+}
+.display-lg {
+  font-size: clamp(2.25rem, 1.1rem + 3.2vw, 4rem); /* 36 → 64px */
+  line-height: 0.9;
+}
+.display-md {
+  font-size: clamp(1.75rem, 1rem + 1.9vw, 2.75rem); /* 28 → 44px */
+  line-height: 0.95;
+}
+
+/* Scene markers — the one sanctioned label grammar (edit-timeline indices). */
+.scene-marker {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+}
+.scene-marker::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: currentColor;
+  opacity: 0.18;
+  align-self: center;
+}
+
+.font-accent {
+  font-family: var(--font-instrument), serif;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.label-mono {
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+}
+
+.font-hand {
+  font-family: var(--font-hand), cursive;
+  color: var(--red);
+}
+
+/* ---- Section theming: every section follows the global mode ---- */
+[data-theme] {
+  background: var(--bg);
+  color: var(--fg);
+  transition: background 0.5s var(--ease-expo), color 0.5s var(--ease-expo);
+}
+
+::selection {
+  background: var(--gold);
+  color: var(--black);
+}
+
+/* ---- Nav: follows the global mode; wordmark stays gold in both ---- */
+.nav-root {
+  color: var(--fg);
+  transition: color var(--dur-slow) var(--ease-expo);
+}
+/* the nav re-themes to the surface beneath it: cinema sections force the
+   nav dark (so light mode never bleeds a cream band over footage);
+   editorial sections leave it inheriting the global mode */
+.nav-root[data-surface="media"] {
+  --bg: #050505;
+  --fg: #f5f1e6;
+}
+.nav-wordmark {
+  color: var(--gold);
+}
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--dur-base) var(--ease-expo);
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---- Film grain (dark sections only) ---- */
+.grain {
+  background-size: 240px 240px;
+  opacity: 0.07;
+  transition: opacity var(--dur-slow) linear;
+  animation: grain-jump 0.9s steps(6) infinite;
+}
+html[data-mode="light"] .grain {
+  opacity: 0;
+}
+@keyframes grain-jump {
+  0% { background-position: 0 0; }
+  20% { background-position: -60px 40px; }
+  40% { background-position: 40px -70px; }
+  60% { background-position: -110px -30px; }
+  80% { background-position: 80px 90px; }
+  100% { background-position: 0 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .grain { animation: none; }
+}
+
+/* Hide native cursor only where the custom one takes over */
+@media (pointer: fine) {
+  [data-cursor="play"] { cursor: none; }
+}
+
+/* SplitText line wrappers clip their rising chars. nowrap stops char spans
+   re-wrapping inside the mask on narrow viewports (the mask would grow a
+   row tall and leak the dropped chars). */
+.split-line {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ---- Outlined display type — strokes follow the mode foreground ---- */
+.svc-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--fg);
+}
+@media (max-width: 767px) {
+  .svc-outline {
+    -webkit-text-stroke: 1px var(--fg);
+  }
+}
+/* mid-strength outline (deck's "FOR THOSE WHO DARE" marquee) */
+.ghost-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--fg) 45%, transparent);
+}
+@media (max-width: 767px) {
+  .ghost-outline {
+    -webkit-text-stroke: 1px color-mix(in srgb, var(--fg) 45%, transparent);
+  }
+}
+/* faint ghost numerals (services scenes) */
+.ghost-outline-ink {
+  color: transparent;
+  -webkit-text-stroke: 1.5px color-mix(in srgb, var(--fg) 22%, transparent);
+}
+
+/* ---- Deck motifs (from the Chasing The Salt treatment) ---- */
+/* highlight-bar label: text sitting in a solid bar, inverted vs the mode */
+.bar-label {
+  display: inline-block;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  padding: 0.5em 0.95em 0.45em;
+}
+/* the deck ends text blocks with a short heavy rule */
+.note-rule::after {
+  content: "";
+  display: block;
+  width: 3rem;
+  height: 2px;
+  background: currentColor;
+  margin-top: 1.25rem;
+  opacity: 0.85;
+}
+
+/* white client logos stay visible in light mode */
+html[data-mode="light"] .logo-mark {
+  filter: invert(1);
+}
+
+/* ---- Lens vessel: circular glass that holds the reel ---- */
+.lens-vessel {
+  clip-path: circle(50%);
+  border-radius: 50%;
+}
+
+/* ---- Interaction polish ---- */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+/* gentle lift for chips, buttons, cards */
+.lift-hover {
+  transition: transform 0.45s var(--ease-expo), box-shadow 0.45s var(--ease-expo);
+}
+.lift-hover:hover {
+  transform: translateY(-3px);
+}
+/* ledger rows warm up on hover */
+.ledger-row {
+  transition: border-color 0.4s var(--ease-expo), padding-left 0.4s var(--ease-expo);
+}
+.ledger-row:hover {
+  border-color: var(--gold);
+  padding-left: 0.5rem;
+}
+/* timeline clips respond to the cursor */
+.tl-clip {
+  transition: transform 0.4s var(--ease-expo), filter 0.4s var(--ease-expo);
+}
+.tl-clip:hover {
+  transform: translateY(-3px) scale(1.02);
+  filter: brightness(1.15);
+}
+
+/* ---- Film focus (selected films): hovering one card dims the others ---- */
+.film-focus:has(.film-card:hover) .film-card:not(:hover) {
+  opacity: 0.4;
+}
+.film-focus .film-card {
+  transition: opacity 0.5s var(--ease-expo);
+}
+
+/* ---- Trusted-by wall: hover a mark and it grows while the rest blow back ---- */
+.tb-logo {
+  opacity: 0.5;
+  transition: opacity 0.45s var(--ease-expo), transform 0.45s var(--ease-expo);
+}
+.tb-wall:has(.tb-logo:hover) .tb-logo:not(:hover) {
+  opacity: 0.12;
+  transform: scale(0.8);
+}
+.tb-logo:hover {
+  opacity: 1;
+  transform: scale(1.5);
+  z-index: 5;
+}
+
+/* ---- Footer wordmark marquee ---- */
+.marquee {
+  display: flex;
+}
+/* track motion is GSAP-driven (velocity-reactive); CSS fallback only
+   when reduced motion is off but JS fails is intentionally absent */
+
+/* FCP-style clip selection */
+/* S4-B: playhead lights gold while being dragged */
+.fcp-scrubbing .fcp-ph-line {
+  background: var(--gold);
+  box-shadow: 0 0 12px rgba(191, 170, 83, 0.85);
+}
+
+.fcp-clip.fcp-active {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 1px var(--gold), 0 0 14px rgba(191, 170, 83, 0.35);
+}
+
+/* options-board styleframe motion */
+@keyframes hw-marquee { to { transform: translateX(-50%); } }
+@keyframes hw-roll { to { transform: translateY(-50%); } }
+@keyframes hw-blink { 0%, 58% { opacity: 1; } 59%, 100% { opacity: 0; } }
+@keyframes hw-flicker { 0%, 100% { opacity: 0.92; } 42% { opacity: 0.66; } 43% { opacity: 0.88; } 71% { opacity: 0.5; } 72% { opacity: 0.9; } }
+@keyframes hw-eq { from { transform: scaleY(0.2); } to { transform: scaleY(1); } }

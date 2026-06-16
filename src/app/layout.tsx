@@ -12,7 +12,6 @@ import SmoothScroll from "@/components/shell/SmoothScroll";
 import Nav from "@/components/shell/Nav";
 import Grain from "@/components/shell/Grain";
 import Cursor from "@/components/shell/Cursor";
-import EdgeLabel from "@/components/shell/EdgeLabel";
 import ThemeToggle from "@/components/shell/ThemeToggle";
 
 const archivo = Archivo({
@@ -86,7 +85,6 @@ export default function RootLayout({
           <Grain />
           <Cursor />
           <ThemeToggle />
-          <EdgeLabel />
         </SmoothScroll>
       </body>
     </html>

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { getLenis } from "@/lib/lenis";
@@ -395,10 +396,18 @@ export default function LensIntro() {
 
         {/* the motto — our mainstream display font, solid and bold, standing
             out over the reel. No knockout, no glass, no shadow, one clean rise. */}
-        <h1 className="hero-motto font-display absolute bottom-0 left-0 z-10 px-5 pb-14 text-[clamp(2.8rem,9vw,8.5rem)] leading-[0.86] text-[#f5f1e6] will-change-transform md:px-10 md:pb-20">
-          Break the<br />
-          <span className="text-[var(--gold)]">ordinary.</span>
-        </h1>
+        <div className="hero-motto absolute bottom-0 left-0 z-10 px-5 pb-24 will-change-transform md:px-10 md:pb-28">
+          <h1 className="font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88] text-[#f5f1e6]">
+            Break the<br />
+            <span className="text-[var(--gold)]">ordinary.</span>
+          </h1>
+          <Link
+            href="/contact"
+            className="label-mono mt-6 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/45 px-5 py-2 text-[11px] tracking-[0.18em] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
+          >
+            Get in touch <span aria-hidden>⟶</span>
+          </Link>
+        </div>
 
         {/* resting cue */}
         <div ref={cueRef} className="absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2">

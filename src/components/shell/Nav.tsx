@@ -1,12 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import MenuOverlay from "./MenuOverlay";
 
-// kookie-style numbered index, top-left, always shown (desktop)
-const INDEX = [
+// Flat, always-visible nav (client feedback): logo left, the three links and
+// a persistent "Start here" right, social rail pinned bottom-left. No
+// hamburger, no disappearing wordmark — branding and nav stay consistent the
+// whole way down the page.
+
+const LINKS = [
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -14,53 +17,30 @@ const INDEX = [
 
 export default function Nav() {
   const rootRef = useRef<HTMLElement>(null);
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [pastHero, setPastHero] = useState(false);
 
-  // the wordmark belongs to the hero; once its bottom passes the nav line we
-  // swap it out for the numbered index
-  useEffect(() => {
-    const hero = document.querySelector("main")?.querySelector("section");
-    if (!hero) return;
-    const st = ScrollTrigger.create({
-      trigger: hero,
-      start: "bottom top+=70",
-      onEnter: () => setPastHero(true),
-      onLeaveBack: () => setPastHero(false),
-    });
-    return () => st.kill();
-  }, []);
-
-  // Quick entrance — links visible within the first beat of the page.
+  // quick entrance
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
-    const items = el.querySelectorAll(".nav-enter");
     gsap.fromTo(
-      items,
-      { y: -14, autoAlpha: 0 },
-      { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.07, ease: "expo.out", delay: 0.15 },
+      el.querySelectorAll(".nav-enter"),
+      { y: -12, autoAlpha: 0 },
+      { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.06, ease: "expo.out", delay: 0.2, clearProps: "opacity,transform" },
     );
   }, []);
 
-  // The nav re-themes to the surface it sits over. Cinema sections
-  // (data-surface="media") force it dark; editorial sections
-  // (data-surface="page") let it follow the global light/dark mode — so
-  // light mode never bleeds a cream band over the footage.
+  // the nav re-themes to the surface it sits over so it stays readable
   useEffect(() => {
     const nav = rootRef.current;
     if (!nav) return;
-    const NAV_LINE = 44;
+    const NAV_LINE = 56;
     const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-surface]"));
     const apply = (s: string) => { nav.dataset.surface = s; };
-
-    // initialise to whichever section the nav line currently sits in
     const here = sections.find((s) => {
       const r = s.getBoundingClientRect();
       return r.top <= NAV_LINE && r.bottom > NAV_LINE;
     });
     apply(here?.dataset.surface ?? sections[0]?.dataset.surface ?? "media");
-
     const triggers = sections.map((sec) =>
       ScrollTrigger.create({
         trigger: sec,
@@ -76,66 +56,71 @@ export default function Nav() {
     <>
       <header
         ref={rootRef}
-        className="nav-root fixed inset-x-0 top-0 z-50 flex items-center justify-between px-5 py-4 md:px-10"
+        className="nav-root fixed inset-x-0 top-2 z-50 flex items-center justify-between px-5 py-2.5 md:top-3 md:px-10"
       >
-        {/* scrim: keeps the links readable over anything that scrolls under */}
+        {/* scrim — half the previous height, just enough to keep links legible */}
         <span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-24 bg-gradient-to-b from-[var(--bg)] via-[var(--bg)]/65 to-transparent"
+          className="pointer-events-none absolute inset-x-0 -top-2 -z-10 h-12 bg-gradient-to-b from-[var(--bg)] via-[var(--bg)]/55 to-transparent"
         />
-        {/* LEFT — the wordmark rides the hero, then swaps for the numbered
-            index once you're past it (they share the same slot) */}
-        <div className="grid">
-          <Link
-            href="/"
-            className={`font-hand col-start-1 row-start-1 self-center text-2xl leading-none nav-wordmark transition-all duration-500 ${
-              pastHero ? "md:pointer-events-none md:-translate-y-1 md:opacity-0" : "md:opacity-100"
-            }`}
-            aria-label="HW Media — home"
-          >
-            HW <span className="label-mono ml-1 align-middle text-[9px] tracking-[0.3em]">media</span>
-          </Link>
-          <ul
-            className={`col-start-1 row-start-1 hidden flex-col gap-[3px] self-center transition-opacity duration-500 md:flex ${
-              pastHero ? "md:opacity-100" : "md:pointer-events-none md:opacity-0"
-            }`}
-          >
-            {INDEX.map((l, i) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  className="group flex items-center gap-2 text-[10px] leading-none tracking-[0.18em] transition-opacity hover:opacity-100"
-                >
-                  <span className="label-mono text-[var(--gold)]">{String(i + 1).padStart(3, "0")}</span>
-                  <span className="label-mono nav-link uppercase">{l.label}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
 
-        {/* RIGHT — Start here + the three-dash menu */}
-        <nav className="flex items-center gap-6 md:gap-8">
+        {/* LEFT — logo (placeholder wordmark until the official logo lands) */}
+        <Link
+          href="/"
+          className="font-hand nav-enter text-2xl leading-none nav-wordmark"
+          aria-label="HW Media — home"
+        >
+          HW <span className="label-mono ml-1 align-middle text-[9px] tracking-[0.3em]">media</span>
+        </Link>
+
+        {/* RIGHT — flat nav + persistent Start here */}
+        <nav className="flex items-center gap-5 md:gap-9">
+          {LINKS.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              className="label-mono nav-link nav-enter text-[11px] tracking-[0.18em]"
+            >
+              {l.label}
+            </Link>
+          ))}
           <Link
             href="/contact"
-            className="label-mono nav-enter rounded-full border border-[var(--gold)] px-5 py-2 text-[var(--gold)] transition-colors duration-300 hover:bg-[var(--gold)] hover:text-[#050505]"
+            className="label-mono nav-enter rounded-full border border-[var(--gold)] px-4 py-1.5 text-[10px] text-[var(--gold)] transition-colors duration-300 hover:bg-[var(--gold)] hover:text-[#050505] md:px-5 md:py-2 md:text-[11px]"
           >
             Start here
           </Link>
-          <button
-            onClick={() => setMenuOpen(true)}
-            className="nav-enter group flex h-8 w-8 flex-col items-center justify-center gap-[5px]"
-            aria-label="Open menu"
-            aria-haspopup="dialog"
-            aria-expanded={menuOpen}
-          >
-            <span className="block h-px w-6 bg-current transition-all duration-300 group-hover:w-7" />
-            <span className="block h-px w-6 bg-current transition-all duration-300 group-hover:w-4" />
-            <span className="block h-px w-6 bg-current transition-all duration-300 group-hover:w-7" />
-          </button>
         </nav>
       </header>
-      <MenuOverlay open={menuOpen} onClose={() => setMenuOpen(false)} />
+
+      {/* social rail — pinned bottom-left, always visible (mix-blend keeps it
+          legible over any footage or surface) */}
+      <div className="pointer-events-none fixed bottom-4 left-5 z-40 flex items-center gap-4 mix-blend-difference md:bottom-5 md:left-10">
+        <a
+          href="https://www.instagram.com/hwmedia/"
+          aria-label="Instagram"
+          className="pointer-events-auto text-white/90 transition-opacity hover:opacity-60"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
+            <rect x="3" y="3" width="18" height="18" rx="5" />
+            <circle cx="12" cy="12" r="4.2" />
+            <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
+          </svg>
+        </a>
+        <a
+          href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
+          aria-label="LinkedIn"
+          className="pointer-events-auto text-white/90 transition-opacity hover:opacity-60"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" />
+          </svg>
+        </a>
+      </div>
     </>
   );
 }

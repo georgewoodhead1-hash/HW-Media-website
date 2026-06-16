@@ -150,14 +150,12 @@ export default function LensIntro() {
       gsap.set(".hero-motto", { autoAlpha: 0, y: 40 });
 
       {
+        // AUTO-PLAY loading intro (client feedback): plays itself on load,
+        // one clean zoom THROUGH the lens into the reel — no scrolling, no
+        // zoom-back-out. timeScale stretches the ~1s build to a smooth ~3.4s.
         const tl = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: {
-            trigger: wrap,
-            start: "top top",
-            end: "bottom bottom",
-            scrub: 0.8,
-          },
+          delay: 0.45,
         });
 
         tl
@@ -192,8 +190,9 @@ export default function LensIntro() {
           .to(veilRef.current, { opacity: 1, duration: 0.12 }, 0.48)
           .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.1, ease: "power3.out" }, 0.52)
           // a gentle drift through the hold — never a parked frame
-          .to(".hero-motto", { y: -16, duration: 0.26, ease: "none" }, 0.74)
-          .to(wrap, { duration: 0.22 }, 0.78);
+          .to(".hero-motto", { y: -16, duration: 0.26, ease: "none" }, 0.74);
+
+        tl.timeScale(0.30); // stretch the build to a calm ~3.4s auto-play
       }
     }, wrap);
 
@@ -223,9 +222,9 @@ export default function LensIntro() {
   };
 
   return (
-    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-[460vh]">
+    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
       <div
-        className="on-media sticky top-0 h-screen overflow-hidden bg-[#050505]"
+        className="on-media relative h-screen overflow-hidden bg-[#050505]"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {
@@ -409,9 +408,9 @@ export default function LensIntro() {
           </Link>
         </div>
 
-        {/* resting cue */}
+        {/* scroll hint, fades in once the intro has played */}
         <div ref={cueRef} className="absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2">
-          <span className="label-mono text-[10px] opacity-70">Scroll into the glass</span>
+          <span className="label-mono text-[10px] opacity-70">Scroll</span>
           <span className="block h-8 w-px animate-pulse bg-[var(--gold)]" />
         </div>
       </div>

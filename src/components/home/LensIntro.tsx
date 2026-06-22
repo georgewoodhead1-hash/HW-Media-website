@@ -213,7 +213,7 @@ export default function LensIntro() {
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-[200vh]">
       <div
-        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl border border-[#f5f1e6]/18 bg-[#050505] md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
+        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl border-2 border-[#f5f1e6]/30 bg-[#050505] md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {
@@ -418,24 +418,14 @@ export default function LensIntro() {
         {/* the motto — our mainstream display font, solid and bold, standing
             out over the reel. No knockout, no glass, no shadow, one clean rise. */}
         <div className="hero-motto absolute left-0 top-[46%] z-10 -translate-y-1/2 px-5 will-change-transform md:px-10">
-          {/* the LIVE footage plays INSIDE the letters (knockout) — it moves
-              with the video, so the words interact with the scene behind. */}
-          <div className="motto-knock relative inline-block">
-            <video
-              className="motto-knock-vid"
-              src="/videos/hero-loop.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              aria-hidden
-            />
-            <h1 className="motto-knock-text font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
-              Break the<br />
-              ordinary.
-            </h1>
-          </div>
-          <p className="font-hand mt-4 text-[clamp(1.7rem,3.6vw,3rem)] leading-none">
+          <h1 className="glass-motto font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
+            Break the<br />
+            <span className="glass-motto-gold">ordinary.</span>
+          </h1>
+          <p
+            className="mt-5 max-w-md text-[clamp(1.05rem,1.6vw,1.5rem)] leading-snug text-[#f5f1e6]/85"
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+          >
             we go where the story is
           </p>
           <a

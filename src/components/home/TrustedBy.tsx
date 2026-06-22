@@ -146,7 +146,7 @@ export default function TrustedBy() {
       data-theme="dark"
       data-surface="page"
       data-chapter="02 — Trusted by"
-      className="relative px-5 py-[8vh] md:px-10"
+      className="relative px-5 py-[6vh] md:px-10"
       aria-label="Trusted by"
     >
       <div className="tb-heading mb-[4vh] text-center">

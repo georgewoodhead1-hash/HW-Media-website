@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Footer from "@/components/shell/Footer";
+import ContactIntro from "@/components/contact/ContactIntro";
 
 export const metadata: Metadata = {
   title: "Contact — HW Media",
@@ -14,6 +15,7 @@ const FIELD =
 export default function Contact() {
   return (
     <>
+      <ContactIntro />
       <main
         data-theme="dark"
         data-surface="page"
@@ -21,7 +23,7 @@ export default function Contact() {
       >
         <div className="w-full max-w-xl">
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
-            Have something <span className="text-[var(--gold)]">in mind?</span>
+            Tell us <span className="text-[var(--gold)]">more.</span>
           </h1>
 
           <form

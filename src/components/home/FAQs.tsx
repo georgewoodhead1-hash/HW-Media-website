@@ -96,7 +96,7 @@ export default function FAQs() {
       data-theme="dark"
       data-surface="page"
       data-chapter="06 — FAQs"
-      className="relative bg-[var(--bg)] px-5 pb-[12vh] pt-[7vh] text-[var(--fg)] md:px-10"
+      className="relative bg-[var(--bg)] px-5 pb-[8vh] pt-[5vh] text-[var(--fg)] md:px-10"
       aria-label="Frequently asked questions"
     >
       <div className="md:flex md:items-start md:gap-12 lg:gap-16">
@@ -128,12 +128,12 @@ export default function FAQs() {
             top before the first question climbs into the highlight band.
             Lead trimmed (the whole section moved up) so the first question
             isn't pushed too low. */}
-        <div className="md:flex-1 md:pt-[18vh]">
+        <div className="md:flex-1 md:pt-[8vh]">
           {FAQS.map((f, i) => (
             <div
               key={f.q}
               data-i={i}
-              className="faq-item border-t border-dashed border-[var(--hairline-dark)] py-9 last:border-b md:py-12"
+              className="faq-item border-t border-dashed border-[var(--hairline-dark)] py-7 last:border-b md:py-9"
             >
               <p
                 className={`text-[clamp(1.25rem,1.8vw,1.85rem)] font-medium leading-tight transition-colors duration-500 ${

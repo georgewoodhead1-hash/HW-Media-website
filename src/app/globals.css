@@ -63,9 +63,13 @@ html[data-mode="light"] {
   --hairline-light: #d8d2bd;
 }
 
-/* always-cinema surfaces (lens stage, menu overlay, text over footage):
-   locked to dark regardless of mode */
-.on-media {
+/* always-cinema surfaces (lens stage, menu overlay, finale, text over
+   footage): locked to dark regardless of mode. The lens intro and the
+   finale are the cinema bookends — they NEVER flip to cream. Any section
+   flagged data-surface="media" inherits this lock so its background stays
+   black in light mode (not just the nav over it). */
+.on-media,
+section[data-surface="media"] {
   --bg: #050505;
   --fg: #f5f1e6;
   --ink: #f5f1e6;

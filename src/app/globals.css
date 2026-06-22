@@ -323,6 +323,37 @@ html[data-mode="light"] .logo-mark {
   filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22)) drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
 }
 
+/* ---- "Let's create" tombola: the word rolls over itself on hover ---- */
+.tombola {
+  display: inline-block;
+  overflow: hidden;
+  height: 1em;
+  line-height: 1;
+  vertical-align: bottom;
+}
+.tombola-track {
+  display: flex;
+  flex-direction: column;
+  will-change: transform;
+}
+.tombola-line {
+  display: block;
+  height: 1em;
+  line-height: 1;
+}
+.tombola:hover .tombola-track,
+.tombola:focus-visible .tombola-track {
+  animation: tombola-roll 0.55s linear infinite;
+}
+@keyframes tombola-roll {
+  from { transform: translateY(0); }
+  to { transform: translateY(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tombola:hover .tombola-track,
+  .tombola:focus-visible .tombola-track { animation: none; }
+}
+
 /* ---- Lens vessel: circular glass that holds the reel ---- */
 .lens-vessel {
   clip-path: circle(50%);

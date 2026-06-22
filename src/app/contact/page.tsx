@@ -23,7 +23,7 @@ export default function Contact() {
       >
         <div className="w-full max-w-xl">
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
-            Tell us <span className="text-[var(--gold)]">more.</span>
+            Tell us <span className="text-[var(--gold-text)]">more.</span>
           </h1>
           <p
             className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-[var(--fg)]/70"

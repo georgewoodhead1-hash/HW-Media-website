@@ -39,12 +39,12 @@ export default function About() {
           <div className="grid items-center gap-12 md:grid-cols-[1.4fr_0.6fr] md:gap-16">
             {/* text — left */}
             <div>
-              <span className="text-[12px] uppercase tracking-[0.28em] text-[var(--gold)]">About</span>
+              <span className="text-[12px] uppercase tracking-[0.28em] text-[var(--gold-text)]">About</span>
               <h1
                 className="font-display mt-6 max-w-4xl text-[clamp(2.4rem,6vw,5.2rem)] leading-[0.95]"
                 style={{ fontWeight: 400 }}
               >
-                A London production company, <span className="text-[var(--gold)]">founded 2018.</span>
+                A London production company, <span className="text-[var(--gold-text)]">founded 2018.</span>
               </h1>
               <p className="mt-8 max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[var(--fg)]/70">
                 We go where the story is and film it. A small crew on purpose — direction, cinematography,
@@ -120,7 +120,7 @@ export default function About() {
               {FOUNDERS.map(([n, r]) => (
                 <div key={n}>
                   <h3 className="font-display text-xl" style={{ fontWeight: 400 }}>{n}</h3>
-                  <p className="mt-2 text-[12px] uppercase tracking-[0.14em] text-[var(--gold)]">{r}</p>
+                  <p className="mt-2 text-[12px] uppercase tracking-[0.14em] text-[var(--gold-text)]">{r}</p>
                 </div>
               ))}
             </div>
@@ -129,7 +129,7 @@ export default function About() {
 
         {/* how we work — hover a stage, the image swaps */}
         <section className="border-t border-[var(--hairline-dark)] px-5 py-[12vh] md:px-10">
-          <span className="text-[12px] uppercase tracking-[0.28em] text-[var(--gold)]">How we work</span>
+          <span className="text-[12px] uppercase tracking-[0.28em] text-[var(--gold-text)]">How we work</span>
           <div className="mt-10 grid gap-12 md:grid-cols-2 md:gap-20">
             {/* left — the five stages */}
             <ul className="flex flex-col">
@@ -180,7 +180,7 @@ export default function About() {
           <Link
             href="/contact"
             aria-label="Let's create — get in touch"
-            className="font-display inline-block text-[clamp(2.6rem,9vw,8rem)] leading-none text-[var(--fg)] transition-colors duration-300 hover:text-[var(--gold)]"
+            className="font-display inline-block text-[clamp(2.6rem,9vw,8rem)] leading-none text-[var(--fg)] transition-colors duration-300 hover:text-[var(--gold-text)]"
             style={{ fontWeight: 400 }}
           >
             <span className="tombola">
@@ -190,7 +190,7 @@ export default function About() {
               </span>
             </span>
           </Link>
-          <p className="mt-8 text-[12px] uppercase tracking-[0.22em] text-[var(--gold)]">Get in touch ⟶</p>
+          <p className="mt-8 text-[12px] uppercase tracking-[0.22em] text-[var(--gold-text)]">Get in touch ⟶</p>
         </section>
       </main>
       <Footer />

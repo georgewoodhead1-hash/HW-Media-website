@@ -152,7 +152,7 @@ export default function TrustedBy() {
       <div className="tb-heading mb-[4vh] text-center">
         <ScrollType
           as="h2"
-          className="font-display text-[clamp(1.2rem,2.4vw,2rem)] normal-case leading-none text-[var(--gold)]"
+          className="font-display text-[clamp(1.2rem,2.4vw,2rem)] normal-case leading-none text-[var(--gold-text)]"
           style={{ fontWeight: 400 }}
         >
           Trusted by

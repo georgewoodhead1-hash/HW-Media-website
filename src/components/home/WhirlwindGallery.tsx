@@ -219,7 +219,7 @@ export default function WhirlwindGallery() {
               {LINE_B.split(" ").map((w, wi, arr) => {
                 const isGold = w.replace(/[^a-zA-Z]/g, "").toLowerCase() === "break";
                 return (
-                  <span key={`b${wi}`} className={`inline-block whitespace-nowrap ${isGold ? "text-[var(--gold)]" : ""}`}>
+                  <span key={`b${wi}`} className={`inline-block whitespace-nowrap ${isGold ? "text-[var(--gold-text)]" : ""}`}>
                     {w.split("").map((c, i) => (
                       <span key={i} className="type-char">{c}</span>
                     ))}
@@ -231,7 +231,7 @@ export default function WhirlwindGallery() {
           </p>
           <Link
             href="/contact"
-            className="cta-start label-mono lift-hover mt-10 inline-block rounded-full border-2 border-[var(--gold)] bg-[var(--bg)]/60 px-14 py-6 text-base text-[var(--gold)] backdrop-blur-sm transition-colors duration-500 hover:bg-[var(--gold)] hover:text-[#050505]"
+            className="cta-start label-mono lift-hover mt-10 inline-block rounded-full border-2 border-[var(--gold)] bg-[var(--bg)]/60 px-14 py-6 text-base text-[var(--gold-text)] backdrop-blur-sm transition-colors duration-500 hover:bg-[var(--gold)] hover:text-[#050505]"
           >
             Start here ⟶
           </Link>
@@ -245,7 +245,7 @@ export default function WhirlwindGallery() {
           <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm text-[var(--fg)]">
             <a
               href="mailto:harry@hwmedia.productions"
-              className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold)]"
+              className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"
             >
               harry@hwmedia.productions
             </a>
@@ -255,7 +255,7 @@ export default function WhirlwindGallery() {
                 href="https://www.instagram.com/hwmedia/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold)]"
+                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"
               >
                 Instagram
               </a>
@@ -263,7 +263,7 @@ export default function WhirlwindGallery() {
                 href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold)]"
+                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"
               >
                 LinkedIn
               </a>
@@ -271,7 +271,7 @@ export default function WhirlwindGallery() {
 
             <div className="flex items-center gap-6 text-[var(--fg)]/55">
               <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
-              <Link href="/privacy" className="transition-colors hover:text-[var(--gold)]">
+              <Link href="/privacy" className="transition-colors hover:text-[var(--gold-text)]">
                 Privacy Policy
               </Link>
             </div>
@@ -282,14 +282,14 @@ export default function WhirlwindGallery() {
       {/* mobile/reduced: line + grid + CTA + slim footer */}
       <div className="px-5 py-24 md:hidden">
         <p className="font-display text-2xl">
-          Every film is a chance to <span className="text-[var(--gold)]">break</span> the ordinary.
+          Every film is a chance to <span className="text-[var(--gold-text)]">break</span> the ordinary.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4">
           {TILES.slice(0, 6).map((src, i) => (
             <video key={`${src}-${i}`} className="aspect-video w-full rounded-md object-cover" src={src} muted loop playsInline preload="none" />
           ))}
         </div>
-        <Link href="/contact" className="label-mono mt-10 inline-block rounded-full border border-[var(--gold)] px-10 py-4 text-[var(--gold)]">
+        <Link href="/contact" className="label-mono mt-10 inline-block rounded-full border border-[var(--gold)] px-10 py-4 text-[var(--gold-text)]">
           Start here ⟶
         </Link>
 

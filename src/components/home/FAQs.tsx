@@ -69,7 +69,7 @@ export default function FAQs() {
             view while the question list is read. */}
         <div className="relative md:sticky md:top-[18vh] md:w-[40%] md:self-start md:pl-6 lg:w-[36%] lg:pl-10">
           <h2 className="font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
-            <span className="text-[var(--gold)]">FAQ&apos;s</span>
+            <span className="text-[var(--gold-text)]">FAQ&apos;s</span>
           </h2>
           <div ref={reelRef} className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:mt-9 md:w-[clamp(180px,80%,300px)]">
             <video

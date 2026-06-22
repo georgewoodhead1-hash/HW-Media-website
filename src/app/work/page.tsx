@@ -54,7 +54,7 @@ export default function WorkIndex() {
             Next
           </span>
           <h2 className="font-display mt-4 text-[clamp(2rem,5vw,4rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
-            Have a project <span className="text-[var(--gold)]">in mind?</span>
+            Have a project <span className="text-[var(--gold-text)]">in mind?</span>
           </h2>
           <a
             href={BOOKING_URL}

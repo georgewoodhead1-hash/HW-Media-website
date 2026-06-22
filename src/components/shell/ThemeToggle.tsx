@@ -32,7 +32,7 @@ export default function ThemeToggle() {
       onClick={toggle}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={isDark ? "Light mode" : "Dark mode"}
-      className="group fixed bottom-[5px] left-[88px] z-50 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--fg)]/30 bg-[var(--fg)]/[0.04] text-[var(--gold)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--gold)]/60 hover:bg-[var(--gold)]/10 md:bottom-[9px] md:left-[108px]"
+      className="group fixed bottom-[5px] left-[88px] z-50 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--fg)]/30 bg-[var(--fg)]/[0.04] text-[var(--gold-text)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--gold)]/60 hover:bg-[var(--gold)]/10 md:bottom-[9px] md:left-[108px]"
       style={{ transitionTimingFunction: "var(--ease-expo)" }}
     >
       {isDark ? (

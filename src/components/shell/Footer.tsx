@@ -30,7 +30,7 @@ export default function Footer() {
           </Link>
           <a
             href={`mailto:${EMAIL}`}
-            className="mt-5 block font-[family-name:var(--font-firma)] text-[clamp(1.1rem,2vw,1.6rem)] font-medium leading-tight tracking-tight transition-colors hover:text-[var(--gold)]"
+            className="mt-5 block font-[family-name:var(--font-firma)] text-[clamp(1.1rem,2vw,1.6rem)] font-medium leading-tight tracking-tight transition-colors hover:text-[var(--gold-text)]"
           >
             {EMAIL}
           </a>
@@ -64,7 +64,7 @@ export default function Footer() {
 
       <div className="mt-12 flex flex-col gap-2 border-t border-[var(--hairline-dark)] pt-6 text-[11px] opacity-55 md:flex-row md:items-center md:justify-between">
         <span className="label-mono tracking-[0.18em]">© {year} HW MEDIA · LONDON</span>
-        <Link href="/privacy" className="label-mono tracking-[0.18em] transition-colors hover:text-[var(--gold)]">
+        <Link href="/privacy" className="label-mono tracking-[0.18em] transition-colors hover:text-[var(--gold-text)]">
           Privacy Policy
         </Link>
       </div>

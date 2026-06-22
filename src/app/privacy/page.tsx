@@ -72,9 +72,9 @@ export default function PrivacyPage() {
     <>
       <main data-theme="dark" data-surface="page" className="min-h-screen bg-[var(--bg)] px-5 pb-24 pt-[18vh] text-[var(--fg)] md:px-10">
         <div className="mx-auto max-w-3xl">
-          <span className="label-mono text-[11px] tracking-[0.28em] text-[var(--gold)]/80">LEGAL</span>
+          <span className="label-mono text-[11px] tracking-[0.28em] text-[var(--gold-text)]/80">LEGAL</span>
           <h1 className="font-display mt-4 text-[clamp(2.4rem,5vw,4rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
-            Privacy <span className="text-[var(--gold)]">Policy</span>
+            Privacy <span className="text-[var(--gold-text)]">Policy</span>
           </h1>
           <p className="mt-4 text-sm opacity-55">Last updated: 16 June 2026</p>
 

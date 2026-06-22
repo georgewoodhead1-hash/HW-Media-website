@@ -59,7 +59,7 @@ export default function ScrollType({
     words.map((w, i) => {
       const isGold = goldSet.has(w.replace(/[^a-zA-Z]/g, "").toLowerCase());
       return (
-        <span key={i} className={isGold ? "text-[var(--gold)]" : undefined}>
+        <span key={i} className={isGold ? "text-[var(--gold-text)]" : undefined}>
           {w}
           {i < words.length - 1 ? " " : ""}
         </span>

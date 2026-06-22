@@ -238,7 +238,7 @@ export default function EditorFCP() {
           {STAGES.map((s, i) => (
             <div key={s.name} ref={(el) => { stageRefs.current[i] = el; }} className="absolute inset-x-0 top-0 px-6 will-change-transform">
               <h2 className="font-display text-[clamp(3rem,8vw,7rem)] leading-[0.88]" style={{ fontWeight: 400 }}>
-                {s.name}<span className="text-[var(--gold)]">.</span>
+                {s.name}<span className="text-[var(--gold-text)]">.</span>
               </h2>
             </div>
           ))}
@@ -257,10 +257,10 @@ export default function EditorFCP() {
 
       {/* mobile / reduced: calm stack */}
       <div className="px-5 py-24 md:hidden">
-        <h2 className="font-display text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold)]">process.</span></h2>
+        <h2 className="font-display text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold-text)]">process.</span></h2>
         {STAGES.map((s, i) => (
           <article key={s.name} className="border-t border-[var(--hairline-dark)] py-8">
-            <span className="text-[10px] text-[var(--gold)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>0{i + 1}</span>
+            <span className="text-[10px] text-[var(--gold-text)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>0{i + 1}</span>
             <h3 className="font-display mt-2 text-2xl">{s.name}.</h3>
           </article>
         ))}

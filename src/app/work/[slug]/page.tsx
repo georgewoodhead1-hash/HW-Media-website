@@ -40,7 +40,7 @@ export default async function CaseStudy({
     <>
       <main data-theme="dark" data-surface="page" className="bg-[var(--bg)] text-[var(--fg)]">
         <section className="px-5 pt-[16vh] md:px-10">
-          <Link href="/work" className="label-mono text-[11px] tracking-[0.24em] opacity-60 transition-colors hover:text-[var(--gold)]">
+          <Link href="/work" className="label-mono text-[11px] tracking-[0.24em] opacity-60 transition-colors hover:text-[var(--gold-text)]">
             ← ALL WORK
           </Link>
           <h1 className="font-display mt-6 text-[clamp(2.6rem,7vw,6rem)] leading-[0.9]" style={{ fontWeight: 400 }}>
@@ -98,7 +98,7 @@ export default async function CaseStudy({
           <p className="label-mono mb-4 text-[10px] tracking-[0.24em] opacity-45">Next project</p>
           <Link
             href={`/work/${next.slug}`}
-            className="font-display text-[clamp(2rem,4vw,3.5rem)] leading-none transition-colors hover:text-[var(--gold)]"
+            className="font-display text-[clamp(2rem,4vw,3.5rem)] leading-none transition-colors hover:text-[var(--gold-text)]"
             style={{ fontWeight: 400 }}
           >
             {next.title} ⟶

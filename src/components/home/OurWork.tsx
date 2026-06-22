@@ -122,7 +122,7 @@ export default function OurWork() {
           className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.2rem,5vw,4.6rem)] leading-[0.9] will-change-transform"
           style={{ fontWeight: 400 }}
         >
-          Our <span className="text-[var(--gold)]">work</span>
+          Our <span className="text-[var(--gold-text)]">work</span>
         </h2>
 
         {/* the accordion row — final layout; bars fly in from the right into their slots */}
@@ -152,7 +152,7 @@ export default function OurWork() {
 
               {/* expanded — title + watch */}
               <div className="absolute inset-x-0 bottom-0 p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--gold)]">
+                <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--gold-text)]">
                   {String(i + 1).padStart(2, "0")} · {p.client.toUpperCase()}
                 </span>
                 <h3 className="font-display mt-2 whitespace-nowrap text-[clamp(1.6rem,2.6vw,2.6rem)] leading-none text-white" style={{ fontWeight: 400 }}>
@@ -167,13 +167,13 @@ export default function OurWork() {
 
       {/* mobile stack */}
       <div className="flex flex-col gap-4 px-5 py-[10vh] md:hidden">
-        <h2 className="font-display mb-2 text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold)]">work</span></h2>
+        <h2 className="font-display mb-2 text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold-text)]">work</span></h2>
         {WORKS.map((p) => (
           <Link key={p.slug} href={`/work/${p.slug}`} className="relative block aspect-video overflow-hidden rounded-md">
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
             <div className="absolute bottom-3 left-3">
-              <span className="label-mono text-[9px] tracking-[0.2em] text-[var(--gold)]">{p.client.toUpperCase()}</span>
+              <span className="label-mono text-[9px] tracking-[0.2em] text-[var(--gold-text)]">{p.client.toUpperCase()}</span>
               <h3 className="font-display text-xl text-white" style={{ fontWeight: 400 }}>{p.title}</h3>
             </div>
           </Link>

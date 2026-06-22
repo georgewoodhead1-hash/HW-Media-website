@@ -183,7 +183,7 @@ export default function Testimonials() {
                   <span className="flex items-center gap-4 sm:gap-5">
                     <span
                       className={`text-sm tabular-nums transition-colors duration-300 ${
-                        isActive ? "text-[var(--gold)]" : "opacity-50 group-hover:opacity-80"
+                        isActive ? "text-[var(--gold-text)]" : "opacity-50 group-hover:opacity-80"
                       }`}
                       style={{ fontFamily: "var(--font-firma), sans-serif" }}
                     >
@@ -278,7 +278,7 @@ export default function Testimonials() {
             className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"
           />
           <span
-            className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold)]"
+            className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold-text)]"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             VIEW PROJECT

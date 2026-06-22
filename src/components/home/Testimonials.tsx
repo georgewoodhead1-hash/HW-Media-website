@@ -158,8 +158,9 @@ export default function Testimonials() {
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
         {/* LEFT — selectors + the selected quote / role / sector / brand */}
         <div data-rise className="flex flex-col">
-          {/* vertical selector stack — click to swap */}
-          <div className="flex flex-col gap-3">
+          {/* a clean editorial INDEX of voices — no boxes. Click to swap; the
+              active row brightens, its number goes gold, "VIEW" appears. */}
+          <div className="flex flex-col border-t border-[var(--hairline-dark)]">
             {TESTIMONIALS.map((t, i) => {
               const isActive = i === active;
               return (
@@ -169,18 +170,15 @@ export default function Testimonials() {
                   onClick={() => setActive(i)}
                   aria-pressed={isActive}
                   aria-label={`Show testimonial ${i + 1} — ${t.role}, ${t.sector}`}
-                  className={`group flex items-center justify-between gap-4 rounded-xl border px-5 py-5 text-left transition-colors duration-300 sm:px-6 ${
-                    isActive
-                      ? "border-[var(--gold)]/70 bg-[var(--gold)]/10"
-                      : "border-[var(--hairline-dark)] bg-[var(--bg)] hover:border-[var(--gold)]/40"
+                  className={`group flex items-center justify-between gap-4 border-b border-[var(--hairline-dark)] py-5 text-left transition-all duration-500 ${
+                    isActive ? "opacity-100" : "opacity-45 hover:opacity-75"
                   }`}
                 >
-                  <span className="flex items-center gap-4 sm:gap-5">
+                  <span className="flex items-center gap-5 sm:gap-6">
                     <span
-                      className={`text-sm tabular-nums transition-colors duration-300 ${
-                        isActive ? "text-[var(--gold-text)]" : "opacity-50 group-hover:opacity-80"
+                      className={`label-mono text-[11px] tracking-[0.22em] transition-colors duration-500 ${
+                        isActive ? "text-[var(--gold-text)]" : "text-[var(--fg)]/45"
                       }`}
-                      style={{ fontFamily: "var(--font-firma), sans-serif" }}
                     >
                       0{i + 1}
                     </span>
@@ -189,16 +187,16 @@ export default function Testimonials() {
                       src={`/logos/${t.logo}.png`}
                       alt=""
                       aria-hidden
-                      className={`logo-mark max-h-10 ${t.selectorMaxW} object-contain transition-opacity duration-300 [html[data-mode=light]_&]:invert ${
-                        isActive ? "opacity-100" : "opacity-60 group-hover:opacity-90"
-                      }`}
+                      className={`logo-mark max-h-9 ${t.selectorMaxW} object-contain transition-all duration-500 [html[data-mode=light]_&]:invert`}
                     />
                   </span>
                   <span
-                    className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-300 ${
-                      isActive ? "bg-[var(--gold)]" : "bg-[var(--fg)]/25 group-hover:bg-[var(--fg)]/45"
+                    className={`label-mono text-[10px] tracking-[0.24em] text-[var(--gold-text)] transition-opacity duration-500 ${
+                      isActive ? "opacity-100" : "opacity-0 group-hover:opacity-50"
                     }`}
-                  />
+                  >
+                    VIEW ⟶
+                  </span>
                 </button>
               );
             })}
@@ -206,12 +204,14 @@ export default function Testimonials() {
 
           {/* selected testimonial — quote, with the attribution sitting RIGHT
               under it (client: it was pinned to the bottom of the column) */}
-          <div ref={quoteRef} className="mt-9">
+          <div ref={quoteRef} className="mt-10">
             <blockquote
-              className="text-[clamp(1.35rem,2vw,2rem)] leading-snug"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+              className="font-display text-[clamp(1.7rem,2.9vw,2.9rem)] leading-[1.12]"
+              style={{ fontWeight: 400 }}
             >
-              &ldquo;{current.quote}&rdquo;
+              <span className="text-[var(--gold-text)]">&ldquo;</span>
+              {current.quote}
+              <span className="text-[var(--gold-text)]">&rdquo;</span>
             </blockquote>
 
             <figcaption className="mt-6 flex items-center gap-4">

@@ -43,39 +43,39 @@ export default function OurWork() {
       // bars arrive between FROM and TO; the windows are wide and overlapping so
       // each film glides across rather than popping. After TO the full accordion
       // is held so there's a comfortable window to hover before release.
-      const FROM = 0.02;
-      const TO = 0.5;
+      const FROM = 0.06;
+      const TO = 0.64;
       const span = (TO - FROM) / N;
+      const vids = bars.map((b) => b.querySelector("video"));
 
       const place = (p: number) => {
-        // heading types itself in char-by-char in its OWN row ABOVE the
-        // accordion (it never moves over the films — no overlap).
+        // heading: a slow masked char-rise, completing early so the pinned
+        // stage never reads as an empty void at the seam.
         if (head && chars.length) {
           chars.forEach((ch, i) => {
-            // type in almost immediately so the pinned stage is never a black
-            // void at the seam — the heading fills it from the very first frame.
-            const cs = (i / Math.max(1, chars.length)) * 0.07;
-            const reveal = smooth(cs, 0.05 + cs, p);
-            gsap.set(ch, { autoAlpha: reveal, yPercent: lerp(60, 0, reveal) });
+            const cs = (i / Math.max(1, chars.length)) * 0.12;
+            const reveal = smooth(0.02 + cs, 0.17 + cs, p);
+            gsap.set(ch, { autoAlpha: reveal, yPercent: lerp(90, 0, reveal) });
           });
         }
-        // each film bar glides in from the right edge into its accordion slot,
-        // fading up smoothly along a soft ramp (no hard cut, no pop).
-        const vw = window.innerWidth;
+        // bars: an ELEGANT masked reveal IN PLACE — each film wipes up from
+        // nothing with a slow ken-burns settle on the footage. No fly-in, no
+        // placeholder boxes, no pop. Wide overlapping windows = one continuous,
+        // premium unveiling, then held for hover.
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
-          const b = a + span * 2.1; // wide, overlapping windows = seamless glide
+          const b = a + span * 2.6;
           const t = smooth(a, b, p);
-          const fade = smooth(a, a + (b - a) * 0.7, p); // soft alpha ramp
           gsap.set(bar, {
-            x: lerp(vw * 1.05, 0, t),
-            autoAlpha: fade,
-            rotate: lerp(1.6, 0, t),
+            clipPath: `inset(${lerp(100, 0, t)}% 0% 0% 0% round 0.375rem)`,
+            yPercent: lerp(6, 0, t),
+            autoAlpha: t < 0.001 ? 0 : 1,
           });
+          if (vids[i]) gsap.set(vids[i], { scale: lerp(1.14, 1, t), transformOrigin: "50% 60%" });
         });
       };
 
-      gsap.set(bars, { x: window.innerWidth * 1.05, autoAlpha: 0 });
+      gsap.set(bars, { clipPath: "inset(100% 0% 0% 0% round 0.375rem)", autoAlpha: 0 });
       if (chars.length) gsap.set(chars, { autoAlpha: 0 });
       place(0);
 
@@ -115,7 +115,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[240vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[200vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
@@ -127,15 +127,8 @@ export default function OurWork() {
           Our <span className="text-[var(--gold-text)]">work</span>
         </h2>
 
-        {/* the accordion row — final layout; bars fly in from the right into their slots */}
+        {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
         <div className="relative z-0 flex h-[60vh] gap-2">
-          {/* faint empty slots so the 6-bar footprint reads from the first
-              frame — the pinned stage is never a black void while bars fly in. */}
-          <div aria-hidden className="pointer-events-none absolute inset-0 flex gap-2">
-            {Array.from({ length: WORKS.length }).map((_, i) => (
-              <div key={i} className="flex-1 rounded-md bg-white/[0.025] ring-1 ring-[var(--hairline-dark)]" />
-            ))}
-          </div>
           {WORKS.map((p, i) => (
             <Link
               key={p.slug}

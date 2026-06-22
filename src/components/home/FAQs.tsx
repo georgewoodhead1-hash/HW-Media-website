@@ -43,13 +43,16 @@ export default function FAQs() {
       // question rise + fade in, staggered, as the section scrolls into view.
       const head = root.querySelector(".faq-head");
       const qs = gsap.utils.toArray<HTMLElement>(".faq-q", root);
-      const intro = gsap.from([head, ...qs].filter(Boolean) as HTMLElement[], {
-        y: 56,
+      // premium reveal — slow masked rise, gentle stagger, the same language the
+      // calm sections share so it blends rather than pops.
+      const intro = gsap.from([head, reel, ...qs].filter(Boolean) as HTMLElement[], {
+        yPercent: 0,
+        y: 60,
         autoAlpha: 0,
-        duration: 0.8,
-        stagger: 0.07,
+        duration: 1.1,
+        stagger: 0.075,
         ease: "power3.out",
-        scrollTrigger: { trigger: root, start: "top 78%", once: true },
+        scrollTrigger: { trigger: root, start: "top 80%", once: true },
       });
       // the reel stays PUT (sticky) and full-size the whole way down the
       // questions, then fades straight out IN PLACE near the very end — no
@@ -116,12 +119,21 @@ export default function FAQs() {
                   aria-expanded={isOpen}
                   className="flex w-full items-center justify-between gap-6 py-7 text-left md:py-9"
                 >
-                  <span
-                    className={`font-display text-[clamp(1.1rem,2vw,1.6rem)] leading-tight transition-colors duration-300 ${
-                      isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/40"
-                    }`}
-                  >
-                    {f.q}
+                  <span className="flex items-baseline gap-4 md:gap-6">
+                    <span
+                      className={`label-mono shrink-0 text-[11px] tracking-[0.2em] transition-colors duration-300 ${
+                        isOpen ? "text-[var(--gold-text)]" : "text-[var(--fg)]/30"
+                      }`}
+                    >
+                      {String(i + 1).padStart(2, "0")}
+                    </span>
+                    <span
+                      className={`font-display text-[clamp(1.1rem,2vw,1.6rem)] leading-tight transition-colors duration-300 ${
+                        isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/40"
+                      }`}
+                    >
+                      {f.q}
+                    </span>
                   </span>
                   <span
                     aria-hidden
@@ -141,7 +153,7 @@ export default function FAQs() {
                 >
                   <div className="overflow-hidden">
                     <p
-                      className="max-w-xl pb-7 text-base leading-relaxed text-[var(--fg)]/65 md:pb-9 md:text-lg"
+                      className="max-w-xl pb-7 text-base leading-relaxed text-[var(--fg)]/65 md:pb-9 md:pl-[2.8rem] md:text-lg"
                       style={{ fontFamily: "var(--font-firma), sans-serif" }}
                     >
                       {f.a}

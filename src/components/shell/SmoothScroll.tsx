@@ -17,7 +17,7 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     // tracks the wheel closely instead of lagging behind (which read as
     // "sticky"). Still smooth, never abrupt.
     const lenis = new Lenis({
-      lerp: 0.1,
+      lerp: 0.085,
       wheelMultiplier: 0.95,
       smoothWheel: true,
       // NO syncTouch: it hijacks touch-style input, which a Mac trackpad /

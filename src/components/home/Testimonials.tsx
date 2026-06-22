@@ -22,7 +22,8 @@ interface Testimonial {
   role: string;
   sector: string;
   logo: string; // /logos/<logo>.png
-  logoMaxW: string; // per-logo width so marks sit visually even
+  logoMaxW: string; // per-logo width so marks sit visually even (attribution mark)
+  selectorMaxW: string; // larger per-logo width for the prominent selector marks
 }
 
 const TESTIMONIALS: Testimonial[] = [
@@ -33,6 +34,7 @@ const TESTIMONIALS: Testimonial[] = [
     sector: "Heritage Motoring",
     logo: "mclaren-logo",
     logoMaxW: "max-w-[112px]",
+    selectorMaxW: "max-w-[168px]",
   },
   {
     slug: "nike",
@@ -41,6 +43,7 @@ const TESTIMONIALS: Testimonial[] = [
     sector: "Sportswear",
     logo: "nike-white",
     logoMaxW: "max-w-[66px]",
+    selectorMaxW: "max-w-[100px]",
   },
   {
     slug: "zuma",
@@ -49,6 +52,7 @@ const TESTIMONIALS: Testimonial[] = [
     sector: "Hospitality",
     logo: "zuma-white",
     logoMaxW: "max-w-[96px]",
+    selectorMaxW: "max-w-[144px]",
   },
 ];
 
@@ -60,17 +64,6 @@ function filmFor(slug: string): { loop: string; poster: string } {
     loop: project?.loop ?? `/videos/films/${slug}-p.mp4`,
     poster: project?.poster ?? `/videos/films/posters/${slug}-p.jpg`,
   };
-}
-
-function Aperture() {
-  return (
-    <span
-      aria-hidden
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-dashed border-[var(--gold)]/55"
-    >
-      <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
-    </span>
-  );
 }
 
 export default function Testimonials() {
@@ -164,6 +157,7 @@ export default function Testimonials() {
         >
           Testimonials
         </ScrollType>
+        <span aria-hidden className="mt-3 block h-[2px] w-16 bg-[var(--gold)]" />
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
@@ -200,7 +194,7 @@ export default function Testimonials() {
                       src={`/logos/${t.logo}.png`}
                       alt=""
                       aria-hidden
-                      className={`logo-mark max-h-6 ${t.logoMaxW} object-contain transition-opacity duration-300 [html[data-mode=light]_&]:invert ${
+                      className={`logo-mark max-h-10 ${t.selectorMaxW} object-contain transition-opacity duration-300 [html[data-mode=light]_&]:invert ${
                         isActive ? "opacity-100" : "opacity-60 group-hover:opacity-90"
                       }`}
                     />
@@ -218,13 +212,15 @@ export default function Testimonials() {
           {/* selected testimonial — quote + role + sector + brand mark */}
           <div ref={quoteRef} className="mt-9 flex flex-1 flex-col justify-between">
             <div>
-              <Aperture />
-              <blockquote className="mt-7 text-[clamp(1.35rem,2vw,2rem)] leading-snug">
+              <blockquote
+                className="text-[clamp(1.35rem,2vw,2rem)] leading-snug"
+                style={{ fontFamily: "var(--font-firma), sans-serif" }}
+              >
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
             </div>
 
-            <figcaption className="mt-9 flex items-center gap-4">
+            <figcaption className="mt-5 flex items-center gap-4">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[var(--hairline-dark)] bg-black/30 backdrop-blur-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

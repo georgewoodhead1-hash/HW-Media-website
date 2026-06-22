@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { EMAIL } from "@/content/site";
 
 // Site-wide footer (client feedback): HW logo, nav links, IG + LinkedIn,
 // email only (no phone), copyright line, privacy link. Same on every page.
@@ -20,14 +21,18 @@ export default function Footer() {
       <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
         {/* logo + email (placeholder wordmark until the official logo lands) */}
         <div>
-          <Link href="/" className="font-hand text-2xl leading-none nav-wordmark" aria-label="HW Media — home">
-            HW <span className="label-mono ml-1 align-middle text-[9px] tracking-[0.3em]">media</span>
+          <Link
+            href="/"
+            className="font-display text-lg uppercase leading-none tracking-[0.18em] nav-wordmark"
+            aria-label="HW Media — home"
+          >
+            HW <span className="ml-1 align-middle text-[var(--gold-text)]">Media</span>
           </Link>
           <a
-            href="mailto:harry@hwmedia.productions"
-            className="mt-4 block text-base transition-colors hover:text-[var(--gold)]"
+            href={`mailto:${EMAIL}`}
+            className="mt-5 block font-[family-name:var(--font-firma)] text-[clamp(1.1rem,2vw,1.6rem)] font-medium leading-tight tracking-tight transition-colors hover:text-[var(--gold)]"
           >
-            harry@hwmedia.productions
+            {EMAIL}
           </a>
         </div>
 

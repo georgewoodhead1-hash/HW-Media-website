@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
+import { BOOKING_URL } from "@/content/site";
 
 // CH.00 — the lens. A real cine prime hanging in dark space, starting small
 // (further out). Scroll approaches it, then passes through the LAYERS of the
@@ -421,19 +422,18 @@ export default function LensIntro() {
             Break the<br />
             <span className="glass-motto-gold">ordinary.</span>
           </h1>
-          <p
-            className="mt-5 max-w-md text-[15px] leading-relaxed text-[#f5f1e6]/75"
-            style={{ fontFamily: "var(--font-firma), sans-serif" }}
-          >
-            A London production company — we go where the story is, and film it.
+          <p className="font-hand mt-4 text-[clamp(1.7rem,3.6vw,3rem)] leading-none">
+            we go where the story is
           </p>
-          <Link
-            href="/contact"
-            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/45 px-7 py-3 text-[15px] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
+          <a
+            href={BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/55 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
-            Get in touch <span aria-hidden>⟶</span>
-          </Link>
+            Book a call with us <span aria-hidden>⟶</span>
+          </a>
         </div>
 
         {/* scroll hint, fades in once the intro has played */}

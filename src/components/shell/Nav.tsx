@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { BOOKING_URL } from "@/content/site";
 
 // Flat, always-visible nav (client feedback): logo left, the three links and
 // a persistent "Start here" right, social rail pinned bottom-left. No
@@ -17,8 +18,6 @@ const LINKS = [
 
 export default function Nav() {
   const rootRef = useRef<HTMLElement>(null);
-  const itemsRef = useRef<HTMLDivElement>(null);
-  const bubbleRef = useRef<HTMLSpanElement>(null);
 
   // quick entrance
   useEffect(() => {
@@ -29,34 +28,6 @@ export default function Nav() {
       { y: -12, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.06, ease: "expo.out", delay: 0.2, clearProps: "opacity,transform" },
     );
-  }, []);
-
-  // hover bubble — a soft pill that follows the cursor across the nav items
-  // (auteur-style). Slides to whichever item is hovered, fades out on leave.
-  useEffect(() => {
-    const wrap = itemsRef.current;
-    const bubble = bubbleRef.current;
-    if (!wrap || !bubble) return;
-    const items = Array.from(wrap.querySelectorAll<HTMLElement>("[data-navitem]"));
-    const moveTo = (el: HTMLElement) => {
-      const w = wrap.getBoundingClientRect();
-      const r = el.getBoundingClientRect();
-      gsap.to(bubble, {
-        x: r.left - w.left, y: r.top - w.top, width: r.width, height: r.height,
-        autoAlpha: 1, duration: 0.42, ease: "expo.out",
-      });
-    };
-    const handlers = items.map((el) => {
-      const h = () => moveTo(el);
-      el.addEventListener("mouseenter", h);
-      return [el, h] as const;
-    });
-    const leave = () => gsap.to(bubble, { autoAlpha: 0, duration: 0.3, ease: "power2.out" });
-    wrap.addEventListener("mouseleave", leave);
-    return () => {
-      handlers.forEach(([el, h]) => el.removeEventListener("mouseenter", h));
-      wrap.removeEventListener("mouseleave", leave);
-    };
   }, []);
 
   // the nav re-themes to the surface it sits over so it stays readable
@@ -88,40 +59,39 @@ export default function Nav() {
         ref={rootRef}
         className="nav-root fixed inset-x-0 top-3 z-50 flex items-center justify-between px-5 py-2.5 md:top-4 md:px-10"
       >
-        {/* LEFT — wordmark (clean DM Sans placeholder until the official logo) */}
-        <Link
-          href="/"
-          className="nav-enter nav-wordmark flex items-baseline gap-1.5 leading-none"
-          aria-label="HW Media — home"
-          style={{ fontFamily: "var(--font-firma), sans-serif" }}
-        >
-          <span className="font-display text-[1.55rem] font-semibold tracking-tight">HW</span>
-          <span className="text-[11px] font-medium uppercase tracking-[0.3em]">Media</span>
+        {/* LEFT — the real HW Media logo. Colour (gold) on dark; the black mark
+            swaps in only in light mode over a page surface. */}
+        <Link href="/" className="nav-enter block shrink-0" aria-label="HW Media — home">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logos/hwmedia-dark.png" alt="HW Media" className="nav-logo-color h-12 w-auto md:h-14" />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logos/hwmedia-light.png" alt="" aria-hidden className="nav-logo-black h-12 w-auto md:h-14" />
         </Link>
 
-        {/* RIGHT — flat nav with a hover bubble that follows the cursor.
-            Start here is styled the same as Work/About/Contact (client req). */}
+        {/* RIGHT — flat nav. No permanent borders; a hard-line ring appears
+            ONLY around the item you hover (client req). "Start here" links out
+            to the booking scheduler; the rest stay internal. */}
         <nav
-          ref={itemsRef}
-          className="relative flex items-center gap-0.5 md:gap-1"
+          className="flex items-center gap-1.5 md:gap-2"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
-          {/* the following bubble — sits behind the items */}
-          <span
-            ref={bubbleRef}
-            aria-hidden
-            className="pointer-events-none absolute left-0 top-0 z-0 rounded-full bg-[var(--fg)]/12 opacity-0"
-          />
-          {[...LINKS, { href: "/contact", label: "Start here" }].map((l) => (
+          {LINKS.map((l) => (
             <Link
               key={l.label}
               href={l.href}
-              data-navitem
-              className="nav-enter relative z-10 rounded-full px-4 py-2 text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--fg)] transition-opacity duration-300 hover:opacity-100 md:px-5"
+              className="nav-enter rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
             >
               {l.label}
             </Link>
           ))}
+          <a
+            href={BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="nav-enter rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
+          >
+            Start here
+          </a>
         </nav>
       </header>
 

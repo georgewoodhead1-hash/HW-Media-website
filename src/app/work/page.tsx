@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { projects } from "@/content/projects";
+import { BOOKING_URL } from "@/content/site";
 import Footer from "@/components/shell/Footer";
 
 export const metadata: Metadata = {
@@ -29,18 +30,8 @@ export default function WorkIndex() {
         data-surface="page"
         className="min-h-screen bg-[var(--bg)] pb-[8vh] text-[var(--fg)]"
       >
-        {/* Centred hero heading — one line, restrained scale */}
-        <section className="flex min-h-[50vh] items-center justify-center px-5 text-center md:px-10">
-          <h1
-            className="font-display whitespace-nowrap text-[clamp(2.4rem,7vw,6rem)] leading-[0.92]"
-            style={{ fontWeight: 400 }}
-          >
-            Selected Work
-          </h1>
-        </section>
-
-        {/* Full-bleed flush mosaic — edge-to-edge, gap-0, no rings/borders between */}
-        <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Full-bleed flush mosaic — edge-to-edge, gap-0, no rings/borders between. pt-28 clears the fixed nav. */}
+        <div className="grid grid-cols-1 gap-0 pt-28 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => {
             const logo = LOGO[p.client];
             return (
@@ -84,8 +75,8 @@ export default function WorkIndex() {
 
           {/* next-project CTA tile — keeps the mosaic square */}
           <Link
-            href="/contact"
-            className="group relative flex aspect-[4/3] flex-col items-start justify-end overflow-hidden bg-[#0b0b0b] p-6"
+            href={BOOKING_URL}
+            className="group relative flex aspect-[4/3] flex-col items-center justify-center overflow-hidden bg-[#0b0b0b] p-6 text-center"
           >
             <span
               className="text-[10px] tracking-[0.24em] text-[var(--gold)]"
@@ -100,7 +91,7 @@ export default function WorkIndex() {
               className="mt-3 text-[10px] tracking-[0.22em] text-white/70 transition-colors duration-300 group-hover:text-[var(--gold)]"
               style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
-              GET IN TOUCH ⟶
+              Book a call with us ⟶
             </span>
           </Link>
         </div>

@@ -36,25 +36,64 @@ export default function About() {
       >
         {/* hero */}
         <section className="px-5 pb-[10vh] pt-[24vh] md:px-10">
-          <span className="text-[12px] uppercase tracking-[0.28em] text-[var(--gold)]">About</span>
-          <h1
-            className="font-display mt-6 max-w-4xl text-[clamp(2.4rem,6vw,5.2rem)] leading-[0.95]"
-            style={{ fontWeight: 400 }}
-          >
-            A London production company, <span className="text-[var(--gold)]">founded 2018.</span>
-          </h1>
-          <p className="mt-8 max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[var(--fg)]/70">
-            We go where the story is and film it. A small crew on purpose — direction, cinematography,
-            edit and grade, all in-house — making films brands remember.
-          </p>
+          <div className="grid items-center gap-12 md:grid-cols-[1.4fr_0.6fr] md:gap-16">
+            {/* text — left */}
+            <div>
+              <span className="text-[12px] uppercase tracking-[0.28em] text-[var(--gold)]">About</span>
+              <h1
+                className="font-display mt-6 max-w-4xl text-[clamp(2.4rem,6vw,5.2rem)] leading-[0.95]"
+                style={{ fontWeight: 400 }}
+              >
+                A London production company, <span className="text-[var(--gold)]">founded 2018.</span>
+              </h1>
+              <p className="mt-8 max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[var(--fg)]/70">
+                We go where the story is and film it. A small crew on purpose — direction, cinematography,
+                edit and grade, all in-house — making films brands remember.
+              </p>
+            </div>
+            {/* vertical film — right */}
+            <div className="w-full max-w-[280px] md:justify-self-end">
+              <video
+                src="/videos/films/otoko-p.mp4"
+                poster="/videos/films/posters/otoko-p.jpg"
+                autoPlay
+                muted
+                loop
+                playsInline
+                aria-label="HW Media showreel — vertical film"
+                className="aspect-[3/4] w-full rounded-lg object-cover ring-1 ring-[var(--hairline-dark)]"
+              />
+            </div>
+          </div>
         </section>
 
         {/* our story */}
         <section className="border-t border-[var(--hairline-dark)] px-5 py-[10vh] md:px-10">
           <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
-            <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.4rem)] leading-tight" style={{ fontWeight: 400 }}>
-              Our story
-            </h2>
+            <div>
+              <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.4rem)] leading-tight" style={{ fontWeight: 400 }}>
+                Our story
+              </h2>
+              {/* Harry — greyscale by default, colour on hover (group reveals colour layer) */}
+              <div
+                className="group relative mt-8 aspect-[4/5] w-full max-w-xs overflow-hidden rounded-lg ring-1 ring-[var(--hairline-dark)]"
+                aria-label="Harry Wallis, founder of HW Media"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/harry-bw.jpg"
+                  alt="Harry Wallis, founder of HW Media"
+                  className="absolute inset-0 h-full w-full object-cover grayscale transition duration-500 group-hover:opacity-0"
+                />
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/harry-color.jpg"
+                  alt=""
+                  aria-hidden
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition duration-500 group-hover:opacity-100"
+                />
+              </div>
+            </div>
             <div className="max-w-2xl space-y-5 text-[clamp(1rem,1.3vw,1.15rem)] leading-relaxed text-[var(--fg)]/75">
               <p>
                 HW Media started with one director who refused to hand the camera to anyone else. Harry

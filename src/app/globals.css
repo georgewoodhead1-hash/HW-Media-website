@@ -179,8 +179,16 @@ body {
   --bg: #050505;
   --fg: #f5f1e6;
 }
-.nav-wordmark {
-  color: var(--gold);
+/* nav logo: colour (gold) mark by default and on dark; the black mark swaps
+   in only in light mode over a page surface (over the dark hero it stays gold) */
+.nav-logo-black {
+  display: none;
+}
+html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-color {
+  display: none;
+}
+html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
+  display: block;
 }
 .nav-link {
   position: relative;
@@ -291,30 +299,17 @@ html[data-mode="light"] .logo-mark {
   filter: invert(1);
 }
 
-/* ---- Hero motto: the picture lives IN the type ----
-   The words are a window onto the scene — the footage frame fills the letters
-   (picture in it, OF the scene), warmed and brightened so it reads as solid
-   and present, NOT a faint translucent sheet. A soft shadow lifts it off the
-   moving video. No border/stroke. */
-.glass-motto,
-.glass-motto-gold {
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-stroke: 0;
-  background-image:
-    linear-gradient(165deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.20) 100%),
-    url("/videos/posters/hero-loop.jpg");
-  background-size: cover, cover;
-  background-position: center 38%, center 38%;
-  background-repeat: no-repeat;
-  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 36px rgba(0, 0, 0, 0.6)) brightness(1.12) contrast(1.05);
+/* ---- Hero motto: solid, bright, present over the LIVE moving footage ----
+   No frozen image-fill, no faint translucency — clean type that sits over the
+   playing video (which provides the motion), lifted with a soft shadow for
+   legibility. NO border/stroke. */
+.glass-motto {
+  color: #f6f2e7;
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
-/* the accent word keeps a gold wash over the same scene fill */
 .glass-motto-gold {
-  background-image:
-    linear-gradient(165deg, rgba(226, 208, 130, 0.62) 0%, rgba(191, 170, 83, 0.40) 55%, rgba(226, 208, 130, 0.45) 100%),
-    url("/videos/posters/hero-loop.jpg");
+  color: var(--gold);
+  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
 /* ---- "Let's create" tombola: the word rolls over itself on hover ---- */

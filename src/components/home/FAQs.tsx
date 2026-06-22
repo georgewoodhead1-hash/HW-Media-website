@@ -1,23 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { useState } from "react";
 
-// FAQ, ponder.ai's "Designed for your specialty" mechanic. The left column
-// is "FAQs" + a tall vertical reel. The HEADING is sticky and stays frozen at
-// the same line for the whole section while the questions scroll up past it.
-// The reel is positioned out of flow (so it doesn't drag the sticky release
-// point down) and clears away near the end — so by the time the LAST question
-// rises into line with the heading, you're left with just the heading and that
-// final question, then the page moves to the finale.
-//
-// CUT-OFF FIX: each question lights up via an IntersectionObserver band centred
-// on the viewport (middle ~16%). For the LAST questions to reach that band they
-// need scroll room *below* them — otherwise the section ends and the page moves
-// on before they ever climb to centre, so they read as "cut off". A trailing
-// spacer after the list gives the final question that room. The spacer also
-// extends the flex container, which is what the sticky left column measures its
-// release against, so the heading stays put until the very end.
+// FAQ — click-to-open accordion. The left column keeps the "FAQs" heading and a
+// tall vertical video reel (sticky on desktop). The right column is the list of
+// questions; clicking a question toggles it open/closed with a smooth
+// max-height + opacity transition (~400ms). Only one is open at a time.
 
 interface QA {
   q: string;
@@ -38,61 +26,10 @@ const FAQS: QA[] = [
 ];
 
 export default function FAQs() {
-  const rootRef = useRef<HTMLElement>(null);
-  const reelRef = useRef<HTMLDivElement>(null);
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    const reel = reelRef.current;
-    if (!root) return;
-
-    const items = Array.from(root.querySelectorAll<HTMLElement>(".faq-item"));
-
-    // which question is in the middle of the screen lights up
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) setActive(Number(e.target.getAttribute("data-i")));
-        });
-      },
-      { rootMargin: "-42% 0px -42% 0px", threshold: 0 },
-    );
-    items.forEach((it) => io.observe(it));
-
-    const mm = gsap.matchMedia();
-    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      if (!reel) return;
-      // the reel drifts down and clears out over the back half of the section —
-      // power3.in keeps it fully present for most of the scroll, then drops it
-      // away so the final question lands with just the heading beside it.
-      const clear = gsap.fromTo(
-        reel,
-        { yPercent: 0, autoAlpha: 1 },
-        {
-          yPercent: 26, autoAlpha: 0, ease: "power3.in",
-          // clear out over the questions, finishing before the trailing spacer
-          // so the heading sits alone with the final question. Tied to the
-          // section centre rather than its bottom (the spacer makes the section
-          // much taller now), keeping the timing stable across widths.
-          scrollTrigger: { trigger: root, start: "12% top", end: "62% top", scrub: 1.1 },
-        },
-      );
-      return () => {
-        clear.scrollTrigger?.kill();
-        clear.kill();
-      };
-    });
-
-    return () => {
-      io.disconnect();
-      mm.revert();
-    };
-  }, []);
+  const [open, setOpen] = useState<number | null>(0);
 
   return (
     <section
-      ref={rootRef}
       data-theme="dark"
       data-surface="page"
       data-chapter="06 — FAQs"
@@ -100,19 +37,13 @@ export default function FAQs() {
       aria-label="Frequently asked questions"
     >
       <div className="md:flex md:items-start md:gap-12 lg:gap-16">
-        {/* LEFT — heading is sticky + frozen; the reel sits out of flow below it.
-            Nudged DOWN (top-[18vh]) and slightly RIGHT (md:pl-6 lg:pl-10) so the
-            "FAQ's" heading sits IN LINE near the top of the reel rather than
-            floating high above it. The reel is pulled up close to the heading
-            (md:top-[5.5rem]) so the heading aligns with its top edge. */}
+        {/* LEFT — heading + video reel. Sticky on desktop so the reel stays in
+            view while the question list is read. */}
         <div className="relative md:sticky md:top-[18vh] md:w-[40%] md:self-start md:pl-6 lg:w-[36%] lg:pl-10">
           <h2 className="font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
             <span className="text-[var(--gold)]">FAQ&apos;s</span>
           </h2>
-          <div
-            ref={reelRef}
-            className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:absolute md:left-6 md:top-[5.5rem] md:mt-0 md:w-[clamp(180px,80%,300px)] lg:left-10"
-          >
+          <div className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black md:mt-9 md:w-[clamp(180px,80%,300px)]">
             <video
               className="h-full w-full object-cover"
               src="/videos/films/defender-reel.mp4"
@@ -124,43 +55,56 @@ export default function FAQs() {
           </div>
         </div>
 
-        {/* RIGHT — the questions; a lead gap lets the heading settle at the
-            top before the first question climbs into the highlight band.
-            Lead trimmed (the whole section moved up) so the first question
-            isn't pushed too low. */}
-        <div className="md:flex-1 md:pt-[8vh]">
-          {FAQS.map((f, i) => (
-            <div
-              key={f.q}
-              data-i={i}
-              className="faq-item border-t border-dashed border-[var(--hairline-dark)] py-7 last:border-b md:py-9"
-            >
-              <p
-                className={`text-[clamp(1.25rem,1.8vw,1.85rem)] font-medium leading-tight transition-colors duration-500 ${
-                  active === i ? "text-[var(--fg)]" : "text-[var(--fg)]/30"
-                }`}
-                style={{ fontFamily: "var(--font-firma), sans-serif" }}
-              >
-                {f.q}
-              </p>
+        {/* RIGHT — the questions as a click-to-open accordion. */}
+        <div className="md:flex-1 md:pt-[2vh]">
+          {FAQS.map((f, i) => {
+            const isOpen = open === i;
+            return (
               <div
-                className={`grid transition-all duration-500 ${
-                  active === i ? "mt-4 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                }`}
-                style={{ transitionTimingFunction: "var(--ease-expo)" }}
+                key={f.q}
+                className="border-t border-dashed border-[var(--hairline-dark)] last:border-b"
               >
-                <p className="max-w-xl overflow-hidden text-base leading-relaxed text-[var(--fg)]/65 md:text-lg">
-                  {f.a}
-                </p>
+                <button
+                  type="button"
+                  onClick={() => setOpen(isOpen ? null : i)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between gap-6 py-7 text-left md:py-9"
+                >
+                  <span
+                    className={`font-display text-[clamp(1.1rem,2vw,1.6rem)] leading-tight transition-colors duration-300 ${
+                      isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/40"
+                    }`}
+                  >
+                    {f.q}
+                  </span>
+                  <span
+                    aria-hidden
+                    className={`shrink-0 text-2xl leading-none text-[var(--gold-text)] transition-transform duration-300 ${
+                      isOpen ? "rotate-45" : "rotate-0"
+                    }`}
+                  >
+                    +
+                  </span>
+                </button>
+                <div
+                  className="grid overflow-hidden transition-all duration-[400ms] ease-in-out motion-reduce:transition-none"
+                  style={{
+                    gridTemplateRows: isOpen ? "1fr" : "0fr",
+                    opacity: isOpen ? 1 : 0,
+                  }}
+                >
+                  <div className="overflow-hidden">
+                    <p
+                      className="max-w-xl pb-7 text-base leading-relaxed text-[var(--fg)]/65 md:pb-9 md:text-lg"
+                      style={{ fontFamily: "var(--font-firma), sans-serif" }}
+                    >
+                      {f.a}
+                    </p>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-          {/* Trailing run-out: lets the final question scroll up into the
-              centred highlight band (it can't light up without room below it),
-              and keeps the flex container — and therefore the sticky heading —
-              alive right to the end. Without this the last questions read as
-              cut off because the section ends before they reach centre. */}
-          <div aria-hidden className="hidden md:block md:h-[55vh]" />
+            );
+          })}
         </div>
       </div>
     </section>

@@ -24,13 +24,13 @@ const ROW_B = LOGOS.slice(mid);
 
 function Logo({ slug }: { slug: string }) {
   return (
-    <span className="tb-logo flex h-24 w-[210px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:w-[230px]">
+    <span className="tb-logo flex h-32 w-[270px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:w-[300px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/logos/${slug}.png`}
         alt=""
         aria-hidden
-        className="logo-mark max-h-[60px] max-w-[200px] object-contain md:max-h-[68px] [html[data-mode=light]_&]:invert"
+        className="logo-mark max-h-[80px] max-w-[260px] object-contain md:max-h-[90px] [html[data-mode=light]_&]:invert"
         loading="lazy"
       />
     </span>
@@ -146,7 +146,7 @@ export default function TrustedBy() {
       data-theme="dark"
       data-surface="page"
       data-chapter="02 — Trusted by"
-      className="relative px-5 py-[6vh] md:px-10"
+      className="relative border-y border-[var(--hairline-dark)] bg-[color-mix(in_srgb,var(--fg)_5%,var(--bg))] px-5 py-[6vh] md:px-10"
       aria-label="Trusted by"
     >
       <div className="tb-heading mb-[4vh] text-center">

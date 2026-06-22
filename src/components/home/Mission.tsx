@@ -38,7 +38,7 @@ export default function Mission() {
       // every word lights up well before the panel is allowed to leave
       gsap.fromTo(".ms-word", { opacity: 0.12 }, {
         opacity: 1, stagger: 0.02, ease: "none",
-        scrollTrigger: { trigger: root, start: "top top", end: "58% top", scrub: 1.1 },
+        scrollTrigger: { trigger: root, start: "top top", end: "75% top", scrub: 1.4 },
       });
       // the stats count up AS the user scrolls — the numbers visibly climb,
       // scrubbed to scroll progress rather than firing once
@@ -66,7 +66,7 @@ export default function Mission() {
       data-theme="dark"
       data-surface="page"
       data-chapter="01 — Mission"
-      className="relative z-30 motion-safe:md:-mt-[100vh] motion-safe:md:h-[150vh]"
+      className="relative z-30 motion-safe:md:-mt-[100vh] motion-safe:md:h-[200vh]"
       aria-label="Our mission"
     >
       <div className="ms-panel sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)] will-change-transform motion-reduce:md:hidden md:block">
@@ -78,8 +78,10 @@ export default function Mission() {
             {/* LEFT — heading only, nothing under it */}
             <ScrollType
               as="h2"
-              className="col-span-12 font-display text-[clamp(2.1rem,3.5vw,3.5rem)] leading-[0.94] lg:col-span-4"
+              className="col-span-12 font-display text-[clamp(2.5rem,4.1vw,4.1rem)] leading-[0.94] lg:col-span-4"
               gold={["not"]}
+              start="top 95%"
+              end="top 58%"
               style={{ fontWeight: 400 }}
             >
               Films, not content.
@@ -87,7 +89,7 @@ export default function Mission() {
 
             {/* RIGHT — the paragraph, then the stats directly under it */}
             <div className="col-span-12 lg:col-span-8">
-              <p className="text-[clamp(1.35rem,2.2vw,2.25rem)] font-medium leading-[1.2] text-[var(--fg)]">
+              <p className="text-[clamp(1.6rem,2.6vw,2.65rem)] font-medium leading-[1.2] text-[var(--fg)]">
                 {PARA.split(" ").map((w, i) => (
                   <span key={i} className="ms-word">{w} </span>
                 ))}

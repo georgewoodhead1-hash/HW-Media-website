@@ -416,9 +416,9 @@ export default function LensIntro() {
         {/* the motto — our mainstream display font, solid and bold, standing
             out over the reel. No knockout, no glass, no shadow, one clean rise. */}
         <div className="hero-motto absolute left-0 top-[46%] z-10 -translate-y-1/2 px-5 will-change-transform md:px-10">
-          <h1 className="font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88] text-[#f5f1e6]">
+          <h1 className="glass-motto font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
             Break the<br />
-            <span className="text-[var(--gold)]">ordinary.</span>
+            <span className="glass-motto-gold">ordinary.</span>
           </h1>
           <p
             className="mt-5 max-w-md text-[15px] leading-relaxed text-[#f5f1e6]/75"

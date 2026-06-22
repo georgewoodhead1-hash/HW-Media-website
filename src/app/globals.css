@@ -290,6 +290,39 @@ html[data-mode="light"] .logo-mark {
   filter: invert(1);
 }
 
+/* ---- Liquid-glass hero motto ----
+   Translucent, reflective letters that let the footage show through — a glass
+   sheen with NO hard border/stroke (client: never outline the words). The
+   moving video behind reads through the lighter bands; the brighter bands are
+   the reflection. */
+.glass-motto {
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-stroke: 0;
+  background-image: linear-gradient(
+    168deg,
+    rgba(255, 255, 255, 0.62) 0%,
+    rgba(255, 255, 255, 0.16) 34%,
+    rgba(255, 255, 255, 0.38) 62%,
+    rgba(255, 255, 255, 0.12) 100%
+  );
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35)) drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
+}
+.glass-motto-gold {
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  background-image: linear-gradient(
+    168deg,
+    rgba(226, 208, 130, 0.92) 0%,
+    rgba(191, 170, 83, 0.34) 36%,
+    rgba(226, 208, 130, 0.62) 66%,
+    rgba(191, 170, 83, 0.26) 100%
+  );
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22)) drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
+}
+
 /* ---- Lens vessel: circular glass that holds the reel ---- */
 .lens-vessel {
   clip-path: circle(50%);

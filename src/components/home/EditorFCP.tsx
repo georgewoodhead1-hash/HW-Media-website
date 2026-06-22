@@ -22,11 +22,14 @@ const STAGES: Stage[] = [
   { name: "We deliver", clip: "/videos/micro/m12.mp4" },
 ];
 
-const COMBINE = 0.5; // first half = the slow, staggered assemble
+const COMBINE = 0.46; // assemble + a short HOLD on "Our process" finishes here
+const OUTRO = 0.86; // after this the assembled scene breaks apart + flies off
 const ROW_X = [15, 38.3, 61.7, 85];
 const ROW_Y = [60, 49, 60, 49]; // stepped up/down for depth
 const CORNERS: [number, number][] = [[10, 16], [90, 16], [10, 86], [90, 86]];
-const CLIP_WIN: [number, number][] = [[0.04, 0.26], [0.13, 0.35], [0.23, 0.44], [0.31, 0.5]];
+// arrival windows COMPRESSED so every film is home by ~0.4 — before the hold,
+// so "Our process" is fully written and readable before "We plan" takes over
+const CLIP_WIN: [number, number][] = [[0.03, 0.18], [0.10, 0.26], [0.18, 0.33], [0.27, 0.40]];
 const BAR_LEFT = ROW_X[0] - 11.5;
 const BAR_RIGHT = ROW_X[3] + 11.5;
 
@@ -66,14 +69,14 @@ export default function EditorFCP() {
       const scatter = chars.map((_, i) => {
         const dir = i % 2 === 0 ? 1 : -1;
         const mag = 0.24 + ((i * 13) % 22) / 100;
-        const a = 0.03 + (i / N) * 0.34; // staggered, uneven start
+        const a = 0.02 + (i / N) * 0.2; // staggered start, all home by ~0.34
         return {
           x: dir * mag,
           y: ((((i * 53) % 100) - 50) / 50) * 0.4,
           rot: dir * (9 + ((i * 29) % 30)),
           sc: 0.62 + ((i * 17) % 38) / 100,
           a,
-          b: a + 0.3, // WIDE window -> slow, smooth per-letter fade
+          b: a + 0.14, // tighter window so the word finishes writing before the hold
         };
       });
 
@@ -93,11 +96,12 @@ export default function EditorFCP() {
       const place = (p: number) => {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        const enter = smooth(COMBINE - 0.02, COMBINE + 0.1, p); // assemble(0) -> stages(1)
-        const sp = clamp01((p - COMBINE) / (1 - COMBINE));
+        const enter = smooth(COMBINE - 0.06, COMBINE + 0.02, p); // assemble+hold(0) -> stages(1)
+        const sp = clamp01((p - COMBINE) / (OUTRO - COMBINE)); // stage progress, [COMBINE, OUTRO]
+        const outro = smooth(OUTRO, 0.99, p); // 0 -> 1: the scene breaks apart and flies off
 
-        // FILMS — drift in from a corner during assemble, then brighten/dim
-        // continuously by which stage is active. No discrete pop.
+        // FILMS — drift in from a corner during assemble, brighten/dim by the
+        // active stage, then in the OUTRO fly back out to the corners + fade.
         clips.forEach((c, i) => {
           const [a, b] = CLIP_WIN[i];
           const t = smooth(a, b, p);
@@ -105,11 +109,20 @@ export default function EditorFCP() {
           const offY = ((CORNERS[i][1] - ROW_Y[i]) / 100) * vh;
           const w = stageWeight(sp, i);
           const assembleA = smooth(a, a + (b - a) * 0.55, p);
+          // curved SWIRL-in: quadratic bezier from the corner, bowing through a
+          // control point, with an unwinding spin — a nod to the finale spiral
+          const u = 1 - t;
+          const cx = offX * 0.15;
+          const cy = offY * 0.15 - vh * 0.14 * (i % 2 === 0 ? 1 : -1);
+          const homeX = u * u * offX + 2 * u * t * cx;
+          const homeY = u * u * offY + 2 * u * t * cy;
+          const swirl = lerp(i % 2 === 0 ? 24 : -24, 0, t);
           gsap.set(c, {
-            x: lerp(offX, 0, t),
-            y: lerp(offY, 0, t),
-            scale: lerp(0.82, 1, t) * lerp(1, 1 + 0.06 * w, enter),
-            autoAlpha: lerp(assembleA, 0.32 + 0.68 * w, enter),
+            x: lerp(homeX, offX * 1.5, outro),
+            y: lerp(homeY, offY * 1.5, outro),
+            rotation: swirl + lerp(0, i % 2 === 0 ? -14 : 14, outro),
+            scale: lerp(0.8, 1, t) * lerp(1, 1 + 0.06 * w, enter) * lerp(1, 0.55, outro),
+            autoAlpha: lerp(assembleA, 0.32 + 0.68 * w, enter) * (1 - outro),
           });
         });
 
@@ -136,12 +149,13 @@ export default function EditorFCP() {
         stages.forEach((s, i) => {
           const fin = smooth(i * slot + 0.02, i * slot + 0.07, sp);
           const fout = i === nStage - 1 ? 1 : 1 - smooth((i + 1) * slot - 0.05, (i + 1) * slot, sp);
-          gsap.set(s, { autoAlpha: fin * fout, yPercent: lerp(10, 0, fin) });
+          // the last word ("We deliver") breaks apart in the outro too
+          gsap.set(s, { autoAlpha: fin * fout * (1 - outro), yPercent: lerp(10, 0, fin) + outro * -40 });
         });
 
-        // PLAY-BAR — pure translate sweep across the full row
+        // PLAY-BAR — pure translate sweep across the full row; gone in the outro
         const barX = (lerp(BAR_LEFT, BAR_RIGHT, sp) / 100) * vw;
-        gsap.set(barRef.current, { x: barX, autoAlpha: enter });
+        gsap.set(barRef.current, { x: barX, autoAlpha: enter * (1 - outro) });
 
         // video play/pause follows the dominant stage (throttled, not a tween)
         const dom = enter > 0.5 ? Math.min(nStage - 1, Math.max(0, Math.round(sp * nStage - 0.5))) : -1;
@@ -184,7 +198,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="page"
       data-chapter="Our process"
-      className="relative motion-safe:md:h-[560vh]"
+      className="relative motion-safe:md:h-[440vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

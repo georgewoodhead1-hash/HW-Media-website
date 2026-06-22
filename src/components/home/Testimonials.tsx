@@ -92,9 +92,9 @@ export default function Testimonials() {
           stagger: 0.1,
           scrollTrigger: {
             trigger: root,
-            start: "top 82%",
-            end: "top 40%",
-            scrub: 1.2,
+            start: "top 90%",
+            end: "top 62%",
+            scrub: 0.5,
           },
         },
       );

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import {
   Archivo,
   Dancing_Script,
-  DM_Sans,
   Hanken_Grotesk,
   IBM_Plex_Mono,
   Instrument_Serif,
@@ -45,13 +44,6 @@ const caveat = Dancing_Script({
   weight: "600",
 });
 
-// Studiogram's font — used for the Mission section to match it exactly.
-const dmSans = DM_Sans({
-  variable: "--font-dm",
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-});
-
 // BR Firma SemiBold — the ACTUAL auteurstudios font, pulled from their CDN.
 // On auteur this is the face on "Get in touch" and "PIONEERS IN BRAND
 // STORYTELLING" (verified: computed font-family "BR Firma", weight 600). Used
@@ -81,7 +73,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${dmSans.variable} ${firma.variable} h-full antialiased`}
+      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${firma.variable} h-full antialiased`}
     >
       <head>
         {/* restore the saved mode before first paint — no flash */}
@@ -93,6 +85,12 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-[var(--fg)] focus:px-4 focus:py-2 focus:text-[var(--bg)]"
+        >
+          Skip to content
+        </a>
         <SmoothScroll>
           <Nav />
           {children}

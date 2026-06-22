@@ -22,6 +22,10 @@
 11. **Dead-code + unused-font cleanup** — delete ScrollWords.tsx, WorkCard.tsx if unused; drop unused next/font imports (Instrument_Serif, IBM_Plex_Mono, DM_Sans if unused).
 12. **LAYOUT PASS** — go section by section: "is this the right layout?" Add tasteful colours/borders/tonal bands to give the page structure (TrustedBy already has a band). Propose + implement lightly.
 13. **Final audit** — run /impeccable polish + design-skills review before final sign-off.
+14. **BLACK BARS on films** — Zuma, McLaren + many others show letterbox black bars (above/below/sides). EVERY video must FILL its frame, no bars anywhere. Fix object-fit:cover + a scale to crop any baked-in letterbox in the source mp4s. Check: WorkTile (scale-[1.08] may be too low), OurWork accordion bars, work/[slug] detail page, Testimonials portrait, Process clips, finale tiles. Do AFTER the rest.
+
+## WORKING METHOD (client rule, going forward)
+George's standing process: (1) a PLANNER captures EVERYTHING he says verbatim (no compacting) into this plan; (2) main agent works each item top-to-bottom, ticking off + SCREENSHOT-verifying each; (3) a VERIFIER checks the finished work against this plan. Treat TASKS.md as that living plan. At the end, run a verification pass (Workflow: planner-spec vs built-result) before declaring done. Do NOT stop to chat between items — just keep executing and only report when the batch is done.
 
 ## DONE this session (verified + pushed live)
 - Real BR Firma font; real HW logo (gold dark / black light), nav ring-on-hover.

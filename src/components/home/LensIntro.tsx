@@ -145,17 +145,41 @@ export default function LensIntro() {
     gsap.set(dimRef.current, { opacity: 0.5 });
     gsap.set(".hero-motto", { autoAlpha: 0, y: 40 });
 
+    // SCROLL LOCK while the intro plays — the page can't be scrolled until the
+    // lens animation has finished, then it's released (client feedback).
+    let unlocked = false;
+    getLenis()?.stop();
+    window.scrollTo(0, 0);
+    const block = (e: Event) => e.preventDefault();
+    const blockKeys = (e: KeyboardEvent) => {
+      if ([" ", "ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(e.key)) e.preventDefault();
+    };
+    window.addEventListener("wheel", block, { passive: false });
+    window.addEventListener("touchmove", block, { passive: false });
+    window.addEventListener("keydown", blockKeys, { passive: false });
+    const stopId = window.setTimeout(() => getLenis()?.stop(), 60); // Lenis may mount after us
+    const unlock = () => {
+      if (unlocked) return;
+      unlocked = true;
+      window.clearTimeout(stopId);
+      getLenis()?.start();
+      window.removeEventListener("wheel", block);
+      window.removeEventListener("touchmove", block);
+      window.removeEventListener("keydown", blockKeys);
+    };
+
     const ctx = gsap.context(() => {
       gsap.set(veilRef.current, { opacity: 0 });
       gsap.set(".hero-motto", { autoAlpha: 0, y: 40 });
 
       {
         // AUTO-PLAY loading intro (client feedback): plays itself on load,
-        // one clean zoom THROUGH the lens into the reel — no scrolling, no
-        // zoom-back-out. timeScale stretches the ~1s build to a smooth ~3.4s.
+        // one clean zoom THROUGH the lens into the reel. Scroll is locked until
+        // this completes (onComplete -> unlock).
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           delay: 0.45,
+          onComplete: unlock,
         });
 
         tl
@@ -180,6 +204,7 @@ export default function LensIntro() {
 
     return () => {
       ctx.revert();
+      unlock();
     };
   }, []);
 

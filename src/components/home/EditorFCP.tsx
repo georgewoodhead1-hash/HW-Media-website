@@ -4,39 +4,34 @@ import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 
-// S4 — the process inside an editor. A Final-Cut-style shell: the VIEWER
-// up top (chrome bar with file · res · fps, footage crossfading per
-// stage, a typed lower-third), and the TIMELINE below — timecode ruler,
-// a video track of four named clips with thumbnails, an audio track of
-// waveform bars, and the white playhead riding across the lot. The
-// active clip wears the gold selection border, like a real edit.
+// Our Process (client feedback): simplified. "Our process" sits centre; as you
+// scrub it is replaced by the active stage name (Planning / Filming / Editing /
+// Delivery). Below, four small looping clips in boxes — the active one lit. A
+// clean timeline scrubber runs along the bottom. No big central video, no AI
+// filenames.
 
 interface Stage {
   name: string;
-  file: string;
   blurb: string;
-  main: string;
-  thumb: string;
+  clip: string;
 }
 
 const STAGES: Stage[] = [
-  { name: "Planning", file: "Planning_01", blurb: "We find the story before anything is booked.", main: "/videos/films/salomon-w.mp4", thumb: "/videos/micro/m02.mp4" },
-  { name: "Filming", file: "Filming_02", blurb: "One crew, every department, instinct welcome.", main: "/videos/films/bts-w.mp4", thumb: "/videos/micro/m07.mp4" },
-  { name: "Editing", file: "Editing_03", blurb: "Where the footage becomes a film.", main: "/videos/loop-04.mp4", thumb: "/videos/micro/m10.mp4" },
-  { name: "Delivery", file: "Delivery_04", blurb: "Masters, plus every cutdown your channels need.", main: "/videos/loop-05.mp4", thumb: "/videos/micro/m12.mp4" },
+  { name: "Planning", blurb: "We find the story before anything is booked.", clip: "/videos/micro/m02.mp4" },
+  { name: "Filming", blurb: "One crew, every department, instinct welcome.", clip: "/videos/micro/m07.mp4" },
+  { name: "Editing", blurb: "Where the footage becomes a film.", clip: "/videos/micro/m10.mp4" },
+  { name: "Delivery", blurb: "Masters, plus every cutdown your channels need.", clip: "/videos/micro/m12.mp4" },
 ];
-const SEG = 1 / STAGES.length;
-const WAVE = Array.from({ length: 120 }, (_, i) => 4 + ((i * 37) % 17));
+const INTRO = 0.07; // first slice shows "Our process" before the stages begin
 
 export default function EditorFCP() {
   const rootRef = useRef<HTMLElement>(null);
   const playheadRef = useRef<HTMLDivElement>(null);
-  const tcRef = useRef<HTMLSpanElement>(null);
-  const fileRef = useRef<HTMLSpanElement>(null);
-  const mainVids = useRef<(HTMLVideoElement | null)[]>([]);
-  const lowerRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const introRef = useRef<HTMLDivElement>(null);
+  const stageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const clipRefs = useRef<(HTMLButtonElement | null)[]>([]);
-  const activeRef = useRef(-1);
+  const vids = useRef<(HTMLVideoElement | null)[]>([]);
+  const activeRef = useRef(-2);
 
   useEffect(() => {
     const root = rootRef.current;
@@ -44,17 +39,14 @@ export default function EditorFCP() {
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      const mains = gsap.utils.toArray<HTMLElement>(".fcp-main", root);
-      const lowers = lowerRefs.current.filter(Boolean) as HTMLDivElement[];
+      const stages = stageRefs.current.filter(Boolean) as HTMLDivElement[];
       const clips = clipRefs.current.filter(Boolean) as HTMLButtonElement[];
+      gsap.set(stages, { autoAlpha: 0, y: 16 });
+      gsap.set(introRef.current, { autoAlpha: 1 });
 
-      mains.forEach((m, i) => gsap.set(m, { opacity: i === 0 ? 1 : 0 }));
-      lowers.forEach((l, i) => gsap.set(l, { opacity: i === 0 ? 1 : 0, y: i === 0 ? 0 : 12 }));
-      clips.forEach((c, i) => c.classList.toggle("fcp-active", i === 0));
-      gsap.set(".fcp-shell", { y: 60, opacity: 0, scale: 0.97 });
+      const seg = (1 - INTRO) / STAGES.length;
 
-      const tl = gsap.timeline({
-        defaults: { ease: "none" },
+      const st = gsap.timeline({
         scrollTrigger: {
           trigger: root,
           start: "top top",
@@ -65,55 +57,33 @@ export default function EditorFCP() {
             if (playheadRef.current && lane) {
               playheadRef.current.style.transform = `translateX(${(self.progress * lane.offsetWidth).toFixed(1)}px)`;
             }
-            if (tcRef.current) {
-              const t = self.progress * 48;
-              tcRef.current.textContent = `00:00:${String(Math.floor(t)).padStart(2, "0")}:${String(Math.floor((t % 1) * 25)).padStart(2, "0")}`;
-            }
-            if (self.progress < 0.01) {
-              mainVids.current.forEach((v) => v?.pause());
-              activeRef.current = -1;
-              return;
-            }
-            const idx = Math.min(STAGES.length - 1, Math.floor(self.progress / SEG));
+            const started = self.progress > INTRO;
+            const idx = started ? Math.min(STAGES.length - 1, Math.floor((self.progress - INTRO) / seg)) : -1;
             if (idx !== activeRef.current) {
               activeRef.current = idx;
-              if (fileRef.current) fileRef.current.textContent = `HW_Process.fcpx — ${STAGES[idx].file}`;
-              clips.forEach((c, i) => c.classList.toggle("fcp-active", i === idx));
-              mainVids.current.forEach((v, i) => {
-                if (!v) return;
-                if (i === idx) safePlay(v);
-                else v.pause();
+              gsap.to(introRef.current, { autoAlpha: started ? 0 : 1, duration: 0.25, overwrite: true });
+              stages.forEach((s, i) =>
+                gsap.to(s, { autoAlpha: i === idx ? 1 : 0, y: i === idx ? 0 : 16, duration: 0.3, overwrite: true }),
+              );
+              clips.forEach((c, i) => {
+                c.classList.toggle("fcp-active", i === idx);
+                gsap.to(c, { opacity: i === idx ? 1 : 0.5, duration: 0.3, overwrite: true });
               });
+              vids.current.forEach((v, i) => { if (!v) return; if (i === idx) safePlay(v); else v.pause(); });
             }
           },
         },
       });
 
-      // dynamic entrance: the heading rises out of its mask, then the editor
-      // assembles — shell up, clips dealt in left-to-right — and the whole
-      // stage keeps a slow drift for the entire pin so it never sits still
-      gsap.set(".fcp-title", { yPercent: 110 });
-      gsap.set(".fcp-clip", { y: 24, opacity: 0 });
-      tl.to(".fcp-title", { yPercent: 0, duration: 0.07, ease: "power3.out" }, 0)
-        .to(".fcp-shell", { y: 0, opacity: 1, scale: 1, duration: 0.08, ease: "power2.out" }, 0.02)
-        .to(".fcp-clip", { y: 0, opacity: 1, stagger: 0.014, duration: 0.05, ease: "power2.out" }, 0.06)
-        .fromTo(".fcp-stage", { yPercent: 1.5 }, { yPercent: -1.5, duration: 1 }, 0);
-      for (let k = 1; k < STAGES.length; k++) {
-        const t = k * SEG;
-        tl.to(mains[k - 1], { opacity: 0, duration: 0.04 }, t - 0.01)
-          .to(mains[k], { opacity: 1, duration: 0.04 }, t - 0.01)
-          .to(lowers[k - 1], { opacity: 0, y: -12, duration: 0.03 }, t - 0.015)
-          .to(lowers[k], { opacity: 1, y: 0, duration: 0.035 }, t + 0.005);
-      }
-      tl.to(root, { duration: 0.04 }, 0.99);
+      // clips deal in on entrance
+      gsap.fromTo(
+        ".fcp-clip",
+        { y: 22, opacity: 0 },
+        { y: 0, opacity: 0.5, stagger: 0.08, duration: 0.6, ease: "power2.out",
+          scrollTrigger: { trigger: root, start: "top 65%" } },
+      );
 
-      return () => {
-        mains.forEach((m) => gsap.set(m, { clearProps: "all" }));
-      };
-    });
-
-    root.querySelectorAll<HTMLVideoElement>("video").forEach((v) => {
-      try { v.load(); } catch { /* fine */ }
+      return () => { st.scrollTrigger?.kill(); st.kill(); };
     });
 
     return () => mm.revert();
@@ -124,7 +94,8 @@ export default function EditorFCP() {
     if (!root) return;
     const top = root.getBoundingClientRect().top + window.scrollY;
     const travel = root.offsetHeight - window.innerHeight;
-    window.scrollTo({ top: top + (i * SEG + SEG * 0.5) * travel, behavior: "smooth" });
+    const seg = (1 - INTRO) / STAGES.length;
+    window.scrollTo({ top: top + (INTRO + (i + 0.5) * seg) * travel, behavior: "smooth" });
   };
 
   return (
@@ -132,120 +103,80 @@ export default function EditorFCP() {
       ref={rootRef}
       id="process"
       data-theme="dark"
-      data-chapter="03 — The process"
-      className="-mt-[8vh] relative motion-safe:md:h-[420vh]"
+      data-surface="page"
+      data-chapter="Our process"
+      className="relative motion-safe:md:h-[340vh]"
       aria-label="Our process"
     >
-      <div className="sticky top-0 hidden h-screen flex-col overflow-hidden px-5 pb-10 pt-20 motion-reduce:md:hidden md:flex md:px-10">
-        {/* the big heading, above the editor */}
-        <div className="fcp-head shrink-0 overflow-hidden pb-1">
-          <p className="scene-marker label-mono opacity-60">
-            <span>03 — The process</span>
-          </p>
-          <h2 className="fcp-title font-display mt-4 text-[clamp(2.4rem,5vw,4.8rem)] leading-[0.95] will-change-transform">
-            Our <span className="font-accent text-[var(--gold)]">process.</span>
-          </h2>
+      <div className="sticky top-0 hidden h-screen flex-col items-center justify-center overflow-hidden px-5 md:flex md:px-10">
+        {/* CENTRE — "Our process", swapped for the active stage as you scrub */}
+        <div className="relative flex h-[32vh] w-full items-center justify-center text-center">
+          <div ref={introRef} className="absolute">
+            <h2 className="font-display text-[clamp(2.6rem,6vw,5.5rem)] leading-[0.9]" style={{ fontWeight: 400 }}>
+              Our <span className="text-[var(--gold)]">process.</span>
+            </h2>
+          </div>
+          {STAGES.map((s, i) => (
+            <div key={s.name} ref={(el) => { stageRefs.current[i] = el; }} className="absolute">
+              <span className="label-mono text-[11px] tracking-[0.26em] text-[var(--gold)]">
+                0{i + 1} / 0{STAGES.length}
+              </span>
+              <h2 className="font-display mt-3 text-[clamp(3rem,8vw,7rem)] leading-[0.88]" style={{ fontWeight: 400 }}>
+                {s.name}<span className="text-[var(--gold)]">.</span>
+              </h2>
+              <p className="mx-auto mt-4 max-w-md text-[var(--fg)]/70">{s.blurb}</p>
+            </div>
+          ))}
         </div>
 
-        {/* the editor — full width, centred under the heading */}
-        <div className="fcp-stage mt-6 flex min-h-0 flex-1 will-change-transform">
-          <div className="fcp-shell flex min-w-0 flex-1 flex-col overflow-hidden rounded-lg border border-[var(--hairline-dark)] bg-[#0a0a0a] shadow-[0_40px_120px_rgba(0,0,0,0.6)] will-change-transform">
-          {/* chrome bar */}
-          <div className="flex items-center justify-between border-b border-[var(--hairline-dark)] px-4 py-2.5">
-            <span ref={fileRef} className="label-mono text-[10px] opacity-80">HW_Process.fcpx — Planning_01</span>
-            <span className="label-mono text-[10px] opacity-50">1920×1080 · 25fps · ProRes 4:2:2</span>
-          </div>
+        {/* small clips in boxes */}
+        <div className="mt-[5vh] flex w-full max-w-4xl items-center justify-center gap-4">
+          {STAGES.map((s, i) => (
+            <button
+              key={s.name}
+              ref={(el) => { clipRefs.current[i] = el; }}
+              onClick={() => jumpTo(i)}
+              aria-label={`Jump to ${s.name}`}
+              className="fcp-clip relative aspect-video flex-1 cursor-pointer overflow-hidden rounded-md border border-[var(--hairline-dark)] opacity-50"
+            >
+              <video
+                ref={(el) => { vids.current[i] = el; }}
+                className="h-full w-full object-cover"
+                src={s.clip}
+                poster={s.clip.replace("micro/", "micro/posters/").replace(".mp4", ".jpg")}
+                muted
+                loop
+                playsInline
+                preload="none"
+                aria-hidden
+              />
+            </button>
+          ))}
+        </div>
 
-          {/* viewer */}
-          <div className="relative flex-1">
-            {STAGES.map((s, i) => (
-              <div key={s.name} className="fcp-main absolute inset-0">
-                <video
-                  ref={(el) => { mainVids.current[i] = el; }}
-                  className="h-full w-full object-cover"
-                  src={s.main}
-                  poster={s.main.includes("films/") ? s.main.replace("films/", "films/posters/").replace(".mp4", ".jpg") : `/videos/posters/${s.main.split("/").pop()!.replace(".mp4", ".jpg")}`}
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                />
-              </div>
+        {/* the timeline scrubber */}
+        <div className="mt-[5vh] w-full max-w-4xl">
+          <div className="relative h-px w-full bg-[var(--hairline-dark)]">
+            <div ref={playheadRef} className="absolute -top-[3px] left-0 will-change-transform">
+              <span className="block h-[7px] w-2 rounded-full bg-[var(--gold)] shadow-[0_0_10px_rgba(191,170,83,0.7)]" />
+            </div>
+          </div>
+          <div className="mt-3 flex justify-between">
+            {STAGES.map((s) => (
+              <span key={s.name} className="label-mono text-[10px] tracking-[0.2em] text-[var(--fg)]/50">{s.name}</span>
             ))}
-            {/* lower third */}
-            <div className="absolute bottom-5 left-6">
-              {STAGES.map((s, i) => (
-                <div key={s.name} ref={(el) => { lowerRefs.current[i] = el; }} className="absolute bottom-0 left-0 w-max">
-                  <span className="bar-label">{String(i + 1).padStart(2, "0")} / 04</span>
-                  <span className="font-display mt-2 block text-3xl md:text-4xl">
-                    {s.name}
-                    <span className="font-accent text-[var(--gold)]">.</span>
-                  </span>
-                  <span className="mt-1 block max-w-md text-sm text-[#f5f1e6]/85">{s.blurb}</span>
-                </div>
-              ))}
-            </div>
-            <span ref={tcRef} className="label-mono absolute right-5 top-4 text-[10px] text-[var(--gold)]">00:00:00:00</span>
           </div>
-
-          {/* timeline */}
-          <div className="relative border-t border-[var(--hairline-dark)] bg-[#0d0d0c] px-4 pb-4 pt-2">
-            {/* ruler */}
-            <div className="flex justify-between" aria-hidden>
-              {Array.from({ length: 9 }).map((_, i) => (
-                <span key={i} className="label-mono text-[8px] opacity-40">
-                  00:{String(i * 6).padStart(2, "0")}
-                </span>
-              ))}
-            </div>
-            <div className="mt-1 flex justify-between" aria-hidden>
-              {Array.from({ length: 49 }).map((_, i) => (
-                <span key={i} className="w-px bg-[var(--fg)]" style={{ height: i % 6 === 0 ? 8 : 4, opacity: 0.3 }} />
-              ))}
-            </div>
-
-            {/* tracks + playhead lane */}
-            <div className="relative mt-2">
-              {/* V1 */}
-              <div className="flex gap-1">
-                {STAGES.map((s, i) => (
-                  <button
-                    key={s.name}
-                    ref={(el) => { clipRefs.current[i] = el; }}
-                    onClick={() => jumpTo(i)}
-                    aria-label={`Jump to ${s.name}`}
-                    className="fcp-clip relative h-16 flex-1 cursor-pointer overflow-hidden rounded-[3px] border border-[var(--hairline-dark)] transition-[border-color,filter] duration-300 hover:brightness-125"
-                  >
-                    <video className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-70" src={s.thumb} poster={s.thumb.replace("micro/", "micro/posters/").replace(".mp4", ".jpg")} aria-hidden muted loop playsInline preload="metadata" />
-                    <span className="on-media label-mono absolute left-2 top-1.5 text-[8px]">{s.file}.mp4</span>
-                  </button>
-                ))}
-              </div>
-              {/* A1 */}
-              <div className="mt-1 flex h-8 items-center gap-[2px] overflow-hidden rounded-[3px] border border-[var(--hairline-dark)] bg-[#101010] px-1" aria-hidden>
-                {WAVE.map((h, i) => (
-                  <span key={i} className="w-[2px] shrink-0 rounded-full bg-[var(--gold)]/45" style={{ height: h }} />
-                ))}
-              </div>
-              {/* playhead across both tracks */}
-              <div ref={playheadRef} className="pointer-events-none absolute -top-3 bottom-0 left-0 z-10 will-change-transform" aria-hidden>
-                <span className="absolute -left-[5px] top-0 border-x-[5px] border-t-[6px] border-x-transparent border-t-white" />
-                <span className="absolute left-0 top-1 block h-full w-[1.5px] bg-white shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
-              </div>
-            </div>
-          </div>
-        </div>
         </div>
       </div>
 
-      {/* mobile/reduced stack */}
-      <div className="px-5 pb-40 pt-40 md:hidden motion-reduce:md:block md:px-10">
-        <p className="scene-marker label-mono mb-12 opacity-60"><span>03 — The process</span></p>
+      {/* mobile / reduced: a calm stack */}
+      <div className="px-5 py-24 md:hidden">
+        <h2 className="font-display text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold)]">process.</span></h2>
         {STAGES.map((s, i) => (
-          <article key={s.name} className="border-t border-[var(--hairline-dark)] py-10">
-            <span className="bar-label">{String(i + 1).padStart(2, "0")} / 04</span>
-            <h3 className="font-display mt-4 text-3xl">{s.name}<span className="font-accent text-[var(--gold)]">.</span></h3>
-            <p className="mt-3 max-w-md text-[var(--paper-text)]/80">{s.blurb}</p>
+          <article key={s.name} className="border-t border-[var(--hairline-dark)] py-8">
+            <span className="label-mono text-[10px] text-[var(--gold)]">0{i + 1}</span>
+            <h3 className="font-display mt-2 text-2xl">{s.name}.</h3>
+            <p className="mt-2 text-[var(--fg)]/70">{s.blurb}</p>
           </article>
         ))}
       </div>

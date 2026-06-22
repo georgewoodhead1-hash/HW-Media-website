@@ -52,7 +52,6 @@ export default function WhirlwindGallery() {
       const tiles = gsap.utils.toArray<HTMLElement>(".whirl-tile", root);
       const chars = gsap.utils.toArray<HTMLElement>(".type-char", root);
       const cta = root.querySelector(".cta-start");
-      const foot = root.querySelector(".finale-foot");
       const N = tiles.length;
       const W = window.innerWidth;
       const H = window.innerHeight;
@@ -69,7 +68,6 @@ export default function WhirlwindGallery() {
       gsap.set(tiles, { x: START.x, y: START.y, scale: 0.5, autoAlpha: 0 });
       gsap.set(chars, { opacity: 0 });
       gsap.set(cta, { opacity: 0, y: 26 });
-      gsap.set(foot, { yPercent: 102 });
 
       const pathPos = (s: number) => {
         if (s < ENTRY) {
@@ -133,8 +131,6 @@ export default function WhirlwindGallery() {
 
         const e = smooth(0.82, 0.9, p);
         gsap.set(cta, { opacity: e, pointerEvents: e > 0.5 ? "auto" : "none", y: 26 * (1 - e) });
-        // the slim footer rises from the bottom edge — the page ends here
-        gsap.set(foot, { yPercent: 102 - 102 * smooth(0.92, 0.99, p) });
       };
       place(0);
 
@@ -216,32 +212,6 @@ export default function WhirlwindGallery() {
             Start here ⟶
           </Link>
         </div>
-
-        {/* the slim footer — rises from the bottom edge, the page ends here */}
-        <footer className="finale-foot absolute inset-x-0 bottom-0 z-30 border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 py-6 pl-16 pr-5 backdrop-blur-sm md:pl-20 md:pr-10">
-          <div className="flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
-            <div className="flex flex-col gap-1.5">
-              <a href="mailto:harry@hwmedia.productions" className="text-base transition-colors hover:text-[var(--gold)] md:text-lg">
-                harry@hwmedia.productions
-              </a>
-            </div>
-            <div className="flex items-center gap-6">
-              <span className="label-mono opacity-70">HW Media · London</span>
-              <a href="https://www.instagram.com/hwmedia/" aria-label="Instagram" className="opacity-70 transition-opacity hover:opacity-100">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                  <rect x="3" y="3" width="18" height="18" rx="5" />
-                  <circle cx="12" cy="12" r="4.2" />
-                  <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
-                </svg>
-              </a>
-              <a href="https://www.linkedin.com/in/harry-wallis-98b47b161/" aria-label="LinkedIn" className="opacity-70 transition-opacity hover:opacity-100">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" />
-                </svg>
-              </a>
-            </div>
-          </div>
-        </footer>
       </div>
 
       {/* mobile/reduced: line + grid + CTA + slim footer */}
@@ -257,10 +227,6 @@ export default function WhirlwindGallery() {
         <Link href="/contact" className="label-mono mt-10 inline-block rounded-full border border-[var(--gold)] px-10 py-4 text-[var(--gold)]">
           Start here ⟶
         </Link>
-        <div className="mt-12 border-t border-[var(--hairline-dark)] pt-6 text-sm">
-          <a href="mailto:harry@hwmedia.productions" className="block">harry@hwmedia.productions</a>
-          <span className="label-mono mt-3 block opacity-50">HW Media · London</span>
-        </div>
       </div>
     </section>
   );

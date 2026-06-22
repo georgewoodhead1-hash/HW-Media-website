@@ -6,10 +6,11 @@ import EditorFCP from "@/components/home/EditorFCP";
 import Testimonials from "@/components/home/Testimonials";
 import FAQs from "@/components/home/FAQs";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
+import Footer from "@/components/shell/Footer";
 
-// Rebuilding section by section. So far: hero (lens) → trusted by →
-// footer. Mission, gallery, process and testimonials drop in between as
-// each is designed and approved.
+// Order (client feedback): hero → mission → trusted by → our work → process →
+// reviews → "Get in touch" finale → FAQ → footer. FAQ now sits BELOW the
+// finale, and the footer is the shared site-wide one.
 export default function Home() {
   return (
     <main>
@@ -19,8 +20,9 @@ export default function Home() {
       <OurWork />
       <EditorFCP />
       <Testimonials />
-      <FAQs />
       <WhirlwindGallery />
+      <FAQs />
+      <Footer />
     </main>
   );
 }

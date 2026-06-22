@@ -18,13 +18,8 @@ interface Quote {
 
 const QUOTES: Quote[] = [
   { quote: "The film outlived the campaign. Two years on, we still open every pitch with it.", name: "Brand Director", role: "Heritage Motoring", logo: "mclaren-logo" },
-  { quote: "One small crew, zero friction. They were on a plane within the week.", name: "Head of Marketing", role: "Aviation", logo: "airbus-white" },
-  { quote: "They turned a product launch into a film people actually chose to watch.", name: "Founder", role: "Hospitality Group", logo: "zuma-white" },
   { quote: "Cinema standards on a social budget. We haven't gone anywhere else since.", name: "Brand Lead", role: "Sportswear", logo: "nike-white" },
   { quote: "Direction you can trust at full speed. Nothing was ever too much to ask.", name: "Marketing Director", role: "Motorsport", logo: "red-bull-7" },
-  { quote: "They made our heritage feel current without losing what made it ours.", name: "Brand Manager", role: "Spirits", logo: "diageo-white" },
-  { quote: "From brief to master in under three weeks, and the quality never dipped.", name: "Comms Lead", role: "Hospitality", logo: "soho-house-white" },
-  { quote: "The kind of film people stop scrolling for. That's the whole point.", name: "Head of Content", role: "Music", logo: "spotify-white" },
 ];
 
 type Loop = gsap.core.Timeline & {

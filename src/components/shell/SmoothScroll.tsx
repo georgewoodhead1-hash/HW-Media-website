@@ -20,7 +20,10 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
       lerp: 0.1,
       wheelMultiplier: 0.95,
       smoothWheel: true,
-      syncTouch: true,
+      // NO syncTouch: it hijacks touch-style input, which a Mac trackpad /
+      // Magic Mouse emits — that was silently eating the user's scroll while
+      // synthetic wheel-event tests still passed. Native touch scrolling is
+      // smooth enough without it.
     });
     setLenis(lenis);
     lenis.on("scroll", ScrollTrigger.update);

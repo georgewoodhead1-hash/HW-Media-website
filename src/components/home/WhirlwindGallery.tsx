@@ -176,7 +176,7 @@ export default function WhirlwindGallery() {
       data-theme="dark"
       data-surface="page"
       data-chapter="The finale"
-      className="relative motion-safe:md:-mt-[30vh] motion-safe:md:h-[440vh]"
+      className="relative motion-safe:md:-mt-[30vh] motion-safe:md:h-[340vh]"
       aria-label="Every film is a chance to break the ordinary"
     >
       <div

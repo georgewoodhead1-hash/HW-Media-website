@@ -48,26 +48,13 @@ export default function OurWork() {
       const span = (TO - FROM) / N;
 
       const place = (p: number) => {
-        // heading: characters type themselves in early, then the whole title
-        // lifts + shrinks up to a header position above the row and holds there.
-        if (head) {
-          const lift = smooth(0.18, 0.46, p); // 0 = centred, 1 = settled above row
+        // heading types itself in char-by-char in its OWN row ABOVE the
+        // accordion (it never moves over the films — no overlap).
+        if (head && chars.length) {
           chars.forEach((ch, i) => {
-            // stagger each char's type-in across the first stretch of scroll
-            const cs = (i / Math.max(1, chars.length)) * 0.12;
-            const reveal = smooth(0.02 + cs, 0.1 + cs, p);
-            gsap.set(ch, {
-              autoAlpha: reveal,
-              y: lerp(14, 0, reveal),
-            });
-          });
-          // park the title just above the 64vh accordion row (origin = bottom so
-          // it shrinks toward its baseline as it settles). Never fades to 0.
-          const parkY = -window.innerHeight * 0.4;
-          gsap.set(head, {
-            transformOrigin: "center bottom",
-            y: lerp(0, parkY, lift),
-            scale: lerp(1.04, 0.4, lift),
+            const cs = (i / Math.max(1, chars.length)) * 0.14;
+            const reveal = smooth(0.04 + cs, 0.14 + cs, p);
+            gsap.set(ch, { autoAlpha: reveal, yPercent: lerp(60, 0, reveal) });
           });
         }
         // each film bar glides in from the right edge into its accordion slot,
@@ -132,14 +119,14 @@ export default function OurWork() {
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
       <div className="hidden overflow-hidden px-5 motion-safe:md:sticky motion-safe:md:top-0 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
-          className="ow-head font-display pointer-events-none absolute left-1/2 top-1/2 z-0 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-center text-[clamp(3rem,9vw,8rem)] leading-[0.9] will-change-transform"
+          className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.2rem,5vw,4.6rem)] leading-[0.9] will-change-transform"
           style={{ fontWeight: 400 }}
         >
           Our <span className="text-[var(--gold)]">work</span>
         </h2>
 
         {/* the accordion row — final layout; bars fly in from the right into their slots */}
-        <div className="relative z-10 flex h-[64vh] gap-2">
+        <div className="relative z-0 flex h-[60vh] gap-2">
           {WORKS.map((p, i) => (
             <Link
               key={p.slug}

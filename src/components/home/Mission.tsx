@@ -66,7 +66,7 @@ export default function Mission() {
       data-theme="dark"
       data-surface="page"
       data-chapter="01 — Mission"
-      className="relative z-30 motion-safe:md:-mt-[100vh] motion-safe:md:h-[200vh]"
+      className="relative z-30 motion-safe:md:-mt-[100vh] motion-safe:md:h-[150vh]"
       aria-label="Our mission"
     >
       <div className="ms-panel sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)] will-change-transform motion-reduce:md:hidden md:block">

@@ -162,11 +162,16 @@ export default function LensIntro() {
       if (unlocked) return;
       unlocked = true;
       window.clearTimeout(stopId);
+      window.clearTimeout(failsafe);
       getLenis()?.start();
       window.removeEventListener("wheel", block);
       window.removeEventListener("touchmove", block);
       window.removeEventListener("keydown", blockKeys);
     };
+    // FAILSAFE: the GSAP intro pauses when the tab is backgrounded, so its
+    // onComplete may never fire and scroll would stay locked. Force-unlock
+    // after a hard ceiling no matter what — scroll can NEVER stay stuck.
+    const failsafe = window.setTimeout(unlock, 4500);
 
     const ctx = gsap.context(() => {
       gsap.set(veilRef.current, { opacity: 0 });

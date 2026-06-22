@@ -26,8 +26,8 @@ export default function ContactIntro() {
       const words = gsap.utils.toArray<HTMLElement>(".ci-w");
       gsap.set(words, { yPercent: 120 });
       const tl = gsap.timeline({ onComplete: () => setDone(true) });
-      tl.to(words, { yPercent: 0, duration: 0.9, stagger: 0.12, ease: "expo.out" }, 0.2)
-        .to(root, { yPercent: -100, duration: 1.0, ease: "expo.inOut" }, "+=0.85");
+      tl.to(words, { yPercent: 0, duration: 0.5, stagger: 0.07, ease: "expo.out" }, 0.05)
+        .to(root, { yPercent: -100, duration: 0.6, ease: "expo.inOut" }, "+=0.2");
     }, root);
 
     return () => ctx.revert();

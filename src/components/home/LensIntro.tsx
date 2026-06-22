@@ -159,7 +159,7 @@ export default function LensIntro() {
         // this completes (onComplete -> unlock).
         const tl = gsap.timeline({
           defaults: { ease: "none" },
-          delay: 0.45,
+          delay: 0.15,
         });
 
         tl
@@ -178,7 +178,7 @@ export default function LensIntro() {
           .to(veilRef.current, { opacity: 1, duration: 0.25 }, 0.9)
           .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.95);
 
-        tl.timeScale(0.38); // a calm ~3s single dive
+        tl.timeScale(0.95); // a quick ~1.4s dive (client: much faster)
       }
     }, wrap);
 

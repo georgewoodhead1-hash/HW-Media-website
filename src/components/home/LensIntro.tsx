@@ -442,14 +442,14 @@ export default function LensIntro() {
           </h1>
           <p
             className="mt-5 max-w-md text-[15px] leading-relaxed text-[#f5f1e6]/75"
-            style={{ fontFamily: "var(--font-dm), sans-serif" }}
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             A London film agency for brands that refuse to blend in.
           </p>
           <Link
             href="/contact"
             className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/45 px-7 py-3 text-[15px] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
-            style={{ fontFamily: "var(--font-dm), sans-serif" }}
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             Get in touch <span aria-hidden>⟶</span>
           </Link>

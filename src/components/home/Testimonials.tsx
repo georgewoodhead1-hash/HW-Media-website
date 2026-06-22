@@ -8,12 +8,13 @@ import { safePlay } from "@/lib/video";
 import ScrollType from "@/components/shell/ScrollType";
 
 // 05 — Testimonials, click-to-select (modelled on outerstudios/auteur).
-// Three testimonials, each tied to a real project. A row of three numbered
-// selectors (with brand logo) sits beneath a single large panel. Clicking a
-// selector swaps the panel — quote, reviewer role + sector, brand logo and the
-// campaign film — with a slow, smooth cross-fade. The active film plays; the
-// others pause. Clicking the film (or the "View project" affordance)
-// navigates to that project's case page. Defaults to the first selected.
+// Two columns. LEFT: a vertical stack of three numbered selectors (01/02/03)
+// each carrying its brand logo — click to select — sitting above the selected
+// testimonial's quote, role, sector and brand mark. RIGHT: a tall portrait
+// (3:4) campaign film for the selected testimonial, playing on loop, that
+// cross-fades smoothly when the selection changes. Clicking the film (or the
+// "View project" affordance) navigates to that project's case page. Defaults
+// to the first selected.
 
 interface Testimonial {
   slug: string; // real project — drives which film plays + where it links
@@ -31,7 +32,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Brand Director",
     sector: "Heritage Motoring",
     logo: "mclaren-logo",
-    logoMaxW: "max-w-[88px]",
+    logoMaxW: "max-w-[112px]",
   },
   {
     slug: "nike",
@@ -39,7 +40,7 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Brand Lead",
     sector: "Sportswear",
     logo: "nike-white",
-    logoMaxW: "max-w-[52px]",
+    logoMaxW: "max-w-[66px]",
   },
   {
     slug: "zuma",
@@ -47,17 +48,17 @@ const TESTIMONIALS: Testimonial[] = [
     role: "Founder",
     sector: "Hospitality",
     logo: "zuma-white",
-    logoMaxW: "max-w-[76px]",
+    logoMaxW: "max-w-[96px]",
   },
 ];
 
-// resolve each testimonial's campaign film from the real project data,
-// falling back to convention if a slug is ever missing
-function filmFor(slug: string): { wide: string; posterWide: string } {
+// resolve each testimonial's PORTRAIT (3:4) campaign film from the real project
+// data, falling back to convention if a slug is ever missing
+function filmFor(slug: string): { loop: string; poster: string } {
   const project = projects.find((p) => p.slug === slug);
   return {
-    wide: project?.wide ?? `/videos/films/${slug}-w.mp4`,
-    posterWide: project?.posterWide ?? `/videos/films/posters/${slug}-w.jpg`,
+    loop: project?.loop ?? `/videos/films/${slug}-p.mp4`,
+    poster: project?.poster ?? `/videos/films/posters/${slug}-p.jpg`,
   };
 }
 
@@ -74,11 +75,11 @@ function Aperture() {
 
 export default function Testimonials() {
   const rootRef = useRef<HTMLElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const quoteRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [active, setActive] = useState(0);
 
-  // scrubbed scroll-in — the panel + selectors rise and fade slowly on enter
+  // scrubbed scroll-in — the columns rise and fade slowly on enter
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
@@ -115,7 +116,7 @@ export default function Testimonials() {
     return () => mm.revert();
   }, []);
 
-  // play the active film, pause + reset the others; smooth cross-fade the panel
+  // play the active film, pause + reset the others; smooth cross-fade
   useEffect(() => {
     videoRefs.current.forEach((video, i) => {
       if (!video) return;
@@ -134,10 +135,10 @@ export default function Testimonials() {
       }
     });
 
-    const panel = panelRef.current;
-    if (panel && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    const quote = quoteRef.current;
+    if (quote && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       gsap.fromTo(
-        panel,
+        quote,
         { opacity: 0.55 },
         { opacity: 1, duration: 0.4, ease: "power2.out", overwrite: "auto" },
       );
@@ -145,7 +146,6 @@ export default function Testimonials() {
   }, [active]);
 
   const current = TESTIMONIALS[active];
-  const currentFilm = filmFor(current.slug);
 
   return (
     <section
@@ -159,77 +159,78 @@ export default function Testimonials() {
       <div className="px-5 md:px-10">
         <span
           className="label-mono block text-[10px] tracking-[0.3em] text-[var(--gold)]/80"
-          style={{ fontFamily: "var(--font-dm), sans-serif" }}
+          style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           IN THEIR WORDS
         </span>
         <ScrollType
           as="h2"
           className="font-display mt-5 max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
-          gold={["think."]}
           style={{ fontWeight: 400 }}
         >
-          Tell us what you think.
+          Testimonials
         </ScrollType>
       </div>
 
-      <div className="mt-14 px-5 md:px-10">
-        {/* large panel — the selected testimonial: film + quote + brand + role/sector */}
-        <div
-          ref={panelRef}
-          data-rise
-          className="grid grid-cols-1 gap-0 overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:grid-cols-2"
-        >
-          {/* film — clicking it opens the project case page */}
-          <Link
-            href={`/work/${current.slug}`}
-            aria-label={`View project — ${current.role}, ${current.sector}`}
-            className="group relative block aspect-video overflow-hidden md:aspect-auto md:min-h-[440px]"
-          >
+      <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
+        {/* LEFT — selectors + the selected quote / role / sector / brand */}
+        <div data-rise className="flex flex-col">
+          {/* vertical selector stack — click to swap */}
+          <div className="flex flex-col gap-3">
             {TESTIMONIALS.map((t, i) => {
-              const film = filmFor(t.slug);
+              const isActive = i === active;
               return (
-                <video
+                <button
                   key={t.slug}
-                  ref={(el) => {
-                    videoRefs.current[i] = el;
-                  }}
-                  className="absolute inset-0 h-full w-full object-cover opacity-0 will-change-[opacity]"
-                  data-src={film.wide}
-                  poster={film.posterWide}
-                  muted
-                  loop
-                  playsInline
-                  preload="none"
-                />
+                  type="button"
+                  onClick={() => setActive(i)}
+                  aria-pressed={isActive}
+                  aria-label={`Show testimonial ${i + 1} — ${t.role}, ${t.sector}`}
+                  className={`group flex items-center justify-between gap-4 rounded-xl border px-5 py-5 text-left transition-colors duration-300 sm:px-6 ${
+                    isActive
+                      ? "border-[var(--gold)]/70 bg-[var(--gold)]/10"
+                      : "border-[var(--hairline-dark)] bg-[var(--bg)] hover:border-[var(--gold)]/40"
+                  }`}
+                >
+                  <span className="flex items-center gap-4 sm:gap-5">
+                    <span
+                      className={`text-sm tabular-nums transition-colors duration-300 ${
+                        isActive ? "text-[var(--gold)]" : "opacity-50 group-hover:opacity-80"
+                      }`}
+                      style={{ fontFamily: "var(--font-firma), sans-serif" }}
+                    >
+                      0{i + 1}
+                    </span>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={`/logos/${t.logo}.png`}
+                      alt=""
+                      aria-hidden
+                      className={`logo-mark max-h-6 ${t.logoMaxW} object-contain transition-opacity duration-300 [html[data-mode=light]_&]:invert ${
+                        isActive ? "opacity-100" : "opacity-60 group-hover:opacity-90"
+                      }`}
+                    />
+                  </span>
+                  <span
+                    className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-300 ${
+                      isActive ? "bg-[var(--gold)]" : "bg-[var(--fg)]/25 group-hover:bg-[var(--fg)]/45"
+                    }`}
+                  />
+                </button>
               );
             })}
-            {/* subtle gradient so the View-project affordance stays legible */}
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"
-            />
-            <span
-              className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold)]"
-              style={{ fontFamily: "var(--font-dm), sans-serif" }}
-            >
-              VIEW PROJECT
-              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
-                &rarr;
-              </span>
-            </span>
-          </Link>
+          </div>
 
-          {/* quote + caption */}
-          <div className="flex flex-col justify-between p-9 md:p-11">
+          {/* selected testimonial — quote + role + sector + brand mark */}
+          <div ref={quoteRef} className="mt-9 flex flex-1 flex-col justify-between">
             <div>
               <Aperture />
-              <blockquote className="mt-7 text-[clamp(1.3rem,1.9vw,1.9rem)] leading-snug">
+              <blockquote className="mt-7 text-[clamp(1.35rem,2vw,2rem)] leading-snug">
                 &ldquo;{current.quote}&rdquo;
               </blockquote>
             </div>
 
-            <figcaption className="mt-8 flex items-center gap-4">
+            <figcaption className="mt-9 flex items-center gap-4">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[var(--hairline-dark)] bg-black/30 backdrop-blur-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
@@ -242,13 +243,13 @@ export default function Testimonials() {
               <span>
                 <span
                   className="block text-sm font-medium"
-                  style={{ fontFamily: "var(--font-dm), sans-serif" }}
+                  style={{ fontFamily: "var(--font-firma), sans-serif" }}
                 >
                   {current.role}
                 </span>
                 <span
                   className="block text-xs opacity-60"
-                  style={{ fontFamily: "var(--font-dm), sans-serif" }}
+                  style={{ fontFamily: "var(--font-firma), sans-serif" }}
                 >
                   {current.sector}
                 </span>
@@ -257,51 +258,46 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* selector row — click to swap the panel */}
-        <div data-rise className="mt-6 grid grid-cols-3 gap-3 sm:gap-4">
+        {/* RIGHT — tall portrait (3:4) film for the selected testimonial */}
+        <Link
+          data-rise
+          href={`/work/${current.slug}`}
+          aria-label={`View project — ${current.role}, ${current.sector}`}
+          className="group relative mx-auto block aspect-[3/4] w-full max-h-[70vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
+        >
           {TESTIMONIALS.map((t, i) => {
-            const isActive = i === active;
+            const film = filmFor(t.slug);
             return (
-              <button
+              <video
                 key={t.slug}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-pressed={isActive}
-                aria-label={`Show testimonial ${i + 1} — ${t.role}, ${t.sector}`}
-                className={`group flex items-center justify-between gap-3 rounded-xl border px-4 py-4 text-left transition-colors duration-300 sm:px-5 ${
-                  isActive
-                    ? "border-[var(--gold)]/70 bg-[var(--gold)]/10"
-                    : "border-[var(--hairline-dark)] bg-[var(--bg)] hover:border-[var(--gold)]/40"
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <span
-                    className={`text-xs tabular-nums transition-colors duration-300 ${
-                      isActive ? "text-[var(--gold)]" : "opacity-50 group-hover:opacity-80"
-                    }`}
-                    style={{ fontFamily: "var(--font-dm), sans-serif" }}
-                  >
-                    0{i + 1}
-                  </span>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={`/logos/${t.logo}.png`}
-                    alt=""
-                    aria-hidden
-                    className={`logo-mark max-h-4 ${t.logoMaxW} object-contain transition-opacity duration-300 [html[data-mode=light]_&]:invert ${
-                      isActive ? "opacity-100" : "opacity-60 group-hover:opacity-90"
-                    }`}
-                  />
-                </span>
-                <span
-                  className={`h-1.5 w-1.5 shrink-0 rounded-full transition-colors duration-300 ${
-                    isActive ? "bg-[var(--gold)]" : "bg-[var(--fg)]/25 group-hover:bg-[var(--fg)]/45"
-                  }`}
-                />
-              </button>
+                ref={(el) => {
+                  videoRefs.current[i] = el;
+                }}
+                className="absolute inset-0 h-full w-full object-cover opacity-0 will-change-[opacity]"
+                data-src={film.loop}
+                poster={film.poster}
+                muted
+                loop
+                playsInline
+                preload="none"
+              />
             );
           })}
-        </div>
+          {/* subtle gradient so the View-project affordance stays legible */}
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"
+          />
+          <span
+            className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold)]"
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+          >
+            VIEW PROJECT
+            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
+              &rarr;
+            </span>
+          </span>
+        </Link>
       </div>
     </section>
   );

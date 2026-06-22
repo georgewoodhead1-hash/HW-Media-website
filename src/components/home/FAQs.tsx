@@ -139,7 +139,7 @@ export default function FAQs() {
                 className={`text-[clamp(1.25rem,1.8vw,1.85rem)] font-medium leading-tight transition-colors duration-500 ${
                   active === i ? "text-[var(--fg)]" : "text-[var(--fg)]/30"
                 }`}
-                style={{ fontFamily: "var(--font-dm), sans-serif" }}
+                style={{ fontFamily: "var(--font-firma), sans-serif" }}
               >
                 {f.q}
               </p>

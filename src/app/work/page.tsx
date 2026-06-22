@@ -27,21 +27,19 @@ export default function WorkIndex() {
       <main
         data-theme="dark"
         data-surface="page"
-        className="min-h-screen bg-[var(--bg)] px-5 pb-[8vh] pt-[16vh] text-[var(--fg)] md:px-10"
+        className="min-h-screen bg-[var(--bg)] pb-[8vh] text-[var(--fg)]"
       >
-        <div className="mb-10">
-          <span
-            className="text-[11px] tracking-[0.28em] text-[var(--gold)]/80"
-            style={{ fontFamily: "var(--font-dm), sans-serif" }}
+        {/* Full-screen centred hero heading */}
+        <section className="flex min-h-[70vh] items-center justify-center px-5 text-center md:px-10">
+          <h1
+            className="font-display text-[clamp(3.5rem,12vw,11rem)] leading-[0.92]"
+            style={{ fontWeight: 400 }}
           >
-            SELECTED WORK
-          </span>
-          <h1 className="font-display mt-3 text-[clamp(2.6rem,7vw,6rem)] leading-[0.9]" style={{ fontWeight: 400 }}>
-            Work
+            Selected Work
           </h1>
-        </div>
+        </section>
 
-        {/* Flush mosaic — gap-0, tiles overflow-hidden, no rings/borders between */}
+        {/* Full-bleed flush mosaic — edge-to-edge, gap-0, no rings/borders between */}
         <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((p) => {
             const logo = LOGO[p.client];
@@ -52,7 +50,7 @@ export default function WorkIndex() {
                 className="group relative block aspect-[4/3] overflow-hidden"
               >
                 <video
-                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  className="absolute inset-0 h-full w-full scale-[1.12] object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-[1.18]"
                   src={p.wide}
                   poster={p.posterWide}
                   autoPlay
@@ -74,7 +72,7 @@ export default function WorkIndex() {
                   ) : (
                     <span
                       className="text-[15px] tracking-[0.06em] text-white/90"
-                      style={{ fontFamily: "var(--font-dm), sans-serif" }}
+                      style={{ fontFamily: "var(--font-firma), sans-serif" }}
                     >
                       {p.client}
                     </span>
@@ -97,7 +95,7 @@ export default function WorkIndex() {
             />
             <span
               className="absolute right-6 top-6 text-[10px] tracking-[0.24em] text-white/45"
-              style={{ fontFamily: "var(--font-dm), sans-serif" }}
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               IN PRODUCTION
             </span>
@@ -110,7 +108,7 @@ export default function WorkIndex() {
           >
             <span
               className="text-[10px] tracking-[0.24em] text-[var(--gold)]"
-              style={{ fontFamily: "var(--font-dm), sans-serif" }}
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               NEXT
             </span>
@@ -119,7 +117,7 @@ export default function WorkIndex() {
             </h2>
             <span
               className="mt-3 text-[10px] tracking-[0.22em] text-white/70 transition-colors duration-300 group-hover:text-[var(--gold)]"
-              style={{ fontFamily: "var(--font-dm), sans-serif" }}
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               GET IN TOUCH ⟶
             </span>

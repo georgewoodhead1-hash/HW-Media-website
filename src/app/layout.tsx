@@ -7,6 +7,7 @@ import {
   IBM_Plex_Mono,
   Instrument_Serif,
 } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
 import Nav from "@/components/shell/Nav";
@@ -51,6 +52,15 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "700"],
 });
 
+// BR Firma (the auteurstudios font) — the CTA / label / subtext face.
+// NOTE: BR Firma is a licensed commercial font; licence required before launch.
+const brFirma = localFont({
+  src: "../fonts/BRFirma-SemiBold.otf",
+  variable: "--font-firma",
+  weight: "600",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "HW Media — Cinematic Brand Storytelling",
   description:
@@ -67,7 +77,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${dmSans.variable} h-full antialiased`}
+      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${dmSans.variable} ${brFirma.variable} h-full antialiased`}
     >
       <head>
         {/* restore the saved mode before first paint — no flash */}

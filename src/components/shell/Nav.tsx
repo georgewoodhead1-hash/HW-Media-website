@@ -63,14 +63,14 @@ export default function Nav() {
           href="/"
           className="nav-enter nav-wordmark flex items-baseline gap-1.5 leading-none"
           aria-label="HW Media — home"
-          style={{ fontFamily: "var(--font-dm), sans-serif" }}
+          style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           <span className="font-display text-[1.55rem] font-semibold tracking-tight">HW</span>
           <span className="text-[11px] font-medium uppercase tracking-[0.3em]">Media</span>
         </Link>
 
         {/* RIGHT — flat nav + persistent Start here */}
-        <nav className="flex items-center gap-5 md:gap-9" style={{ fontFamily: "var(--font-dm), sans-serif" }}>
+        <nav className="flex items-center gap-5 md:gap-9" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
           {LINKS.map((l) => (
             <Link
               key={l.href}

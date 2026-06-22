@@ -72,7 +72,7 @@ export default function Mission() {
       <div className="ms-panel sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)] will-change-transform motion-reduce:md:hidden md:block">
         <div
           className="flex h-full items-center px-12 py-[1.5vh] md:px-20"
-          style={{ fontFamily: "var(--font-dm), sans-serif" }}
+          style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-12 md:items-start">
             {/* LEFT — heading only, nothing under it */}

@@ -29,7 +29,7 @@ export default function Contact() {
             action="mailto:harry@hwmedia.productions"
             method="post"
             encType="text/plain"
-            style={{ fontFamily: "var(--font-dm), sans-serif" }}
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <input name="First name" placeholder="First name" autoComplete="given-name" className={FIELD} required />

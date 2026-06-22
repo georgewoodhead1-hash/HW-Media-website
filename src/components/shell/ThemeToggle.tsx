@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 
-// Bottom-left mode toggle. One surface for the whole site: gold and red are
-// constant, only the background/foreground contrast flips. Persisted.
+// Bottom-left mode toggle. Sits as a third item in the bottom-left row,
+// to the right of the Instagram/LinkedIn social rail, on the same baseline.
+// One surface for the whole site: gold and red are constant, only the
+// background/foreground contrast flips. Persisted.
 export default function ThemeToggle() {
   const [mode, setMode] = useState<"dark" | "light">("dark");
 
@@ -30,7 +32,7 @@ export default function ThemeToggle() {
       onClick={toggle}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={isDark ? "Light mode" : "Dark mode"}
-      className="group fixed bottom-16 left-5 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--fg)]/30 bg-[var(--fg)]/[0.04] text-[var(--gold)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--gold)]/60 hover:bg-[var(--gold)]/10 md:bottom-20 md:left-10"
+      className="group fixed bottom-[5px] left-[88px] z-50 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--fg)]/30 bg-[var(--fg)]/[0.04] text-[var(--gold)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--gold)]/60 hover:bg-[var(--gold)]/10 md:bottom-[9px] md:left-[108px]"
       style={{ transitionTimingFunction: "var(--ease-expo)" }}
     >
       {isDark ? (

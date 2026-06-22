@@ -145,33 +145,10 @@ export default function LensIntro() {
     gsap.set(dimRef.current, { opacity: 0.5 });
     gsap.set(".hero-motto", { autoAlpha: 0, y: 40 });
 
-    // SCROLL LOCK while the intro plays — the page can't be scrolled until the
-    // lens animation has finished, then it's released (client feedback).
-    let unlocked = false;
-    getLenis()?.stop();
+    // No scroll lock. The intro auto-plays, but the page is ALWAYS scrollable —
+    // a forced lock kept getting stuck (tab-backgrounded GSAP never firing its
+    // onComplete, dev hot-reloads leaving Lenis stopped). Never trap scroll.
     window.scrollTo(0, 0);
-    const block = (e: Event) => e.preventDefault();
-    const blockKeys = (e: KeyboardEvent) => {
-      if ([" ", "ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End"].includes(e.key)) e.preventDefault();
-    };
-    window.addEventListener("wheel", block, { passive: false });
-    window.addEventListener("touchmove", block, { passive: false });
-    window.addEventListener("keydown", blockKeys, { passive: false });
-    const stopId = window.setTimeout(() => getLenis()?.stop(), 60); // Lenis may mount after us
-    const unlock = () => {
-      if (unlocked) return;
-      unlocked = true;
-      window.clearTimeout(stopId);
-      window.clearTimeout(failsafe);
-      getLenis()?.start();
-      window.removeEventListener("wheel", block);
-      window.removeEventListener("touchmove", block);
-      window.removeEventListener("keydown", blockKeys);
-    };
-    // FAILSAFE: the GSAP intro pauses when the tab is backgrounded, so its
-    // onComplete may never fire and scroll would stay locked. Force-unlock
-    // after a hard ceiling no matter what — scroll can NEVER stay stuck.
-    const failsafe = window.setTimeout(unlock, 4500);
 
     const ctx = gsap.context(() => {
       gsap.set(veilRef.current, { opacity: 0 });
@@ -184,7 +161,6 @@ export default function LensIntro() {
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           delay: 0.45,
-          onComplete: unlock,
         });
 
         tl
@@ -209,7 +185,6 @@ export default function LensIntro() {
 
     return () => {
       ctx.revert();
-      unlock();
     };
   }, []);
 

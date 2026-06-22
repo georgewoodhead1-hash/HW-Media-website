@@ -88,7 +88,7 @@ export default function Nav() {
             href={BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-enter rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
+            className="nav-enter ml-1 rounded-full border-2 border-[var(--fg)]/50 px-7 py-2.5 text-[15px] font-semibold uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:bg-[var(--fg)] hover:text-[var(--bg)] md:ml-2"
           >
             Start here
           </a>

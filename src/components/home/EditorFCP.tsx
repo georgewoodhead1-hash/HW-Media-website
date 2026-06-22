@@ -198,7 +198,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="page"
       data-chapter="Our process"
-      className="relative motion-safe:md:h-[640vh]"
+      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[14vh] motion-safe:md:h-[640vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

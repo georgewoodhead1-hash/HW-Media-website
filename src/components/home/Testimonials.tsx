@@ -146,7 +146,7 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative overflow-hidden bg-[var(--bg)] py-[9vh] text-[var(--fg)]"
+      className="relative z-30 overflow-hidden bg-[var(--bg)] py-[9vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"
     >
       <div className="px-5 md:px-10">

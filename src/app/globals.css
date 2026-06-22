@@ -6,8 +6,9 @@
   --cream: #f9f6e4;
   --ink: #171717;
   --paper-text: #f5f1e6;
-  --gold: #bfaa53;
-  --red: #bfaa53; /* George: no red anywhere — every red accent now resolves to gold */
+  --gold: #bfaa53; /* brand gold — for FILLS (bars, pills, playhead) */
+  --gold-text: #bfaa53; /* gold used as TEXT; darkens in light mode for AA contrast */
+  --red: #bfaa53; /* legacy alias — every former red now resolves to gold */
   --tint-w: rgba(255, 255, 255, 0.1);
   --tint-b: rgba(0, 0, 0, 0.1);
   --hairline-dark: rgba(245, 241, 230, 0.14);
@@ -290,37 +291,30 @@ html[data-mode="light"] .logo-mark {
   filter: invert(1);
 }
 
-/* ---- Liquid-glass hero motto ----
-   Translucent, reflective letters that let the footage show through — a glass
-   sheen with NO hard border/stroke (client: never outline the words). The
-   moving video behind reads through the lighter bands; the brighter bands are
-   the reflection. */
-.glass-motto {
-  color: transparent;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-stroke: 0;
-  background-image: linear-gradient(
-    168deg,
-    rgba(255, 255, 255, 0.62) 0%,
-    rgba(255, 255, 255, 0.16) 34%,
-    rgba(255, 255, 255, 0.38) 62%,
-    rgba(255, 255, 255, 0.12) 100%
-  );
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.35)) drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
-}
+/* ---- Hero motto: the picture lives IN the type ----
+   The words are a window onto the scene — the footage frame fills the letters
+   (picture in it, OF the scene), warmed and brightened so it reads as solid
+   and present, NOT a faint translucent sheet. A soft shadow lifts it off the
+   moving video. No border/stroke. */
+.glass-motto,
 .glass-motto-gold {
   color: transparent;
   -webkit-background-clip: text;
   background-clip: text;
-  background-image: linear-gradient(
-    168deg,
-    rgba(226, 208, 130, 0.92) 0%,
-    rgba(191, 170, 83, 0.34) 36%,
-    rgba(226, 208, 130, 0.62) 66%,
-    rgba(191, 170, 83, 0.26) 100%
-  );
-  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.22)) drop-shadow(0 12px 30px rgba(0, 0, 0, 0.45));
+  -webkit-text-stroke: 0;
+  background-image:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.30) 0%, rgba(255, 255, 255, 0.05) 45%, rgba(255, 255, 255, 0.20) 100%),
+    url("/videos/posters/hero-loop.jpg");
+  background-size: cover, cover;
+  background-position: center 38%, center 38%;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 2px 1px rgba(0, 0, 0, 0.45)) drop-shadow(0 16px 36px rgba(0, 0, 0, 0.6)) brightness(1.12) contrast(1.05);
+}
+/* the accent word keeps a gold wash over the same scene fill */
+.glass-motto-gold {
+  background-image:
+    linear-gradient(165deg, rgba(226, 208, 130, 0.62) 0%, rgba(191, 170, 83, 0.40) 55%, rgba(226, 208, 130, 0.45) 100%),
+    url("/videos/posters/hero-loop.jpg");
 }
 
 /* ---- "Let's create" tombola: the word rolls over itself on hover ---- */

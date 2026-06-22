@@ -9,6 +9,7 @@ import {
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
+import LoadingScreen from "@/components/shell/LoadingScreen";
 import Nav from "@/components/shell/Nav";
 import Grain from "@/components/shell/Grain";
 import Cursor from "@/components/shell/Cursor";
@@ -91,6 +92,7 @@ export default function RootLayout({
         >
           Skip to content
         </a>
+        <LoadingScreen />
         <SmoothScroll>
           <Nav />
           {children}

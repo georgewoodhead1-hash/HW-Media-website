@@ -213,7 +213,7 @@ export default function LensIntro() {
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-[200vh]">
       <div
-        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl border-2 border-[#f5f1e6]/30 bg-[#050505] md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
+        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl border-2 border-white/35 bg-black [html[data-mode=light]_&]:border-black/35 md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {

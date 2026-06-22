@@ -24,6 +24,14 @@
 13. **Final audit** — run /impeccable polish + design-skills review before final sign-off.
 14. **BLACK BARS on films** — Zuma, McLaren + many others show letterbox black bars (above/below/sides). EVERY video must FILL its frame, no bars anywhere. Fix object-fit:cover + a scale to crop any baked-in letterbox in the source mp4s. Check: WorkTile (scale-[1.08] may be too low), OurWork accordion bars, work/[slug] detail page, Testimonials portrait, Process clips, finale tiles. Do AFTER the rest.
 
+## NEW client meeting notes (action these)
+- **A. Hero border** — kill the shitty WHITE border + the thin grey line between border and video. Want a clean theme-aware border: black-ish in light mode, white-ish in dark mode. (LensIntro inset panel.)
+- **B. MOTTO interact w/ background** — STILL not interacting. George linking a reference site for the exact effect. Hold the bespoke effect until ref arrives; meanwhile keep solid clean.
+- **C. Trusted By logos** — make SIGNIFICANTLY SMALLER (I'd made them bigger; reverse).
+- **D. Animated stats block (NEW)** — bring back animated number counters, 3 stats: **5 years in business**, **150+ projects completed**, **client retention (high %, TBD — confirm number, placeholder ~96%)**. (Was removed from Mission; re-add as its own block.)
+- **E. Loading screen (NEW)** — pre-entry: HW Media logo animates IN then OUT, then transitions into the camera-lens animation.
+- **F. 3D camera-lens rework** — current lens looks too 2D. Make it feel 3D: falling through a rabbit hole, through a camera lens into the site. GSAP. (transcript: notes.granola.ai/t/a902b5d0)
+
 ## WORKING METHOD (client rule, going forward)
 George's standing process: (1) a PLANNER captures EVERYTHING he says verbatim (no compacting) into this plan; (2) main agent works each item top-to-bottom, ticking off + SCREENSHOT-verifying each; (3) a VERIFIER checks the finished work against this plan. Treat TASKS.md as that living plan. At the end, run a verification pass (Workflow: planner-spec vs built-result) before declaring done. Do NOT stop to chat between items — just keep executing and only report when the batch is done.
 

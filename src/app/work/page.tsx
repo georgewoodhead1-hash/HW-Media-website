@@ -29,10 +29,10 @@ export default function WorkIndex() {
         data-surface="page"
         className="min-h-screen bg-[var(--bg)] pb-[8vh] text-[var(--fg)]"
       >
-        {/* Full-screen centred hero heading */}
-        <section className="flex min-h-[70vh] items-center justify-center px-5 text-center md:px-10">
+        {/* Centred hero heading — one line, restrained scale */}
+        <section className="flex min-h-[50vh] items-center justify-center px-5 text-center md:px-10">
           <h1
-            className="font-display text-[clamp(3.5rem,12vw,11rem)] leading-[0.92]"
+            className="font-display whitespace-nowrap text-[clamp(2.4rem,7vw,6rem)] leading-[0.92]"
             style={{ fontWeight: 400 }}
           >
             Selected Work
@@ -59,19 +59,19 @@ export default function WorkIndex() {
                   playsInline
                   preload="metadata"
                 />
-                {/* subtle dark gradient so the logo always reads */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/30" />
-                <div className="absolute inset-0 flex items-end p-6">
+                {/* subtle dark wash so the centred logo always reads */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/45" />
+                <div className="absolute inset-0 flex items-center justify-center p-6">
                   {logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img
                       src={`/logos/${logo}.png`}
                       alt={p.client}
-                      className="h-6 w-auto max-w-[150px] object-contain opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+                      className="h-10 w-auto max-w-[58%] object-contain opacity-95 transition-all duration-500 group-hover:scale-105 group-hover:opacity-100"
                     />
                   ) : (
                     <span
-                      className="text-[15px] tracking-[0.06em] text-white/90"
+                      className="text-[clamp(1.1rem,2vw,1.6rem)] uppercase tracking-[0.12em] text-white/95"
                       style={{ fontFamily: "var(--font-firma), sans-serif" }}
                     >
                       {p.client}
@@ -81,25 +81,6 @@ export default function WorkIndex() {
               </Link>
             );
           })}
-
-          {/* Black Crows — logo tile (project in production), flush with the grid */}
-          <Link
-            href="/contact"
-            className="group relative flex aspect-[4/3] items-end overflow-hidden bg-[#0b0b0b] p-6"
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src="/logos/logo-black-crows-white.png"
-              alt="Black Crows"
-              className="h-7 w-auto max-w-[150px] object-contain opacity-70 transition-opacity duration-500 group-hover:opacity-100"
-            />
-            <span
-              className="absolute right-6 top-6 text-[10px] tracking-[0.24em] text-white/45"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
-            >
-              IN PRODUCTION
-            </span>
-          </Link>
 
           {/* next-project CTA tile — keeps the mosaic square */}
           <Link

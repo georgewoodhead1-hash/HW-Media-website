@@ -444,7 +444,7 @@ export default function LensIntro() {
             className="mt-5 max-w-md text-[15px] leading-relaxed text-[#f5f1e6]/75"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
-            A London film agency for brands that refuse to blend in.
+            A London production company — we go where the story is, and film it.
           </p>
           <Link
             href="/contact"

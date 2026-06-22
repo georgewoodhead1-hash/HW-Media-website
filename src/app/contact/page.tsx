@@ -25,6 +25,12 @@ export default function Contact() {
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
             Tell us <span className="text-[var(--gold)]">more.</span>
           </h1>
+          <p
+            className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-[var(--fg)]/70"
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+          >
+            Put your details in below and we&rsquo;ll get back to you within 24 hours of your enquiry.
+          </p>
 
           <form
             className="mt-12 flex flex-col gap-4 text-left"

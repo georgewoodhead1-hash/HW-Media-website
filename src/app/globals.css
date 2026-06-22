@@ -140,7 +140,7 @@ body {
 }
 
 /* GOLDEN RULE: never the military monospace font. This class (used in 60+
-   places) renders in Onest via --font-firma — the free BR Firma twin. */
+   places) renders in BR Firma via --font-firma — the real auteurstudios font. */
 .label-mono {
   font-family: var(--font-firma), sans-serif;
   font-size: 11px;

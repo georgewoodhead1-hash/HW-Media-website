@@ -11,7 +11,7 @@ import ScrollType from "@/components/shell/ScrollType";
 // blends straight into the Trusted By wall below.
 
 const PARA =
-  "HW Media is a London film agency for brands that refuse to be ordinary. We handle it all in-house — direction, cinematography, edit and grade — so the people who promise the film are the people who make it. From brand films and documentaries to social campaigns and photography, we make work people remember, not content they scroll past.";
+  "HW Media is a London film production company for brands that refuse to be ordinary. We go where the story is and film it — direction, cinematography, edit and grade, all in-house — so the people who promise the film are the people who shoot it. From brand films and documentaries to social campaigns and photography, we make work people remember, not content they scroll past.";
 
 const STATS = [
   { n: 60, suffix: "+", label: "Films delivered" },

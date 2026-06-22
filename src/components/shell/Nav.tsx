@@ -17,6 +17,8 @@ const LINKS = [
 
 export default function Nav() {
   const rootRef = useRef<HTMLElement>(null);
+  const itemsRef = useRef<HTMLDivElement>(null);
+  const bubbleRef = useRef<HTMLSpanElement>(null);
 
   // quick entrance
   useEffect(() => {
@@ -27,6 +29,34 @@ export default function Nav() {
       { y: -12, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.06, ease: "expo.out", delay: 0.2, clearProps: "opacity,transform" },
     );
+  }, []);
+
+  // hover bubble — a soft pill that follows the cursor across the nav items
+  // (auteur-style). Slides to whichever item is hovered, fades out on leave.
+  useEffect(() => {
+    const wrap = itemsRef.current;
+    const bubble = bubbleRef.current;
+    if (!wrap || !bubble) return;
+    const items = Array.from(wrap.querySelectorAll<HTMLElement>("[data-navitem]"));
+    const moveTo = (el: HTMLElement) => {
+      const w = wrap.getBoundingClientRect();
+      const r = el.getBoundingClientRect();
+      gsap.to(bubble, {
+        x: r.left - w.left, y: r.top - w.top, width: r.width, height: r.height,
+        autoAlpha: 1, duration: 0.42, ease: "expo.out",
+      });
+    };
+    const handlers = items.map((el) => {
+      const h = () => moveTo(el);
+      el.addEventListener("mouseenter", h);
+      return [el, h] as const;
+    });
+    const leave = () => gsap.to(bubble, { autoAlpha: 0, duration: 0.3, ease: "power2.out" });
+    wrap.addEventListener("mouseleave", leave);
+    return () => {
+      handlers.forEach(([el, h]) => el.removeEventListener("mouseenter", h));
+      wrap.removeEventListener("mouseleave", leave);
+    };
   }, []);
 
   // the nav re-themes to the surface it sits over so it stays readable
@@ -69,23 +99,29 @@ export default function Nav() {
           <span className="text-[11px] font-medium uppercase tracking-[0.3em]">Media</span>
         </Link>
 
-        {/* RIGHT — flat nav + persistent Start here */}
-        <nav className="flex items-center gap-5 md:gap-9" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
-          {LINKS.map((l) => (
+        {/* RIGHT — flat nav with a hover bubble that follows the cursor.
+            Start here is styled the same as Work/About/Contact (client req). */}
+        <nav
+          ref={itemsRef}
+          className="relative flex items-center gap-0.5 md:gap-1"
+          style={{ fontFamily: "var(--font-firma), sans-serif" }}
+        >
+          {/* the following bubble — sits behind the items */}
+          <span
+            ref={bubbleRef}
+            aria-hidden
+            className="pointer-events-none absolute left-0 top-0 z-0 rounded-full bg-[var(--fg)]/12 opacity-0"
+          />
+          {[...LINKS, { href: "/contact", label: "Start here" }].map((l) => (
             <Link
-              key={l.href}
+              key={l.label}
               href={l.href}
-              className="nav-link nav-enter text-[13px] font-medium uppercase tracking-[0.08em]"
+              data-navitem
+              className="nav-enter relative z-10 rounded-full px-4 py-2 text-[13px] font-medium uppercase tracking-[0.08em] text-[var(--fg)] transition-opacity duration-300 hover:opacity-100 md:px-5"
             >
               {l.label}
             </Link>
           ))}
-          <Link
-            href="/contact"
-            className="nav-enter rounded-full border border-[var(--gold)] px-4 py-1.5 text-[12px] font-medium uppercase tracking-[0.06em] text-[var(--gold)] transition-colors duration-300 hover:bg-[var(--gold)] hover:text-[#050505] md:px-5 md:py-2"
-          >
-            Start here
-          </Link>
         </nav>
       </header>
 

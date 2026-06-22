@@ -6,8 +6,8 @@ import {
   Hanken_Grotesk,
   IBM_Plex_Mono,
   Instrument_Serif,
-  Onest,
 } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
 import Nav from "@/components/shell/Nav";
@@ -52,15 +52,16 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "700"],
 });
 
-// Onest — free (OFL) geometric-humanist grotesque, the closest open-source
-// twin to BR Firma (the auteurstudios face): same category, single-story g,
-// near-identical in the tracked uppercase that is ~90% of the usage here.
-// Drives the CTA / label / subtext role through --font-firma, so no other
-// file needs to change. No licence required.
-const firma = Onest({
+// BR Firma SemiBold — the ACTUAL auteurstudios font, pulled from their CDN.
+// On auteur this is the face on "Get in touch" and "PIONEERS IN BRAND
+// STORYTELLING" (verified: computed font-family "BR Firma", weight 600). Used
+// for every CTA / label / subtext here, exactly as auteur uses it, via
+// --font-firma. NOTE: BR Firma is a licensed commercial font — buy a licence
+// before launch.
+const firma = localFont({
+  src: "../fonts/BRFirma-SemiBold.otf",
   variable: "--font-firma",
-  subsets: ["latin"],
-  weight: ["500", "600"],
+  weight: "600",
   display: "swap",
 });
 

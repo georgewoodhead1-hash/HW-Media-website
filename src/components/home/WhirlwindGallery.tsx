@@ -174,7 +174,7 @@ export default function WhirlwindGallery() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="media"
+      data-surface="page"
       data-chapter="The finale"
       className="relative motion-safe:md:-mt-[30vh] motion-safe:md:h-[440vh]"
       aria-label="Every film is a chance to break the ordinary"

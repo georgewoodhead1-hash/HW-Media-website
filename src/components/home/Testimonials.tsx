@@ -157,15 +157,9 @@ export default function Testimonials() {
       aria-label="Testimonials"
     >
       <div className="px-5 md:px-10">
-        <span
-          className="label-mono block text-[10px] tracking-[0.3em] text-[var(--gold)]/80"
-          style={{ fontFamily: "var(--font-firma), sans-serif" }}
-        >
-          IN THEIR WORDS
-        </span>
         <ScrollType
           as="h2"
-          className="font-display mt-5 max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
+          className="font-display max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
           style={{ fontWeight: 400 }}
         >
           Testimonials

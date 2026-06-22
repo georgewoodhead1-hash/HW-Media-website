@@ -3,12 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
-// Auteur-style loading beat that plays once when the contact page mounts:
-// a full-screen gold panel reveals "Got something in mind?" word-by-word,
-// swaps to "Tell us more", then wipes up to hand off to the form beneath.
-// Reduced-motion users skip straight to the form (no panel).
+// Loading beat for the contact page: an eggshell-cream panel reveals "Tell us
+// more" word-by-word in BR Firma, then wipes up to the form. Modest scale (it
+// doesn't dominate the screen). Reduced-motion users skip straight to the form.
 
-const WORDS = ["Got", "something", "in", "mind?"];
+const WORDS = ["Tell", "us", "more"];
 
 export default function ContactIntro() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -25,17 +24,10 @@ export default function ContactIntro() {
 
     const ctx = gsap.context(() => {
       const words = gsap.utils.toArray<HTMLElement>(".ci-w");
-      const line2 = root.querySelector(".ci-2");
-
       gsap.set(words, { yPercent: 120 });
-      gsap.set(line2, { autoAlpha: 0, y: 16 });
-
       const tl = gsap.timeline({ onComplete: () => setDone(true) });
-      tl.to(words, { yPercent: 0, duration: 1, stagger: 0.13, ease: "expo.out" }, 0.25)
-        .to(words, { yPercent: -120, duration: 0.7, stagger: 0.05, ease: "power3.in" }, "+=0.85")
-        .to(line2, { autoAlpha: 1, y: 0, duration: 0.7, ease: "expo.out" }, "-=0.35")
-        .to(line2, { autoAlpha: 0, duration: 0.5, ease: "power2.in" }, "+=0.9")
-        .to(root, { yPercent: -100, duration: 1.05, ease: "expo.inOut" }, "-=0.15");
+      tl.to(words, { yPercent: 0, duration: 0.9, stagger: 0.12, ease: "expo.out" }, 0.2)
+        .to(root, { yPercent: -100, duration: 1.0, ease: "expo.inOut" }, "+=0.85");
     }, root);
 
     return () => ctx.revert();
@@ -47,24 +39,18 @@ export default function ContactIntro() {
     <div
       ref={rootRef}
       aria-hidden
-      className="fixed inset-0 z-[120] flex flex-col items-center justify-center bg-[var(--gold)] text-[#0a0a08] will-change-transform"
+      className="fixed inset-0 z-[120] flex items-center justify-center bg-[var(--cream)] text-[#171717] will-change-transform"
     >
       <h2
-        className="font-display flex flex-wrap justify-center gap-x-[0.28em] px-6 text-center text-[clamp(2.3rem,7vw,5.4rem)] leading-[0.95]"
-        style={{ fontWeight: 400 }}
+        className="flex flex-wrap justify-center gap-x-[0.32em] px-6 text-center text-[clamp(1.6rem,4.5vw,3.4rem)] uppercase tracking-[0.06em]"
+        style={{ fontFamily: "var(--font-firma), sans-serif", fontWeight: 600 }}
       >
         {WORDS.map((w) => (
-          <span key={w} className="inline-block overflow-hidden pb-[0.08em]">
+          <span key={w} className="inline-block overflow-hidden pb-[0.12em]">
             <span className="ci-w inline-block will-change-transform">{w}</span>
           </span>
         ))}
       </h2>
-      <p
-        className="ci-2 mt-7 text-[13px] uppercase tracking-[0.32em]"
-        style={{ fontFamily: "var(--font-firma), sans-serif" }}
-      >
-        Tell us more
-      </p>
     </div>
   );
 }

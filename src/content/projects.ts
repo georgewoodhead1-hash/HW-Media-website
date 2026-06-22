@@ -145,6 +145,77 @@ export const projects: Project[] = [
       { role: "Client", name: "Norton Motorcycles" },
     ],
   },
+  // Placeholder duplicates to fill the grid (real films to be swapped in).
+  {
+    slug: "black-crows",
+    title: "Black Crows",
+    client: "Black Crows",
+    category: "Brand film",
+    year: "2026",
+    ...p("salomon"),
+    tagline: "Backcountry skiing with Black Crows — powder, altitude and intent.",
+    stats: "on the mountain · crew of 2",
+    story:
+      "A backcountry film for Black Crows, the freeride ski brand born in Chamonix. Filmed on the mountain across a tight weather window, chasing real lines through deep snow with a crew of two light enough to keep pace.",
+    services: ["Direction", "Cinematography", "Edit & Grade"],
+    credits: [{ role: "Director / DP", name: "Harry Wallis" }],
+  },
+  {
+    slug: "mclaren-750s",
+    title: "McLaren 750S",
+    client: "McLaren",
+    category: "Commercial",
+    year: "2026",
+    ...p("mclaren"),
+    tagline: "A track film for the McLaren 750S — lighter, sharper, faster.",
+    stats: "2 shoot days · circuit · crew of 2",
+    story:
+      "A track-led film for the McLaren 750S, the most power-dense series-production McLaren yet. Follow-car rigs and circuit passes keep you locked to the panel as the V8 sings through the gears.",
+    services: ["Direction", "Cinematography", "Post Production"],
+    credits: [{ role: "Director / DP", name: "Harry Wallis" }, { role: "Client", name: "McLaren" }],
+  },
+  {
+    slug: "zuma-dubai",
+    title: "Zuma Dubai",
+    client: "Zuma",
+    category: "Brand film",
+    year: "2026",
+    ...p("zuma"),
+    tagline: "A destination film for Zuma — the izakaya, on the Gulf.",
+    stats: "on location · Dubai",
+    story:
+      "A destination film for Zuma in Dubai. Robata smoke, fresh sashimi and skyline light cut to the rhythm of the room — selling the feeling of the place over the menu.",
+    services: ["Direction", "Cinematography", "Edit & Grade"],
+    credits: [{ role: "Director / DP", name: "Harry Wallis" }, { role: "Client", name: "Zuma" }],
+  },
+  {
+    slug: "nike-air",
+    title: "Nike Air Max",
+    client: "Nike",
+    category: "Commercial",
+    year: "2026",
+    ...p("nike"),
+    tagline: "A social-first spot for Nike Air Max — built for the feed.",
+    stats: "vertical master · paid social",
+    story:
+      "A social-first spot for Nike Air Max, cut fast and rhythmic for the feed and mastered vertical from the ground up, never cropped as an afterthought.",
+    services: ["Direction", "Edit", "Paid Social Versions"],
+    credits: [{ role: "Director / DP", name: "Harry Wallis" }, { role: "Client", name: "Nike" }],
+  },
+  {
+    slug: "salomon-trail",
+    title: "Salomon Trail",
+    client: "Salomon",
+    category: "Commercial",
+    year: "2026",
+    ...p("salomon"),
+    tagline: "Trail speed at altitude — Salomon, back on the mountain.",
+    stats: "on the mountain · crew of 2",
+    story:
+      "More trail-running work for Salomon, filmed the way the kit actually gets used — real athletes, real weather windows and the thin air of altitude, chased with a crew light enough to move at running pace.",
+    services: ["Direction", "Cinematography", "Edit & Grade"],
+    credits: [{ role: "Director / DP", name: "Harry Wallis" }, { role: "Client", name: "Salomon" }],
+  },
 ];
 
 export function getProject(slug: string): Project | undefined {

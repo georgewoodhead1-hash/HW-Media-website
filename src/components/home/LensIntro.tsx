@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
-import { getLenis } from "@/lib/lenis";
 import { safePlay } from "@/lib/video";
 
 // CH.00 — the lens. A real cine prime hanging in dark space, starting small
@@ -188,10 +187,13 @@ export default function LensIntro() {
     };
   }, []);
 
+  // NOTE: never stop Lenis here. The native <dialog> modal already blocks the
+  // background; stopping Lenis risked leaving scroll dead if the dialog was
+  // dismissed via Escape/backdrop (closeReel wouldn't run). Nothing in the app
+  // stops Lenis anymore, so scroll can never lock.
   const openReel = () => {
     setReelOpen(true);
     dialogRef.current?.showModal();
-    getLenis()?.stop();
     videoRef.current?.pause();
     const reel = fullReelRef.current;
     if (reel) {
@@ -204,7 +206,6 @@ export default function LensIntro() {
     fullReelRef.current?.pause();
     dialogRef.current?.close();
     setReelOpen(false);
-    getLenis()?.start();
     safePlay(videoRef.current);
   };
 

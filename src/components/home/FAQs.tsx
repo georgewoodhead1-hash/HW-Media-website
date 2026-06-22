@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { gsap } from "@/lib/gsap";
 
 // FAQ — click-to-open accordion. The left column keeps the "FAQs" heading and a
 // tall vertical video reel (sticky on desktop). The right column is the list of
@@ -27,9 +28,36 @@ const FAQS: QA[] = [
 
 export default function FAQs() {
   const [open, setOpen] = useState<number | null>(0);
+  const rootRef = useRef<HTMLElement>(null);
+  const reelRef = useRef<HTMLDivElement>(null);
+
+  // the reel gets "sucked up" off-screen as you scroll past the section, before
+  // the finale loads in (client) — scrubbed exit, desktop + motion only.
+  useEffect(() => {
+    const root = rootRef.current;
+    const reel = reelRef.current;
+    if (!root || !reel) return;
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      const tween = gsap.fromTo(
+        reel,
+        { yPercent: 0, autoAlpha: 1, scale: 1 },
+        {
+          yPercent: -135,
+          autoAlpha: 0,
+          scale: 0.82,
+          ease: "power2.in",
+          scrollTrigger: { trigger: root, start: "bottom 92%", end: "bottom 38%", scrub: 1 },
+        },
+      );
+      return () => { tween.scrollTrigger?.kill(); tween.kill(); };
+    });
+    return () => mm.revert();
+  }, []);
 
   return (
     <section
+      ref={rootRef}
       data-theme="dark"
       data-surface="page"
       data-chapter="06 — FAQs"
@@ -43,7 +71,7 @@ export default function FAQs() {
           <h2 className="font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
             <span className="text-[var(--gold)]">FAQ&apos;s</span>
           </h2>
-          <div className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black md:mt-9 md:w-[clamp(180px,80%,300px)]">
+          <div ref={reelRef} className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:mt-9 md:w-[clamp(180px,80%,300px)]">
             <video
               className="h-full w-full object-cover"
               src="/videos/films/defender-reel.mp4"

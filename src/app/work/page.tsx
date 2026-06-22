@@ -73,28 +73,29 @@ export default function WorkIndex() {
             );
           })}
 
-          {/* next-project CTA tile — keeps the mosaic square */}
-          <Link
-            href={BOOKING_URL}
-            className="group relative flex aspect-[4/3] flex-col items-center justify-center overflow-hidden bg-[#0b0b0b] p-6 text-center"
-          >
-            <span
-              className="text-[10px] tracking-[0.24em] text-[var(--gold)]"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
-            >
-              NEXT
-            </span>
-            <h2 className="font-display mt-2 text-[clamp(1.4rem,2.2vw,2rem)] leading-[0.95] text-white" style={{ fontWeight: 400 }}>
-              Have a project<br />in mind?
-            </h2>
-            <span
-              className="mt-3 text-[10px] tracking-[0.22em] text-white/70 transition-colors duration-300 group-hover:text-[var(--gold)]"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
-            >
-              Book a call with us ⟶
-            </span>
-          </Link>
         </div>
+
+        {/* CTA — centred on the page, below the films (client) */}
+        <section className="flex flex-col items-center justify-center px-5 py-[15vh] text-center md:px-10">
+          <span
+            className="text-[11px] uppercase tracking-[0.24em] text-[var(--gold-text)]"
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+          >
+            Next
+          </span>
+          <h2 className="font-display mt-4 text-[clamp(2rem,5vw,4rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
+            Have a project <span className="text-[var(--gold)]">in mind?</span>
+          </h2>
+          <a
+            href={BOOKING_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[var(--fg)]/45 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] transition-colors duration-300 hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+          >
+            Book a call with us <span aria-hidden>⟶</span>
+          </a>
+        </section>
       </main>
       <Footer />
     </>

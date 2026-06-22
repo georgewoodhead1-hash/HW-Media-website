@@ -157,7 +157,7 @@ export default function Testimonials() {
         >
           Testimonials
         </ScrollType>
-        <span aria-hidden className="mt-3 block h-[2px] w-16 bg-[var(--gold)]" />
+        <span aria-hidden className="mt-4 block h-[3px] w-24 bg-[var(--gold)]" />
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
@@ -209,18 +209,17 @@ export default function Testimonials() {
             })}
           </div>
 
-          {/* selected testimonial — quote + role + sector + brand mark */}
-          <div ref={quoteRef} className="mt-9 flex flex-1 flex-col justify-between">
-            <div>
-              <blockquote
-                className="text-[clamp(1.35rem,2vw,2rem)] leading-snug"
-                style={{ fontFamily: "var(--font-firma), sans-serif" }}
-              >
-                &ldquo;{current.quote}&rdquo;
-              </blockquote>
-            </div>
+          {/* selected testimonial — quote, with the attribution sitting RIGHT
+              under it (client: it was pinned to the bottom of the column) */}
+          <div ref={quoteRef} className="mt-9">
+            <blockquote
+              className="text-[clamp(1.35rem,2vw,2rem)] leading-snug"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+            >
+              &ldquo;{current.quote}&rdquo;
+            </blockquote>
 
-            <figcaption className="mt-5 flex items-center gap-4">
+            <figcaption className="mt-6 flex items-center gap-4">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[var(--hairline-dark)] bg-black/30 backdrop-blur-sm">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img

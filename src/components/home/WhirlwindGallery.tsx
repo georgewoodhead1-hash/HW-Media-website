@@ -54,12 +54,21 @@ export default function WhirlwindGallery() {
       const cta = root.querySelector(".cta-start");
       const foot = root.querySelector(".finale-foot");
       const N = tiles.length;
-      const W = window.innerWidth;
-      const H = window.innerHeight;
-      const RX = 0.33 * W;
-      const RY = 0.24 * H;
+      // geometry recomputed on refresh so a resize/orientation change never
+      // leaves the whirlwind firing tiles to stale positions (audit fix)
+      let W = window.innerWidth;
+      let H = window.innerHeight;
+      let RX = 0.33 * W;
+      let RY = 0.24 * H;
+      let START = { x: -0.58 * W, y: 0.55 * H };
+      const recompute = () => {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        RX = 0.33 * W;
+        RY = 0.24 * H;
+        START = { x: -0.58 * W, y: 0.55 * H };
+      };
       const PHI = (-14 * Math.PI) / 180; // ring tilted: it arches higher to the right
-      const START = { x: -0.58 * W, y: 0.55 * H };
       const GAP = 0.055;
       const ENTRY = 0.18;
       const SPIN = (Math.PI * 2) / 0.5; // one full circuit per 0.5 path units
@@ -149,7 +158,9 @@ export default function WhirlwindGallery() {
         start: "top top",
         end: "bottom bottom",
         scrub: 0.6,
+        invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
+        onRefresh: (self) => { recompute(); place(self.progress); },
       });
       return () => st.kill();
     });

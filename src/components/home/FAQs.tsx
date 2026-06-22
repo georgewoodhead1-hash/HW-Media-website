@@ -43,11 +43,11 @@ export default function FAQs() {
         reel,
         { yPercent: 0, autoAlpha: 1, scale: 1 },
         {
-          yPercent: -135,
+          yPercent: -22,
           autoAlpha: 0,
-          scale: 0.82,
-          ease: "power2.in",
-          scrollTrigger: { trigger: root, start: "bottom 92%", end: "bottom 38%", scrub: 1 },
+          scale: 0.95,
+          ease: "power1.inOut",
+          scrollTrigger: { trigger: root, start: "bottom 82%", end: "bottom 46%", scrub: 1.2 },
         },
       );
       return () => { tween.scrollTrigger?.kill(); tween.kill(); };

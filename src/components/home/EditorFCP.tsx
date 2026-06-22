@@ -170,7 +170,7 @@ export default function EditorFCP() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.6,
+        scrub: 2,
         invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
@@ -198,7 +198,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="page"
       data-chapter="Our process"
-      className="relative motion-safe:md:h-[440vh]"
+      className="relative motion-safe:md:h-[640vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

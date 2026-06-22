@@ -4,12 +4,20 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
 // FAQ, ponder.ai's "Designed for your specialty" mechanic. The left column
-// is "Questions answered" + a tall vertical reel. The HEADING is sticky and
-// stays frozen at the same line for the whole section while the questions
-// scroll up past it. The reel is positioned out of flow (so it doesn't drag
-// the sticky release point down) and clears away near the end — so by the
-// time the LAST question rises into line with the heading, you're left with
-// just the heading and that final question, then the page moves to the finale.
+// is "FAQs" + a tall vertical reel. The HEADING is sticky and stays frozen at
+// the same line for the whole section while the questions scroll up past it.
+// The reel is positioned out of flow (so it doesn't drag the sticky release
+// point down) and clears away near the end — so by the time the LAST question
+// rises into line with the heading, you're left with just the heading and that
+// final question, then the page moves to the finale.
+//
+// CUT-OFF FIX: each question lights up via an IntersectionObserver band centred
+// on the viewport (middle ~16%). For the LAST questions to reach that band they
+// need scroll room *below* them — otherwise the section ends and the page moves
+// on before they ever climb to centre, so they read as "cut off". A trailing
+// spacer after the list gives the final question that room. The spacer also
+// extends the flex container, which is what the sticky left column measures its
+// release against, so the heading stays put until the very end.
 
 interface QA {
   q: string;
@@ -63,7 +71,11 @@ export default function FAQs() {
         { yPercent: 0, autoAlpha: 1 },
         {
           yPercent: 26, autoAlpha: 0, ease: "power3.in",
-          scrollTrigger: { trigger: root, start: "18% top", end: "bottom 64%", scrub: 1.1 },
+          // clear out over the questions, finishing before the trailing spacer
+          // so the heading sits alone with the final question. Tied to the
+          // section centre rather than its bottom (the spacer makes the section
+          // much taller now), keeping the timing stable across widths.
+          scrollTrigger: { trigger: root, start: "12% top", end: "62% top", scrub: 1.1 },
         },
       );
       return () => {
@@ -84,19 +96,20 @@ export default function FAQs() {
       data-theme="dark"
       data-surface="page"
       data-chapter="06 — FAQs"
-      className="relative bg-[var(--bg)] px-5 pb-[12vh] pt-[14vh] text-[var(--fg)] md:px-10"
+      className="relative bg-[var(--bg)] px-5 pb-[12vh] pt-[7vh] text-[var(--fg)] md:px-10"
       aria-label="Frequently asked questions"
     >
-      <div className="md:flex md:items-start md:gap-16">
-        {/* LEFT — heading is sticky + frozen; the reel sits out of flow below it */}
-        <div className="relative md:sticky md:top-[16vh] md:w-[36%] md:self-start lg:w-[34%]">
-          <span className="label-mono text-[11px] tracking-[0.28em] text-[var(--gold)]/80">FAQ</span>
-          <h2 className="font-display mt-5 text-[clamp(2rem,3.4vw,3.4rem)] leading-[0.95]">
-            Questions<br /><span className="text-[var(--gold)]">answered.</span>
+      <div className="md:flex md:items-start md:gap-12 lg:gap-16">
+        {/* LEFT — heading is sticky + frozen; the reel sits out of flow below it.
+            Bumped higher (top-[9vh]) and widened a touch so the reel never
+            clips off the left edge at laptop widths. */}
+        <div className="relative md:sticky md:top-[9vh] md:w-[40%] md:self-start lg:w-[36%]">
+          <h2 className="font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
+            <span className="text-[var(--gold)]">FAQs</span>
           </h2>
           <div
             ref={reelRef}
-            className="mt-9 aspect-[9/16] w-full max-w-[330px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:absolute md:left-0 md:top-[9.5rem] md:mt-0"
+            className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:absolute md:left-0 md:top-[7.5rem] md:mt-0 md:w-[clamp(180px,80%,300px)]"
           >
             <video
               className="h-full w-full object-cover"
@@ -110,8 +123,10 @@ export default function FAQs() {
         </div>
 
         {/* RIGHT — the questions; a lead gap lets the heading settle at the
-            top before the first question climbs into the highlight band */}
-        <div className="md:flex-1 md:pt-[26vh]">
+            top before the first question climbs into the highlight band.
+            Lead trimmed (the whole section moved up) so the first question
+            isn't pushed too low. */}
+        <div className="md:flex-1 md:pt-[18vh]">
           {FAQS.map((f, i) => (
             <div
               key={f.q}
@@ -138,6 +153,12 @@ export default function FAQs() {
               </div>
             </div>
           ))}
+          {/* Trailing run-out: lets the final question scroll up into the
+              centred highlight band (it can't light up without room below it),
+              and keeps the flex container — and therefore the sticky heading —
+              alive right to the end. Without this the last questions read as
+              cut off because the section ends before they reach centre. */}
+          <div aria-hidden className="hidden md:block md:h-[55vh]" />
         </div>
       </div>
     </section>

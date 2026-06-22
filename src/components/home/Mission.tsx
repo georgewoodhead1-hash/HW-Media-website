@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // 01 — Mission, the Studio-Graham move. A dark panel that LAYERS UP over
 // the camera (hero) as you scroll, framed by viewfinder corner brackets.
@@ -53,15 +53,19 @@ export default function Mission() {
         opacity: 1, stagger: 0.02, ease: "none",
         scrollTrigger: { trigger: root, start: "top top", end: "58% top", scrub: 1.1 },
       });
-      // the stats count up once the paragraph has had its moment
+      // the stats count up AS the user scrolls — the numbers visibly climb,
+      // scrubbed to scroll progress rather than firing once
       gsap.utils.toArray<HTMLElement>(".ms-stat-num", root).forEach((el) => {
         const target = parseInt(el.dataset.n ?? "0", 10);
         const suffix = el.dataset.suffix ?? "";
-        const o = { v: 0 };
-        gsap.to(o, {
-          v: target, ease: "power2.out", duration: 1.6,
-          scrollTrigger: { trigger: root, start: "45% top" },
-          onUpdate: () => { el.textContent = `${Math.round(o.v)}${suffix}`; },
+        ScrollTrigger.create({
+          trigger: root,
+          start: "top 60%",
+          end: "center center",
+          scrub: true,
+          onUpdate: (self) => {
+            el.textContent = `${Math.round(self.progress * target)}${suffix}`;
+          },
         });
       });
     });
@@ -75,7 +79,7 @@ export default function Mission() {
       data-theme="dark"
       data-surface="page"
       data-chapter="01 — Mission"
-      className="relative motion-safe:md:h-[200vh]"
+      className="relative z-30 motion-safe:md:-mt-[100vh] motion-safe:md:h-[200vh]"
       aria-label="Our mission"
     >
       <div className="ms-panel sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)] will-change-transform motion-reduce:md:hidden md:block">

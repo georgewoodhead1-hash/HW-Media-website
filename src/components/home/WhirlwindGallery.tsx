@@ -52,6 +52,7 @@ export default function WhirlwindGallery() {
       const tiles = gsap.utils.toArray<HTMLElement>(".whirl-tile", root);
       const chars = gsap.utils.toArray<HTMLElement>(".type-char", root);
       const cta = root.querySelector(".cta-start");
+      const foot = root.querySelector(".finale-foot");
       const N = tiles.length;
       const W = window.innerWidth;
       const H = window.innerHeight;
@@ -68,6 +69,7 @@ export default function WhirlwindGallery() {
       gsap.set(tiles, { x: START.x, y: START.y, scale: 0.5, autoAlpha: 0 });
       gsap.set(chars, { opacity: 0 });
       gsap.set(cta, { opacity: 0, y: 26 });
+      gsap.set(foot, { yPercent: 110, autoAlpha: 0 });
 
       const pathPos = (s: number) => {
         if (s < ENTRY) {
@@ -131,6 +133,14 @@ export default function WhirlwindGallery() {
 
         const e = smooth(0.82, 0.9, p);
         gsap.set(cta, { opacity: e, pointerEvents: e > 0.5 ? "auto" : "none", y: 26 * (1 - e) });
+
+        // slim footer rises up from the bottom edge at the very end
+        const f = smooth(0.9, 0.99, p);
+        gsap.set(foot, {
+          yPercent: 110 * (1 - f),
+          autoAlpha: f,
+          pointerEvents: f > 0.5 ? "auto" : "none",
+        });
       };
       place(0);
 
@@ -212,6 +222,47 @@ export default function WhirlwindGallery() {
             Start here ⟶
           </Link>
         </div>
+
+        {/* slim footer — rises up from the bottom edge at the very end of the scroll */}
+        <div
+          className="finale-foot absolute inset-x-0 bottom-0 z-40 border-t border-[var(--hairline-dark)] bg-[var(--bg)]/85 px-8 py-5 backdrop-blur-md will-change-transform"
+          style={{ fontFamily: "var(--font-dm), sans-serif" }}
+        >
+          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm text-[var(--fg)]">
+            <a
+              href="mailto:harry@hwmedia.productions"
+              className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold)]"
+            >
+              harry@hwmedia.productions
+            </a>
+
+            <nav className="flex items-center gap-6" aria-label="Social links">
+              <a
+                href="https://www.instagram.com/hwmedia/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold)]"
+              >
+                Instagram
+              </a>
+              <a
+                href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold)]"
+              >
+                LinkedIn
+              </a>
+            </nav>
+
+            <div className="flex items-center gap-6 text-[var(--fg)]/55">
+              <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
+              <Link href="/privacy" className="transition-colors hover:text-[var(--gold)]">
+                Privacy Policy
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* mobile/reduced: line + grid + CTA + slim footer */}
@@ -227,6 +278,38 @@ export default function WhirlwindGallery() {
         <Link href="/contact" className="label-mono mt-10 inline-block rounded-full border border-[var(--gold)] px-10 py-4 text-[var(--gold)]">
           Start here ⟶
         </Link>
+
+        {/* slim footer — static on mobile / reduced-motion */}
+        <div
+          className="mt-16 border-t border-[var(--hairline-dark)] pt-6 text-sm"
+          style={{ fontFamily: "var(--font-dm), sans-serif" }}
+        >
+          <a href="mailto:harry@hwmedia.productions" className="block text-[var(--fg)]/85">
+            harry@hwmedia.productions
+          </a>
+          <div className="mt-4 flex items-center gap-6">
+            <a
+              href="https://www.instagram.com/hwmedia/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--fg)]/85"
+            >
+              Instagram
+            </a>
+            <a
+              href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[var(--fg)]/85"
+            >
+              LinkedIn
+            </a>
+          </div>
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--fg)]/55">
+            <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
+            <Link href="/privacy">Privacy Policy</Link>
+          </div>
+        </div>
       </div>
     </section>
   );

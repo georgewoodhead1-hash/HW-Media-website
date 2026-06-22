@@ -204,9 +204,9 @@ export default function LensIntro() {
   };
 
   return (
-    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
+    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-[200vh]">
       <div
-        className="on-media relative h-screen overflow-hidden bg-[#050505]"
+        className="on-media sticky top-0 h-screen overflow-hidden bg-[#050505]"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {
@@ -247,33 +247,54 @@ export default function LensIntro() {
               className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{
                 background:
-                  "radial-gradient(circle, transparent 9.5%, rgba(0,0,0,0.55) 12.5%, transparent 16%)",
+                  "radial-gradient(circle, transparent 8%, rgba(0,0,0,0.42) 12.5%, rgba(0,0,0,0.12) 15.5%, transparent 19%)",
+                filter: "blur(1.5px)",
               }}
             />
-            <div className="absolute left-1/2 top-1/2 h-[40vmin] w-[40vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f5f1e6]/14" />
+            <div
+              className="absolute left-1/2 top-1/2 h-[40vmin] w-[40vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f5f1e6]/[0.07]"
+              style={{ filter: "blur(0.5px)" }}
+            />
             <div
               className="absolute left-1/2 top-1/2 h-[36vmin] w-[36vmin] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
-              style={{ background: "radial-gradient(closest-side, rgba(196,74,168,0.1), transparent 70%)" }}
+              style={{ background: "radial-gradient(closest-side, rgba(196,74,168,0.08), transparent 78%)", filter: "blur(2px)" }}
             />
           </div>
 
           {/* MIDDLE GROUP — chromatic edges + refraction sheen, exits second */}
           <div ref={midRef} className="pointer-events-none absolute inset-0 will-change-transform">
-            <div className="absolute left-1/2 top-1/2 h-[76vmin] w-[76vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f5f1e6]/16" />
-            {/* chromatic aberration: magenta outside, cyan inside the edge */}
-            <div className="absolute left-1/2 top-1/2 h-[77vmin] w-[77vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(216,74,160,0.28)]" />
-            <div className="absolute left-1/2 top-1/2 h-[75vmin] w-[75vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[rgba(64,196,210,0.25)]" />
-            {/* curved refraction sheen */}
+            <div
+              className="absolute left-1/2 top-1/2 h-[76vmin] w-[76vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f5f1e6]/[0.08]"
+              style={{ filter: "blur(0.6px)" }}
+            />
+            {/* chromatic aberration: magenta outside, cyan inside the edge — feathered so it reads as a soft fringe, not a drawn ring */}
+            <div
+              className="absolute left-1/2 top-1/2 h-[77vmin] w-[77vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[rgba(216,74,160,0.16)]"
+              style={{ filter: "blur(2.5px)" }}
+            />
+            <div
+              className="absolute left-1/2 top-1/2 h-[75vmin] w-[75vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[rgba(64,196,210,0.14)]"
+              style={{ filter: "blur(2.5px)" }}
+            />
+            {/* curved refraction sheen — soft specular glaze across the glass */}
             <div
               className="absolute left-1/2 top-1/2 h-[72vmin] w-[72vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{
-                background: "radial-gradient(ellipse at 62% 30%, rgba(255,255,255,0.09), transparent 46%)",
-                filter: "blur(1.5px)",
+                background: "radial-gradient(ellipse at 62% 30%, rgba(255,255,255,0.08), transparent 52%)",
+                filter: "blur(3px)",
+              }}
+            />
+            {/* gentle internal vignette giving the group depth */}
+            <div
+              className="absolute left-1/2 top-1/2 h-[74vmin] w-[74vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{
+                background: "radial-gradient(circle, transparent 58%, rgba(0,0,0,0.22) 84%, transparent 100%)",
+                filter: "blur(2px)",
               }}
             />
             <div
               className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
-              style={{ background: "radial-gradient(closest-side, rgba(64,196,160,0.1), transparent 72%)" }}
+              style={{ background: "radial-gradient(closest-side, rgba(64,196,160,0.08), transparent 78%)", filter: "blur(2px)" }}
             />
           </div>
 
@@ -299,16 +320,17 @@ export default function LensIntro() {
                   "radial-gradient(circle, transparent 65.8%, black 66.6%, black 75%, transparent 75.6%)",
               }}
             />
-            {/* hard edge-light catching the top-left of the rim */}
+            {/* soft edge-light catching the top-left of the rim */}
             <div
               className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{
                 background:
-                  "conic-gradient(from 150deg, transparent 0deg, rgba(255,255,255,0.22) 40deg, rgba(255,255,255,0.05) 80deg, transparent 120deg, transparent 360deg)",
+                  "conic-gradient(from 150deg, transparent 0deg, rgba(255,255,255,0.16) 40deg, rgba(255,255,255,0.03) 80deg, transparent 120deg, transparent 360deg)",
                 WebkitMaskImage:
-                  "radial-gradient(circle, transparent 73.6%, black 74.2%, black 75.2%, transparent 75.8%)",
+                  "radial-gradient(circle, transparent 72.8%, black 74.4%, black 75.6%, transparent 77%)",
                 maskImage:
-                  "radial-gradient(circle, transparent 73.6%, black 74.2%, black 75.2%, transparent 75.8%)",
+                  "radial-gradient(circle, transparent 72.8%, black 74.4%, black 75.6%, transparent 77%)",
+                filter: "blur(1.2px)",
               }}
             />
             {/* machined focus-ring band */}
@@ -331,26 +353,37 @@ export default function LensIntro() {
                   "radial-gradient(circle, transparent 26%, rgba(0,0,0,0.4) 29%, transparent 33%, transparent 42%, rgba(0,0,0,0.45) 45.5%, transparent 50%, transparent 56%, rgba(0,0,0,0.5) 60%, transparent 64.5%)",
               }}
             />
-            {/* front-element dome highlight */}
+            {/* soft internal vignette across the front element for glass depth */}
+            <div
+              className="absolute left-1/2 top-1/2 h-[126vmin] w-[126vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
+              style={{
+                background: "radial-gradient(circle, transparent 40%, rgba(0,0,0,0.16) 70%, rgba(0,0,0,0.34) 88%, transparent 100%)",
+                filter: "blur(4px)",
+              }}
+            />
+            {/* front-element specular dome highlight, top-left — feathered like a real catch-light */}
             <div
               className="absolute left-1/2 top-1/2 h-[88vmin] w-[88vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
               style={{
-                background: "radial-gradient(ellipse at 36% 28%, rgba(255,255,255,0.11), transparent 44%)",
+                background: "radial-gradient(ellipse at 36% 28%, rgba(255,255,255,0.12), rgba(255,255,255,0.04) 30%, transparent 52%)",
+                filter: "blur(3px)",
               }}
             />
-            {/* multicoating flares */}
+            {/* multicoating flares — diffuse and feathered */}
             <div
               className="absolute left-1/2 top-1/2 h-[58vmin] w-[58vmin] rounded-full mix-blend-screen"
               style={{
                 transform: "translate(-88%, -86%)",
-                background: "radial-gradient(closest-side, rgba(196,74,168,0.2), transparent 70%)",
+                background: "radial-gradient(closest-side, rgba(196,74,168,0.16), transparent 78%)",
+                filter: "blur(4px)",
               }}
             />
             <div
               className="absolute left-1/2 top-1/2 h-[34vmin] w-[34vmin] rounded-full mix-blend-screen"
               style={{
                 transform: "translate(-150%, 36%)",
-                background: "radial-gradient(closest-side, rgba(120,90,220,0.14), transparent 70%)",
+                background: "radial-gradient(closest-side, rgba(120,90,220,0.11), transparent 78%)",
+                filter: "blur(3px)",
               }}
             />
             <GlassArt />

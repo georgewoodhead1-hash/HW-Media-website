@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, SplitText } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 
 // Our Process (client feedback): simplified. "Our process" sits centre; as you
@@ -27,7 +27,10 @@ const INTRO = 0.07; // first slice shows "Our process" before the stages begin
 export default function EditorFCP() {
   const rootRef = useRef<HTMLElement>(null);
   const playheadRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const clipRowRef = useRef<HTMLDivElement>(null);
   const introRef = useRef<HTMLDivElement>(null);
+  const introTitleRef = useRef<HTMLHeadingElement>(null);
   const stageRefs = useRef<(HTMLDivElement | null)[]>([]);
   const clipRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const vids = useRef<(HTMLVideoElement | null)[]>([]);
@@ -46,6 +49,46 @@ export default function EditorFCP() {
 
       const seg = (1 - INTRO) / STAGES.length;
 
+      // ── LEGO ASSEMBLE: scatter the "Our process" title into chars, then
+      // converge them into the centred title — scrubbed across the intro window.
+      let split: SplitText | null = null;
+      if (introTitleRef.current) {
+        split = new SplitText(introTitleRef.current, { type: "chars", charsClass: "fcp-char" });
+        const chars = split.chars as HTMLElement[];
+        // a deterministic-ish scatter: each char flung wide with rotation
+        chars.forEach((c, i) => {
+          const dir = i % 2 === 0 ? 1 : -1;
+          const spread = 80 + ((i * 37) % 160); // 80–240px lateral spread
+          gsap.set(c, {
+            xPercent: 0,
+            x: dir * spread * (0.6 + ((i * 13) % 40) / 100),
+            y: (((i * 53) % 200) - 100) * 1.6, // ±160px vertical scatter
+            rotation: dir * (12 + ((i * 29) % 36)), // 12–48deg tilt
+            scale: 0.7 + ((i * 17) % 30) / 100,
+            autoAlpha: 0.15,
+            transformOrigin: "50% 50%",
+          });
+        });
+
+        gsap.timeline({
+          scrollTrigger: {
+            trigger: root,
+            start: "top top",
+            // assemble completes a touch before the stage sequence begins
+            end: () => `+=${(root.offsetHeight - window.innerHeight) * INTRO}`,
+            scrub: 0.8,
+          },
+        }).to(chars, {
+          x: 0,
+          y: 0,
+          rotation: 0,
+          scale: 1,
+          autoAlpha: 1,
+          ease: "power3.out",
+          stagger: 0.06,
+        });
+      }
+
       const st = gsap.timeline({
         scrollTrigger: {
           trigger: root,
@@ -53,6 +96,12 @@ export default function EditorFCP() {
           end: "bottom bottom",
           scrub: 0.8,
           onUpdate: (self) => {
+            // vertical play-bar sweeps across the clip row, DAW-style
+            const row = clipRowRef.current;
+            if (barRef.current && row) {
+              barRef.current.style.transform = `translateX(${(self.progress * row.offsetWidth).toFixed(1)}px)`;
+            }
+            // dot on the thin timeline scrubber stays in sync
             const lane = playheadRef.current?.parentElement;
             if (playheadRef.current && lane) {
               playheadRef.current.style.transform = `translateX(${(self.progress * lane.offsetWidth).toFixed(1)}px)`;
@@ -83,7 +132,7 @@ export default function EditorFCP() {
           scrollTrigger: { trigger: root, start: "top 65%" } },
       );
 
-      return () => { st.scrollTrigger?.kill(); st.kill(); };
+      return () => { st.scrollTrigger?.kill(); st.kill(); split?.revert(); };
     });
 
     return () => mm.revert();
@@ -112,8 +161,12 @@ export default function EditorFCP() {
         {/* CENTRE — "Our process", swapped for the active stage as you scrub */}
         <div className="relative flex h-[32vh] w-full items-center justify-center text-center">
           <div ref={introRef} className="absolute">
-            <h2 className="font-display text-[clamp(2.6rem,6vw,5.5rem)] leading-[0.9]" style={{ fontWeight: 400 }}>
-              Our <span className="text-[var(--gold)]">process.</span>
+            <h2
+              ref={introTitleRef}
+              className="font-display text-[clamp(2.6rem,6vw,5.5rem)] leading-[0.9] [&_.fcp-char]:will-change-transform"
+              style={{ fontWeight: 400 }}
+            >
+              Our process
             </h2>
           </div>
           {STAGES.map((s, i) => (
@@ -129,15 +182,15 @@ export default function EditorFCP() {
           ))}
         </div>
 
-        {/* small clips in boxes */}
-        <div className="mt-[5vh] flex w-full max-w-4xl items-center justify-center gap-4">
+        {/* clip row — bigger boxes, with a DAW-style vertical play-bar sweeping across */}
+        <div ref={clipRowRef} className="relative mt-[5vh] flex w-full max-w-6xl items-stretch justify-center gap-5">
           {STAGES.map((s, i) => (
             <button
               key={s.name}
               ref={(el) => { clipRefs.current[i] = el; }}
               onClick={() => jumpTo(i)}
               aria-label={`Jump to ${s.name}`}
-              className="fcp-clip relative aspect-video flex-1 cursor-pointer overflow-hidden rounded-md border border-[var(--hairline-dark)] opacity-50"
+              className="fcp-clip relative aspect-video flex-1 cursor-pointer overflow-hidden rounded-lg border border-[var(--hairline-dark)] opacity-50"
             >
               <video
                 ref={(el) => { vids.current[i] = el; }}
@@ -152,6 +205,15 @@ export default function EditorFCP() {
               />
             </button>
           ))}
+
+          {/* vertical play-bar (metronome / DAW playhead) sweeping across the row */}
+          <div
+            ref={barRef}
+            className="pointer-events-none absolute -top-3 -bottom-3 left-0 z-10 w-[2px] -translate-x-1/2 will-change-transform"
+            aria-hidden
+          >
+            <span className="block h-full w-full rounded-full bg-[var(--gold)] shadow-[0_0_14px_3px_rgba(191,170,83,0.55)]" />
+          </div>
         </div>
 
         {/* the timeline scrubber */}

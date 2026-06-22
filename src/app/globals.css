@@ -140,7 +140,7 @@ body {
 }
 
 /* GOLDEN RULE: never the military monospace font. This class (used in 60+
-   places) now renders in the clean DM Sans, lighter tracking. */
+   places) renders in Onest via --font-firma — the free BR Firma twin. */
 .label-mono {
   font-family: var(--font-firma), sans-serif;
   font-size: 11px;

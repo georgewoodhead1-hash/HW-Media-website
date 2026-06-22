@@ -6,8 +6,8 @@ import {
   Hanken_Grotesk,
   IBM_Plex_Mono,
   Instrument_Serif,
+  Onest,
 } from "next/font/google";
-import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
 import Nav from "@/components/shell/Nav";
@@ -52,12 +52,15 @@ const dmSans = DM_Sans({
   weight: ["400", "500", "700"],
 });
 
-// BR Firma (the auteurstudios font) — the CTA / label / subtext face.
-// NOTE: BR Firma is a licensed commercial font; licence required before launch.
-const brFirma = localFont({
-  src: "../fonts/BRFirma-SemiBold.otf",
+// Onest — free (OFL) geometric-humanist grotesque, the closest open-source
+// twin to BR Firma (the auteurstudios face): same category, single-story g,
+// near-identical in the tracked uppercase that is ~90% of the usage here.
+// Drives the CTA / label / subtext role through --font-firma, so no other
+// file needs to change. No licence required.
+const firma = Onest({
   variable: "--font-firma",
-  weight: "600",
+  subsets: ["latin"],
+  weight: ["500", "600"],
   display: "swap",
 });
 
@@ -77,7 +80,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${dmSans.variable} ${brFirma.variable} h-full antialiased`}
+      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${dmSans.variable} ${firma.variable} h-full antialiased`}
     >
       <head>
         {/* restore the saved mode before first paint — no flash */}

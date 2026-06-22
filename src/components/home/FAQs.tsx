@@ -39,18 +39,31 @@ export default function FAQs() {
     if (!root || !reel) return;
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      // dynamic entrance (client: keep the dynamic part) — the heading and each
+      // question rise + fade in, staggered, as the section scrolls into view.
+      const head = root.querySelector(".faq-head");
+      const qs = gsap.utils.toArray<HTMLElement>(".faq-q", root);
+      const intro = gsap.from([head, ...qs].filter(Boolean) as HTMLElement[], {
+        y: 56,
+        autoAlpha: 0,
+        duration: 0.8,
+        stagger: 0.07,
+        ease: "power3.out",
+        scrollTrigger: { trigger: root, start: "top 78%", once: true },
+      });
+      // the reel stays put (sticky) and fades ALL the way out as you scroll
+      // past — no upward lift, no half-cut, just a clean full fade to nothing
       const tween = gsap.fromTo(
         reel,
-        { yPercent: 0, autoAlpha: 1, scale: 1 },
+        { autoAlpha: 1, scale: 1 },
         {
-          yPercent: -22,
           autoAlpha: 0,
-          scale: 0.95,
-          ease: "power1.inOut",
-          scrollTrigger: { trigger: root, start: "bottom 82%", end: "bottom 46%", scrub: 1.2 },
+          scale: 0.965,
+          ease: "none",
+          scrollTrigger: { trigger: root, start: "bottom 80%", end: "bottom 30%", scrub: 1 },
         },
       );
-      return () => { tween.scrollTrigger?.kill(); tween.kill(); };
+      return () => { intro.scrollTrigger?.kill(); intro.kill(); tween.scrollTrigger?.kill(); tween.kill(); };
     });
     return () => mm.revert();
   }, []);
@@ -68,7 +81,7 @@ export default function FAQs() {
         {/* LEFT — heading + video reel. Sticky on desktop so the reel stays in
             view while the question list is read. */}
         <div className="relative md:sticky md:top-[18vh] md:w-[40%] md:self-start md:pl-6 lg:w-[36%] lg:pl-10">
-          <h2 className="font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
+          <h2 className="faq-head font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
             <span className="text-[var(--gold-text)]">FAQ&apos;s</span>
           </h2>
           <div ref={reelRef} className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:mt-9 md:w-[clamp(180px,80%,300px)]">
@@ -90,7 +103,7 @@ export default function FAQs() {
             return (
               <div
                 key={f.q}
-                className="border-t border-dashed border-[var(--hairline-dark)] last:border-b"
+                className="faq-q border-t border-dashed border-[var(--hairline-dark)] last:border-b"
               >
                 <button
                   type="button"

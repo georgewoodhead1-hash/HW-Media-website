@@ -326,18 +326,21 @@ html[data-mode="light"] .logo-mark {
   transition: opacity 0.5s var(--ease-expo);
 }
 
-/* ---- Trusted-by wall: hover a mark and it grows while the rest blow back ---- */
+/* ---- Trusted-by: dimmed by default; hover a mark and it grows + goes white
+   while the rest of that row blow back ---- */
 .tb-logo {
-  opacity: 0.5;
-  transition: opacity 0.45s var(--ease-expo), transform 0.45s var(--ease-expo);
+  opacity: 0.38;
+  filter: brightness(0.9);
+  transition: opacity 0.45s var(--ease-expo), transform 0.45s var(--ease-expo), filter 0.45s var(--ease-expo);
 }
-.tb-wall:has(.tb-logo:hover) .tb-logo:not(:hover) {
+.tb-row:has(.tb-logo:hover) .tb-logo:not(:hover) {
   opacity: 0.12;
-  transform: scale(0.8);
+  transform: scale(0.82);
 }
 .tb-logo:hover {
   opacity: 1;
-  transform: scale(1.5);
+  filter: brightness(1.35);
+  transform: scale(1.45);
   z-index: 5;
 }
 

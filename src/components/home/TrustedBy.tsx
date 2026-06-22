@@ -23,13 +23,13 @@ const ROW_B = LOGOS.slice(mid);
 
 function Logo({ slug }: { slug: string }) {
   return (
-    <span className="tb-logo group/logo flex h-24 w-[210px] shrink-0 items-center justify-center md:w-[230px]">
+    <span className="tb-logo flex h-24 w-[210px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:w-[230px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/logos/${slug}.png`}
         alt=""
         aria-hidden
-        className="logo-mark max-h-[60px] max-w-[200px] object-contain opacity-45 saturate-[0.35] transition-[opacity,filter,transform] duration-300 ease-out will-change-transform group-hover/row:opacity-25 group-hover/logo:scale-[1.28] group-hover/logo:opacity-100 group-hover/logo:saturate-100 md:max-h-[68px] [html[data-mode=light]_&]:invert"
+        className="logo-mark max-h-[60px] max-w-[200px] object-contain md:max-h-[68px] [html[data-mode=light]_&]:invert"
         loading="lazy"
       />
     </span>
@@ -47,8 +47,8 @@ function Row({ logos, reverse = false, trackRef, tweenRef }: RowProps) {
   const list = [...logos, ...logos, ...logos];
   return (
     <div
-      className="tb-row group/row overflow-hidden"
-      onMouseEnter={() => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 0.08, duration: 0.5 })}
+      className="tb-row overflow-hidden"
+      onMouseEnter={() => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 0, duration: 0.25 })}
       onMouseLeave={() => tweenRef.current && gsap.to(tweenRef.current, { timeScale: 1, duration: 0.6 })}
       style={{
         maskImage: "linear-gradient(90deg, transparent, black 6%, black 94%, transparent)",

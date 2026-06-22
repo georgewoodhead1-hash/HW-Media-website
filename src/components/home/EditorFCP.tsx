@@ -22,7 +22,7 @@ const STAGES: Stage[] = [
   { name: "Editing", blurb: "Where the footage becomes a film.", clip: "/videos/micro/m10.mp4" },
   { name: "Delivery", blurb: "Masters, plus every cutdown your channels need.", clip: "/videos/micro/m12.mp4" },
 ];
-const INTRO = 0.07; // first slice shows "Our process" before the stages begin
+const INTRO = 0.42; // long, slow assemble window before the stages begin
 
 export default function EditorFCP() {
   const rootRef = useRef<HTMLElement>(null);
@@ -55,28 +55,30 @@ export default function EditorFCP() {
       if (introTitleRef.current) {
         split = new SplitText(introTitleRef.current, { type: "chars", charsClass: "fcp-char" });
         const chars = split.chars as HTMLElement[];
-        // a deterministic-ish scatter: each char flung wide with rotation
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        // SCATTER WIDE across the whole page — each letter flung out toward the
+        // edges, clearly visible, then slowly drawn back together on scroll.
         chars.forEach((c, i) => {
           const dir = i % 2 === 0 ? 1 : -1;
-          const spread = 80 + ((i * 37) % 160); // 80–240px lateral spread
+          const mag = 0.3 + ((i * 13) % 22) / 100; // 0.30–0.52 of the viewport width
           gsap.set(c, {
-            xPercent: 0,
-            x: dir * spread * (0.6 + ((i * 13) % 40) / 100),
-            y: (((i * 53) % 200) - 100) * 1.6, // ±160px vertical scatter
-            rotation: dir * (12 + ((i * 29) % 36)), // 12–48deg tilt
-            scale: 0.7 + ((i * 17) % 30) / 100,
-            autoAlpha: 0.15,
+            x: dir * mag * vw,
+            y: (((i * 53) % 100) - 50) / 50 * vh * 0.42, // up to ±0.42vh
+            rotation: dir * (14 + ((i * 29) % 46)),
+            scale: 0.55 + ((i * 17) % 45) / 100,
+            autoAlpha: 0.9, // visible while spread out
             transformOrigin: "50% 50%",
           });
         });
 
+        // slow, smooth assemble — scrubbed over the long INTRO window
         gsap.timeline({
           scrollTrigger: {
             trigger: root,
             start: "top top",
-            // assemble completes a touch before the stage sequence begins
             end: () => `+=${(root.offsetHeight - window.innerHeight) * INTRO}`,
-            scrub: 0.8,
+            scrub: 1.2,
           },
         }).to(chars, {
           x: 0,
@@ -84,8 +86,8 @@ export default function EditorFCP() {
           rotation: 0,
           scale: 1,
           autoAlpha: 1,
-          ease: "power3.out",
-          stagger: 0.06,
+          ease: "power2.inOut",
+          stagger: 0.05,
         });
       }
 
@@ -154,7 +156,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="page"
       data-chapter="Our process"
-      className="relative motion-safe:md:h-[340vh]"
+      className="relative motion-safe:md:h-[560vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen flex-col items-center justify-center overflow-hidden px-5 md:flex md:px-10">

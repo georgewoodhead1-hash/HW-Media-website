@@ -18,16 +18,6 @@ const STATS = [
   { n: 8, suffix: "", label: "Years on set" },
 ];
 
-function Corner({ pos }: { pos: string }) {
-  const edge: Record<string, string> = {
-    tl: "left-12 top-12 border-l-2 border-t-2",
-    tr: "right-12 top-12 border-r-2 border-t-2",
-    bl: "left-12 bottom-12 border-b-2 border-l-2",
-    br: "right-12 bottom-12 border-b-2 border-r-2",
-  };
-  return <span aria-hidden className={`pointer-events-none absolute h-6 w-6 border-[var(--gold)] ${edge[pos]}`} />;
-}
-
 export default function Mission() {
   const rootRef = useRef<HTMLElement>(null);
 
@@ -37,10 +27,10 @@ export default function Mission() {
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      // the panel slides up over the hero — the layering move
+      // the panel slides up over the hero — the layering move, slow + smooth
       gsap.fromTo(".ms-panel", { yPercent: 100 }, {
         yPercent: 0, ease: "none",
-        scrollTrigger: { trigger: root, start: "top bottom", end: "top top", scrub: 1.1 },
+        scrollTrigger: { trigger: root, start: "top bottom", end: "28% top", scrub: 1.5 },
       });
       // heading rises in once the panel has landed
       gsap.fromTo(".ms-head-line", { yPercent: 115 }, {
@@ -83,25 +73,20 @@ export default function Mission() {
       aria-label="Our mission"
     >
       <div className="ms-panel sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)] will-change-transform motion-reduce:md:hidden md:block">
-        <Corner pos="tl" />
-        <Corner pos="tr" />
-        <Corner pos="bl" />
-        <Corner pos="br" />
-
         <div
-          className="flex h-full items-center px-12 py-[12vh] md:px-20"
+          className="flex h-full items-center px-12 py-[4vh] md:px-20"
           style={{ fontFamily: "var(--font-dm), sans-serif" }}
         >
-          <div className="mx-auto grid w-full max-w-[1320px] grid-cols-1 gap-x-16 gap-y-10 md:grid-cols-12 md:items-start">
+          <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-12 md:items-start">
             {/* LEFT — heading only, nothing under it */}
-            <h2 className="col-span-12 font-display text-[clamp(2.2rem,3.6vw,3.7rem)] leading-[0.92] lg:col-span-4">
+            <h2 className="col-span-12 font-display text-[clamp(1.7rem,2.9vw,2.9rem)] leading-[0.94] lg:col-span-4">
               <span className="block overflow-hidden pb-[0.03em]"><span className="ms-head-line block will-change-transform">Films, not</span></span>
-              <span className="block overflow-hidden pb-[0.03em]"><span className="ms-head-line block will-change-transform">content<span className="text-[var(--red)]">.</span></span></span>
+              <span className="block overflow-hidden pb-[0.03em]"><span className="ms-head-line block will-change-transform">content.</span></span>
             </h2>
 
-            {/* RIGHT — the big paragraph, then the stats directly under it */}
+            {/* RIGHT — the paragraph, then the stats directly under it */}
             <div className="col-span-12 lg:col-span-8">
-              <p className="text-[clamp(1.55rem,2.3vw,2.45rem)] font-medium leading-[1.13] text-[var(--fg)]">
+              <p className="text-[clamp(1.15rem,1.8vw,1.85rem)] font-medium leading-[1.2] text-[var(--fg)]">
                 {PARA.split(" ").map((w, i) => (
                   <span key={i} className="ms-word">{w} </span>
                 ))}

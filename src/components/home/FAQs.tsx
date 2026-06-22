@@ -101,15 +101,17 @@ export default function FAQs() {
     >
       <div className="md:flex md:items-start md:gap-12 lg:gap-16">
         {/* LEFT — heading is sticky + frozen; the reel sits out of flow below it.
-            Bumped higher (top-[9vh]) and widened a touch so the reel never
-            clips off the left edge at laptop widths. */}
-        <div className="relative md:sticky md:top-[9vh] md:w-[40%] md:self-start lg:w-[36%]">
+            Nudged DOWN (top-[18vh]) and slightly RIGHT (md:pl-6 lg:pl-10) so the
+            "FAQ's" heading sits IN LINE near the top of the reel rather than
+            floating high above it. The reel is pulled up close to the heading
+            (md:top-[5.5rem]) so the heading aligns with its top edge. */}
+        <div className="relative md:sticky md:top-[18vh] md:w-[40%] md:self-start md:pl-6 lg:w-[36%] lg:pl-10">
           <h2 className="font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
-            <span className="text-[var(--gold)]">FAQs</span>
+            <span className="text-[var(--gold)]">FAQ&apos;s</span>
           </h2>
           <div
             ref={reelRef}
-            className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:absolute md:left-0 md:top-[7.5rem] md:mt-0 md:w-[clamp(180px,80%,300px)]"
+            className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:absolute md:left-6 md:top-[5.5rem] md:mt-0 md:w-[clamp(180px,80%,300px)] lg:left-10"
           >
             <video
               className="h-full w-full object-cover"

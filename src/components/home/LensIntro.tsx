@@ -435,14 +435,21 @@ export default function LensIntro() {
 
         {/* the motto — our mainstream display font, solid and bold, standing
             out over the reel. No knockout, no glass, no shadow, one clean rise. */}
-        <div className="hero-motto absolute bottom-0 left-0 z-10 px-5 pb-24 will-change-transform md:px-10 md:pb-28">
+        <div className="hero-motto absolute left-0 top-[46%] z-10 -translate-y-1/2 px-5 will-change-transform md:px-10">
           <h1 className="font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88] text-[#f5f1e6]">
             Break the<br />
             <span className="text-[var(--gold)]">ordinary.</span>
           </h1>
+          <p
+            className="mt-5 max-w-md text-[15px] leading-relaxed text-[#f5f1e6]/75"
+            style={{ fontFamily: "var(--font-dm), sans-serif" }}
+          >
+            A London film agency for brands that refuse to blend in.
+          </p>
           <Link
             href="/contact"
-            className="label-mono mt-6 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/45 px-5 py-2 text-[11px] tracking-[0.18em] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/45 px-7 py-3 text-[15px] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
+            style={{ fontFamily: "var(--font-dm), sans-serif" }}
           >
             Get in touch <span aria-hidden>⟶</span>
           </Link>

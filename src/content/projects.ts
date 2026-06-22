@@ -36,10 +36,10 @@ export const projects: Project[] = [
     category: "Brand film",
     year: "2026",
     ...p("otoko"),
-    tagline: "A launch film shot across the Lake District, sunrise to sunset.",
+    tagline: "Otoko's launch film, shot sunrise to sunset across the Lake District.",
     stats: "2 shoot days · 4 locations · 1-man crew",
     story:
-      "Captured across two shoot days with the weather setting the tone. Drone work, FPV movement and fast-paced action balanced with slower, intentional moments.",
+      "The launch film for Otoko, chasing light across the fells from first sun to last. Two days, four locations and a one-man crew, with the Lakeland weather dictating every move. FPV and drone passes carve through the valleys, then drop into slower, deliberate moments that let the landscape breathe.",
     services: ["Direction", "Cinematography", "Post Production"],
     credits: [{ role: "Director / DP", name: "Harry Wallis" }],
   },
@@ -50,10 +50,10 @@ export const projects: Project[] = [
     category: "Commercial",
     year: "2025",
     ...p("mclaren"),
-    tagline: "A hero campaign film built around pace, movement and impact.",
+    tagline: "A hero film for McLaren's Artura — the marque's first hybrid supercar.",
     stats: "3 shoot days · 6 locations · crew of 2",
     story:
-      "Organised in under 72 hours with a two-man crew. Follow-car rig shots and multiple camera perspectives keep the audience inside the experience of speed.",
+      "A hero campaign film for the McLaren Artura, the brand's first series-production hybrid supercar. Turned around in under 72 hours with a two-man crew and a follow-car rig running tight to the panel. Multiple camera perspectives keep you locked inside the experience of speed as the Artura's V6 and electric motor surge together.",
     services: ["Direction", "Cinematography", "Post Production"],
     credits: [
       { role: "Director / DP", name: "Harry Wallis" },
@@ -67,10 +67,10 @@ export const projects: Project[] = [
     category: "Brand film",
     year: "2026",
     ...p("hera"),
-    tagline: "A product story for Sans Matin, told with restraint.",
+    tagline: "Hera — a considered product story for Sans Matin, told with restraint.",
     stats: "1 shoot day · studio + location",
     story:
-      "Quiet, deliberate framing that lets the product carry the film. Shot in a day, graded in house.",
+      "Hera is a product story for Sans Matin, built on restraint. Quiet, deliberate framing and close, tactile detail let the object carry the film without a word of voiceover. Shot in a single day across studio and location, then graded in house to hold the warmth of the brand.",
     services: ["Direction", "Cinematography", "Colour"],
     credits: [
       { role: "Director / DP", name: "Harry Wallis" },
@@ -84,10 +84,10 @@ export const projects: Project[] = [
     category: "Brand film",
     year: "2025",
     ...p("zuma"),
-    tagline: "A destination film for Zuma's Maldives residency.",
+    tagline: "A destination film for Zuma — the high-end Japanese izakaya, in the Maldives.",
     stats: "on location · Maldives",
     story:
-      "Food, water and light. A hospitality film that sells the feeling of being there rather than the menu.",
+      "A destination film for Zuma, the high-end contemporary izakaya, on residency in the Maldives. Robata smoke, fresh-cut sashimi and turquoise water cut to the rhythm of the room. It sells the feeling of being there — the heat of the grill against the calm of the ocean — rather than reciting the menu.",
     services: ["Direction", "Cinematography", "Edit & Grade"],
     credits: [
       { role: "Director / DP", name: "Harry Wallis" },
@@ -101,10 +101,10 @@ export const projects: Project[] = [
     category: "Commercial",
     year: "2025",
     ...p("nike"),
-    tagline: "A social-first ad for the Pegasus 41.",
+    tagline: "A social-first spot for the Nike Pegasus 41 running shoe.",
     stats: "vertical master · paid social",
     story:
-      "Cut for the feed: fast, rhythmic, built to stop a thumb. Mastered vertical, never cropped as an afterthought.",
+      "A social-first spot for the Nike Pegasus 41, the everyday running workhorse with its ReactX foam and responsive ride. Cut for the feed — fast, rhythmic and built to stop a thumb in the first second. Mastered vertical from the ground up, never cropped as an afterthought.",
     services: ["Direction", "Edit", "Paid Social Versions"],
     credits: [
       { role: "Director / DP", name: "Harry Wallis" },
@@ -118,10 +118,10 @@ export const projects: Project[] = [
     category: "Commercial",
     year: "2025",
     ...p("salomon"),
-    tagline: "Trail speed, shot at altitude for Salomon.",
+    tagline: "Trail speed at altitude — Salomon's S/Lab, on the mountain.",
     stats: "on the mountain · crew of 2",
     story:
-      "Athletes, weather windows and thin air. Performance product filmed the way it gets used.",
+      "Salomon's S/Lab line is built with elite trail and mountain athletes, so we filmed it the way it actually gets used. Real athletes, real weather windows and the thin air of altitude, chased with a crew of two light enough to move at running pace. Performance product earning its name on the terrain it was made for.",
     services: ["Direction", "Cinematography", "Edit & Grade"],
     credits: [
       { role: "Director / DP", name: "Harry Wallis" },
@@ -135,10 +135,10 @@ export const projects: Project[] = [
     category: "Documentary",
     year: "2026",
     ...p("chasing-the-salt"),
-    tagline: "A land speed record attempt at Bonneville, with Norton.",
+    tagline: "Norton's land-speed record run across the Bonneville salt flats.",
     stats: "10 days on the salt · crew of 3 · 10-min documentary",
     story:
-      "A land-speed record attempt on the Bonneville salt flats. Heritage machines, thin air, and the people who refuse to let legends rest. The salt remembers.",
+      "A high-speed record run across the Bonneville salt flats for Norton Motorcycles, the heritage British marque. Ten days on the salt with a crew of three, tracking a hand-built machine flat out toward its top-speed mark. Heritage engineering, blinding white horizons and the riders who refuse to let a legend sit still — a ten-minute documentary about chasing a number that won't come easy.",
     services: ["Concept Development", "Direction", "Cinematography", "Post Production"],
     credits: [
       { role: "Director / DP", name: "Harry Wallis" },

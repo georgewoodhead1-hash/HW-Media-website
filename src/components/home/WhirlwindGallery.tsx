@@ -204,15 +204,18 @@ export default function WhirlwindGallery() {
                 {" "}
               </span>
             ))}
-            <span className="font-accent text-[var(--gold)]" aria-hidden>
-              {LINE_B.split(" ").map((w, wi, arr) => (
-                <span key={`b${wi}`} className="inline-block whitespace-nowrap">
-                  {w.split("").map((c, i) => (
-                    <span key={i} className="type-char">{c}</span>
-                  ))}
-                  {wi < arr.length - 1 ? " " : ""}
-                </span>
-              ))}
+            <span aria-hidden>
+              {LINE_B.split(" ").map((w, wi, arr) => {
+                const isGold = w.replace(/[^a-zA-Z]/g, "").toLowerCase() === "break";
+                return (
+                  <span key={`b${wi}`} className={`inline-block whitespace-nowrap ${isGold ? "text-[var(--gold)]" : ""}`}>
+                    {w.split("").map((c, i) => (
+                      <span key={i} className="type-char">{c}</span>
+                    ))}
+                    {wi < arr.length - 1 ? " " : ""}
+                  </span>
+                );
+              })}
             </span>
           </p>
           <Link
@@ -268,7 +271,7 @@ export default function WhirlwindGallery() {
       {/* mobile/reduced: line + grid + CTA + slim footer */}
       <div className="px-5 py-24 md:hidden">
         <p className="font-display text-2xl">
-          Every film is a chance to <span className="font-accent text-[var(--gold)]">break the ordinary.</span>
+          Every film is a chance to <span className="text-[var(--gold)]">break</span> the ordinary.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4">
           {TILES.slice(0, 6).map((src, i) => (

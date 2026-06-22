@@ -23,15 +23,55 @@ export default function ThemeToggle() {
     }
   };
 
+  const isDark = mode === "dark";
+
   return (
     <button
       onClick={toggle}
-      aria-label={`Switch to ${mode === "dark" ? "light" : "dark"} mode`}
-      title={mode === "dark" ? "Light mode" : "Dark mode"}
-      className="fixed left-[8.6rem] top-[1.05rem] z-50 flex h-8 w-8 items-center justify-center rounded-full text-[15px] leading-none text-[var(--gold)] transition-transform duration-300 hover:rotate-45 md:left-[11rem]"
+      aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+      title={isDark ? "Light mode" : "Dark mode"}
+      className="group fixed bottom-16 left-5 z-50 flex h-10 w-10 items-center justify-center rounded-full border border-[var(--fg)]/30 bg-[var(--fg)]/[0.04] text-[var(--gold)] backdrop-blur-sm transition-colors duration-300 hover:border-[var(--gold)]/60 hover:bg-[var(--gold)]/10 md:bottom-20 md:left-10"
       style={{ transitionTimingFunction: "var(--ease-expo)" }}
     >
-      ☀
+      {isDark ? (
+        // Sun — shown in dark mode (click to go light)
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-[18px] w-[18px] transition-transform duration-500 group-hover:rotate-90"
+          style={{ transitionTimingFunction: "var(--ease-expo)" }}
+          aria-hidden="true"
+        >
+          <circle cx="12" cy="12" r="4" />
+          <line x1="12" y1="2" x2="12" y2="4" />
+          <line x1="12" y1="20" x2="12" y2="22" />
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+          <line x1="2" y1="12" x2="4" y2="12" />
+          <line x1="20" y1="12" x2="22" y2="12" />
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+        </svg>
+      ) : (
+        // Moon — shown in light mode (click to go dark)
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          className="h-[18px] w-[18px] transition-transform duration-500 group-hover:-rotate-12"
+          style={{ transitionTimingFunction: "var(--ease-expo)" }}
+          aria-hidden="true"
+        >
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+        </svg>
+      )}
     </button>
   );
 }

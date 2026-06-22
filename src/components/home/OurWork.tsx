@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { projects } from "@/content/projects";
 import { safePlay } from "@/lib/video";
 
@@ -35,51 +35,74 @@ export default function OurWork() {
       const head = root.querySelector<HTMLElement>(".ow-head");
       const N = bars.length;
 
-      // bars arrive between FROM and TO; after TO the full accordion is held so
-      // there's a comfortable window to hover before the section releases.
-      const FROM = 0.16;
-      const TO = 0.74;
+      // type the heading in char-by-char as the section pins, then settle it as
+      // a smaller title ABOVE the accordion row (it never fades away).
+      const split = head ? new SplitText(head, { type: "chars" }) : null;
+      const chars = split ? (split.chars as HTMLElement[]) : [];
+
+      // bars arrive between FROM and TO; the windows are wide and overlapping so
+      // each film glides across rather than popping. After TO the full accordion
+      // is held so there's a comfortable window to hover before release.
+      const FROM = 0.2;
+      const TO = 0.82;
       const span = (TO - FROM) / N;
 
       const place = (p: number) => {
-        // heading reveals in the middle, then lifts up + fades as bars arrive
+        // heading: characters type themselves in early, then the whole title
+        // lifts + shrinks up to a header position above the row and holds there.
         if (head) {
-          const reveal = smooth(0, 0.12, p);
-          const exit = smooth(0.16, 0.32, p);
+          const lift = smooth(0.18, 0.46, p); // 0 = centred, 1 = settled above row
+          chars.forEach((ch, i) => {
+            // stagger each char's type-in across the first stretch of scroll
+            const cs = (i / Math.max(1, chars.length)) * 0.12;
+            const reveal = smooth(0.02 + cs, 0.1 + cs, p);
+            gsap.set(ch, {
+              autoAlpha: reveal,
+              y: lerp(14, 0, reveal),
+            });
+          });
+          // park the title just above the 64vh accordion row (origin = bottom so
+          // it shrinks toward its baseline as it settles). Never fades to 0.
+          const parkY = -window.innerHeight * 0.4;
           gsap.set(head, {
-            autoAlpha: reveal * (1 - exit),
-            y: lerp(18, -130, exit),
-            scale: lerp(1.04, 0.9, exit),
+            transformOrigin: "center bottom",
+            y: lerp(0, parkY, lift),
+            scale: lerp(1.04, 0.4, lift),
           });
         }
-        // each bar flies in from the right edge of the screen into its slot
+        // each film bar glides in from the right edge into its accordion slot,
+        // fading up smoothly along a soft ramp (no hard cut, no pop).
         const vw = window.innerWidth;
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
-          const b = a + span * 1.45; // overlap arrivals so it flows bang-bang-bang
+          const b = a + span * 2.1; // wide, overlapping windows = seamless glide
           const t = smooth(a, b, p);
+          const fade = smooth(a, a + (b - a) * 0.7, p); // soft alpha ramp
           gsap.set(bar, {
             x: lerp(vw * 1.05, 0, t),
-            autoAlpha: t < 0.001 ? 0 : 1,
-            rotate: lerp(2, 0, t),
+            autoAlpha: fade,
+            rotate: lerp(1.6, 0, t),
           });
         });
       };
 
       gsap.set(bars, { x: window.innerWidth * 1.05, autoAlpha: 0 });
-      if (head) gsap.set(head, { autoAlpha: 0 });
+      if (chars.length) gsap.set(chars, { autoAlpha: 0 });
       place(0);
 
       const st = ScrollTrigger.create({
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.2,
+        scrub: 1.5,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
       });
 
-      return () => st.kill();
+      return () => {
+        st.kill();
+        split?.revert();
+      };
     });
 
     const io = new IntersectionObserver(

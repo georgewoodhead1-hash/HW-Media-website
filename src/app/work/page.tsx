@@ -8,15 +8,17 @@ export const metadata: Metadata = {
   description: "Selected brand films, documentary and commercial work by HW Media, London.",
 };
 
-// Work grid (client feedback): a clean 3x3, Auteur-style — white text and the
-// client's logo overlaid on each film. Runs through Norton (Chasing the Salt)
-// and Black Crows; a final tile invites the next project.
+// Work grid (client feedback): a tight, flush 3-col mosaic — no gutters, no
+// borders between tiles. Every tile is its film, autoplaying at once, with the
+// client's logo overlaid over a soft dark gradient. The title lives only on the
+// project detail page.
 const LOGO: Record<string, string> = {
   McLaren: "mclaren-logo",
   Nike: "nike-white",
   Zuma: "zuma-white",
   Salomon: "salomon-logo-white",
   Defender: "defender-white",
+  "Black Crows": "logo-black-crows-white",
 };
 
 export default function WorkIndex() {
@@ -28,57 +30,97 @@ export default function WorkIndex() {
         className="min-h-screen bg-[var(--bg)] px-5 pb-[8vh] pt-[16vh] text-[var(--fg)] md:px-10"
       >
         <div className="mb-10">
-          <span className="label-mono text-[11px] tracking-[0.28em] text-[var(--gold)]/80">SELECTED WORK</span>
+          <span
+            className="text-[11px] tracking-[0.28em] text-[var(--gold)]/80"
+            style={{ fontFamily: "var(--font-dm), sans-serif" }}
+          >
+            SELECTED WORK
+          </span>
           <h1 className="font-display mt-3 text-[clamp(2.6rem,7vw,6rem)] leading-[0.9]" style={{ fontWeight: 400 }}>
             Work
           </h1>
         </div>
 
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {projects.map((p) => (
-            <Link key={p.slug} href={`/work/${p.slug}`} className="group relative aspect-[4/3] overflow-hidden rounded-md">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={p.posterWide}
-                alt={p.title}
-                className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/25" />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
-                <div className="h-6">
-                  {LOGO[p.client] ? (
+        {/* Flush mosaic — gap-0, tiles overflow-hidden, no rings/borders between */}
+        <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
+          {projects.map((p) => {
+            const logo = LOGO[p.client];
+            return (
+              <Link
+                key={p.slug}
+                href={`/work/${p.slug}`}
+                className="group relative block aspect-[4/3] overflow-hidden"
+              >
+                <video
+                  className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1200ms] ease-out group-hover:scale-105"
+                  src={p.wide}
+                  poster={p.posterWide}
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                />
+                {/* subtle dark gradient so the logo always reads */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-black/30" />
+                <div className="absolute inset-0 flex items-end p-6">
+                  {logo ? (
                     // eslint-disable-next-line @next/next/no-img-element
-                    <img src={`/logos/${LOGO[p.client]}.png`} alt={p.client} className="h-5 w-auto max-w-[120px] object-contain" />
+                    <img
+                      src={`/logos/${logo}.png`}
+                      alt={p.client}
+                      className="h-6 w-auto max-w-[150px] object-contain opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+                    />
                   ) : (
-                    <span className="label-mono text-[10px] tracking-[0.24em] text-white/90">{p.client.toUpperCase()}</span>
+                    <span
+                      className="text-[15px] tracking-[0.06em] text-white/90"
+                      style={{ fontFamily: "var(--font-dm), sans-serif" }}
+                    >
+                      {p.client}
+                    </span>
                   )}
                 </div>
-                <div>
-                  <h2 className="font-display text-[clamp(1.5rem,2.4vw,2.4rem)] leading-none text-white" style={{ fontWeight: 400 }}>
-                    {p.title}
-                  </h2>
-                  <span className="label-mono mt-2 inline-block text-[10px] tracking-[0.22em] text-white/0 transition-colors duration-300 group-hover:text-[var(--gold)]">
-                    WATCH ⟶
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
 
-          {/* Black Crows — logo tile (project to come) */}
-          <Link href="/contact" className="group relative flex aspect-[4/3] items-center justify-center overflow-hidden rounded-md border border-[var(--hairline-dark)] bg-[#0b0b0b]">
+          {/* Black Crows — logo tile (project in production), flush with the grid */}
+          <Link
+            href="/contact"
+            className="group relative flex aspect-[4/3] items-end overflow-hidden bg-[#0b0b0b] p-6"
+          >
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logos/logo-black-crows-white.png" alt="Black Crows" className="h-8 w-auto max-w-[150px] object-contain opacity-70 transition-opacity duration-300 group-hover:opacity-100" />
-            <span className="label-mono absolute bottom-5 left-5 text-[10px] tracking-[0.24em] text-white/45">IN PRODUCTION</span>
+            <img
+              src="/logos/logo-black-crows-white.png"
+              alt="Black Crows"
+              className="h-7 w-auto max-w-[150px] object-contain opacity-70 transition-opacity duration-500 group-hover:opacity-100"
+            />
+            <span
+              className="absolute right-6 top-6 text-[10px] tracking-[0.24em] text-white/45"
+              style={{ fontFamily: "var(--font-dm), sans-serif" }}
+            >
+              IN PRODUCTION
+            </span>
           </Link>
 
-          {/* next-project CTA tile — keeps the grid a clean 3x3 */}
-          <Link href="/contact" className="group relative flex aspect-[4/3] flex-col items-start justify-end overflow-hidden rounded-md border border-[var(--gold)]/40 bg-[#0b0b0b] p-5">
-            <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--gold)]">NEXT</span>
+          {/* next-project CTA tile — keeps the mosaic square */}
+          <Link
+            href="/contact"
+            className="group relative flex aspect-[4/3] flex-col items-start justify-end overflow-hidden bg-[#0b0b0b] p-6"
+          >
+            <span
+              className="text-[10px] tracking-[0.24em] text-[var(--gold)]"
+              style={{ fontFamily: "var(--font-dm), sans-serif" }}
+            >
+              NEXT
+            </span>
             <h2 className="font-display mt-2 text-[clamp(1.4rem,2.2vw,2rem)] leading-[0.95] text-white" style={{ fontWeight: 400 }}>
               Have a project<br />in mind?
             </h2>
-            <span className="label-mono mt-3 text-[10px] tracking-[0.22em] text-white/70 transition-colors duration-300 group-hover:text-[var(--gold)]">
+            <span
+              className="mt-3 text-[10px] tracking-[0.22em] text-white/70 transition-colors duration-300 group-hover:text-[var(--gold)]"
+              style={{ fontFamily: "var(--font-dm), sans-serif" }}
+            >
               GET IN TOUCH ⟶
             </span>
           </Link>

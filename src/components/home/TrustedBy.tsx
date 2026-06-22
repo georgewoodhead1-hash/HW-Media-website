@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import ScrollType from "@/components/shell/ScrollType";
 
 // 02 — Trusted by (client feedback): TWO rows of client logos marqueeing in
 // OPPOSITE directions, larger marks, tight spacing. Every logo sits dimmed and
@@ -149,9 +150,13 @@ export default function TrustedBy() {
       aria-label="Trusted by"
     >
       <div className="tb-heading mb-[4vh] text-center">
-        <h2 className="font-display text-[clamp(1.2rem,2.4vw,2rem)] normal-case leading-none text-[var(--gold)]">
+        <ScrollType
+          as="h2"
+          className="font-display text-[clamp(1.2rem,2.4vw,2rem)] normal-case leading-none text-[var(--gold)]"
+          style={{ fontWeight: 400 }}
+        >
           Trusted by
-        </h2>
+        </ScrollType>
       </div>
 
       <div className="flex flex-col gap-3 md:gap-4">

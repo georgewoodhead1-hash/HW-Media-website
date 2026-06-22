@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import ScrollType from "@/components/shell/ScrollType";
 
 // 01 — Mission, the Studio-Graham move. A dark panel that LAYERS UP over
 // the camera (hero) as you scroll, framed by viewfinder corner brackets.
@@ -32,11 +33,7 @@ export default function Mission() {
         yPercent: 0, ease: "none",
         scrollTrigger: { trigger: root, start: "top bottom", end: "28% top", scrub: 1.5 },
       });
-      // heading rises in once the panel has landed
-      gsap.fromTo(".ms-head-line", { yPercent: 115 }, {
-        yPercent: 0, ease: "power3.out", duration: 1.1, stagger: 0.08,
-        scrollTrigger: { trigger: root, start: "top 32%" },
-      });
+      // (the heading reveal is now handled by the ScrollType typewriter)
       // the paragraph writes itself, slowly, across the long pinned hold —
       // every word lights up well before the panel is allowed to leave
       gsap.fromTo(".ms-word", { opacity: 0.12 }, {
@@ -74,19 +71,23 @@ export default function Mission() {
     >
       <div className="ms-panel sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)] will-change-transform motion-reduce:md:hidden md:block">
         <div
-          className="flex h-full items-center px-12 py-[4vh] md:px-20"
+          className="flex h-full items-center px-12 py-[1.5vh] md:px-20"
           style={{ fontFamily: "var(--font-dm), sans-serif" }}
         >
           <div className="mx-auto grid w-full max-w-[1240px] grid-cols-1 gap-x-16 gap-y-8 md:grid-cols-12 md:items-start">
             {/* LEFT — heading only, nothing under it */}
-            <h2 className="col-span-12 font-display text-[clamp(1.7rem,2.9vw,2.9rem)] leading-[0.94] lg:col-span-4">
-              <span className="block overflow-hidden pb-[0.03em]"><span className="ms-head-line block will-change-transform">Films, not</span></span>
-              <span className="block overflow-hidden pb-[0.03em]"><span className="ms-head-line block will-change-transform">content.</span></span>
-            </h2>
+            <ScrollType
+              as="h2"
+              className="col-span-12 font-display text-[clamp(2.1rem,3.5vw,3.5rem)] leading-[0.94] lg:col-span-4"
+              gold={["not"]}
+              style={{ fontWeight: 400 }}
+            >
+              Films, not content.
+            </ScrollType>
 
             {/* RIGHT — the paragraph, then the stats directly under it */}
             <div className="col-span-12 lg:col-span-8">
-              <p className="text-[clamp(1.15rem,1.8vw,1.85rem)] font-medium leading-[1.2] text-[var(--fg)]">
+              <p className="text-[clamp(1.35rem,2.2vw,2.25rem)] font-medium leading-[1.2] text-[var(--fg)]">
                 {PARA.split(" ").map((w, i) => (
                   <span key={i} className="ms-word">{w} </span>
                 ))}

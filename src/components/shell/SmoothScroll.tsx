@@ -13,12 +13,12 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
-    // Premium continuous glide (luke / bennett feel): lerp mode so the page
-    // is always easing toward the target — a weighted, heavy drift with no
-    // abrupt starts or stops. Lower lerp = heavier. Touch stays native.
+    // Seamless glide (Framer feel): a touch more responsive than before so it
+    // tracks the wheel closely instead of lagging behind (which read as
+    // "sticky"). Still smooth, never abrupt.
     const lenis = new Lenis({
-      lerp: 0.065,
-      wheelMultiplier: 0.7,
+      lerp: 0.1,
+      wheelMultiplier: 0.95,
       smoothWheel: true,
       syncTouch: true,
     });

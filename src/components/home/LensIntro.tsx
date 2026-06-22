@@ -159,40 +159,22 @@ export default function LensIntro() {
         });
 
         tl
-          // PHASE 1 — approach: the whole lens grows from half size
-          .to(rigRef.current, { scale: 1, duration: 0.22, ease: "power1.out" }, 0)
-          // PHASE 2 — through the layers of the glass, nearest first
-          .to(frontRef.current, { scale: 7, duration: 0.2, ease: "power1.in" }, 0.24)
-          .to(frontRef.current, { autoAlpha: 0, duration: 0.1 }, 0.34)
-          .to(midRef.current, { scale: 6, duration: 0.22, ease: "power1.in" }, 0.3)
-          .to(midRef.current, { autoAlpha: 0, duration: 0.1 }, 0.42)
-          .to(rearRef.current, { scale: 5, duration: 0.24, ease: "power1.in" }, 0.36)
-          .to(rearRef.current, { autoAlpha: 0, duration: 0.12 }, 0.48)
-          // the reel approaches behind the stack
-          .to(
-            vesselRef.current,
-            {
-              keyframes: [
-                { scale: 0.42, duration: 0.16, ease: "none" },
-                { scale: 0.97, duration: 0.14, ease: "power1.in" },
-                { scale: 1, duration: 0.08, ease: "none" },
-              ],
-            },
-            0.24,
-          )
-          // rack back to the true framing as you land inside the film
-          .to(innerRef.current, { scale: 1, duration: 0.16, ease: "power1.inOut" }, 0.5)
-          // the stage opens up
-          .to(vignetteRef.current, { opacity: 0, duration: 0.25 }, 0.3)
-          .to(dimRef.current, { opacity: 0, duration: 0.35 }, 0.25)
-          .to(cueRef.current, { autoAlpha: 0, duration: 0.05 }, 0.03)
+          // ONE continuous zoom — the whole lens dives in as a single move.
+          // All the glass flies past together (not three separate steps) while
+          // the reel racks up to fill the frame. Smooth acceleration in.
+          .to(rigRef.current, { scale: 1.4, duration: 1, ease: "power2.in" }, 0)
+          .to([frontRef.current, midRef.current, rearRef.current], { scale: 6, autoAlpha: 0, duration: 0.85, ease: "power2.in" }, 0.12)
+          .to(vesselRef.current, { scale: 1, duration: 1, ease: "power2.in" }, 0)
+          .to(innerRef.current, { scale: 1, duration: 1, ease: "power2.in" }, 0)
+          // the stage opens up as we land inside the film
+          .to(vignetteRef.current, { opacity: 0, duration: 0.55 }, 0.45)
+          .to(dimRef.current, { opacity: 0, duration: 0.6 }, 0.4)
+          .to(cueRef.current, { autoAlpha: 0, duration: 0.1 }, 0)
           // the scrim settles and the motto rises in as one clean unit
-          .to(veilRef.current, { opacity: 1, duration: 0.12 }, 0.48)
-          .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.1, ease: "power3.out" }, 0.52)
-          // a gentle drift through the hold — never a parked frame
-          .to(".hero-motto", { y: -16, duration: 0.26, ease: "none" }, 0.74);
+          .to(veilRef.current, { opacity: 1, duration: 0.25 }, 0.9)
+          .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.95);
 
-        tl.timeScale(0.30); // stretch the build to a calm ~3.4s auto-play
+        tl.timeScale(0.38); // a calm ~3s single dive
       }
     }, wrap);
 

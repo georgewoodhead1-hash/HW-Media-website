@@ -56,37 +56,33 @@ export default function Nav() {
     <>
       <header
         ref={rootRef}
-        className="nav-root fixed inset-x-0 top-2 z-50 flex items-center justify-between px-5 py-2.5 md:top-3 md:px-10"
+        className="nav-root fixed inset-x-0 top-3 z-50 flex items-center justify-between px-5 py-2.5 md:top-4 md:px-10"
       >
-        {/* scrim — half the previous height, just enough to keep links legible */}
-        <span
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 -top-2 -z-10 h-12 bg-gradient-to-b from-[var(--bg)] via-[var(--bg)]/55 to-transparent"
-        />
-
-        {/* LEFT — logo (placeholder wordmark until the official logo lands) */}
+        {/* LEFT — wordmark (clean DM Sans placeholder until the official logo) */}
         <Link
           href="/"
-          className="font-hand nav-enter text-2xl leading-none nav-wordmark"
+          className="nav-enter nav-wordmark flex items-baseline gap-1.5 leading-none"
           aria-label="HW Media — home"
+          style={{ fontFamily: "var(--font-dm), sans-serif" }}
         >
-          HW <span className="label-mono ml-1 align-middle text-[9px] tracking-[0.3em]">media</span>
+          <span className="font-display text-[1.55rem] font-semibold tracking-tight">HW</span>
+          <span className="text-[11px] font-medium uppercase tracking-[0.3em]">Media</span>
         </Link>
 
         {/* RIGHT — flat nav + persistent Start here */}
-        <nav className="flex items-center gap-5 md:gap-9">
+        <nav className="flex items-center gap-5 md:gap-9" style={{ fontFamily: "var(--font-dm), sans-serif" }}>
           {LINKS.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="label-mono nav-link nav-enter text-[11px] tracking-[0.18em]"
+              className="nav-link nav-enter text-[13px] font-medium uppercase tracking-[0.08em]"
             >
               {l.label}
             </Link>
           ))}
           <Link
             href="/contact"
-            className="label-mono nav-enter rounded-full border border-[var(--gold)] px-4 py-1.5 text-[10px] text-[var(--gold)] transition-colors duration-300 hover:bg-[var(--gold)] hover:text-[#050505] md:px-5 md:py-2 md:text-[11px]"
+            className="nav-enter rounded-full border border-[var(--gold)] px-4 py-1.5 text-[12px] font-medium uppercase tracking-[0.06em] text-[var(--gold)] transition-colors duration-300 hover:bg-[var(--gold)] hover:text-[#050505] md:px-5 md:py-2"
           >
             Start here
           </Link>

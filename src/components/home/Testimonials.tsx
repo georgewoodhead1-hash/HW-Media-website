@@ -82,27 +82,22 @@ export default function Testimonials() {
       const rise = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("[data-rise]"));
       if (!rise.length) return;
 
-      const tween = gsap.fromTo(
-        rise,
-        { y: 56, opacity: 0 },
-        {
-          y: 0,
-          opacity: 1,
-          ease: "power3.out",
-          stagger: 0.1,
-          scrollTrigger: {
-            trigger: root,
-            start: "top 90%",
-            end: "top 62%",
-            scrub: 0.5,
-          },
-        },
-      );
+      // one-shot entrance (NOT scrubbed) — the columns rise and settle ALL the
+      // way in, then stay. The old scrub tied it to scroll position so it never
+      // finished ("doesn't go the whole way") — this plays through cleanly.
+      const tween = gsap.from(rise, {
+        y: 64,
+        autoAlpha: 0,
+        duration: 1,
+        ease: "power3.out",
+        stagger: 0.14,
+        scrollTrigger: { trigger: root, start: "top 72%", once: true },
+      });
 
       return () => {
         tween.scrollTrigger?.kill();
         tween.kill();
-        gsap.set(rise, { clearProps: "transform,opacity" });
+        gsap.set(rise, { clearProps: "transform,opacity,visibility" });
       };
     });
 

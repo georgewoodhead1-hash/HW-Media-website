@@ -22,7 +22,7 @@ const STAGES: Stage[] = [
   { name: "We deliver", clip: "/videos/micro/m12.mp4" },
 ];
 
-const COMBINE = 0.46; // assemble + a short HOLD on "Our process" finishes here
+const COMBINE = 0.38; // assemble + a short HOLD on "Our process" finishes here (earlier = comes in faster)
 const OUTRO = 0.86; // after this the assembled scene breaks apart + flies off
 const ROW_X = [15, 38.3, 61.7, 85];
 const ROW_Y = [60, 49, 60, 49]; // stepped up/down for depth
@@ -198,7 +198,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="page"
       data-chapter="Our process"
-      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[14vh] motion-safe:md:h-[640vh]"
+      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[14vh] motion-safe:md:h-[400vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

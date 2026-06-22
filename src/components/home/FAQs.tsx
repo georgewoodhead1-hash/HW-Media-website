@@ -51,16 +51,18 @@ export default function FAQs() {
         ease: "power3.out",
         scrollTrigger: { trigger: root, start: "top 78%", once: true },
       });
-      // the reel stays put (sticky) and fades ALL the way out as you scroll
-      // past — no upward lift, no half-cut, just a clean full fade to nothing
+      // the reel stays PUT (sticky) and full-size the whole way down the
+      // questions, then fades straight out IN PLACE near the very end — no
+      // shrink (scale stays 1), no upward lift, and the fade completes while the
+      // reel is still pinned so it never gets "cut in half" on the sticky
+      // release. Pure opacity, nothing else moves.
       const tween = gsap.fromTo(
         reel,
-        { autoAlpha: 1, scale: 1 },
+        { autoAlpha: 1 },
         {
           autoAlpha: 0,
-          scale: 0.965,
           ease: "none",
-          scrollTrigger: { trigger: root, start: "bottom 80%", end: "bottom 30%", scrub: 1 },
+          scrollTrigger: { trigger: root, start: "bottom 96%", end: "bottom 80%", scrub: 1 },
         },
       );
       return () => { intro.scrollTrigger?.kill(); intro.kill(); tween.scrollTrigger?.kill(); tween.kill(); };

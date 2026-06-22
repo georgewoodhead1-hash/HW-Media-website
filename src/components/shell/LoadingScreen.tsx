@@ -11,7 +11,9 @@ export default function LoadingScreen() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
+    const reveal = () => window.dispatchEvent(new Event("hw:reveal"));
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      reveal();
       setDone(true);
       return;
     }
@@ -23,7 +25,9 @@ export default function LoadingScreen() {
         { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 1, ease: "expo.out" },
       )
         .to(".load-logo", { autoAlpha: 0, scale: 1.18, filter: "blur(4px)", duration: 0.7, ease: "power2.in" }, "+=0.55")
-        .to(rootRef.current, { autoAlpha: 0, duration: 0.6, ease: "power2.inOut" }, "-=0.15");
+        // the veil lifts AND the lens dive begins together — the HW logo hands
+        // off straight into the camera move (onStart fires "hw:reveal").
+        .to(rootRef.current, { autoAlpha: 0, duration: 0.6, ease: "power2.inOut", onStart: reveal }, "-=0.15");
     }, rootRef);
     return () => ctx.revert();
   }, []);

@@ -24,13 +24,13 @@ const ROW_B = LOGOS.slice(mid);
 
 function Logo({ slug }: { slug: string }) {
   return (
-    <span className="tb-logo flex h-20 w-[160px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:w-[180px]">
+    <span className="tb-logo flex h-24 w-[210px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:w-[240px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/logos/${slug}.png`}
         alt=""
         aria-hidden
-        className="logo-mark max-h-[38px] max-w-[130px] object-contain md:max-h-[44px] [html[data-mode=light]_&]:invert"
+        className="logo-mark max-h-[54px] max-w-[170px] object-contain md:max-h-[64px] md:max-w-[200px] [html[data-mode=light]_&]:invert"
         loading="lazy"
       />
     </span>

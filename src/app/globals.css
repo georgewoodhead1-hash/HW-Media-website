@@ -303,13 +303,16 @@ html[data-mode="light"] .logo-mark {
    No frozen image-fill, no faint translucency — clean type that sits over the
    playing video (which provides the motion), lifted with a soft shadow for
    legibility. NO border/stroke. */
+/* the motto — clean solid display type over the footage, lifted with a soft
+   shadow so it stays legible on any frame. (The "interact with the footage"
+   treatment is pending George's reference site — solid-clean until then.) */
 .glass-motto {
-  color: #f6f2e7;
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4);
+  color: #f4efe2;
+  text-shadow: 0 2px 26px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.38);
 }
 .glass-motto-gold {
   color: var(--gold);
-  text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4);
+  text-shadow: 0 2px 26px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.38);
 }
 
 /* Hero motto KNOCKOUT — the live hero footage shows through the letters and

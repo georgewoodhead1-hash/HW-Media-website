@@ -43,8 +43,8 @@ export default function OurWork() {
       // bars arrive between FROM and TO; the windows are wide and overlapping so
       // each film glides across rather than popping. After TO the full accordion
       // is held so there's a comfortable window to hover before release.
-      const FROM = 0.2;
-      const TO = 0.82;
+      const FROM = 0.08;
+      const TO = 0.58;
       const span = (TO - FROM) / N;
 
       const place = (p: number) => {
@@ -113,7 +113,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[14vh] motion-safe:md:h-[380vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[14vh] motion-safe:md:h-[240vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}

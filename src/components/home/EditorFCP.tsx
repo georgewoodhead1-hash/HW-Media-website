@@ -126,13 +126,17 @@ export default function EditorFCP() {
           });
         });
 
-        // "Our process" fades out as the stages take over
-        gsap.set(titleRef.current, { autoAlpha: 1 - enter });
+        // "Our process" leaves quickly right at the boundary so it never
+        // shares the centre with the first stage word
+        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(COMBINE - 0.01, COMBINE + 0.02, p) });
 
-        // STAGE names crossfade smoothly (continuous, not on index change)
+        // STAGE names — ONE at a time, non-overlapping fade windows so two big
+        // words never occupy the centre together (that was the garble)
+        const slot = 1 / nStage;
         stages.forEach((s, i) => {
-          const w = stageWeight(sp, i);
-          gsap.set(s, { autoAlpha: enter * w, yPercent: lerp(8, 0, w) });
+          const fin = smooth(i * slot + 0.02, i * slot + 0.07, sp);
+          const fout = i === nStage - 1 ? 1 : 1 - smooth((i + 1) * slot - 0.05, (i + 1) * slot, sp);
+          gsap.set(s, { autoAlpha: fin * fout, yPercent: lerp(10, 0, fin) });
         });
 
         // PLAY-BAR — pure translate sweep across the full row

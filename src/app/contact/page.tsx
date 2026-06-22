@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Footer from "@/components/shell/Footer";
 
 export const metadata: Metadata = {
   title: "Contact — HW Media",
@@ -7,10 +8,11 @@ export const metadata: Metadata = {
 
 export default function Contact() {
   return (
+    <>
     <main data-theme="dark" className="flex min-h-screen flex-col justify-center px-5 pb-[8vh] pt-40 md:px-10">
       <p className="label-mono mb-8 opacity-50">Contact</p>
       <h1 className="font-display display-xl">
-        Break the <span className="font-accent text-[var(--gold)]">ordinary.</span>
+        Have something <span className="font-accent text-[var(--gold)]">in mind?</span>
       </h1>
       <p className="mt-8 max-w-xl leading-relaxed text-[var(--paper-text)]/75">
         Tell us what you&apos;re making. We&apos;ll tell you exactly how we&apos;d
@@ -85,5 +87,7 @@ export default function Contact() {
         ))}
       </div>
     </main>
+    <Footer />
+    </>
   );
 }

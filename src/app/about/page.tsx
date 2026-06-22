@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import Footer from "@/components/shell/Footer";
 
 export const metadata: Metadata = {
   title: "The Crew — HW Media",
@@ -38,6 +39,7 @@ const CREW = [
 
 export default function About() {
   return (
+    <>
     <main>
       {/* hero */}
       <section data-theme="light" className="px-5 pb-[12vh] pt-40 md:px-10">
@@ -203,5 +205,7 @@ export default function About() {
         </Link>
       </section>
     </main>
+    <Footer />
+    </>
   );
 }

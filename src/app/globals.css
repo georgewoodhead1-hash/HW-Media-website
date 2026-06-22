@@ -312,6 +312,33 @@ html[data-mode="light"] .logo-mark {
   text-shadow: 0 2px 24px rgba(0, 0, 0, 0.55), 0 1px 2px rgba(0, 0, 0, 0.4);
 }
 
+/* Hero motto KNOCKOUT — the live hero footage shows through the letters and
+   moves with the video; the surround multiplies to near-black so it blends
+   into the dark hero. The words are literally made of the moving scene. */
+.motto-knock {
+  isolation: isolate; /* contain the multiply blend to the video + text only */
+  /* feather the box edges so the dark surround dissolves into the hero */
+  -webkit-mask-image: radial-gradient(130% 145% at 50% 50%, #000 60%, transparent 100%);
+  mask-image: radial-gradient(130% 145% at 50% 50%, #000 60%, transparent 100%);
+}
+.motto-knock-vid {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.motto-knock-text {
+  position: relative;
+  z-index: 1;
+  background: #060606;
+  color: #fff;
+  mix-blend-mode: multiply;
+  /* a faint gold cast on the footage so the brand warmth survives */
+  text-shadow: 0 0 1px rgba(191, 170, 83, 0.25);
+}
+
 /* ---- "Let's create" tombola: the word rolls over itself on hover ---- */
 .tombola {
   display: inline-block;

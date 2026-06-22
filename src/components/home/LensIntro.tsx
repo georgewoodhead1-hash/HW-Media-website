@@ -418,10 +418,23 @@ export default function LensIntro() {
         {/* the motto — our mainstream display font, solid and bold, standing
             out over the reel. No knockout, no glass, no shadow, one clean rise. */}
         <div className="hero-motto absolute left-0 top-[46%] z-10 -translate-y-1/2 px-5 will-change-transform md:px-10">
-          <h1 className="glass-motto font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
-            Break the<br />
-            <span className="glass-motto-gold">ordinary.</span>
-          </h1>
+          {/* the LIVE footage plays INSIDE the letters (knockout) — it moves
+              with the video, so the words interact with the scene behind. */}
+          <div className="motto-knock relative inline-block">
+            <video
+              className="motto-knock-vid"
+              src="/videos/hero-loop.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
+              aria-hidden
+            />
+            <h1 className="motto-knock-text font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
+              Break the<br />
+              ordinary.
+            </h1>
+          </div>
           <p className="font-hand mt-4 text-[clamp(1.7rem,3.6vw,3rem)] leading-none">
             we go where the story is
           </p>

@@ -158,37 +158,25 @@ export default function LensIntro() {
         // AUTO-PLAY loading intro (client feedback): plays itself on load,
         // one clean zoom THROUGH the lens into the reel. Scroll is locked until
         // this completes (onComplete -> unlock).
-        // 3D fly-THROUGH (client: must feel like falling through a camera lens
-        // / rabbit hole — real depth, not a flat 2D zoom). The rig gets its own
-        // perspective + preserve-3d; the glass elements sit at staggered Z
-        // depths and rush toward + past the camera while the whole rig dives
-        // forward with a slow spiral.
-        gsap.set(rigRef.current, { transformStyle: "preserve-3d", transformPerspective: 820, transformOrigin: "50% 50%" });
-        gsap.set(frontRef.current, { z: 60 });
-        gsap.set(midRef.current, { z: -200 });
-        gsap.set(rearRef.current, { z: -440 });
-
         const tl = gsap.timeline({
           defaults: { ease: "none" },
           delay: 0.15,
         });
 
         tl
-          // the camera DIVES forward through the lens (Z push) with a slow spiral
-          .to(rigRef.current, { z: 560, scale: 1.45, rotationZ: 18, duration: 1, ease: "power2.in" }, 0)
-          // each glass element rushes toward + past the camera in depth, fading
-          .to([frontRef.current, midRef.current, rearRef.current], { z: "+=1500", scale: 4.2, autoAlpha: 0, duration: 0.85, ease: "power2.in" }, 0.1)
+          // one continuous zoom — the lens dives in, the glass flies past, the
+          // reel racks up to fill the frame, landing clean (no leftover zoom)
+          .to(rigRef.current, { scale: 1.4, duration: 1, ease: "power2.in" }, 0)
+          .to([frontRef.current, midRef.current, rearRef.current], { scale: 6, autoAlpha: 0, duration: 0.85, ease: "power2.in" }, 0.12)
           .to(vesselRef.current, { scale: 1, duration: 1, ease: "power2.in" }, 0)
           .to(innerRef.current, { scale: 1, duration: 1, ease: "power2.in" }, 0)
-          // the stage opens up as we land inside the film
           .to(vignetteRef.current, { opacity: 0, duration: 0.55 }, 0.45)
           .to(dimRef.current, { opacity: 0, duration: 0.6 }, 0.4)
           .to(cueRef.current, { autoAlpha: 0, duration: 0.1 }, 0)
-          // the scrim settles and the motto rises in as one clean unit
           .to(veilRef.current, { opacity: 1, duration: 0.25 }, 0.9)
           .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.3, ease: "power3.out" }, 0.95);
 
-        tl.timeScale(0.9); // ~1.5s 3D dive
+        tl.timeScale(0.95);
       }
     }, wrap);
 
@@ -222,7 +210,7 @@ export default function LensIntro() {
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-[200vh]">
       <div
-        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl border-2 border-white/35 bg-black [html[data-mode=light]_&]:border-black/35 md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
+        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl bg-black md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {

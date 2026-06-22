@@ -43,3 +43,6 @@ next-env.d.ts
 
 # local verification screenshots
 _audit/
+
+# GSAP skills reference clone (not part of the app)
+_gsap-skills/

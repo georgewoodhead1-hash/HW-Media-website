@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 import { BOOKING_URL } from "@/content/site";
 
@@ -138,79 +138,66 @@ export default function LensIntro() {
       return;
     }
 
-    // Resting state set synchronously — the timeline only animates AWAY from it.
-    // The rig sits FAR back and tumbled in 3D space (deep Z, tilted on X/Y, spun
-    // on Z) so the dive is a real fall THROUGH the barrel, not a flat zoom.
-    gsap.set(rigRef.current, {
-      scale: RIG_REST,
-      z: -1150,
-      rotationX: 22,
-      rotationY: -16,
-      rotationZ: -52,
-    });
-    // the three glass groups sit at staggered depths so the camera punches
-    // through them one plane at a time (deep parallax during the dive).
-    gsap.set(frontRef.current, { z: 320 });
-    gsap.set(midRef.current, { z: -20 });
-    gsap.set(rearRef.current, { z: -440 });
-    gsap.set(vesselRef.current, { xPercent: -50, yPercent: -50, scale: VESSEL_REST });
-    gsap.set(innerRef.current, { xPercent: -50, yPercent: -50, scale: INNER_REST });
-    gsap.set(dimRef.current, { opacity: 0.5 });
-    gsap.set(".hero-motto", { autoAlpha: 0 });
+    const ctx = gsap.context(() => {
+      // RESTING STATE — the lens hangs FAR back and tumbled in 3D space (deep Z,
+      // tilted on X/Y, spun on Z). The scrubbed timeline animates AWAY from here
+      // as you scroll, so you fall THROUGH the barrel rather than watch a zoom.
+      gsap.set(rigRef.current, { scale: RIG_REST, z: -1500, rotationX: 18, rotationY: -13, rotationZ: -46 });
+      // the three glass groups sit at staggered depths → the camera punches
+      // through them one plane at a time (real parallax during the fall).
+      gsap.set(frontRef.current, { z: 440 });
+      gsap.set(midRef.current, { z: 130 });
+      gsap.set(rearRef.current, { z: -220 });
+      gsap.set(vesselRef.current, { xPercent: -50, yPercent: -50, scale: VESSEL_REST });
+      gsap.set(innerRef.current, { xPercent: -50, yPercent: -50, scale: INNER_REST });
+      gsap.set(dimRef.current, { opacity: 0.5 });
+      gsap.set(vignetteRef.current, { opacity: 1 });
+      gsap.set(veilRef.current, { opacity: 0 });
+      gsap.set(cueRef.current, { autoAlpha: 1 });
+      gsap.set(".hero-motto", { autoAlpha: 0, y: 28 });
 
-    // No scroll lock. The intro auto-plays, but the page is ALWAYS scrollable —
-    // a forced lock kept getting stuck (tab-backgrounded GSAP never firing its
-    // onComplete, dev hot-reloads leaving Lenis stopped). Never trap scroll.
-    window.scrollTo(0, 0);
+      // SCROLL-DRIVEN fall-through. The stage is CSS-sticky (same pattern as the
+      // rest of the site — avoids ScrollTrigger pin jitter under Lenis), and this
+      // ONE scrubbed timeline plays as you scroll the tall section. You control
+      // the dive with your scroll: it can never flash past or hide behind the
+      // loader, and it lands DEAD CLEAN (z0 / scale1 / no tilt) at the end.
+      const tl = gsap.timeline({
+        defaults: { ease: "none" },
+        scrollTrigger: {
+          trigger: wrap,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 1,
+          invalidateOnRefresh: true,
+        },
+      });
 
-    let ctx: gsap.Context | null = null;
-    let started = false;
+      tl
+        // camera accelerates forward down the barrel, then settles dead-clean
+        .to(rigRef.current, { z: -300, scale: 0.9, rotationX: 6, rotationY: -4, rotationZ: -16, duration: 0.42, ease: "power1.in" }, 0)
+        .to(rigRef.current, { z: 0, scale: 1, rotationX: 0, rotationY: 0, rotationZ: 0, duration: 0.2, ease: "power2.out" }, 0.42)
+        // the reel racks up to fill the frame across the whole dive
+        .to(vesselRef.current, { scale: 1, duration: 0.62, ease: "power1.inOut" }, 0)
+        .to(innerRef.current, { scale: 1, duration: 0.62, ease: "power1.inOut" }, 0)
+        // the three glass planes blow PAST the camera, ONE AT A TIME, motion-blurred
+        .to(frontRef.current, { z: 1500, scale: 5.6, rotationZ: 42, autoAlpha: 0, filter: "blur(20px)", duration: 0.26, ease: "power1.in" }, 0.06)
+        .to(midRef.current, { z: 1500, scale: 4.7, rotationZ: -32, autoAlpha: 0, filter: "blur(16px)", duration: 0.28, ease: "power1.in" }, 0.2)
+        .to(rearRef.current, { z: 1500, scale: 3.9, rotationZ: 24, autoAlpha: 0, filter: "blur(13px)", duration: 0.3, ease: "power1.in" }, 0.34)
+        // the throat opens: tunnel vignette + reel-dim lift, scroll cue fades
+        .to(vignetteRef.current, { opacity: 0, duration: 0.3, ease: "power1.out" }, 0.4)
+        .to(dimRef.current, { opacity: 0, duration: 0.34 }, 0.32)
+        .to(cueRef.current, { autoAlpha: 0, duration: 0.08 }, 0.02)
+        // ARRIVE — legibility scrim in, then the motto rises
+        .to(veilRef.current, { opacity: 1, duration: 0.1 }, 0.6)
+        .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.14, ease: "power2.out" }, 0.62)
+        // HOLD — reel + motto settled while you finish scrolling the section out
+        .to({}, { duration: 0.28 }, 0.74);
 
-    const startDive = () => {
-      if (started) return;
-      started = true;
-      ctx = gsap.context(() => {
-        gsap.set(veilRef.current, { opacity: 0 });
-        gsap.set(".hero-motto", { autoAlpha: 0 });
+      // measure correctly once fonts/layout have settled
+      ScrollTrigger.refresh();
+    }, wrap);
 
-        // The camera FALLS THROUGH the lens — a real 3D fly-through, like
-        // dropping down the barrel. The rig rushes forward in Z while unwinding
-        // its tumble (rotationX/Y/Z) and the glass planes blow PAST the viewer
-        // one at a time, each swelling beyond the perspective plane and smearing
-        // out of frame with its own counter-spin. It all lands DEAD CLEAN:
-        // z0 / scale1 / no tilt / no spin — zero leftover zoom.
-        const tl = gsap.timeline({ defaults: { ease: "none" }, delay: 0.1 });
-
-        tl
-          .to(rigRef.current, { z: 0, scale: 1, rotationX: 0, rotationY: 0, rotationZ: 0, duration: 1.35, ease: "power3.inOut" }, 0)
-          .to(frontRef.current, { z: 1850, scale: 5.4, rotationZ: 60, autoAlpha: 0, duration: 0.6, ease: "power2.in" }, 0.0)
-          .to(midRef.current, { z: 1850, scale: 4.6, rotationZ: -46, autoAlpha: 0, duration: 0.7, ease: "power2.in" }, 0.16)
-          .to(rearRef.current, { z: 1850, scale: 3.9, rotationZ: 32, autoAlpha: 0, duration: 0.8, ease: "power2.in" }, 0.32)
-          .to(vesselRef.current, { scale: 1, duration: 1.25, ease: "power3.inOut" }, 0)
-          .to(innerRef.current, { scale: 1, duration: 1.25, ease: "power3.inOut" }, 0)
-          .to(vignetteRef.current, { opacity: 0, duration: 0.6 }, 0.6)
-          .to(dimRef.current, { opacity: 0, duration: 0.65 }, 0.5)
-          .to(cueRef.current, { autoAlpha: 0, duration: 0.1 }, 0)
-          .to(veilRef.current, { opacity: 1, duration: 0.25 }, 1.05)
-          .to(".hero-motto", { autoAlpha: 1, duration: 0.45, ease: "power2.out" }, 1.1);
-
-        tl.timeScale(0.72);
-      }, wrap);
-    };
-
-    // CRITICAL: the dive must play AFTER the loading screen lifts, or the whole
-    // camera move happens behind the black veil and the viewer only ever sees
-    // the landed frame (the "there's no camera animation" bug). LoadingScreen
-    // fires "hw:reveal" the instant it starts lifting; we dive then. Fallback
-    // timer covers the case where the loading screen is ever absent/skipped.
-    window.addEventListener("hw:reveal", startDive, { once: true });
-    const fallback = window.setTimeout(startDive, 3200);
-
-    return () => {
-      window.removeEventListener("hw:reveal", startDive);
-      window.clearTimeout(fallback);
-      ctx?.revert();
-    };
+    return () => ctx.revert();
   }, []);
 
   // NOTE: never stop Lenis here. The native <dialog> modal already blocks the
@@ -239,7 +226,7 @@ export default function LensIntro() {
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-[200vh]">
       <div
         className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl bg-black md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
-        style={{ perspective: "1300px", perspectiveOrigin: "50% 48%" }}
+        style={{ perspective: "1050px", perspectiveOrigin: "50% 47%" }}
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {

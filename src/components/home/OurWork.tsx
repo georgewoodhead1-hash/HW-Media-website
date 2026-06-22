@@ -43,8 +43,8 @@ export default function OurWork() {
       // bars arrive between FROM and TO; the windows are wide and overlapping so
       // each film glides across rather than popping. After TO the full accordion
       // is held so there's a comfortable window to hover before release.
-      const FROM = 0.08;
-      const TO = 0.58;
+      const FROM = 0.02;
+      const TO = 0.5;
       const span = (TO - FROM) / N;
 
       const place = (p: number) => {
@@ -52,8 +52,10 @@ export default function OurWork() {
         // accordion (it never moves over the films — no overlap).
         if (head && chars.length) {
           chars.forEach((ch, i) => {
-            const cs = (i / Math.max(1, chars.length)) * 0.14;
-            const reveal = smooth(0.04 + cs, 0.14 + cs, p);
+            // type in almost immediately so the pinned stage is never a black
+            // void at the seam — the heading fills it from the very first frame.
+            const cs = (i / Math.max(1, chars.length)) * 0.07;
+            const reveal = smooth(cs, 0.05 + cs, p);
             gsap.set(ch, { autoAlpha: reveal, yPercent: lerp(60, 0, reveal) });
           });
         }
@@ -113,7 +115,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[14vh] motion-safe:md:h-[240vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[240vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
@@ -127,6 +129,13 @@ export default function OurWork() {
 
         {/* the accordion row — final layout; bars fly in from the right into their slots */}
         <div className="relative z-0 flex h-[60vh] gap-2">
+          {/* faint empty slots so the 6-bar footprint reads from the first
+              frame — the pinned stage is never a black void while bars fly in. */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 flex gap-2">
+            {Array.from({ length: WORKS.length }).map((_, i) => (
+              <div key={i} className="flex-1 rounded-md bg-white/[0.025] ring-1 ring-[var(--hairline-dark)]" />
+            ))}
+          </div>
           {WORKS.map((p, i) => (
             <Link
               key={p.slug}
@@ -141,7 +150,7 @@ export default function OurWork() {
                 muted
                 loop
                 playsInline
-                preload="none"
+                preload="metadata"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30 transition-colors duration-500 group-hover:from-black/65" />
 

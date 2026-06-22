@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import ScrollType from "@/components/shell/ScrollType";
 
 // 02 — Trusted by (client feedback): TWO rows of client logos marqueeing in
 // OPPOSITE directions, larger marks, tight spacing. Every logo sits dimmed and
@@ -146,17 +145,18 @@ export default function TrustedBy() {
       data-theme="dark"
       data-surface="page"
       data-chapter="02 — Trusted by"
-      className="relative border-y border-[var(--hairline-dark)] bg-[color-mix(in_srgb,var(--fg)_5%,var(--bg))] px-5 py-[6vh] md:px-10"
+      className="relative border-y border-[var(--hairline-dark)] bg-[color-mix(in_srgb,var(--fg)_5%,var(--bg))] px-5 pb-[16vh] pt-[6vh] md:px-10"
       aria-label="Trusted by"
     >
       <div className="tb-heading mb-[4vh] text-center">
-        <ScrollType
-          as="h2"
-          className="font-display text-[clamp(1.2rem,2.4vw,2rem)] normal-case leading-none text-[var(--gold-text)]"
+        {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
+            char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}
+        <h2
+          className="font-display text-[clamp(1.7rem,3.2vw,2.8rem)] leading-none text-[var(--gold-text)]"
           style={{ fontWeight: 400 }}
         >
           Trusted by
-        </ScrollType>
+        </h2>
       </div>
 
       <div className="flex flex-col gap-3 md:gap-4">

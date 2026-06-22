@@ -194,7 +194,7 @@ export default function LensIntro() {
           .to(veilRef.current, { opacity: 1, duration: 0.25 }, 1.05)
           .to(".hero-motto", { autoAlpha: 1, duration: 0.45, ease: "power2.out" }, 1.1);
 
-        tl.timeScale(0.9);
+        tl.timeScale(0.72);
       }, wrap);
     };
 
@@ -444,6 +444,9 @@ export default function LensIntro() {
         {/* the motto — our mainstream display font, solid and bold, standing
             out over the reel. No knockout, no glass, no shadow, one clean rise. */}
         <div className="hero-motto absolute left-0 top-[33%] z-10 px-5 md:px-10">
+          {/* solid display type. (A footage knockout boxes on bright frames —
+              the dark surround George rejected — so it stays clean solid until
+              his reference defines the exact interaction he wants.) */}
           <h1 className="glass-motto font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
             Break the<br />
             <span className="glass-motto-gold">ordinary.</span>

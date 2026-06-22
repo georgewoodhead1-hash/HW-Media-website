@@ -54,8 +54,8 @@ export default function About() {
             {/* vertical film — right */}
             <div className="w-full max-w-[280px] md:justify-self-end">
               <video
-                src="/videos/films/otoko-p.mp4"
-                poster="/videos/films/posters/otoko-p.jpg"
+                src="/videos/films/salomon-p.mp4"
+                poster="/videos/films/posters/salomon-p.jpg"
                 autoPlay
                 muted
                 loop
@@ -114,7 +114,7 @@ export default function About() {
         <section className="border-t border-[var(--hairline-dark)] px-5 py-[10vh] md:px-10">
           <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
             <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.4rem)] leading-tight" style={{ fontWeight: 400 }}>
-              Who&apos;s behind it
+              Who&apos;s behind the camera
             </h2>
             <div className="grid gap-10 sm:grid-cols-3">
               {FOUNDERS.map(([n, r]) => (

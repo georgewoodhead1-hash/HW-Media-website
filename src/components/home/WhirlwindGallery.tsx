@@ -239,10 +239,12 @@ export default function WhirlwindGallery() {
 
         {/* slim footer — rises up from the bottom edge at the very end of the scroll */}
         <div
-          className="finale-foot absolute inset-x-0 bottom-0 z-40 border-t border-[var(--hairline-dark)] bg-[var(--bg)]/85 px-8 py-5 backdrop-blur-md will-change-transform"
+          className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-8 py-5 backdrop-blur-md will-change-transform"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
-          <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-8 gap-y-3 text-sm text-[var(--fg)]">
+          {/* left padding clears the fixed theme toggle + social rail in the
+              bottom-left corner so the email is never occluded by them. */}
+          <div className="flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-3 pl-[172px] pr-2 text-sm text-[var(--fg)]">
             <a
               href="mailto:harry@hwmedia.productions"
               className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"

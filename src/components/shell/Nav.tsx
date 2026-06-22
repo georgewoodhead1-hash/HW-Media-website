@@ -55,6 +55,9 @@ export default function Nav() {
 
   return (
     <>
+      {/* soft scrim so nav links never collide illegibly with content scrolling
+          under them (e.g. the big gold stat numbers) — mode-aware. */}
+      <div aria-hidden className="nav-scrim pointer-events-none fixed inset-x-0 top-0 z-40 h-24" />
       <header
         ref={rootRef}
         className="nav-root fixed inset-x-0 top-3 z-50 flex items-center justify-between px-5 py-2.5 md:top-4 md:px-10"

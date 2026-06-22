@@ -68,15 +68,18 @@ export default function EditorFCP() {
       const N = chars.length || 1;
       const scatter = chars.map((_, i) => {
         const dir = i % 2 === 0 ? 1 : -1;
-        const mag = 0.24 + ((i * 13) % 22) / 100;
-        const a = 0.02 + (i / N) * 0.2; // staggered start, all home by ~0.34
+        // small LOCAL scatter — letters drift in from just beside/above their
+        // final slot and settle, instead of flying across the centre and
+        // colliding with already-placed glyphs (that crossing was the garble).
+        const mag = 0.07 + ((i * 13) % 10) / 100;
+        const a = 0.02 + (i / N) * 0.18; // staggered start, all home by ~0.32
         return {
           x: dir * mag,
-          y: ((((i * 53) % 100) - 50) / 50) * 0.4,
-          rot: dir * (9 + ((i * 29) % 30)),
-          sc: 0.62 + ((i * 17) % 38) / 100,
+          y: ((((i * 53) % 100) - 50) / 50) * 0.18,
+          rot: dir * (4 + ((i * 29) % 12)),
+          sc: 0.78 + ((i * 17) % 20) / 100,
           a,
-          b: a + 0.14, // tighter window so the word finishes writing before the hold
+          b: a + 0.12, // tight window so the word is written well before the hold
         };
       });
 
@@ -96,8 +99,12 @@ export default function EditorFCP() {
       const place = (p: number) => {
         const vw = window.innerWidth;
         const vh = window.innerHeight;
-        const enter = smooth(COMBINE - 0.06, COMBINE + 0.02, p); // assemble+hold(0) -> stages(1)
-        const sp = clamp01((p - COMBINE) / (OUTRO - COMBINE)); // stage progress, [COMBINE, OUTRO]
+        // letters land ~0.32, "Our process" holds READABLE 0.32-0.46, fades
+        // 0.46-0.50, THEN the stage words enter at 0.50 — so the two never share
+        // the centre and there is a real, visible "Our process" hold.
+        const STAGE_START = 0.5;
+        const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
+        const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
         const outro = smooth(OUTRO, 0.99, p); // 0 -> 1: the scene breaks apart and flies off
 
         // FILMS — drift in from a corner during assemble, brighten/dim by the
@@ -141,7 +148,7 @@ export default function EditorFCP() {
 
         // "Our process" leaves quickly right at the boundary so it never
         // shares the centre with the first stage word
-        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(COMBINE - 0.01, COMBINE + 0.02, p) });
+        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(0.46, 0.5, p) });
 
         // STAGE names — ONE at a time, non-overlapping fade windows so two big
         // words never occupy the centre together (that was the garble)

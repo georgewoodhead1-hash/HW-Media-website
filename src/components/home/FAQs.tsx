@@ -62,7 +62,10 @@ export default function FAQs() {
         {
           autoAlpha: 0,
           ease: "none",
-          scrollTrigger: { trigger: root, start: "bottom 96%", end: "bottom 80%", scrub: 1 },
+          // fade ONLY as the section genuinely leaves the viewport — the reel
+          // stays full + in place through the whole question list and is still
+          // present until the finale scrolls up over it (no early black hole).
+          scrollTrigger: { trigger: root, start: "bottom 42%", end: "bottom -8%", scrub: 1 },
         },
       );
       return () => { intro.scrollTrigger?.kill(); intro.kill(); tween.scrollTrigger?.kill(); tween.kill(); };

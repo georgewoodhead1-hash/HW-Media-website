@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import {
   Archivo,
-  Caveat,
+  Dancing_Script,
   DM_Sans,
   Hanken_Grotesk,
   IBM_Plex_Mono,
@@ -39,7 +39,7 @@ const plexMono = IBM_Plex_Mono({
   weight: ["400", "500"],
 });
 
-const caveat = Caveat({
+const caveat = Dancing_Script({
   variable: "--font-hand",
   subsets: ["latin"],
   weight: "600",

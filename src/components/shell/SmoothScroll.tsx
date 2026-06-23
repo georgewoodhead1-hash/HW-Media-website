@@ -18,8 +18,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     // 0.06; 0.07 keeps that heavy, expensive glide while staying responsive
     // enough on a trackpad.
     const lenis = new Lenis({
-      lerp: 0.07,
-      wheelMultiplier: 1,
+      lerp: 0.06,
+      wheelMultiplier: 0.8,
       smoothWheel: true,
       // NO syncTouch: it hijacks touch-style input, which a Mac trackpad /
       // Magic Mouse emits — that was silently eating the user's scroll while

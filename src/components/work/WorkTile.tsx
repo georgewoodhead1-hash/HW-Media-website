@@ -11,8 +11,8 @@ interface WorkTileProps {
   logo?: string;
 }
 
-// Work grid tile (client feedback): black-and-white and FROZEN (poster, paused)
-// by default; on hover it plays and comes into colour.
+// Work grid tile (client feedback): 16:9 and in COLOUR. Frozen on its poster by
+// default; on hover it plays.
 export default function WorkTile({ slug, wide, posterWide, client, logo }: WorkTileProps) {
   const ref = useRef<HTMLVideoElement>(null);
 
@@ -33,11 +33,11 @@ export default function WorkTile({ slug, wide, posterWide, client, logo }: WorkT
       href={`/work/${slug}`}
       onMouseEnter={play}
       onMouseLeave={stop}
-      className="group relative block aspect-[4/3] overflow-hidden"
+      className="group relative block aspect-video overflow-hidden"
     >
       <video
         ref={ref}
-        className="absolute inset-0 h-full w-full scale-[1.08] object-cover grayscale transition-all duration-700 ease-out group-hover:scale-[1.14] group-hover:grayscale-0"
+        className="absolute inset-0 h-full w-full scale-[1.05] object-cover transition-all duration-700 ease-out group-hover:scale-[1.1]"
         src={wide}
         poster={posterWide}
         muted

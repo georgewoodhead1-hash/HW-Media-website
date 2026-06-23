@@ -18,6 +18,7 @@ import ScrollType from "@/components/shell/ScrollType";
 
 interface Testimonial {
   slug: string; // real project — drives which film plays + where it links
+  brand: string; // display name (McLaren, Nike, …)
   quote: string;
   role: string;
   sector: string;
@@ -29,6 +30,7 @@ interface Testimonial {
 const TESTIMONIALS: Testimonial[] = [
   {
     slug: "mclaren",
+    brand: "McLaren",
     quote: "The film outlived the campaign. Two years on we still open every pitch with it.",
     role: "Brand Director",
     sector: "Heritage Motoring",
@@ -38,6 +40,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
   {
     slug: "nike",
+    brand: "Nike",
     quote: "Cinema standards on a social budget. We haven't gone anywhere else since.",
     role: "Brand Lead",
     sector: "Sportswear",
@@ -47,6 +50,7 @@ const TESTIMONIALS: Testimonial[] = [
   },
   {
     slug: "zuma",
+    brand: "Zuma",
     quote: "They turned a product launch into a film people actually chose to watch.",
     role: "Founder",
     sector: "Hospitality",
@@ -150,60 +154,15 @@ export default function Testimonials() {
           className="font-display max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
           style={{ fontWeight: 400 }}
         >
-          Reviews
+          Testimonials
         </ScrollType>
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
-        {/* LEFT — selectors + the selected quote / role / sector / brand */}
-        <div data-rise className="flex flex-col">
-          {/* a clean editorial INDEX of voices — no boxes. Click to swap; the
-              active row brightens, its number goes gold, "VIEW" appears. */}
-          <div className="flex flex-col border-t border-[var(--hairline-dark)]">
-            {TESTIMONIALS.map((t, i) => {
-              const isActive = i === active;
-              return (
-                <button
-                  key={t.slug}
-                  type="button"
-                  onClick={() => setActive(i)}
-                  aria-pressed={isActive}
-                  aria-label={`Show testimonial ${i + 1} — ${t.role}, ${t.sector}`}
-                  className={`group flex items-center justify-between gap-4 border-b border-[var(--hairline-dark)] py-5 text-left transition-all duration-500 ${
-                    isActive ? "opacity-100" : "opacity-45 hover:opacity-75"
-                  }`}
-                >
-                  <span className="flex items-center gap-5 sm:gap-6">
-                    <span
-                      className={`label-mono text-[11px] tracking-[0.22em] transition-colors duration-500 ${
-                        isActive ? "text-[var(--gold-text)]" : "text-[var(--fg)]/45"
-                      }`}
-                    >
-                      0{i + 1}
-                    </span>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={`/logos/${t.logo}.png`}
-                      alt=""
-                      aria-hidden
-                      className={`logo-mark max-h-9 ${t.selectorMaxW} object-contain transition-all duration-500`}
-                    />
-                  </span>
-                  <span
-                    className={`label-mono text-[10px] tracking-[0.24em] text-[var(--gold-text)] transition-opacity duration-500 ${
-                      isActive ? "opacity-100" : "opacity-0 group-hover:opacity-50"
-                    }`}
-                  >
-                    VIEW ⟶
-                  </span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* selected testimonial — quote, with the attribution sitting RIGHT
-              under it (client: it was pinned to the bottom of the column) */}
-          <div ref={quoteRef} className="mt-10">
+        {/* LEFT — the active quote + brand, with three clickable dots (client:
+            dots instead of 01/02/03; manual selection only, no auto-scroll). */}
+        <div data-rise className="flex flex-col justify-center">
+          <div ref={quoteRef}>
             <blockquote
               className="text-[clamp(1.7rem,3vw,3rem)] italic leading-[1.2]"
               style={{ fontFamily: "var(--font-instrument), serif" }}
@@ -213,10 +172,29 @@ export default function Testimonials() {
               <span className="not-italic text-[var(--gold-text)]">&rdquo;</span>
             </blockquote>
 
-            <figcaption className="mt-7" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
-              <span className="text-sm font-medium text-[var(--fg)]">{current.role}</span>
-              <span className="text-[var(--fg)]/45"> · {current.sector}</span>
+            <figcaption
+              className="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+            >
+              <span className="text-base font-medium text-[var(--fg)]">{current.brand}</span>
+              <span className="text-sm text-[var(--fg)]/45">{current.role} · {current.sector}</span>
             </figcaption>
+          </div>
+
+          {/* three clickable dots — manual only */}
+          <div className="mt-10 flex items-center gap-3.5">
+            {TESTIMONIALS.map((t, i) => (
+              <button
+                key={t.slug}
+                type="button"
+                onClick={() => setActive(i)}
+                aria-pressed={i === active}
+                aria-label={`Show ${t.brand} testimonial`}
+                className={`h-2.5 w-2.5 rounded-full transition-all duration-500 ${
+                  i === active ? "scale-110 bg-[var(--gold)]" : "bg-[var(--fg)]/25 hover:bg-[var(--fg)]/55"
+                }`}
+              />
+            ))}
           </div>
         </div>
 

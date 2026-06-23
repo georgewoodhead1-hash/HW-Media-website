@@ -272,6 +272,7 @@ export default function EditorFCP() {
           <article key={s.name} className="border-t border-[var(--hairline-dark)] py-8">
             <span className="text-[10px] text-[var(--gold-text)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>0{i + 1}</span>
             <h3 className="font-display mt-2 text-2xl">{s.name}.</h3>
+            <p className="mt-2 text-[15px] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.sub}</p>
           </article>
         ))}
       </div>

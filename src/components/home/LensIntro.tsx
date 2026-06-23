@@ -248,6 +248,7 @@ export default function LensIntro() {
               <video
                 ref={videoRef}
                 className="h-full w-full object-cover"
+                style={{ filter: "saturate(1.32) contrast(1.07)" }}
                 src="/videos/hero-loop.mp4"
                 poster="/videos/posters/hero-loop.jpg"
                 autoPlay
@@ -426,7 +427,7 @@ export default function LensIntro() {
           {/* solid display type. (A footage knockout boxes on bright frames —
               the dark surround George rejected — so it stays clean solid until
               his reference defines the exact interaction he wants.) */}
-          <h1 className="glass-motto font-display text-[clamp(2.4rem,7.6vw,6.6rem)] leading-[0.88]">
+          <h1 className="glass-motto font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]">
             Break the<br />
             <span className="glass-motto-gold">ordinary.</span>
           </h1>

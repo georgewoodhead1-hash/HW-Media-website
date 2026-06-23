@@ -47,7 +47,7 @@ export default function StatsBlock() {
       data-theme="dark"
       data-surface="page"
       data-chapter="By the numbers"
-      className="relative bg-[var(--bg)] px-5 py-[12vh] text-[var(--fg)] md:px-10 md:py-[15vh]"
+      className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10"
       aria-label="By the numbers"
     >
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 text-center sm:grid-cols-3">

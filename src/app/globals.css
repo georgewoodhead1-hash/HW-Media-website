@@ -111,6 +111,11 @@ html {
 body {
   font-family: var(--font-body), sans-serif;
   font-weight: 400;
+  /* Safety net against horizontal overflow on narrow viewports. `clip` (not
+     `hidden`) is used so it never creates a scroll container — `position: sticky`
+     (OurWork pin, nav) keeps working. Full-bleed marquees / animation transients
+     can't push the document wider than the screen. */
+  overflow-x: clip;
 }
 
 /* ---- Type roles ----

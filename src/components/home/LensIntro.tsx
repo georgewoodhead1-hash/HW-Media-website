@@ -248,7 +248,7 @@ export default function LensIntro() {
               <video
                 ref={videoRef}
                 className="h-full w-full object-cover"
-                style={{ filter: "saturate(1.32) contrast(1.07)" }}
+                style={{ filter: "saturate(1.7) contrast(1.1) brightness(1.04)" }}
                 src="/videos/hero-loop.mp4"
                 poster="/videos/posters/hero-loop.jpg"
                 autoPlay

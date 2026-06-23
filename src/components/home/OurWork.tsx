@@ -16,6 +16,16 @@ import { safePlay } from "@/lib/video";
 
 const WORKS = projects.slice(0, 6);
 
+// brand logos for the collapsed tiles (client: logos, not text labels)
+const LOGO: Record<string, string> = {
+  McLaren: "mclaren-logo",
+  Nike: "nike-white",
+  Zuma: "zuma-white",
+  Salomon: "salomon-logo-white",
+  Defender: "defender-white",
+  "Black Crows": "logo-black-crows-white",
+};
+
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const smooth = (a: number, b: number, t: number) => {
   const x = Math.min(1, Math.max(0, (t - a) / (b - a)));
@@ -144,9 +154,20 @@ export default function OurWork() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30 transition-colors duration-500 group-hover:from-black/65" />
 
-              {/* collapsed — vertical client label */}
-              <span className="label-mono absolute bottom-5 left-1/2 -translate-x-1/2 rotate-180 whitespace-nowrap text-[11px] tracking-[0.2em] text-white/80 opacity-100 transition-opacity duration-300 [writing-mode:vertical-rl] group-hover:opacity-0">
-                {p.client.toUpperCase()}
+              {/* collapsed — brand logo (text only on hover/expand, client) */}
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center p-3 opacity-100 transition-opacity duration-300 group-hover:opacity-0">
+                {LOGO[p.client] ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={`/logos/${LOGO[p.client]}.png`}
+                    alt={p.client}
+                    className="max-h-8 w-auto max-w-[80%] object-contain opacity-90"
+                  />
+                ) : (
+                  <span className="label-mono rotate-180 whitespace-nowrap text-[11px] tracking-[0.2em] text-white/80 [writing-mode:vertical-rl]">
+                    {p.client.toUpperCase()}
+                  </span>
+                )}
               </span>
 
               {/* expanded — title + watch */}

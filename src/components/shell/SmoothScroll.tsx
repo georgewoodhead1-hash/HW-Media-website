@@ -13,12 +13,13 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
 
-    // Seamless glide (Framer feel): a touch more responsive than before so it
-    // tracks the wheel closely instead of lagging behind (which read as
-    // "sticky"). Still smooth, never abrupt.
+    // Premium weight (lukebaffait feel): a low lerp gives the scroll real
+    // inertia so it glides under the cursor instead of snapping. luke runs
+    // 0.06; 0.07 keeps that heavy, expensive glide while staying responsive
+    // enough on a trackpad.
     const lenis = new Lenis({
-      lerp: 0.085,
-      wheelMultiplier: 0.95,
+      lerp: 0.07,
+      wheelMultiplier: 1,
       smoothWheel: true,
       // NO syncTouch: it hijacks touch-style input, which a Mac trackpad /
       // Magic Mouse emits — that was silently eating the user's scroll while

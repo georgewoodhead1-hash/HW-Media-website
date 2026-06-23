@@ -111,19 +111,22 @@ export default function TrustedBy() {
         scrollTrigger: { trigger: root, start: "top 78%", once: true },
       });
 
+      // clean, slow fade-up — one motion language across the site. No rotation
+      // or x "wobble" garnish (that read as fussy, not premium); just a quiet
+      // rise that settles.
       if (heading) {
         tl.fromTo(
           heading,
-          { autoAlpha: 0, y: 30, rotation: -1.5 },
-          { autoAlpha: 1, y: 0, rotation: 0, duration: 0.7, ease: "power3.out" },
+          { autoAlpha: 0, y: 26 },
+          { autoAlpha: 1, y: 0, duration: 1.1, ease: "power3.out" },
         );
       }
 
       tl.fromTo(
         rows,
-        { autoAlpha: 0, y: 40, x: (i) => (i % 2 === 0 ? -26 : 26), rotation: (i) => (i % 2 === 0 ? -1.2 : 1.2) },
-        { autoAlpha: 1, y: 0, x: 0, rotation: 0, duration: 0.85, ease: "power3.out", stagger: 0.12 },
-        "-=0.35",
+        { autoAlpha: 0, y: 34 },
+        { autoAlpha: 1, y: 0, duration: 1.1, ease: "power3.out", stagger: 0.12 },
+        "-=0.6",
       );
 
       return () => {

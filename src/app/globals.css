@@ -80,6 +80,28 @@ section[data-surface="media"] {
   color: #f5f1e6;
 }
 
+/* ---- Contrasting bands (Trusted by, FAQs) ----
+   Always take the OPPOSITE palette to the global mode, so they read as a
+   distinct band whichever way the toggle is set: a dark band on the light
+   site, a light band on the dark site. */
+html[data-mode="light"] [data-surface="band"],
+html:not([data-mode]) [data-surface="band"] {
+  --bg: #050505;
+  --fg: #f5f1e6;
+  --ink: #f5f1e6;
+  --paper-text: #f5f1e6;
+  --hairline-dark: rgba(245, 241, 230, 0.14);
+  --hairline-light: rgba(245, 241, 230, 0.14);
+}
+html[data-mode="dark"] [data-surface="band"] {
+  --bg: var(--cream);
+  --fg: #171717;
+  --ink: #171717;
+  --paper-text: #171717;
+  --hairline-dark: rgba(23, 23, 23, 0.16);
+  --hairline-light: #d8d2bd;
+}
+
 html {
   background: var(--bg);
   color: var(--fg);
@@ -181,6 +203,18 @@ body {
   --bg: #050505;
   --fg: #f5f1e6;
 }
+/* nav over a contrasting band inverts with the mode so it stays readable:
+   light nav on the dark band (light mode), dark nav on the light band. */
+html[data-mode="light"] .nav-root[data-surface="band"] {
+  --bg: #050505;
+  --fg: #f5f1e6;
+}
+html[data-mode="dark"] .nav-root[data-surface="band"] {
+  --bg: var(--cream);
+  --fg: #171717;
+}
+html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-color { display: none; }
+html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-black { display: block; }
 /* nav logo: colour (gold) mark by default and on dark; the black mark swaps
    in only in light mode over a page surface (over the dark hero it stays gold) */
 .nav-logo-black {
@@ -296,8 +330,11 @@ html[data-mode="light"] .grain {
   opacity: 0.85;
 }
 
-/* client logos live ONLY on the always-dark Trusted-by band, so they stay
-   white in every mode — no light-mode invert. */
+/* client logos sit on the contrasting band: white when the band is dark
+   (light mode), inverted to dark when the band is light (dark mode). */
+html[data-mode="dark"] [data-surface="band"] .logo-mark {
+  filter: invert(1);
+}
 
 /* ---- Hero motto: solid, bright, present over the LIVE moving footage ----
    No frozen image-fill, no faint translucency — clean type that sits over the

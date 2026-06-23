@@ -139,7 +139,7 @@ export default function Testimonials() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="page"
+      data-surface="band"
       data-chapter="05 — Testimonials"
       className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[6vh]"
       aria-label="Testimonials"
@@ -186,7 +186,7 @@ export default function Testimonials() {
                       src={`/logos/${t.logo}.png`}
                       alt=""
                       aria-hidden
-                      className={`logo-mark max-h-9 ${t.selectorMaxW} object-contain transition-all duration-500 [html[data-mode=light]_&]:invert`}
+                      className={`logo-mark max-h-9 ${t.selectorMaxW} object-contain transition-all duration-500`}
                     />
                   </span>
                   <span

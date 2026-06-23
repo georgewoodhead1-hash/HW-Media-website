@@ -141,10 +141,10 @@ export default function LensIntro() {
     // RESTING — the lens hangs straight ahead, FAR back and small, with NO tilt
     // and NO spin. 3D here means DEPTH: the whole move is a forward push INTO the
     // barrel along Z. (Set synchronously so the dive only ever animates away.)
-    gsap.set(rigRef.current, { scale: RIG_REST, z: -1300, rotationX: 0, rotationY: 0, rotationZ: 0 });
-    gsap.set(frontRef.current, { z: 360 });
-    gsap.set(midRef.current, { z: 120 });
-    gsap.set(rearRef.current, { z: -160 });
+    gsap.set(rigRef.current, { scale: RIG_REST, z: -2700, rotationX: 0, rotationY: 0, rotationZ: 0 });
+    gsap.set(frontRef.current, { z: 700 });
+    gsap.set(midRef.current, { z: 300 });
+    gsap.set(rearRef.current, { z: -340 });
     gsap.set(vesselRef.current, { xPercent: -50, yPercent: -50, scale: VESSEL_REST });
     gsap.set(innerRef.current, { xPercent: -50, yPercent: -50, scale: INNER_REST });
     gsap.set(dimRef.current, { opacity: 0.5 });
@@ -169,13 +169,13 @@ export default function LensIntro() {
         // CLEAN at scale 1 (no leftover zoom). Slow + cinematic.
         const tl = gsap.timeline({ delay: 0.1 });
         tl
-          .to(rigRef.current, { z: 0, scale: 1, duration: 2.2, ease: "power2.inOut" }, 0)
-          .to(vesselRef.current, { scale: 1, duration: 2.2, ease: "power2.inOut" }, 0)
-          .to(innerRef.current, { scale: 1, duration: 2.2, ease: "power2.inOut" }, 0)
+          .to(rigRef.current, { z: 0, scale: 1, duration: 2.7, ease: "power2.inOut" }, 0)
+          .to(vesselRef.current, { scale: 1, duration: 2.7, ease: "power2.inOut" }, 0)
+          .to(innerRef.current, { scale: 1, duration: 2.7, ease: "power2.inOut" }, 0)
           // glass rushes toward the camera in Z (depth) and dissolves as we pass
-          .to(frontRef.current, { z: 1400, scale: 5.2, autoAlpha: 0, filter: "blur(13px)", duration: 1.05, ease: "power2.in" }, 0.2)
-          .to(midRef.current, { z: 1400, scale: 4.4, autoAlpha: 0, filter: "blur(11px)", duration: 1.15, ease: "power2.in" }, 0.5)
-          .to(rearRef.current, { z: 1400, scale: 3.7, autoAlpha: 0, filter: "blur(9px)", duration: 1.25, ease: "power2.in" }, 0.8)
+          .to(frontRef.current, { z: 1700, scale: 5.2, autoAlpha: 0, filter: "blur(13px)", duration: 1.05, ease: "power2.in" }, 0.2)
+          .to(midRef.current, { z: 1700, scale: 4.4, autoAlpha: 0, filter: "blur(11px)", duration: 1.15, ease: "power2.in" }, 0.5)
+          .to(rearRef.current, { z: 1700, scale: 3.7, autoAlpha: 0, filter: "blur(9px)", duration: 1.25, ease: "power2.in" }, 0.8)
           // the throat opens + the reel-dim lifts as we arrive
           .to(vignetteRef.current, { opacity: 0, duration: 1.0, ease: "power1.out" }, 1.05)
           .to(dimRef.current, { opacity: 0, duration: 1.15 }, 0.9)
@@ -224,7 +224,7 @@ export default function LensIntro() {
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
       <div
         className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl bg-black md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
-        style={{ perspective: "1050px", perspectiveOrigin: "50% 47%" }}
+        style={{ perspective: "820px", perspectiveOrigin: "50% 48%" }}
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {

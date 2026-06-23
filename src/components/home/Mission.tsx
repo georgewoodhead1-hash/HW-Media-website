@@ -39,14 +39,14 @@ export default function Mission() {
       data-theme="dark"
       data-surface="page"
       data-chapter="01 — Mission"
-      className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10 md:py-[10vh]"
+      className="relative bg-[var(--bg)] px-5 py-[16vh] text-[var(--fg)] md:px-10 md:py-[22vh]"
       aria-label="Our mission"
       style={{ fontFamily: "var(--font-firma), sans-serif" }}
     >
       <div className="mx-auto grid max-w-[1100px] gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-16">
         <ScrollType
           as="h2"
-          className="font-display text-[clamp(1.8rem,3vw,3rem)] leading-[0.95]"
+          className="font-display text-[clamp(2.2rem,5vw,4.6rem)] leading-[0.9]"
           gold={["not"]}
           style={{ fontWeight: 400 }}
         >

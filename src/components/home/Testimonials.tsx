@@ -151,7 +151,7 @@ export default function Testimonials() {
       <div className="px-5 md:px-10">
         <ScrollType
           as="h2"
-          className="font-display max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
+          className="font-display max-w-4xl text-[clamp(2.6rem,6vw,5.4rem)] leading-[0.95]"
           style={{ fontWeight: 400 }}
         >
           Testimonials

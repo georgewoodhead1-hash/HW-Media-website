@@ -23,9 +23,9 @@ const STAGES: Stage[] = [
 ];
 
 const COMBINE = 0.38; // assemble + a short HOLD on "Our process" finishes here (earlier = comes in faster)
-const OUTRO = 0.86; // after this the assembled scene breaks apart + flies off
+const OUTRO = 0.93; // after this the assembled scene breaks apart + flies off (late, so a remnant survives the bottom seam)
 const ROW_X = [15, 38.3, 61.7, 85];
-const ROW_Y = [60, 49, 60, 49]; // stepped up/down for depth
+const ROW_Y = [70, 59, 70, 59]; // pushed DOWN so the row fills the lower half; still stepped up/down for depth
 const CORNERS: [number, number][] = [[10, 16], [90, 16], [10, 86], [90, 86]];
 // arrival windows COMPRESSED so every film is home by ~0.4 — before the hold,
 // so "Our process" is fully written and readable before "We plan" takes over
@@ -72,14 +72,16 @@ export default function EditorFCP() {
         // final slot and settle, instead of flying across the centre and
         // colliding with already-placed glyphs (that crossing was the garble).
         const mag = 0.07 + ((i * 13) % 10) / 100;
-        const a = (i / N) * 0.22; // letters drift in SLOWLY, staggered across the top third
+        // negative head-start so the title is ALREADY partly assembled at p=0 —
+        // the top seam is never a fully empty frame on scroll-back
+        const a = (i / N) * 0.16 - 0.05; // letters drift in, staggered across the top third
         return {
           x: dir * mag,
           y: ((((i * 53) % 100) - 50) / 50) * 0.14,
           rot: dir * (3 + ((i * 29) % 9)),
           sc: 0.82 + ((i * 17) % 16) / 100,
           a,
-          b: a + 0.14, // gentle, gradual write-on; "OUR PROCESS" fully assembled by ~p0.36, then HOLDS
+          b: a + 0.12, // gentle, gradual write-on; "OUR PROCESS" fully assembled well before the hold
         };
       });
 
@@ -105,7 +107,7 @@ export default function EditorFCP() {
         const STAGE_START = 0.56;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
-        const outro = smooth(OUTRO, 0.99, p); // 0 -> 1: the scene breaks apart and flies off
+        const outro = smooth(OUTRO, 1.12, p); // 0 -> ~0.3 at p=1: scene only STARTS flying off at the seam, so a clear remnant survives the bottom edge (no empty frame on scroll-back)
 
         // FILMS — drift in from a corner during assemble, brighten/dim by the
         // active stage, then in the OUTRO fly back out to the corners + fade.
@@ -258,7 +260,7 @@ export default function EditorFCP() {
         <div
           ref={barRef}
           aria-hidden
-          className="absolute left-0 top-[54.5%] z-30 opacity-0 will-change-transform"
+          className="absolute left-0 top-[64.5%] z-30 opacity-0 will-change-transform"
         >
           <span className="absolute -left-[6px] -top-3 h-0 w-0 border-x-[6px] border-t-[8px] border-x-transparent border-t-[var(--gold)]" />
           <span className="block h-[30vh] w-[2px] rounded-full bg-[var(--gold)] shadow-[0_0_14px_3px_rgba(191,170,83,0.5)]" />

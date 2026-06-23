@@ -78,6 +78,28 @@ export default function Nav() {
     return () => triggers.forEach((t) => t.kill());
   }, []);
 
+  // hide on scroll-down, reveal on scroll-up (whole site). Stays put near the
+  // top so the hero always shows it.
+  useEffect(() => {
+    const nav = rootRef.current;
+    if (!nav) return;
+    let hidden = false;
+    const st = ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => {
+        if (self.direction === 1 && !hidden && self.scroll() > 140) {
+          hidden = true;
+          gsap.to(nav, { yPercent: -145, duration: 0.5, ease: "power3.out", overwrite: true });
+        } else if ((self.direction === -1 || self.scroll() <= 140) && hidden) {
+          hidden = false;
+          gsap.to(nav, { yPercent: 0, duration: 0.5, ease: "power3.out", overwrite: true });
+        }
+      },
+    });
+    return () => st.kill();
+  }, []);
+
   return (
     <>
       <header
@@ -88,9 +110,9 @@ export default function Nav() {
             swaps in only in light mode over a page surface. */}
         <Link href="/" className="nav-enter block shrink-0" aria-label="HW Media — home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/hwmedia-dark.png" alt="HW Media" className="nav-logo-color h-12 w-auto md:h-14" />
+          <img src="/logos/hwmedia-dark.png" alt="HW Media" className="nav-logo-color h-14 w-auto md:h-16" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/hwmedia-light.png" alt="" aria-hidden className="nav-logo-black h-12 w-auto md:h-14" />
+          <img src="/logos/hwmedia-light.png" alt="" aria-hidden className="nav-logo-black h-14 w-auto md:h-16" />
         </Link>
 
         {/* RIGHT — flat nav. No permanent borders; a hard-line ring appears

@@ -73,6 +73,7 @@ function filmFor(slug: string): { loop: string; poster: string } {
 export default function Testimonials() {
   const rootRef = useRef<HTMLElement>(null);
   const quoteRef = useRef<HTMLDivElement>(null);
+  const filmRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [active, setActive] = useState(0);
 
@@ -102,6 +103,43 @@ export default function Testimonials() {
         tween.scrollTrigger?.kill();
         tween.kill();
         gsap.set(rise, { clearProps: "transform,opacity,visibility" });
+      };
+    });
+
+    return () => mm.revert();
+  }, []);
+
+  // gentle scrubbed parallax — the film stack drifts a touch slower than the
+  // page as the section passes through, giving a quiet "alive" depth. Transform
+  // only (yPercent on the wrapper), heavy scrub, ease none — never touches the
+  // per-video opacity cross-fade above. The wrapper is over-scaled in markup so
+  // the drift never exposes an edge.
+  useEffect(() => {
+    const root = rootRef.current;
+    const film = filmRef.current;
+    if (!root || !film) return;
+
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      const tween = gsap.fromTo(
+        film,
+        { yPercent: -4 },
+        {
+          yPercent: 4,
+          ease: "none",
+          scrollTrigger: {
+            trigger: root,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: 1.2,
+          },
+        },
+      );
+
+      return () => {
+        tween.scrollTrigger?.kill();
+        tween.kill();
+        gsap.set(film, { clearProps: "transform" });
       };
     });
 
@@ -205,24 +243,28 @@ export default function Testimonials() {
           aria-label={`View project — ${current.role}, ${current.sector}`}
           className="group relative mx-auto block aspect-[3/4] w-full max-h-[70vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
         >
-          {TESTIMONIALS.map((t, i) => {
-            const film = filmFor(t.slug);
-            return (
-              <video
-                key={t.slug}
-                ref={(el) => {
-                  videoRefs.current[i] = el;
-                }}
-                className="absolute inset-0 h-full w-full object-cover opacity-0 will-change-[opacity]"
-                data-src={film.loop}
-                poster={film.poster}
-                muted
-                loop
-                playsInline
-                preload="none"
-              />
-            );
-          })}
+          {/* over-scaled wrapper so the scrubbed parallax drift never exposes an
+              edge; only this wrapper transforms, the gradient + CTA stay put */}
+          <div ref={filmRef} className="absolute inset-0 scale-[1.12] will-change-transform">
+            {TESTIMONIALS.map((t, i) => {
+              const film = filmFor(t.slug);
+              return (
+                <video
+                  key={t.slug}
+                  ref={(el) => {
+                    videoRefs.current[i] = el;
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 will-change-[opacity]"
+                  data-src={film.loop}
+                  poster={film.poster}
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                />
+              );
+            })}
+          </div>
           {/* subtle gradient so the View-project affordance stays legible */}
           <div
             aria-hidden

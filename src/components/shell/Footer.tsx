@@ -19,14 +19,11 @@ export default function Footer() {
       className="relative z-10 border-t border-[var(--hairline-dark)] bg-[var(--bg)] px-5 py-14 text-[var(--fg)] md:px-10"
     >
       <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between">
-        {/* logo + email (placeholder wordmark until the official logo lands) */}
+        {/* logo + email — the real HW Media logo (gold), matching the nav. */}
         <div>
-          <Link
-            href="/"
-            className="font-display text-lg uppercase leading-none tracking-[0.18em] nav-wordmark"
-            aria-label="HW Media — home"
-          >
-            HW <span className="ml-1 align-middle text-[var(--gold-text)]">Media</span>
+          <Link href="/" aria-label="HW Media — home" className="inline-block">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logos/hwmedia-dark.png" alt="HW Media" className="h-14 w-auto" />
           </Link>
           <a
             href={`mailto:${EMAIL}`}

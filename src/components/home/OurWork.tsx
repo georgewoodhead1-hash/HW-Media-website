@@ -101,6 +101,34 @@ export default function OurWork() {
       };
     });
 
+    // mobile: the md:hidden tile stack is otherwise static — give each tile a
+    // gentle fade-in + slight rise as it scrolls into view, staggered down.
+    mm.add("(max-width: 767px) and (prefers-reduced-motion: no-preference)", () => {
+      const tiles = gsap.utils.toArray<HTMLElement>(".ow-mtile", root);
+      const tweens = tiles.map((tile, i) =>
+        gsap.fromTo(
+          tile,
+          { autoAlpha: 0, y: 28 },
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.7,
+            delay: (i % 2) * 0.08,
+            ease: "power2.out",
+            scrollTrigger: {
+              trigger: tile,
+              start: "top 88%",
+              toggleActions: "play none none none",
+            },
+          },
+        ),
+      );
+      return () => tweens.forEach((t) => {
+        t.scrollTrigger?.kill();
+        t.kill();
+      });
+    });
+
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
         const v = e.target as HTMLVideoElement;
@@ -198,7 +226,7 @@ export default function OurWork() {
       <div className="flex flex-col gap-4 px-5 py-[10vh] md:hidden">
         <h2 className="font-display mb-2 text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured <span className="text-[var(--gold-text)]">Projects</span></h2>
         {WORKS.map((p) => (
-          <Link key={p.slug} href={`/work/${p.slug}`} className="relative block aspect-video overflow-hidden rounded-md">
+          <Link key={p.slug} href={`/work/${p.slug}`} className="ow-mtile relative block aspect-video overflow-hidden rounded-md">
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
             <div className="absolute bottom-3 left-3">

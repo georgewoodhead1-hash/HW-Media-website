@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // FAQ — click-to-open accordion. The left column keeps the "FAQs" heading and a
 // tall vertical video reel (sticky on desktop). The right column is the list of
@@ -39,39 +39,30 @@ export default function FAQs() {
     if (!root || !reel) return;
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      // PREMIUM ENTRANCE — set the hidden state explicitly (gsap.set), then a
-      // timeline on enter fades everything UP. fromTo/set is reliable where a
-      // bare gsap.from sometimes never ran (the "it doesn't fade in" bug). The
-      // reel fades in first, then the heading + each question rise, staggered.
+      const pinEl = root.querySelector<HTMLElement>(".faq-pin");
       const head = root.querySelector<HTMLElement>(".faq-head");
       const qs = gsap.utils.toArray<HTMLElement>(".faq-q", root);
-      const rows = [head, ...qs].filter(Boolean) as HTMLElement[];
-      gsap.set([reel, ...rows], { autoAlpha: 0, y: 64 });
-      const introTl = gsap.timeline({
-        scrollTrigger: { trigger: root, start: "top 74%", once: true },
-      });
+      // PIN the reel column so it genuinely STAYS IN PLACE for the whole
+      // section. CSS sticky released halfway and the reel scrolled off (measured
+      // 698px of drift). A real ScrollTrigger pin keeps it fixed top to bottom.
+      const pinST = pinEl
+        ? ScrollTrigger.create({ trigger: root, start: "top top", end: "bottom top", pin: pinEl, pinSpacing: false })
+        : null;
+      // entrance: fade everything up on enter — OPACITY ONLY (no transform, so it
+      // can't fight the pin).
+      gsap.set([head, ...qs, reel].filter(Boolean), { autoAlpha: 0 });
+      const introTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 70%", once: true } });
       introTl
-        .to(reel, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out" }, 0)
-        .to(rows, { autoAlpha: 1, y: 0, duration: 1.0, stagger: 0.085, ease: "power3.out" }, 0.18);
-      const intro = introTl;
-      // the reel stays PUT (sticky) and full-size the whole way down the
-      // questions, then fades straight out IN PLACE near the very end — no
-      // shrink (scale stays 1), no upward lift, and the fade completes while the
-      // reel is still pinned so it never gets "cut in half" on the sticky
-      // release. Pure opacity, nothing else moves.
-      const tween = gsap.fromTo(
-        reel,
-        { autoAlpha: 1 },
-        {
-          autoAlpha: 0,
-          ease: "none",
-          // fade ONLY as the section genuinely leaves the viewport — the reel
-          // stays full + in place through the whole question list and is still
-          // present until the finale scrolls up over it (no early black hole).
-          scrollTrigger: { trigger: root, start: "bottom 42%", end: "bottom -8%", scrub: 1 },
-        },
-      );
-      return () => { intro.scrollTrigger?.kill(); intro.kill(); tween.scrollTrigger?.kill(); tween.kill(); };
+        .to([head, reel].filter(Boolean), { autoAlpha: 1, duration: 1, ease: "power2.out" }, 0)
+        .to(qs, { autoAlpha: 1, duration: 0.8, stagger: 0.08, ease: "power2.out" }, 0.2);
+      // exit: the reel fades out IN PLACE (it's pinned, so it never moves) as the
+      // section's tail leaves and the finale comes up over it.
+      const tween = gsap.to(reel, {
+        autoAlpha: 0,
+        ease: "none",
+        scrollTrigger: { trigger: root, start: "bottom 55%", end: "bottom 18%", scrub: 1 },
+      });
+      return () => { pinST?.kill(); introTl.scrollTrigger?.kill(); introTl.kill(); tween.scrollTrigger?.kill(); tween.kill(); };
     });
     return () => mm.revert();
   }, []);
@@ -91,7 +82,7 @@ export default function FAQs() {
       <div className="md:flex md:items-stretch md:gap-12 lg:gap-16">
         {/* LEFT — heading + video reel, held in place while the questions read. */}
         <div className="relative md:w-[40%] md:pl-6 lg:w-[36%] lg:pl-10">
-          <div className="md:sticky md:top-[16vh]">
+          <div className="faq-pin">
           <h2 className="faq-head font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
             <span className="text-[var(--gold-text)]">FAQs</span>
           </h2>

@@ -87,3 +87,12 @@
 4. **Process:** D1 subtext → D2 thumbnails down → D3 stay-in-place.
 5. **Testimonials:** E3 dots → E2 conjoin seam.
 6. **Mobile pass:** F1–F5.
+
+---
+
+## Reference DNA (sites George + Harry gave)
+
+- **auteurstudios.au** — the "Aussie site". **Nav pill**: a single outlined capsule that *slides* to the hovered item (drives A2 — not per-item rings). Dark, restrained, rounded section corners, big air. Also the **process bullet** subtext style (drives D1).
+- **barstudios.co.uk** — **colour-blocking** (drives B1): clean white sections with bold tight black type, alternating with full-bleed film/image sections. Confirms the dark-band rhythm.
+- **lukebaffait.fr** — **smoothness + section transitions** target. Built on **Lenis + GSAP ScrollTrigger** = HW's exact stack, so it's a tuning job: heavier Lenis lerp / longer duration + pinned-overlap section handoffs (no hard cuts). Near-black, giant type with small inline video insets, serif/sans mix.
+

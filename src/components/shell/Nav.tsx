@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { BOOKING_URL } from "@/content/site";
 
@@ -20,6 +20,7 @@ export default function Nav() {
   const rootRef = useRef<HTMLElement>(null);
   const navListRef = useRef<HTMLElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // sliding nav pill (auteur): one outlined capsule that glides to the hovered
   // item instead of every link drawing its own ring.
@@ -121,7 +122,7 @@ export default function Nav() {
         <nav
           ref={navListRef}
           onMouseLeave={hidePill}
-          className="relative flex items-center gap-1.5 md:gap-2"
+          className="relative hidden items-center gap-1.5 md:flex md:gap-2"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           {/* sliding pill — one outlined capsule that glides to the hovered item */}
@@ -150,7 +151,46 @@ export default function Nav() {
             Start here
           </a>
         </nav>
+
+        {/* mobile hamburger */}
+        <button
+          type="button"
+          onClick={() => setMenuOpen((o) => !o)}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          className="nav-enter relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-[5px] md:hidden"
+        >
+          <span className={`block h-[1.5px] w-6 bg-[var(--fg)] transition-transform duration-300 ${menuOpen ? "translate-y-[6.5px] rotate-45" : ""}`} />
+          <span className={`block h-[1.5px] w-6 bg-[var(--fg)] transition-opacity duration-300 ${menuOpen ? "opacity-0" : ""}`} />
+          <span className={`block h-[1.5px] w-6 bg-[var(--fg)] transition-transform duration-300 ${menuOpen ? "-translate-y-[6.5px] -rotate-45" : ""}`} />
+        </button>
       </header>
+
+      {/* mobile menu overlay — fullscreen, mode-aware, giant links */}
+      <div
+        className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[var(--bg)] transition-opacity duration-300 md:hidden ${menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
+        style={{ fontFamily: "var(--font-firma), sans-serif" }}
+      >
+        {LINKS.map((l) => (
+          <Link
+            key={l.label}
+            href={l.href}
+            onClick={() => setMenuOpen(false)}
+            className="font-display text-[clamp(2rem,9vw,3rem)] uppercase tracking-[-0.01em] text-[var(--fg)]"
+          >
+            {l.label}
+          </Link>
+        ))}
+        <a
+          href={BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => setMenuOpen(false)}
+          className="mt-2 rounded-full border border-[var(--fg)]/40 px-7 py-3 text-[13px] uppercase tracking-[0.18em] text-[var(--fg)]"
+        >
+          Start here
+        </a>
+      </div>
 
       {/* social rail — pinned bottom-left, always visible (mix-blend keeps it
           legible over any footage or surface) */}

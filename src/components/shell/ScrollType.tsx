@@ -36,11 +36,14 @@ export default function ScrollType({
 
     const split = new SplitText(el, { type: "chars", charsClass: "st-char" });
     gsap.set(split.chars, { autoAlpha: 0 });
+    // ONE-SHOT type-on (not scrub) — it completes on enter and STAYS assembled,
+    // so the resting state is never a half-typed word (the "TESTIMONIA" bug).
     const tween = gsap.to(split.chars, {
       autoAlpha: 1,
-      ease: "none",
-      stagger: 0.45,
-      scrollTrigger: { trigger: el, start, end, scrub: 0.9 },
+      ease: "power2.out",
+      duration: 0.5,
+      stagger: 0.035,
+      scrollTrigger: { trigger: el, start, once: true },
     });
 
     return () => {

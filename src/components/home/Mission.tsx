@@ -39,7 +39,7 @@ export default function Mission() {
       data-theme="dark"
       data-surface="page"
       data-chapter="01 — Mission"
-      className="relative bg-[var(--bg)] px-5 py-[13vh] text-[var(--fg)] md:px-10 md:py-[16vh]"
+      className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10 md:py-[10vh]"
       aria-label="Our mission"
       style={{ fontFamily: "var(--font-firma), sans-serif" }}
     >

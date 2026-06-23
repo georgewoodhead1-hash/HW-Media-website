@@ -85,12 +85,15 @@ export default function FAQs() {
       className="relative bg-[var(--bg)] px-5 pb-[8vh] pt-[5vh] text-[var(--fg)] md:px-10"
       aria-label="Frequently asked questions"
     >
-      <div className="md:flex md:items-start md:gap-12 lg:gap-16">
-        {/* LEFT — heading + video reel. Sticky on desktop so the reel stays in
-            view while the question list is read. */}
-        <div className="relative md:sticky md:top-[18vh] md:w-[40%] md:self-start md:pl-6 lg:w-[36%] lg:pl-10">
+      {/* items-stretch (not items-start) so the LEFT column is as tall as the
+          question list — that lets the reel stay sticky for the WHOLE list
+          instead of releasing early and leaving a black void. */}
+      <div className="md:flex md:items-stretch md:gap-12 lg:gap-16">
+        {/* LEFT — heading + video reel, held in place while the questions read. */}
+        <div className="relative md:w-[40%] md:pl-6 lg:w-[36%] lg:pl-10">
+          <div className="md:sticky md:top-[16vh]">
           <h2 className="faq-head font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
-            <span className="text-[var(--gold-text)]">FAQ&apos;s</span>
+            <span className="text-[var(--gold-text)]">FAQs</span>
           </h2>
           <div ref={reelRef} className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:mt-9 md:w-[clamp(180px,80%,300px)]">
             <video
@@ -102,6 +105,7 @@ export default function FAQs() {
               playsInline
             />
           </div>
+          </div>
         </div>
 
         {/* RIGHT — the questions as a click-to-open accordion. */}
@@ -111,7 +115,7 @@ export default function FAQs() {
             return (
               <div
                 key={f.q}
-                className="faq-q border-t border-dashed border-[var(--hairline-dark)] last:border-b"
+                className="faq-q border-t border-[var(--hairline-dark)] last:border-b"
               >
                 <button
                   type="button"
@@ -128,8 +132,8 @@ export default function FAQs() {
                       {String(i + 1).padStart(2, "0")}
                     </span>
                     <span
-                      className={`font-display text-[clamp(1.1rem,2vw,1.6rem)] leading-tight transition-colors duration-300 ${
-                        isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/40"
+                      className={`text-[clamp(1.05rem,1.5vw,1.35rem)] font-medium leading-snug transition-colors duration-300 ${
+                        isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/55"
                       }`}
                     >
                       {f.q}
@@ -152,10 +156,7 @@ export default function FAQs() {
                   }}
                 >
                   <div className="overflow-hidden">
-                    <p
-                      className="max-w-xl pb-7 text-base leading-relaxed text-[var(--fg)]/65 md:pb-9 md:pl-[2.8rem] md:text-lg"
-                      style={{ fontFamily: "var(--font-firma), sans-serif" }}
-                    >
+                    <p className="max-w-xl pb-7 text-[15px] leading-relaxed text-[var(--fg)]/80 md:pb-9 md:pl-[2.8rem] md:text-[17px]">
                       {f.a}
                     </p>
                   </div>

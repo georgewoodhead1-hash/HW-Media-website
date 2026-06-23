@@ -408,15 +408,9 @@ export default function LensIntro() {
           </div>
         </div>
 
-        {/* stage depth */}
-        <div
-          ref={vignetteRef}
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(120% 120% at 50% 50%, transparent 32%, rgba(0,0,0,0.55) 74%, rgba(0,0,0,0.88) 100%)",
-          }}
-        />
+        {/* vignette REMOVED (client: "horrible vignette around the showreel").
+            Kept as an empty ref so the dive timeline still has a valid target. */}
+        <div ref={vignetteRef} className="pointer-events-none absolute inset-0" />
 
         {/* legibility scrim — fades in under the motto so it sits cleanly over
             any footage. A gradient surface, not a text shadow. */}

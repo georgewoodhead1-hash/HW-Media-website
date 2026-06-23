@@ -72,14 +72,14 @@ export default function EditorFCP() {
         // final slot and settle, instead of flying across the centre and
         // colliding with already-placed glyphs (that crossing was the garble).
         const mag = 0.07 + ((i * 13) % 10) / 100;
-        const a = 0.02 + (i / N) * 0.18; // staggered start, all home by ~0.32
+        const a = (i / N) * 0.22; // letters drift in SLOWLY, staggered across the top third
         return {
           x: dir * mag,
-          y: ((((i * 53) % 100) - 50) / 50) * 0.18,
-          rot: dir * (4 + ((i * 29) % 12)),
-          sc: 0.78 + ((i * 17) % 20) / 100,
+          y: ((((i * 53) % 100) - 50) / 50) * 0.14,
+          rot: dir * (3 + ((i * 29) % 9)),
+          sc: 0.82 + ((i * 17) % 16) / 100,
           a,
-          b: a + 0.12, // tight window so the word is written well before the hold
+          b: a + 0.14, // gentle, gradual write-on; "OUR PROCESS" fully assembled by ~p0.36, then HOLDS
         };
       });
 
@@ -102,7 +102,7 @@ export default function EditorFCP() {
         // letters land ~0.32, "Our process" holds READABLE 0.32-0.46, fades
         // 0.46-0.50, THEN the stage words enter at 0.50 — so the two never share
         // the centre and there is a real, visible "Our process" hold.
-        const STAGE_START = 0.5;
+        const STAGE_START = 0.56;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
         const outro = smooth(OUTRO, 0.99, p); // 0 -> 1: the scene breaks apart and flies off
@@ -148,7 +148,7 @@ export default function EditorFCP() {
 
         // "Our process" leaves quickly right at the boundary so it never
         // shares the centre with the first stage word
-        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(0.46, 0.5, p) });
+        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(0.5, 0.56, p) });
 
         // STAGE names — ONE at a time, non-overlapping fade windows so two big
         // words never occupy the centre together (that was the garble)
@@ -177,7 +177,7 @@ export default function EditorFCP() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 2,
+        scrub: 2.8,
         invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
@@ -205,7 +205,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="page"
       data-chapter="Our process"
-      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[16vh] motion-safe:md:h-[280vh]"
+      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[12vh] motion-safe:md:h-[300vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

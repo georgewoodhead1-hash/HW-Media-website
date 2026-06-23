@@ -141,7 +141,7 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[16vh] text-[var(--fg)] motion-safe:md:-mt-[6vh]"
+      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[6vh]"
       aria-label="Testimonials"
     >
       <div className="px-5 md:px-10">
@@ -150,13 +150,8 @@ export default function Testimonials() {
           className="font-display max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
           style={{ fontWeight: 400 }}
         >
-          Testimonials
+          Reviews
         </ScrollType>
-        {/* full-width rule with a gold lead segment — a proper divider, not a
-            stub under the word. */}
-        <div aria-hidden className="relative mt-6 h-px w-full bg-[var(--hairline-dark)]">
-          <span className="absolute inset-y-0 left-0 w-40 bg-[var(--gold)]" />
-        </div>
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
@@ -210,12 +205,12 @@ export default function Testimonials() {
               under it (client: it was pinned to the bottom of the column) */}
           <div ref={quoteRef} className="mt-10">
             <blockquote
-              className="font-display text-[clamp(1.7rem,2.9vw,2.9rem)] leading-[1.12]"
-              style={{ fontWeight: 400 }}
+              className="text-[clamp(1.7rem,3vw,3rem)] italic leading-[1.2]"
+              style={{ fontFamily: "var(--font-instrument), serif" }}
             >
-              <span className="text-[var(--gold-text)]">&ldquo;</span>
+              <span className="not-italic text-[var(--gold-text)]">&ldquo;</span>
               {current.quote}
-              <span className="text-[var(--gold-text)]">&rdquo;</span>
+              <span className="not-italic text-[var(--gold-text)]">&rdquo;</span>
             </blockquote>
 
             <figcaption className="mt-7" style={{ fontFamily: "var(--font-firma), sans-serif" }}>

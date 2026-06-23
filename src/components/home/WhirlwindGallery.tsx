@@ -187,7 +187,7 @@ export default function WhirlwindGallery() {
       data-theme="dark"
       data-surface="page"
       data-chapter="The finale"
-      className="relative motion-safe:md:-mt-[30vh] motion-safe:md:h-[340vh]"
+      className="relative motion-safe:md:-mt-[22vh] motion-safe:md:h-[220vh]"
       aria-label="Every film is a chance to break the ordinary"
     >
       <div
@@ -231,7 +231,8 @@ export default function WhirlwindGallery() {
           </p>
           <Link
             href="/contact"
-            className="cta-start label-mono lift-hover mt-10 inline-block rounded-full border-2 border-[var(--gold)] bg-[var(--bg)]/60 px-14 py-6 text-base text-[var(--gold-text)] backdrop-blur-sm transition-colors duration-500 hover:bg-[var(--gold)] hover:text-[#050505]"
+            className="cta-start mt-10 inline-block rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
+            style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             Start here ⟶
           </Link>
@@ -291,7 +292,7 @@ export default function WhirlwindGallery() {
             <video key={`${src}-${i}`} className="aspect-video w-full rounded-md object-cover" src={src} muted loop playsInline preload="none" />
           ))}
         </div>
-        <Link href="/contact" className="label-mono mt-10 inline-block rounded-full border border-[var(--gold)] px-10 py-4 text-[var(--gold-text)]">
+        <Link href="/contact" className="mt-10 inline-block rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
           Start here ⟶
         </Link>
 

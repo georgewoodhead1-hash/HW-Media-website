@@ -145,7 +145,7 @@ export default function TrustedBy() {
       data-theme="dark"
       data-surface="page"
       data-chapter="02 — Trusted by"
-      className="relative border-y border-[var(--hairline-dark)] bg-[color-mix(in_srgb,var(--fg)_5%,var(--bg))] px-5 pb-[14vh] pt-[6vh] md:px-10"
+      className="relative bg-[var(--bg)] px-5 pb-[5vh] pt-[7vh] md:px-10"
       aria-label="Trusted by"
     >
       <div className="tb-heading mb-[4vh] text-center">

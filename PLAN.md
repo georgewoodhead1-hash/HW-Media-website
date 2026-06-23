@@ -1,112 +1,55 @@
-# HW Media — Master Build Plan (current)
+# HW Media — Fix Plan (v3, from your feedback)
 
-**This file is the single source of truth.** Every change references an item here. Nothing gets built outside this plan. No "done" without a screenshot proving it. If George changes a requirement, it is edited HERE first, then built.
+**North star: auteurstudios.au.** Strip it right down. Minimal, clean, lots of calm space, **left-aligned**, **one idea per screen**, **slow quiet motion**, **consistent fonts**. The site is too noisy and too fast right now. Less, but better.
 
-> Supersedes the old v2 plan (2026-06-13) which wrongly listed the camera intro as "locked/approved" — it is not; George has rejected it and it is the #1 job.
-
----
-
-## 0. How we work (the method)
-
-1. **Plan first.** Anything non-trivial goes in this file *before* I touch code.
-2. **One item at a time, in priority order** (Section 3). No jumping around, no scope creep.
-3. **Verify every change with a real screenshot** before calling it done — I paste the proof.
-4. **Never claim "done" on anything I haven't shown working.** Can't prove it → it's 🟡 or ⛔, not 🟢.
-5. **Localhost is the review surface:** `http://localhost:3011`. Push to GitHub at the end of a clean, verified batch (or when George says).
-6. **If George says it's wrong, it's wrong.** I re-open the item here and fix it — no arguing.
+**I will not write code until you OK this.** Then ONE item at a time, in order, screenshot it, show you, stop, wait for your go. No "it's fixed" without proof. Stays local — no Vercel push.
 
 ---
 
-## 1. Project facts
+## A. Things I broke / overreached on (revert these)
 
-| | |
-|---|---|
-| Site | HW Media — London cinematic film **production company** (NOT agency, NOT "content") |
-| Director | Harry Wallis — shoots every project himself |
-| Stack | Next.js 16 (App Router), React 19, TS, Tailwind v4, **GSAP 3 + ScrollTrigger + SplitText**, Lenis smooth scroll |
-| Local | `http://localhost:3011` · Repo branch `main` → GitHub `georgewoodhead1-hash/HW-Media-website` → auto-deploy Vercel `hw-media-website-y7yi` |
-
----
-
-## 2. Golden rules (non-negotiable)
-
-- **Gold only (`#bfaa53`). NEVER red** — including footage. A clip leading with a red light gets graded out or swapped.
-- **Films, not "content". Production company, not "agency".** They travel and shoot on location.
-- **Real fonts:** Archivo (display), Hanken (body), **BR Firma SemiBold** (CTAs/labels), IBM Plex Mono (micro labels). Never lookalikes.
-- **Motion doctrine — "set pieces + calm between":** spectacle at the intro / films / process / finale; quiet editorial between, but *every* element still enters (masked rise, unclip, drawn rule). Slow, heavy, smooth, scroll-tied. Ease-out exponential. **Never parks. No abrupt stops.** Benchmark feel = the Our Work accordion.
-- **The lens circle is the one connecting motif** — intro lens → films → finale ring. Open and close on the lens.
-- **Sections overlap seamlessly** — never a hard black gap.
-- **One idea per screen, vast space**, big type only for the hero motto + film titles.
-- **Dark default + working light toggle.** Hero/cinema sections stay dark always.
-
----
-
-## 3. OPEN — priority order (work top-down)
-
-Keys: 🔴 broken/not started · 🟡 in progress · 🟢 done+verified · ⛔ blocked on George
-
-### P1 🟢 Camera / lens intro — REBUILT as a scroll-driven fall-through
-Rebuilt with **GSAP ScrollTrigger** (per George's direction). It is no longer an auto-play that flashes past or hides behind the loader — it is **scroll-scrubbed**: a real cine lens hangs in the dark at rest (with a "Scroll" cue); as you scroll you **fall through the barrel** (rig accelerates forward, the three glass planes blow past one at a time with motion blur), landing **dead-clean** on the full-frame showreel (no zoom), then the motto rises and holds. You control it with your scroll, so it can never flash past or hide. CSS-sticky stage + scrub (not ScrollTrigger pin) to stay smooth under Lenis. Verified frame-by-frame.
-- *If George wants it tuned:* longer/shorter fall, more/less spin, different resting pose — all easy now that the structure is right.
-
-### P2 ⛔ Hero motto "Break the ordinary" — interaction
-Currently solid (clean, legible). The footage-knockout = the dark box George already rejected (it boxes on bright frames; multiply can't make the surround transparent). **Blocked on George's reference** for the exact "interact with the background" look. Stays solid until then.
-
-### P3 ⛔ Real photo of Harry (About)
-Old "Harry" image was a duplicated mountain; swapped to an on-location person as a **placeholder**. **Blocked:** need a real Harry headshot (one colour, I derive greyscale). Hover grey→colour already works.
-
-### P4 🔴 Final full-site review pass
-After P1: one slow end-to-end review (desktop + mobile, dark + light), fix anything that doesn't feel premium, capture proof, then push.
-
----
-
-## 4. Blocked on George (please send)
-
-1. **Reference for the camera-lens feel** (P1) — most useful single thing.
-2. **Reference for the "Break the ordinary" interaction** (P2).
-3. **Real photo of Harry Wallis** (P3).
-4. Confirm **client-retention %** (placeholder 96%).
-5. Real **booking link** (Calendly placeholder now).
-6. **Land Rover / Defender films** if they go in the work grid.
-
----
-
-## 5. Spec + status — by section
-
-Home order: `Lens intro → Mission → Stats → Trusted By → Our Work → Our Process → Testimonials → FAQs → Finale/Footer`
-
-| Section | Status | Notes |
+| # | What | Fix |
 |---|---|---|
-| **Lens intro (hero)** | 🟢 | scroll-driven fall-through-the-lens (GSAP ScrollTrigger), lands clean/no zoom, motto rises + holds. Motto interaction still solid (P2). |
-| **Mission** | 🟢 | quiet statement |
-| **Stats** | 🟢 | 5 / 150+ / 96% count-up (96% placeholder) |
-| **Trusted By** | 🟢 | TWO rows opposite directions; "TRUSTED BY" spaced + bigger |
-| **Our Work** | 🟢 | 6 films, fly-in accordion, no bars, Zuma renders. Hover-expand: code correct, needs a hover-frame to fully prove |
-| **Our Process** | 🟢 | assembles clean (garble fixed), stages crossfade, playhead, outro |
-| **Testimonials** | 🟢 | heading + gold underline (not clipped), selectors, quote + attribution, 3:4 portrait, no bars |
-| **FAQs** | 🟢 | reel stays full + in place, fades in place late (no cut/shrink/early gap); click accordion |
-| **Finale/Footer** | 🟢 | gallery → closing line; email cleared of toggle; socials + CTA |
-| **Nav** | 🟢 | ring-on-hover, gold/black logo per mode, Start Here CTA, legibility scrim |
+| **A1** | **I changed fonts across the whole site without being asked.** You only asked why the FAQ font differed — I shouldn't have touched anything else (incl. "Break the Ordinary"). | Restore the original type. ONE consistent type system, the look you had. |
+| **A2** | **Letters are gapped/spaced out** (the expanded display face). | Kill the letter-gapping — tighten it so words read as solid, clean type. |
+| **A3** | **"Start Here" button is still a different font/style** (nav vs footer), and I kept failing to fix it. | Make EVERY "Start Here" identical to the nav links (Work/About/Contact) — same font, size, weight, treatment. |
+| **A4** | **Horrible vignette (dark edges) around the showreel.** | Remove it completely. |
+| **A5** | **I sped the animations up.** The Our Work (artwork) and Our Process effects are ridiculously fast. | Make them **much slower** — slow, deliberate, premium. |
+| **A6** | **I churned the section gaps.** | Do spacing as one deliberate pass (A7). |
+| **A7** | **Too much empty black/white space between sections** — it takes too long. | Condense the gaps. Tight, calm rhythm between sections. |
 
-Pages: **/work** 🟢 (greyscale+play-on-hover code correct; needs clean grid + hover capture) · **/about** 🟢 heading "Who's behind the camera" + true 3:4 film; ⛔ Harry photo placeholder (P3) · **/contact** 🟢 · **/work/[slug]** 🟢
+## B. Sections — exactly what each should be
 
----
+| Section | What it should be |
+|---|---|
+| **Hero** | "Break the ordinary." + "we go where the story is" + "Book a call with us" all **in line and matched** (one alignment, one set, not three mismatched styles). No vignette. The motto should **interact with the footage** (you mentioned a reference — if you send it I'll match it exactly; otherwise I'll do a clean restrained version). Footage should not lead with a red light (gold only). |
+| **Lens** | Auto-plays. Needs to feel **deep** — falling far into the lens, not a shallow zoom. No tilt. |
+| **Our Work** | Keep the reveal you liked, but **much slower**. |
+| **Our Process** | **Much slower** — right now the whole thing scrolls and the effects fire too fast to make sense. Slow, legible, no letter-debris. |
+| **Reviews** (rename from "Testimonials") | Copy **auteurstudios**: ONE review on screen at a time (carousel), numbered 1·2·3, a large clean quote, small attribution, **left-aligned and all in line**. Kill the half-width underline. Calm and minimal — strip the noise. |
+| **FAQ** | Run it **back to the scroll-effect version** (the earlier one). It's completely broken now. |
+| **All sections** | Auteur restraint — less on screen, more space used well, quiet fade/reveal motion, left-aligned, consistent. |
 
-## 6. Decisions log (so we stop re-litigating)
+## C. Housekeeping
+- Clean the working folder noise: remove `_audit/`, `_gsap-skills/`, stray plan files. Working dir = `Sites/HW Media Rebuild` (branch `rebuild`).
 
-- **Motto knockout = rejected** — boxes on bright frames; motto stays solid until a reference defines the interaction.
-- **No zoom at lens landing** — rig lands at scale 1 (native), not 1.4.
-- **Dive plays AFTER the loader lifts** (`hw:reveal`), else it's invisible behind the veil.
-- **Hero footage regraded** to remove the red traffic light (gold-only rule).
-- **About vertical film = a true 720×960 clip** (salomon-p), not a square crop.
-- **All film clips + posters cropped** to remove baked letterbox bars (verified at strict threshold).
-
----
-
-## 7. References (George's stated DNA)
-
-podium.global (buttery scroll) · lukebaffait.fr (restraint, tiny type, vast space) · bennettandclive.com (huge type over full-bleed footage) · oceanfilms.com.br (film + single ring) · auteurstudios (BR Firma, gold). Motion benchmark = the Our Work accordion.
+## D. Lower priority (after A + B)
+- Grade the hero footage (lift blacks, contrast/warmth).
+- Real photo of Harry (you send it).
 
 ---
 
-*Last updated by Claude. Requirement changes are edited HERE first, then built.*
+## Order I'll work in (one at a time, show you each)
+1. **A1/A2 fonts** — restore original type + kill letter-gapping (everything consistent).
+2. **A3 Start Here** — match the nav links everywhere.
+3. **A4 vignette** — remove from the showreel.
+4. **A5 slow down** Our Work + Our Process animations.
+5. **A7 condense** the gaps between sections.
+6. **Reviews** — rebuild auteur-style (rename, carousel, aligned, underline fixed).
+7. **FAQ** — back to the scroll-effect version.
+8. **Lens** — deeper.
+9. **Hero** — align the three elements; motto interaction (your ref).
+
+---
+
+**Your move:** is this right? Change anything, or say "go" and I start at #1 and show you before moving on.

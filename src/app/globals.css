@@ -96,11 +96,13 @@ body {
    Normal keeps Archivo — compare :3003 vs :3004. */
 .font-display {
   font-family: var(--font-archivo), sans-serif;
-  font-variation-settings: "wdth" 125;
-  font-weight: 900;
+  /* Weight left as-is (not forced). Width pulled back to NORMAL (was 125 =
+     expanded, which spaced every letter apart — the "gapping between letters").
+     Tight tracking so the words read as solid type, consistent everywhere. */
+  font-variation-settings: "wdth" 100;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
-  letter-spacing: -0.03em;
-  line-height: 0.82;
+  line-height: 0.86;
 }
 
 /* Editorial-restraint display scale — nothing on the site exceeds display-xl. */
@@ -315,14 +317,6 @@ html[data-mode="light"] .logo-mark {
   text-shadow: 0 2px 26px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.38);
 }
 
-/* nav legibility scrim — keeps Work/About/Contact readable over any content
-   that scrolls beneath the fixed nav (the gold stat numbers were colliding). */
-.nav-scrim {
-  background: linear-gradient(to bottom, rgba(8, 8, 8, 0.58), rgba(8, 8, 8, 0.14) 56%, transparent);
-}
-html[data-mode="light"] .nav-scrim {
-  background: linear-gradient(to bottom, rgba(244, 239, 226, 0.72), rgba(244, 239, 226, 0.16) 56%, transparent);
-}
 
 /* Hero motto KNOCKOUT — the live hero footage shows through the letters and
    moves with the video; the surround multiplies to near-black so it blends

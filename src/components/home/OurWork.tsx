@@ -43,20 +43,17 @@ export default function OurWork() {
       // bars arrive between FROM and TO; the windows are wide and overlapping so
       // each film glides across rather than popping. After TO the full accordion
       // is held so there's a comfortable window to hover before release.
-      const FROM = 0.06;
-      const TO = 0.64;
+      const FROM = 0.05;
+      const TO = 0.6;
       const span = (TO - FROM) / N;
       const vids = bars.map((b) => b.querySelector("video"));
 
       const place = (p: number) => {
-        // heading: a slow masked char-rise, completing early so the pinned
-        // stage never reads as an empty void at the seam.
+        // heading is STATIC + always visible, so the pinned stage is never an
+        // empty black void at the seam — "OUR WORK" is on screen from frame one,
+        // the films reveal beneath it as you scroll.
         if (head && chars.length) {
-          chars.forEach((ch, i) => {
-            const cs = (i / Math.max(1, chars.length)) * 0.12;
-            const reveal = smooth(0.02 + cs, 0.17 + cs, p);
-            gsap.set(ch, { autoAlpha: reveal, yPercent: lerp(90, 0, reveal) });
-          });
+          gsap.set(chars, { autoAlpha: 1, yPercent: 0 });
         }
         // bars: an ELEGANT masked reveal IN PLACE — each film wipes up from
         // nothing with a slow ken-burns settle on the footage. No fly-in, no
@@ -83,7 +80,7 @@ export default function OurWork() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.5,
+        scrub: 1.8,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
       });
@@ -115,7 +112,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[12vh] motion-safe:md:h-[155vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[13vh] motion-safe:md:h-[155vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}

@@ -47,14 +47,14 @@ export default function StatsBlock() {
       data-theme="dark"
       data-surface="page"
       data-chapter="By the numbers"
-      className="relative bg-[var(--bg)] px-5 py-[13vh] text-[var(--fg)] md:px-10"
+      className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10"
       aria-label="By the numbers"
     >
       <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 text-center sm:grid-cols-3">
         {STATS.map((s) => (
           <div key={s.label}>
             <span
-              className="stat-num font-display block text-[clamp(3rem,7vw,6rem)] leading-none text-[var(--gold-text)]"
+              className="stat-num font-display block text-[clamp(2rem,4.2vw,3.4rem)] leading-none text-[var(--gold-text)]"
               data-n={s.n}
               data-suffix={s.suffix}
               style={{ fontWeight: 400 }}

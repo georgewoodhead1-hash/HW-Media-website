@@ -115,7 +115,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[200vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[12vh] motion-safe:md:h-[155vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}

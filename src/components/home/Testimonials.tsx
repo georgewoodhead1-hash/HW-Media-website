@@ -141,7 +141,7 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[17vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
+      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[16vh] text-[var(--fg)] motion-safe:md:-mt-[6vh]"
       aria-label="Testimonials"
     >
       <div className="px-5 md:px-10">
@@ -152,7 +152,11 @@ export default function Testimonials() {
         >
           Testimonials
         </ScrollType>
-        <span aria-hidden className="mt-4 block h-[3px] w-24 bg-[var(--gold)]" />
+        {/* full-width rule with a gold lead segment — a proper divider, not a
+            stub under the word. */}
+        <div aria-hidden className="relative mt-6 h-px w-full bg-[var(--hairline-dark)]">
+          <span className="absolute inset-y-0 left-0 w-40 bg-[var(--gold)]" />
+        </div>
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
@@ -214,30 +218,9 @@ export default function Testimonials() {
               <span className="text-[var(--gold-text)]">&rdquo;</span>
             </blockquote>
 
-            <figcaption className="mt-6 flex items-center gap-4">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg border border-[var(--hairline-dark)] bg-black/30 backdrop-blur-sm">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`/logos/${current.logo}.png`}
-                  alt=""
-                  aria-hidden
-                  className={`logo-mark max-h-5 ${current.logoMaxW} object-contain opacity-90 [html[data-mode=light]_&]:invert`}
-                />
-              </span>
-              <span>
-                <span
-                  className="block text-sm font-medium"
-                  style={{ fontFamily: "var(--font-firma), sans-serif" }}
-                >
-                  {current.role}
-                </span>
-                <span
-                  className="block text-xs opacity-60"
-                  style={{ fontFamily: "var(--font-firma), sans-serif" }}
-                >
-                  {current.sector}
-                </span>
-              </span>
+            <figcaption className="mt-7" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+              <span className="text-sm font-medium text-[var(--fg)]">{current.role}</span>
+              <span className="text-[var(--fg)]/45"> · {current.sector}</span>
             </figcaption>
           </div>
         </div>

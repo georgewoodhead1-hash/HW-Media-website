@@ -39,21 +39,21 @@ export default function FAQs() {
     if (!root || !reel) return;
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      // dynamic entrance (client: keep the dynamic part) — the heading and each
-      // question rise + fade in, staggered, as the section scrolls into view.
-      const head = root.querySelector(".faq-head");
+      // PREMIUM ENTRANCE — set the hidden state explicitly (gsap.set), then a
+      // timeline on enter fades everything UP. fromTo/set is reliable where a
+      // bare gsap.from sometimes never ran (the "it doesn't fade in" bug). The
+      // reel fades in first, then the heading + each question rise, staggered.
+      const head = root.querySelector<HTMLElement>(".faq-head");
       const qs = gsap.utils.toArray<HTMLElement>(".faq-q", root);
-      // premium reveal — slow masked rise, gentle stagger, the same language the
-      // calm sections share so it blends rather than pops.
-      const intro = gsap.from([head, reel, ...qs].filter(Boolean) as HTMLElement[], {
-        yPercent: 0,
-        y: 60,
-        autoAlpha: 0,
-        duration: 1.1,
-        stagger: 0.075,
-        ease: "power3.out",
-        scrollTrigger: { trigger: root, start: "top 80%", once: true },
+      const rows = [head, ...qs].filter(Boolean) as HTMLElement[];
+      gsap.set([reel, ...rows], { autoAlpha: 0, y: 64 });
+      const introTl = gsap.timeline({
+        scrollTrigger: { trigger: root, start: "top 74%", once: true },
       });
+      introTl
+        .to(reel, { autoAlpha: 1, y: 0, duration: 1.2, ease: "power3.out" }, 0)
+        .to(rows, { autoAlpha: 1, y: 0, duration: 1.0, stagger: 0.085, ease: "power3.out" }, 0.18);
+      const intro = introTl;
       // the reel stays PUT (sticky) and full-size the whole way down the
       // questions, then fades straight out IN PLACE near the very end — no
       // shrink (scale stays 1), no upward lift, and the fade completes while the

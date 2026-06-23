@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // One surface for the whole site: gold and red are constant, only the
 // background/foreground contrast flips. Persisted.
 export default function ThemeToggle() {
-  const [mode, setMode] = useState<"dark" | "light">("dark");
+  const [mode, setMode] = useState<"dark" | "light">("light");
 
   useEffect(() => {
     const current = document.documentElement.dataset.mode;
@@ -19,7 +19,7 @@ export default function ThemeToggle() {
     setMode(next);
     document.documentElement.dataset.mode = next;
     try {
-      localStorage.setItem("hwm-mode", next);
+      localStorage.setItem("hwm-mode-v2", next);
     } catch {
       /* private mode — fine */
     }

@@ -71,7 +71,7 @@ export default function FAQs() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="page"
+      data-surface="media"
       data-chapter="06 — FAQs"
       className="relative bg-[var(--bg)] px-5 pb-[8vh] pt-[5vh] text-[var(--fg)] md:px-10"
       aria-label="Frequently asked questions"

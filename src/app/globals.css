@@ -296,10 +296,8 @@ html[data-mode="light"] .grain {
   opacity: 0.85;
 }
 
-/* white client logos stay visible in light mode */
-html[data-mode="light"] .logo-mark {
-  filter: invert(1);
-}
+/* client logos live ONLY on the always-dark Trusted-by band, so they stay
+   white in every mode — no light-mode invert. */
 
 /* ---- Hero motto: solid, bright, present over the LIVE moving footage ----
    No frozen image-fill, no faint translucency — clean type that sits over the

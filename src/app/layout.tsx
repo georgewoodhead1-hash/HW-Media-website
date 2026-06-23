@@ -72,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-mode="dark"
+      data-mode="light"
       suppressHydrationWarning
       className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${firma.variable} h-full antialiased`}
     >
@@ -81,7 +81,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "try{var m=localStorage.getItem('hwm-mode');if(m==='light'||m==='dark')document.documentElement.dataset.mode=m}catch(e){}",
+              "try{var m=localStorage.getItem('hwm-mode-v2');if(m==='light'||m==='dark')document.documentElement.dataset.mode=m}catch(e){}",
           }}
         />
       </head>

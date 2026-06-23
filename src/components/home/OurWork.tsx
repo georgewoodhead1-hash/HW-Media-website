@@ -112,16 +112,16 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:-mt-[13vh] motion-safe:md:h-[155vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[155vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
       <div className="hidden overflow-hidden px-5 motion-safe:md:sticky motion-safe:md:top-0 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
-          className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.2rem,5vw,4.6rem)] leading-[0.9] will-change-transform"
+          className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
           style={{ fontWeight: 400 }}
         >
-          Our <span className="text-[var(--gold-text)]">work</span>
+          Featured <span className="text-[var(--gold-text)]">Projects</span>
         </h2>
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
@@ -166,7 +166,7 @@ export default function OurWork() {
 
       {/* mobile stack */}
       <div className="flex flex-col gap-4 px-5 py-[10vh] md:hidden">
-        <h2 className="font-display mb-2 text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold-text)]">work</span></h2>
+        <h2 className="font-display mb-2 text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured <span className="text-[var(--gold-text)]">Projects</span></h2>
         {WORKS.map((p) => (
           <Link key={p.slug} href={`/work/${p.slug}`} className="relative block aspect-video overflow-hidden rounded-md">
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />

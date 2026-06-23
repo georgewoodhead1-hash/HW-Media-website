@@ -29,7 +29,7 @@ function Logo({ slug }: { slug: string }) {
         src={`/logos/${slug}.png`}
         alt=""
         aria-hidden
-        className="logo-mark max-h-[54px] max-w-[170px] object-contain md:max-h-[64px] md:max-w-[200px] [html[data-mode=light]_&]:invert"
+        className="logo-mark max-h-[54px] max-w-[170px] object-contain md:max-h-[64px] md:max-w-[200px]"
         loading="lazy"
       />
     </span>
@@ -143,9 +143,9 @@ export default function TrustedBy() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="page"
+      data-surface="media"
       data-chapter="02 — Trusted by"
-      className="relative bg-[var(--bg)] px-5 pb-[5vh] pt-[7vh] md:px-10"
+      className="relative bg-[var(--bg)] px-5 py-[14vh] md:px-10"
       aria-label="Trusted by"
     >
       <div className="tb-heading mb-[4vh] text-center">

@@ -13,13 +13,13 @@ import { safePlay } from "@/lib/video";
 // property is a smooth function of scroll progress; heavy scrub; transforms
 // only (the bar moves by translate, never `left`).
 
-interface Stage { name: string; clip: string; }
+interface Stage { name: string; sub: string; clip: string; }
 
 const STAGES: Stage[] = [
-  { name: "We plan", clip: "/videos/micro/m02.mp4" },
-  { name: "We film", clip: "/videos/micro/m07.mp4" },
-  { name: "We edit", clip: "/videos/micro/m10.mp4" },
-  { name: "We deliver", clip: "/videos/micro/m12.mp4" },
+  { name: "We plan", sub: "Brief, treatment, locations, schedule.", clip: "/videos/micro/m02.mp4" },
+  { name: "We film", sub: "Direction and cinematography, on location.", clip: "/videos/micro/m07.mp4" },
+  { name: "We edit", sub: "Edit, grade, sound and motion, all in-house.", clip: "/videos/micro/m10.mp4" },
+  { name: "We deliver", sub: "The master plus every cutdown your channels need.", clip: "/videos/micro/m12.mp4" },
 ];
 
 const COMBINE = 0.38; // assemble + a short HOLD on "Our process" finishes here (earlier = comes in faster)
@@ -247,6 +247,9 @@ export default function EditorFCP() {
               <h2 className="font-display text-[clamp(3rem,8vw,7rem)] leading-[0.88]" style={{ fontWeight: 400 }}>
                 {s.name}<span className="text-[var(--gold-text)]">.</span>
               </h2>
+              <p className="mt-4 max-w-md text-[clamp(0.95rem,1.4vw,1.2rem)] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+                {s.sub}
+              </p>
             </div>
           ))}
         </div>

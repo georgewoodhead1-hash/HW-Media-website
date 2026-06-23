@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type MouseEvent } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { BOOKING_URL } from "@/content/site";
 
@@ -18,6 +18,31 @@ const LINKS = [
 
 export default function Nav() {
   const rootRef = useRef<HTMLElement>(null);
+  const navListRef = useRef<HTMLElement>(null);
+  const pillRef = useRef<HTMLSpanElement>(null);
+
+  // sliding nav pill (auteur): one outlined capsule that glides to the hovered
+  // item instead of every link drawing its own ring.
+  const movePill = (e: MouseEvent<HTMLElement>) => {
+    const pill = pillRef.current;
+    const list = navListRef.current;
+    if (!pill || !list) return;
+    const lr = list.getBoundingClientRect();
+    const ir = e.currentTarget.getBoundingClientRect();
+    gsap.to(pill, {
+      x: ir.left - lr.left,
+      y: ir.top - lr.top,
+      width: ir.width,
+      height: ir.height,
+      autoAlpha: 1,
+      duration: 0.45,
+      ease: "power3.out",
+      overwrite: true,
+    });
+  };
+  const hidePill = () => {
+    if (pillRef.current) gsap.to(pillRef.current, { autoAlpha: 0, duration: 0.3, ease: "power2.out", overwrite: true });
+  };
 
   // quick entrance
   useEffect(() => {
@@ -72,14 +97,23 @@ export default function Nav() {
             ONLY around the item you hover (client req). "Start here" links out
             to the booking scheduler; the rest stay internal. */}
         <nav
-          className="flex items-center gap-1.5 md:gap-2"
+          ref={navListRef}
+          onMouseLeave={hidePill}
+          className="relative flex items-center gap-1.5 md:gap-2"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
+          {/* sliding pill — one outlined capsule that glides to the hovered item */}
+          <span
+            ref={pillRef}
+            aria-hidden
+            className="pointer-events-none absolute left-0 top-0 rounded-full border border-[var(--fg)] opacity-0 will-change-transform"
+          />
           {LINKS.map((l) => (
             <Link
               key={l.label}
               href={l.href}
-              className="nav-enter rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
+              onMouseEnter={movePill}
+              className="nav-enter relative rounded-full px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300"
             >
               {l.label}
             </Link>
@@ -88,7 +122,8 @@ export default function Nav() {
             href={BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="nav-enter rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
+            onMouseEnter={movePill}
+            className="nav-enter relative rounded-full px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300"
           >
             Start here
           </a>

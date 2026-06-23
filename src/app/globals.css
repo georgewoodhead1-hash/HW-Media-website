@@ -199,8 +199,12 @@ body {
 /* the nav re-themes to the surface beneath it: cinema sections force the
    nav dark (so light mode never bleeds a cream band over footage);
    editorial sections leave it inheriting the global mode */
-.nav-root[data-surface="media"] {
-  --bg: #050505;
+/* hero nav (the only media surface) simply INVERTS with the mode — dark links
+   in light mode, light links in dark. No glow, no scrim, just the colour. */
+html[data-mode="light"] .nav-root[data-surface="media"] {
+  --fg: #171717;
+}
+html[data-mode="dark"] .nav-root[data-surface="media"] {
   --fg: #f5f1e6;
 }
 /* nav over a contrasting band inverts with the mode so it stays readable:

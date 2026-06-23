@@ -7,6 +7,7 @@ import EditorFCP from "@/components/home/EditorFCP";
 import Testimonials from "@/components/home/Testimonials";
 import FAQs from "@/components/home/FAQs";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
+import ScrollCue from "@/components/shell/ScrollCue";
 
 // Order: hero → mission → trusted by → our work → process → reviews → FAQ →
 // finale. "Every film is a chance to break the ordinary" is the finale AND
@@ -23,6 +24,7 @@ export default function Home() {
       <Testimonials />
       <FAQs />
       <WhirlwindGallery />
+      <ScrollCue />
     </main>
   );
 }

@@ -57,6 +57,17 @@ A fresh render. Free rein on layout. Keep the **content/copy/films** (Break the 
 ## Later (when ready)
 - Hero camera-lens animation: generate a camera-lens image/video via **Higgsfield MCP**, use as the intro animation (replaces current lens). George wants to do this together later.
 
+## Animation toolkit — INSTALL (right after the About page, before section blending)
+George wants luke's full animation arsenal "at his disposal" (site feels too basic with just GSAP+Lenis). Run:
+```
+npm install three @react-three/fiber @react-three/drei @react-three/postprocessing postprocessing
+npm install -D @types/three
+```
+- three = 3D engine; @react-three/fiber = Three.js as React; drei = helpers (useGLTF for .glb, scroll); postprocessing = cinematic shader passes (bloom/DOF/distortion); WebGL/GLSL = free with three (ShaderMaterial as strings).
+- Blender = free desktop app to author .glb 3D assets (or AI-generate via Higgsfield).
+- **Next 16 + Turbopack caveat (AGENTS.md: "NOT the Next.js you know"):** R3F `<Canvas>` needs `"use client"` + usually a `dynamic(() => import(...), { ssr: false })` wrapper. Verify the build compiles + a test canvas renders (Playwright) before using it for real.
+- Use it where it lifts the site out of "basic": the hero lens, section transitions, and especially the SEPARATE Luke build.
+
 ## References (study via Playwright before building)
 - **auteurstudios.au** + **/work** — nav pill, work tiles one-by-one, process bullets, About.
 - **barstudios.co.uk/about** — About top animation + colour-blocking.

@@ -181,8 +181,8 @@ export default function Testimonials() {
             </figcaption>
           </div>
 
-          {/* three clickable dots — manual only */}
-          <div className="mt-10 flex items-center gap-3.5">
+          {/* three clickable dots — bigger, generous tap target (client) */}
+          <div className="-ml-3 mt-9 flex items-center">
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}
@@ -190,10 +190,14 @@ export default function Testimonials() {
                 onClick={() => setActive(i)}
                 aria-pressed={i === active}
                 aria-label={`Show ${t.brand} testimonial`}
-                className={`h-2.5 w-2.5 rounded-full transition-all duration-500 ${
-                  i === active ? "scale-110 bg-[var(--gold)]" : "bg-[var(--fg)]/25 hover:bg-[var(--fg)]/55"
-                }`}
-              />
+                className="group flex items-center justify-center p-3"
+              >
+                <span
+                  className={`block rounded-full transition-all duration-300 ${
+                    i === active ? "h-4 w-4 bg-[var(--gold)]" : "h-3 w-3 bg-[var(--fg)]/30 group-hover:bg-[var(--fg)]/60"
+                  }`}
+                />
+              </button>
             ))}
           </div>
         </div>

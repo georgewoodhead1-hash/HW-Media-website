@@ -163,7 +163,7 @@ export default function OurWork() {
         </h2>
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
-        <div className="relative z-0 flex h-[60vh] gap-2">
+        <div className="relative z-0 flex h-[52vh] gap-2">
           {WORKS.map((p, i) => (
             <Link
               key={p.slug}
@@ -214,7 +214,7 @@ export default function OurWork() {
 
         <Link
           href="/work"
-          className="group mt-9 inline-flex items-center gap-2 self-center rounded-full border border-[var(--fg)]/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+          className="group relative z-10 mt-6 inline-flex items-center gap-2 self-center rounded-full border border-[var(--fg)]/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)]"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           Discover more

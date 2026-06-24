@@ -74,7 +74,7 @@ export default function EditorFCP() {
         const mag = 0.07 + ((i * 13) % 10) / 100;
         // negative head-start so the title is ALREADY partly assembled at p=0 —
         // the top seam is never a fully empty frame on scroll-back
-        const a = (i / N) * 0.16 - 0.05; // letters drift in, staggered across the top third
+        const a = (i / N) * 0.18 + 0.05; // hidden at p=0, draw in after entering (no early "OUR" bleeding into the section above)
         return {
           x: dir * mag,
           y: ((((i * 53) % 100) - 50) / 50) * 0.14,
@@ -107,7 +107,7 @@ export default function EditorFCP() {
         const STAGE_START = 0.56;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
-        const outro = smooth(OUTRO, 1.12, p); // 0 -> ~0.3 at p=1: scene only STARTS flying off at the seam, so a clear remnant survives the bottom edge (no empty frame on scroll-back)
+        const outro = smooth(OUTRO, 1.0, p); // fully flies off + clears by p=1 (client: must disappear on scroll-off)
 
         // FILMS — drift in from a corner during assemble, brighten/dim by the
         // active stage, then in the OUTRO fly back out to the corners + fade.
@@ -249,7 +249,7 @@ export default function EditorFCP() {
               <h2 className="font-display text-[clamp(3rem,8vw,7rem)] leading-[0.88]" style={{ fontWeight: 400 }}>
                 {s.name}<span className="text-[var(--gold-text)]">.</span>
               </h2>
-              <p className="mt-4 max-w-md text-[clamp(0.95rem,1.4vw,1.2rem)] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+              <p className="mx-auto mt-5 max-w-md text-center text-[clamp(0.95rem,1.4vw,1.2rem)] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
                 {s.sub}
               </p>
             </div>

@@ -1,61 +1,63 @@
-# HW Media — About page design
+# HW Media — About page design (v2)
 
 **Date:** 2026-06-24
-**Status:** approved structure (George), pending spec review
+**Status:** revised after George's review — stripped all subtext labels, made it genuinely dynamic
 
 ## Goal
 
-Rebuild the About page as a clean, light, editorial page in **Bar Studios'** register, animated with **Luke Baffait**-grade scroll motion, so the whole page reads as one linked, premium scroll — not disconnected blocks.
+Rebuild the About page so it feels like a $10k Bar Studios / Luke Baffait build: clean, light, editorial, and **alive** — continuous scroll-linked motion the whole way down, not static blocks that fade in.
+
+## TWO HARD RULES (these are why the last attempts failed)
+
+1. **NO LABELS. NO SUBTEXT. NO EYEBROWS. NO CAPTIONS.** Zero small descriptive tags anywhere — no "Films for brands", "London", "The person behind it", "Let's talk", "Founder · Director", "How we operate", "on location", "every frame", "in-house". Only big type, real sentences, media, and motion. If it's small grey supporting text floating next to something, delete it.
+2. **EVERYTHING MOVES.** No section is a static block. Type and media parallax at different speeds; reveals are scrubbed to scroll; there is a continuously-moving element (the film band). The page should feel animated whether you scroll or not.
 
 ## Approach
 
-Bar Studios structure + font feel, plus Luke's smooth scrubbed motion. One light surface throughout (no dark full-screen video). The five-stage section is **locked**: reverted to the hover-fill version George already approved, then left untouched.
+Bar Studios structure + font feel + Luke's constant scrubbed motion. One light surface (except the locked dark band in §3). Lenis is already tuned (lerp 0.06).
 
-**Why this approach:** George chose "big ABOUT, clean & editorial (Bar)" and confirmed the 4-section structure. A judge agent comparing builds against the real Bar screenshots found Bar's defining "about" beat is the giant **ABOUT** + a **row of small landscape film stills** + a small **ragged-right** intro line — that film band is the load-bearing signature.
+## Dynamism (the motion system — applies to every section)
+
+- **Continuous motion:** a horizontal **film band** in the hero auto-slides and reacts to scroll velocity (speeds up / changes direction with the wheel), the way Bar's name/film band and Luke's marquees do. It never stops.
+- **Parallax depth:** in every section, the heading, the body, and the media move at *different* scroll speeds (scrubbed `yPercent`), so there's real depth, not a flat fade-in.
+- **Scrubbed reveals:** headings clip-rise (`SplitText` + `.split-line` masks); media wipes open via `clipPath`; all tied to scroll position (`scrub`), eased `none`.
+- **Cursor:** the existing `Cursor` component grows / labels on interactive media + the CTA (magnetic feel), so hovering feels alive without being the *trigger* for the page's animation.
+- **Smoothness:** Lenis lerp 0.06; `gsap.ticker` bridge; no abrupt stops.
 
 ## Page structure (top → bottom)
 
 ### 1. ABOUT hero
-- Colossal `ABOUT` set in `.about-display` (Archivo expanded, the Owners Wide stand-in), light `var(--bg)` surface, vast whitespace.
-- A short intro line set **ragged-right**: "HW Media is a creative media company. We make films for **brands** — on location, with the people who build them, every frame shot by the director himself." (one gold accent word: `brands`).
-- Below a hairline: a **row of 3 landscape film stills** (Bar's film band), ~4:3 / 3:2 crops, that wipe open on load.
-- Motion: `ABOUT` chars clip-rise on load (SplitText + `.split-line` masks); the line/labels settle after; the film band wipes open; everything drifts on a slow scrub as you leave. Buttery, never clunky.
+- Colossal `ABOUT` (`.about-display`), light surface, vast space. Chars clip-rise on load, then the whole word parallaxes up slowly as you scroll past.
+- **One** real intro sentence, large, NOT a label: *"HW Media is a creative media company making films for the brands behind them."* (No trailing fragment tags. No gold-word gimmick unless it earns it.)
+- A **continuously sliding film band** of the work (the brand films, playing video, landscape crops) — Bar's signature dynamic element. Auto-scroll + scroll-velocity reactive. This replaces the static 3-still row.
 
 ### 2. Harry Wallis (founder)
-- Bar's founder treatment. Name big with gold "Wallis." (mirrors the hero's gold `brands`). A portrait (`/images/harry-color.jpg`). Short bio: he founded HW Media, directs and shoots every frame himself, comes to the brand and films on location.
-- Editorial reveal: portrait wipes open, name rises, copy settles on scrub.
+- Name set big. A portrait that **parallaxes** against the text (moves slower than the copy) and wipes open on entry. Two real sentences of bio (he founded it, directs and shoots every film himself) — **no role label, no eyebrow.**
 
 ### 3. Vision → Strategy → Creation → Refinement → Impact — LOCKED
-- **Revert to the earlier hover-fill version** George approved ("Vision strategy creation is good now... the animation is really good"): each full-width row, on **hover/focus**, sweeps a **gold fill left → right** (`.hww-row[data-on]::before` scaleX), inverts its type to near-black, opens its description, and rotates a `+` affordance. Five stages, on a dark contrast band for separation.
-- **Do not change this section again** after restoring it.
+- **Revert to the earlier hover-fill version** George approved: each row, on hover/focus, sweeps a **gold fill left → right**, inverts its type, opens its description, rotates a `+`. Dark contrast band. **Do not change after restoring.**
 
 ### 4. Let's create (contact close)
-- Big "Let's create" headline on the **left** (`.about-display`, gold "create."). On the **right**, a framed film that **rises and shifts colour** as you scroll in (the Luke "a bubble comes up and it changes colour" feel), then settles. Smooth, scroll-driven. CTA → `/contact`.
+- Big "Let's create" on the **left**. On the right, a framed film that **rises and shifts colour** on scroll (Luke's "a bubble comes up and changes colour"), then settles. CTA → `/contact` as a **magnetic** button. **No "Let's talk" label.**
 
-One light surface all the way down (except the locked dark band in §3); each section reveals as you reach it so the page links together.
-
-## Constraints (client has explicitly rejected each opposite)
-- **Light editorial** surface. **No** dark full-screen background video anywhere.
-- Use `.about-display` / `.about-label` / `.about-body` (Archivo). Owners Wide is Bar's real, commercial font — flag for licensing; do not block on it.
-- Minimal labels — **no eyebrow-label clutter**; at most one gold accent per area.
-- Copy: **"creative media company"**, films for brands, on location, every frame shot by the director. **Never "studio."**
-- `gsap` + `ScrollTrigger` + `SplitText` from `@/lib/gsap`; Lenis already tuned (lerp 0.06). `prefers-reduced-motion` guards; `gsap.context()` + `ctx.revert()` cleanup on every component.
-- **Next 16 + Turbopack gotcha:** after editing `globals.css` the dev server serves **stale CSS**. Restart clean (`kill :3011; rm -rf .next; next dev -p 3011`) and verify computed styles via Playwright before trusting any screenshot.
+## Constraints
+- Light editorial surface; **no** dark full-screen background video.
+- `.about-display` / `.about-body` (Archivo; Owners Wide is Bar's real commercial font — flag for licensing).
+- Copy: **"creative media company"**, films for brands. **Never "studio."** Real sentences only — no fragment tags.
+- `gsap` + `ScrollTrigger` + `SplitText` from `@/lib/gsap`; `prefers-reduced-motion` guards; `gsap.context()` + `ctx.revert()` cleanup.
+- **Turbopack gotcha:** after editing `globals.css`, restart clean (`kill :3011; rm -rf .next; next dev -p 3011`) and verify computed styles via Playwright before trusting screenshots.
 
 ## Components
-- `src/components/about/AboutHero.tsx` — ABOUT + ragged-right line + 3-still film band
-- `src/components/about/Founder.tsx` — Harry
-- `src/components/about/HowWeWork.tsx` — **LOCKED**: restore hover-fill version
-- `src/components/about/LetsCreate.tsx` — dynamic contact
-- `src/app/about/page.tsx` — compose the four
-- `src/app/globals.css` — `.about-*` font helpers (exist), `.hww-row` fill, dynamic-contact bits
+- `AboutHero.tsx` — ABOUT + one sentence + sliding film band
+- `Founder.tsx` — Harry, parallax portrait, no labels
+- `HowWeWork.tsx` — **LOCKED**: restore hover-fill version
+- `LetsCreate.tsx` — dynamic contact, magnetic CTA
+- `about/page.tsx`, `globals.css`
 
 ## Verification
-- `npx tsc --noEmit` clean.
-- Playwright screenshots desktop (1440) + mobile (390) of **every** section; **read** the PNGs.
-- Confirm computed `.about-display` actually applies (font-family Archivo, uppercase) — not just that it looks plausible.
-- No console/page errors; full scroll is smooth.
+- `tsc` clean; Playwright desktop + mobile screenshots of every section, **read** them.
+- Grep the About components for stray `.about-label` / eyebrow text — there should be **none**.
+- Confirm `.about-display` actually applies (computed font Archivo, uppercase). No console errors. Smooth scroll.
 
 ## Out of scope (later)
-- Site-wide font rehaul (Owners across the whole site) + Owners licensing.
-- Home page (lens intro / finale stay untouched).
+- Site-wide font rehaul + Owners licensing. Home page.

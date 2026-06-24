@@ -3,14 +3,13 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { BOOKING_URL } from "@/content/site";
 
-// Flat, always-visible nav (client feedback): logo left, the three links and
-// a persistent "Start here" right, social rail pinned bottom-left. No
-// hamburger, no disappearing wordmark — branding and nav stay consistent the
-// whole way down the page.
+// Nav (client feedback): logo left; Home/Work/About/Contact links right on
+// desktop, or a fullscreen hamburger menu on mobile; social rail bottom-left.
+// No external "Start here" link — keep visitors on the site (client).
 
 const LINKS = [
+  { href: "/", label: "Home" },
   { href: "/work", label: "Work" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
@@ -122,7 +121,7 @@ export default function Nav() {
         <nav
           ref={navListRef}
           onMouseLeave={hidePill}
-          className="relative hidden items-center gap-1.5 md:flex md:gap-2"
+          className="relative hidden items-center gap-3 md:flex md:gap-7"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           {/* sliding pill — one outlined capsule that glides to the hovered item */}
@@ -136,20 +135,11 @@ export default function Nav() {
               key={l.label}
               href={l.href}
               onMouseEnter={movePill}
-              className="nav-enter relative rounded-full px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300"
+              className="nav-enter relative rounded-full px-4 py-2 text-[14px] font-medium uppercase tracking-[0.14em] text-[var(--fg)] transition-colors duration-300"
             >
               {l.label}
             </Link>
           ))}
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            onMouseEnter={movePill}
-            className="nav-enter relative rounded-full px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300"
-          >
-            Start here
-          </a>
         </nav>
 
         {/* mobile hamburger */}
@@ -181,15 +171,6 @@ export default function Nav() {
             {l.label}
           </Link>
         ))}
-        <a
-          href={BOOKING_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => setMenuOpen(false)}
-          className="mt-2 rounded-full border border-[var(--fg)]/40 px-7 py-3 text-[13px] uppercase tracking-[0.18em] text-[var(--fg)]"
-        >
-          Start here
-        </a>
       </div>
 
       {/* social rail — pinned bottom-left, always visible (mix-blend keeps it

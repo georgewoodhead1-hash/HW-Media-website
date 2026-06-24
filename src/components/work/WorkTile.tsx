@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
+import { gsap } from "@/lib/gsap";
 
 interface WorkTileProps {
   slug: string;
@@ -15,6 +16,28 @@ interface WorkTileProps {
 // default; on hover it plays.
 export default function WorkTile({ slug, wide, posterWide, client, logo }: WorkTileProps) {
   const ref = useRef<HTMLVideoElement>(null);
+  const rootRef = useRef<HTMLAnchorElement>(null);
+
+  // reveal up as it scrolls into view (client: tiles come up one by one)
+  useEffect(() => {
+    const el = rootRef.current;
+    if (!el || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const tween = gsap.fromTo(
+      el,
+      { autoAlpha: 0, y: 50 },
+      {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.9,
+        ease: "power3.out",
+        scrollTrigger: { trigger: el, start: "top 90%", toggleActions: "play none none none" },
+      },
+    );
+    return () => {
+      tween.scrollTrigger?.kill();
+      tween.kill();
+    };
+  }, []);
 
   const play = () => {
     const v = ref.current;
@@ -30,6 +53,7 @@ export default function WorkTile({ slug, wide, posterWide, client, logo }: WorkT
 
   return (
     <Link
+      ref={rootRef}
       href={`/work/${slug}`}
       onMouseEnter={play}
       onMouseLeave={stop}

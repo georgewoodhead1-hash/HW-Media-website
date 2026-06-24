@@ -31,4 +31,23 @@ GSAP 3.15 — FULL free plugin set (ScrollTrigger, SplitText, ScrollSmoother, Ob
 ## TO-DO / THINKING LOG (append as I go, for George's self-learning)
 - Removed the mouse-gradient WebGL plasma + the draggable film toy (both hated). Deleted `world/` + `webgl/`.
 - Banned the accent/cursive fonts site-wide (CSS neutralised + memory rule).
-- Decision: go content-first (business + Harry) with ORIGINAL high-end smooth moments, keep the expanding circle as a recurring motif. Build via an ideate->direct->build->verify workflow to break the "broken record" pattern, then integrate + polish solo.
+- Decision: go content-first (business + Harry) with ORIGINAL high-end smooth moments, keep the expanding circle as a recurring motif. Build via a proper written plan (`docs/superpowers/plans/2026-06-24-hw-about-creative.md`), then execute task by task, verifying each with a screenshot.
+
+### TO-DO / THINKING LOG (for George — self-learning)
+
+**What I DID (and why):**
+1. **Knockout hero (`KnockoutHero.tsx`) — the name IS the work.** The colossal "HW MEDIA" is filled with a film STILL via `background-clip:text`, and the still slowly pans (Ken Burns) so it's alive. *Why:* this is an ORIGINAL device, not a copy of any reference layout — same instinct as the Let's Create circle (you said that's good *because* I made it from nothing). It's on-brand (the company literally made of its footage) and obeys the new rule (a still, not a big video).
+2. **Statement (`Statement.tsx`)** — monumental "we make brand films that feel more cinematic, more considered, more worth remembering" rising out of clip masks on a scrubbed timeline. *Why:* it's the "about the business" content, and the smoothness matches the circle (the bar you set).
+3. **Work (`Work.tsx`)** — a kinetic brand cascade (McLaren/Nike/Salomon… sliding on scroll), parallax film STILLS, and exactly ONE vertical 9:16 reel. *Why:* shows the work + clients dynamically, with NO big horizontal video (your new rule), film only vertical.
+4. **Method (`Method.tsx`) — de-clunked.** Five stages, the active one advances as you scroll (no sticky pin → that was the clunk), gold fill transitions smoothly via CSS. *Why:* you liked the idea but hated the clunk; the sticky pin was the cause.
+5. **Contact circle (`ContactCircle.tsx`) — kept.** The loved expanding-circle "Let's create" close.
+6. **Removed entirely:** the mouse-following gradient shader, the draggable film "toy", every big horizontal autoplay video, the italic-serif/cursive accent font (banned in CSS + memory). *Why:* you called each "horrible / horrendous", and they were the WebGL bits that never landed.
+
+**What I CONSIDERED and REJECTED:**
+- A full single-WebGL-canvas world (one persistent R3F canvas) — built it, but the WebGL moments (gradient glow, draggable toy) were exactly what you hated, and the DOM circle was what you loved. So I dropped WebGL and went DOM-smooth (clip-path/transform reveals) which is what's actually landing. WebGL stays available for a targeted future effect, not as the backbone.
+- A horizontal film strip / big showreel — rejected by the new "no big films" rule; replaced with stills + one vertical reel.
+- Keeping the sticky-pinned Method — rejected (the clunk).
+
+**The core lesson I'm taking:** stop reproducing the reference LAYOUTS. The references are the quality bar; the wins come from inventing original moments (knockout name, expanding circle, brand cascade) on a dark+gold, one-font, buttery-smooth canvas.
+
+**Still to do (this pass):** an adversarial polish review (is it high-end/original/smooth enough?), tune the Harry scene (portrait reveal, needs your real photo), and confirm scene-to-scene transitions feel like one continuous smooth piece. BLOCKED on you: real Harry photo + real email/social URLs.

@@ -161,12 +161,15 @@ body {
   align-self: center;
 }
 
+/* BANNED (George): the italic-serif / "in your hands" accent face is neutralised
+   site-wide — any stray use just renders as normal inherited type. Never bring it
+   back. Same for .font-hand below. */
 .font-accent {
-  font-family: var(--font-instrument), serif;
-  font-style: italic;
-  font-weight: 400;
-  text-transform: none;
-  letter-spacing: 0;
+  font-family: inherit !important;
+  font-style: normal !important;
+  font-weight: inherit !important;
+  text-transform: inherit !important;
+  letter-spacing: inherit !important;
 }
 
 /* GOLDEN RULE: never the military monospace font. This class (used in 60+
@@ -180,8 +183,8 @@ body {
 }
 
 .font-hand {
-  font-family: var(--font-hand), cursive;
-  color: var(--red);
+  font-family: inherit !important;
+  color: inherit !important;
 }
 
 /* ---- Section theming: every section follows the global mode ---- */

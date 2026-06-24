@@ -1,25 +1,11 @@
-import Footer from "@/components/shell/Footer";
-import AboutHero from "@/components/about/AboutHero";
-import Founder from "@/components/about/Founder";
-import HowWeWork from "@/components/about/HowWeWork";
-import LetsCreate from "@/components/about/LetsCreate";
+import AboutExperience from "@/components/about/AboutExperience";
 
-// About — clean editorial (Bar Studios) animated with Luke-grade scroll motion.
-// A big "ABOUT" open, Harry first (the person behind the creative media company),
-// then how we operate, then a dynamic "Let's create" close. One light surface
-// the whole way down, every block revealing as you reach it so it reads as one
-// continuous, linked animation. Archivo stands in for Owners Wide.
-
+// About — HW Media in Luke Baffait's register. A single, locked-dark,
+// scene-by-scene WebGL experience: text floats in front of media at depth, a
+// winding gold thread connects the scenes, a right-edge progress rail fills as
+// you scroll, and the Contact scene flips light with a rising masked bubble.
+// The dark halftone "HW Media." footer wordmark bookends the experience inside
+// the final scene, so this page renders the experience alone.
 export default function About() {
-  return (
-    <>
-      <main className="about-body bg-[var(--bg)] text-[var(--fg)]">
-        <AboutHero />
-        <Founder />
-        <HowWeWork />
-        <LetsCreate />
-      </main>
-      <Footer />
-    </>
-  );
+  return <AboutExperience />;
 }

@@ -649,3 +649,39 @@ html[data-mode="dark"] .seam-out-band {
   overflow: hidden;
   vertical-align: top;
 }
+
+/* SplitText chars that rise out of a baseline clip (hero wordmark, Contact). The
+   parent gets overflow-clip so the char masks against its own line box. */
+.split-rise-char {
+  display: inline-block;
+  will-change: transform;
+}
+.about-display[data-mark],
+.about-clip {
+  overflow: hidden;
+}
+
+/* About scene scaffold (Luke register). Each scene is its own min-h section that
+   holds floating depth layers; the spine (thread, rail, index) is fixed above. */
+.about-scene {
+  position: relative;
+  z-index: 2;
+}
+
+/* Contact light-flip panel: this scene renders its OWN cream panel over the
+   locked-dark surface (only this scene flips, exactly like Luke). */
+.contact-flip {
+  background: var(--cream);
+  color: var(--ink);
+}
+.contact-flip .about-display,
+.contact-flip a,
+.contact-flip p {
+  color: #171717;
+}
+
+/* rising masked Contact bubble wrapper (ref-luke-85) */
+.contact-bubble {
+  -webkit-mask-image: radial-gradient(circle at center, #000 99%, transparent 100%);
+  mask-image: radial-gradient(circle at center, #000 99%, transparent 100%);
+}

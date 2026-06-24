@@ -44,11 +44,11 @@ export default function About() {
                 className="font-display mt-6 max-w-4xl text-[clamp(2.4rem,6vw,5.2rem)] leading-[0.95]"
                 style={{ fontWeight: 400 }}
               >
-                A London production company, <span className="text-[var(--gold-text)]">founded 2018.</span>
+                Who&apos;s behind the <span className="text-[var(--gold-text)]">camera?</span>
               </h1>
               <p className="mt-8 max-w-xl text-[clamp(1rem,1.4vw,1.25rem)] leading-relaxed text-[var(--fg)]/70">
-                We go where the story is and film it. A small crew on purpose — direction, cinematography,
-                edit and grade, all in-house — making films brands remember.
+                One person. Harry Wallis directs and shoots every frame himself — the person who
+                promises the film is the person behind the lens. We go where the story is and film it.
               </p>
             </div>
             {/* vertical film — right */}
@@ -114,7 +114,7 @@ export default function About() {
         <section className="border-t border-[var(--hairline-dark)] px-5 py-[10vh] md:px-10">
           <div className="grid gap-10 md:grid-cols-[0.8fr_1.2fr] md:gap-20">
             <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.4rem)] leading-tight" style={{ fontWeight: 400 }}>
-              Who&apos;s behind the camera
+              The whole team.
             </h2>
             <div className="grid gap-10 sm:grid-cols-3">
               {FOUNDERS.map(([n, r]) => (

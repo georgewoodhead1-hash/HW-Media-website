@@ -248,8 +248,7 @@ export default function LensIntro() {
               <video
                 ref={videoRef}
                 className="h-full w-full object-cover"
-                src="/videos/hero-loop.mp4"
-                poster="/videos/posters/hero-loop.jpg"
+                src="/videos/showreel-full.mp4"
                 autoPlay
                 muted
                 loop

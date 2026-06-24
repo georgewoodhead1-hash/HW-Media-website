@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import Reveal from "@/components/shell/Reveal";
 
 // Animated stats block (client). Numbers count up when scrolled into view.
 // NOTE: client retention % is TBD — placeholder 96%, confirm with George.
@@ -50,7 +51,7 @@ export default function StatsBlock() {
       className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10"
       aria-label="By the numbers"
     >
-      <div className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 text-center sm:grid-cols-3">
+      <Reveal className="mx-auto grid max-w-[1100px] grid-cols-1 gap-12 text-center sm:grid-cols-3">
         {STATS.map((s) => (
           <div key={s.label}>
             <span
@@ -69,7 +70,7 @@ export default function StatsBlock() {
             </p>
           </div>
         ))}
-      </div>
+      </Reveal>
     </section>
   );
 }

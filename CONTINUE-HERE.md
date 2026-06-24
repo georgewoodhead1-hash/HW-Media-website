@@ -57,12 +57,8 @@ A fresh render. Free rein on layout. Keep the **content/copy/films** (Break the 
 ## Later (when ready)
 - Hero camera-lens animation: generate a camera-lens image/video via **Higgsfield MCP**, use as the intro animation (replaces current lens). George wants to do this together later.
 
-## Animation toolkit — INSTALL (right after the About page, before section blending)
-George wants luke's full animation arsenal "at his disposal" (site feels too basic with just GSAP+Lenis). Run:
-```
-npm install three @react-three/fiber @react-three/drei @react-three/postprocessing postprocessing
-npm install -D @types/three
-```
+## Animation toolkit — ✅ DONE (installed + committed 2460d03)
+Installed (tsc clean, dev server fine): **three 0.184, @react-three/fiber 9.6 (React 19 ok), @react-three/drei 10.7, @react-three/postprocessing 3.0, postprocessing 6.39, @types/three**. Now AVAILABLE to use. (For reference the install was: `npm i three @react-three/fiber @react-three/drei @react-three/postprocessing postprocessing` + `-D @types/three`.)
 - three = 3D engine; @react-three/fiber = Three.js as React; drei = helpers (useGLTF for .glb, scroll); postprocessing = cinematic shader passes (bloom/DOF/distortion); WebGL/GLSL = free with three (ShaderMaterial as strings).
 - Blender = free desktop app to author .glb 3D assets (or AI-generate via Higgsfield).
 - **Next 16 + Turbopack caveat (AGENTS.md: "NOT the Next.js you know"):** R3F `<Canvas>` needs `"use client"` + usually a `dynamic(() => import(...), { ssr: false })` wrapper. Verify the build compiles + a test canvas renders (Playwright) before using it for real.

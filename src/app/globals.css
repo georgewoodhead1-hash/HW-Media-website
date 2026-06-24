@@ -506,3 +506,146 @@ html[data-mode="dark"] [data-surface="band"] .logo-mark {
 @keyframes hw-blink { 0%, 58% { opacity: 1; } 59%, 100% { opacity: 0; } }
 @keyframes hw-flicker { 0%, 100% { opacity: 0.92; } 42% { opacity: 0.66; } 43% { opacity: 0.88; } 71% { opacity: 0.5; } 72% { opacity: 0.9; } }
 @keyframes hw-eq { from { transform: scaleY(0.2); } to { transform: scaleY(1); } }
+
+/* ============ ABOUT PAGE — Luke-style chrome + motion ============ */
+
+/* progress rail fill grows from the top */
+.about-rail-fill {
+  transform-origin: top center;
+  will-change: transform;
+}
+
+/* crosshair corner marks (framed media) */
+.cross-mark {
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  color: var(--gold);
+  opacity: 0.85;
+  pointer-events: none;
+  z-index: 2;
+}
+.cross-mark::before,
+.cross-mark::after {
+  content: "";
+  position: absolute;
+  background: currentColor;
+}
+.cross-mark::before {
+  left: 50%;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+.cross-mark::after {
+  top: 50%;
+  left: 0;
+  height: 1px;
+  width: 100%;
+  transform: translateY(-50%);
+}
+
+/* How We Work — gold fill sweeps left -> right behind the active row */
+.hww-row {
+  position: relative;
+  isolation: isolate;
+}
+.hww-row::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.6s var(--ease-expo);
+}
+.hww-row[data-on="true"]::before {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .hww-row::before {
+    transition: none;
+  }
+}
+
+/* seam fades — soft blend INTO / OUT OF the dark band so light/dark surfaces
+   don't meet at a hard rectangular edge. Top fades the page colour down into the
+   band; bottom fades the band back up to the page colour. Mode-aware: the page
+   is cream in light mode, near-black in dark. */
+.seam-into-band {
+  background: linear-gradient(to bottom, var(--cream), transparent);
+}
+.seam-out-band {
+  background: linear-gradient(to top, var(--cream), transparent);
+}
+html[data-mode="dark"] .seam-into-band {
+  background: linear-gradient(to bottom, #050505, transparent);
+}
+html[data-mode="dark"] .seam-out-band {
+  background: linear-gradient(to top, #050505, transparent);
+}
+
+/* How We Work — one master video, blurred, breathing slowly in and out behind
+   the rows. Blur stays moderate; the "breath" rides on scale + brightness +
+   opacity (cheap transforms) so the scroll never stutters. */
+.hww-bg-video {
+  filter: blur(15px) brightness(0.4);
+  opacity: 0.5;
+  transform: scale(1.2);
+  animation: hww-breathe 11s ease-in-out infinite;
+}
+@keyframes hww-breathe {
+  0%, 100% {
+    filter: blur(15px) brightness(0.36);
+    opacity: 0.46;
+    transform: scale(1.18);
+  }
+  50% {
+    filter: blur(20px) brightness(0.46);
+    opacity: 0.62;
+    transform: scale(1.24);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hww-bg-video {
+    animation: none;
+  }
+}
+
+/* ---- About font (Bar Studios uses Owners Wide for everything). Owners is a
+   commercial Displaay / Adobe Fonts face — licence before launch. Until then we
+   stand it in with Archivo at expanded width, the closest face already loaded. */
+.about-body {
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-variation-settings: "wdth" 100;
+}
+.about-display {
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-variation-settings: "wdth" 118;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: -0.005em;
+  line-height: 0.9;
+}
+.about-label {
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-variation-settings: "wdth" 112;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 13px;
+}
+
+/* dynamic contact media: the framed film rises and a gold wash breathes over it
+   (Luke's "a bubble comes up and it changes colour"). */
+.lc-wash {
+  background: var(--gold);
+  mix-blend-mode: multiply;
+}
+.split-rise {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+}

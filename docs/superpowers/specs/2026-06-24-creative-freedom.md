@@ -51,3 +51,29 @@ GSAP 3.15 — FULL free plugin set (ScrollTrigger, SplitText, ScrollSmoother, Ob
 **The core lesson I'm taking:** stop reproducing the reference LAYOUTS. The references are the quality bar; the wins come from inventing original moments (knockout name, expanding circle, brand cascade) on a dark+gold, one-font, buttery-smooth canvas.
 
 **Still to do (this pass):** an adversarial polish review (is it high-end/original/smooth enough?), tune the Harry scene (portrait reveal, needs your real photo), and confirm scene-to-scene transitions feel like one continuous smooth piece. BLOCKED on you: real Harry photo + real email/social URLs.
+
+---
+
+### POLISH PASS (after the adversarial review — what I changed and why)
+
+I ran a multi-agent adversarial review of the built page. It scored the craft a 7 and the motion an 8, confirmed every hard rule passes, and confirmed performance is good (60fps, CPU not cooked, no WebGL). It then flagged seven specific things keeping it off "unbelievably high-end." I fixed all seven and re-verified the whole scroll with Playwright (and checked the *computed* styles, not just the screenshots, so I wasn't fooled by the Turbopack stale-CSS bug again).
+
+**The seven fixes:**
+1. **Desktop dead space (Statement).** The statement sat in a narrow left column with ~35% of the screen empty on the right. Rebuilt it as two columns: the monumental line on the left, a tall film still on the right that wipes open and parallaxes as you scroll. Now the composition uses the full width.
+2. **Murky media (Work).** The film stills + the vertical reel read underexposed on the near-black surface. Added a mild brightness/contrast/saturation lift to all of them, so they read as deliberate cinema, not as mud.
+3. **Bigger reel.** The one vertical reel was too small (300px). Bumped to 380px and gave it a warm gold hairline so it reads as the hero piece of the work section.
+4. **Invisible ghost cascade (Work).** The outlined "ghost" brand row was at 45% and basically disappeared. Raised the outline to 70% so both brand rows are legible, and increased the slide distance so the cascade actually moves.
+5. **Gold went olive at scale.** The accent gold (#bfaa53) muddies toward olive when it's huge on black. Added a brighter display gold (#cdb86a) used only on the big gold phrases (WORTH REMEMBERING, the WORK, WALLIS, work). Small accents/fills keep the original gold.
+6. **Method left-hug void.** The "how we work" list hugged the left with the same empty right column. Added a giant outlined numeral (01–05) on the right that slides + fades in each time the active stage changes as you scroll. Fills the width AND adds a second piece of scroll-driven motion.
+7. **Nav legibility.** Added a soft top scrim over the hero so the fixed nav always stays readable over the footage, and lifted the hero content above it.
+
+**What I CONSIDERED and DEFERRED (deliberately, not forgotten):**
+- **Circle-wipe transitions between every section** (the "let's create can go away and reveal the next scene" idea). I built the page so the expanding circle is the finale. Turning it into a transition that fires between *every* section is a bigger motion system, and the last time I added ambitious unverified motion it re-introduced the clunk you hated and broke things. With you away, I chose to ship a clean, verified, working page over gambling the working state on a half-built transition system in the last stretch. This is the clearest, safest next iteration to do *with* you in the room.
+- **One shared visual thread** (a recurring gold ring / no hard black gaps between sections) — same reasoning. Worth doing, but as a deliberate next pass, not a rushed one.
+
+**One thing I FLAGGED but did NOT change (your call):**
+- The top-left **nav logo is still the script/handwritten "HW media" mark** (`/logos/hwmedia-dark.png`). You banned the handwritten *font* in the page type, and I've kept the page 100% clean of it (verified: the banned font is absent from the DOM, everything is Archivo). But that logo is a **brand-image asset in the global nav**, not a font choice inside the About page — so replacing it is a brand-identity decision across the whole site, not a polish fix in my remit. The footer already uses a clean Archivo "HW MEDIA" stamp, so there's an inconsistency. If you want the script mark gone too, say the word and I'll swap the nav logo for a clean "HW MEDIA" wordmark to match the footer. I didn't want to delete your brand mark on my own.
+
+**Verification:** `tsc` clean. Full-scroll Playwright capture at 1440px read end-to-end. Computed styles confirmed: display font = Archivo (not the stale Hanken), gold-lg = #cdb86a, ghost stroke = 70%, banned accent font = absent. Performance unchanged (no WebGL, no always-on canvases).
+
+**The honest state:** this is now a genuinely original, high-end, smooth, dark+gold, one-font About page that obeys every rule you set — name made of footage, monumental scrubbed statement, kinetic brand cascade, Harry, a method section that finally fills the frame and moves, and the loved expanding-circle close. The two deferred items (circle transitions, shared thread) are the path from "high-end" to "unforgettable," and they're safest to do together when you're back.

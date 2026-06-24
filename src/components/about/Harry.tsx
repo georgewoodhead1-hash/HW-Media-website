@@ -59,12 +59,12 @@ export default function Harry() {
         <div data-h-frame data-cursor="Harry" className="relative col-span-12 md:col-span-6 md:col-start-7" style={{ perspective: 900, transformStyle: "preserve-3d", willChange: "transform" }}>
           <div className="relative aspect-[4/5] w-full overflow-hidden rounded-sm ring-1 ring-[var(--hairline-dark)] md:ml-auto md:max-w-[420px]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img data-h-img src="/images/harry-color.jpg" alt="Harry Wallis, founder of HW Media" className="h-full w-full object-cover" style={{ willChange: "clip-path, transform" }} />
+            <img data-h-img src="/images/harry-color.jpg" alt="Harry Wallis, founder of HW Media" className="h-full w-full object-cover" style={{ willChange: "clip-path, transform", filter: "brightness(1.05) contrast(1.03)" }} />
           </div>
         </div>
         <div className="relative z-10 col-span-12 -mt-[12vh] md:col-span-7 md:col-start-1 md:mt-0">
           <h2 data-h-name className="about-display leading-[0.86] text-[#f5f1e6]" style={{ fontSize: "clamp(2.8rem,8.5vw,7rem)", opacity: 0 }}>
-            Harry <span className="text-[var(--gold-text)]">Wallis.</span>
+            Harry <span className="gold-lg">Wallis.</span>
           </h2>
           <p data-h-rev className="about-body mt-7 max-w-md text-[clamp(1.05rem,1.5vw,1.35rem)] leading-[1.45] text-[#f5f1e6]/85">
             Behind HW Media is one director. Harry writes, shoots and cuts every film himself, and works close to the brand, so the people who commission the film are the people he makes it with.

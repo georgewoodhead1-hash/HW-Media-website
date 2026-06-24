@@ -5,7 +5,9 @@ import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // Task 6 — How we work, smooth (de-clunked). Five stages; the active one is the
 // one nearest centre as you scroll the list (one ScrollTrigger, no sticky pin).
-// The gold fill + text-flip transition smoothly via CSS. No film panel.
+// The gold fill + text-flip transition smoothly via CSS. A giant outlined numeral
+// of the active stage sits in the right column and slides+fades in on each change
+// (fills the right void, adds scroll-driven motion). No film panel.
 interface Stage { key: string; body: string; }
 
 const STAGES: Stage[] = [
@@ -43,26 +45,37 @@ export default function Method() {
   return (
     <section ref={root} className="relative px-5 py-[16vh] md:px-10">
       <h2 data-m-head className="about-display mb-12 max-w-2xl text-[#f5f1e6]" style={{ fontSize: "clamp(2.2rem,5.5vw,4.4rem)" }}>
-        How we <span className="text-[var(--gold-text)]">work.</span>
+        How we <span className="gold-lg">work.</span>
       </h2>
-      <ul data-list className="max-w-4xl border-b border-[var(--hairline-dark)]">
-        {STAGES.map((s, i) => {
-          const on = active === i;
-          return (
-            <li key={s.key} data-m-row className="hww-row border-t border-[var(--hairline-dark)]" data-on={on}>
-              <div className="px-3 py-6 md:px-6 md:py-7">
-                <div className="flex items-baseline gap-4 md:gap-7">
-                  <span className={`about-label shrink-0 transition-colors duration-500 ${on ? "text-[var(--black)]/65" : "text-[var(--gold-text)]"}`}>0{i + 1}</span>
-                  <span className={`about-display transition-colors duration-500 ${on ? "text-[var(--black)]" : "text-[#f5f1e6]"}`} style={{ fontSize: "clamp(2rem,5vw,3.6rem)" }}>{s.key}</span>
+
+      <div className="grid gap-10 md:grid-cols-[1fr_0.78fr] md:items-start md:gap-16">
+        <ul data-list className="border-b border-[var(--hairline-dark)]">
+          {STAGES.map((s, i) => {
+            const on = active === i;
+            return (
+              <li key={s.key} data-m-row className="hww-row border-t border-[var(--hairline-dark)]" data-on={on}>
+                <div className="px-3 py-6 md:px-6 md:py-7">
+                  <div className="flex items-baseline gap-4 md:gap-7">
+                    <span className={`about-label shrink-0 transition-colors duration-500 ${on ? "text-[var(--black)]/65" : "text-[var(--gold-text)]"}`}>0{i + 1}</span>
+                    <span className={`about-display transition-colors duration-500 ${on ? "text-[var(--black)]" : "text-[#f5f1e6]"}`} style={{ fontSize: "clamp(2rem,5vw,3.6rem)" }}>{s.key}</span>
+                  </div>
+                  <div className="overflow-hidden transition-all duration-500 ease-out" style={{ maxHeight: on ? 200 : 0, opacity: on ? 1 : 0 }}>
+                    <p className={`mt-3 max-w-xl text-[clamp(0.95rem,1.3vw,1.15rem)] leading-relaxed transition-colors duration-500 md:ml-14 ${on ? "text-[var(--black)]/80" : "text-[#f5f1e6]/65"}`}>{s.body}</p>
+                  </div>
                 </div>
-                <div className="overflow-hidden transition-all duration-500 ease-out" style={{ maxHeight: on ? 200 : 0, opacity: on ? 1 : 0 }}>
-                  <p className={`mt-3 max-w-xl text-[clamp(0.95rem,1.3vw,1.15rem)] leading-relaxed transition-colors duration-500 md:ml-14 ${on ? "text-[var(--black)]/80" : "text-[#f5f1e6]/65"}`}>{s.body}</p>
-                </div>
-              </div>
-            </li>
-          );
-        })}
-      </ul>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* right column — giant outlined numeral of the active stage, swaps in on change */}
+        <div className="pointer-events-none sticky top-[26vh] hidden h-[46vh] md:block" aria-hidden>
+          <div className="relative h-full">
+            <span key={active} className="ghost-numeral about-display block leading-[0.8]" style={{ fontSize: "clamp(9rem,21vw,19rem)" }}>0{active + 1}</span>
+            <span key={`lbl-${active}`} className="ghost-numeral about-label absolute left-1 top-[2vh] text-[var(--gold-text)]" style={{ WebkitTextStroke: "0", color: "var(--gold-text)" }}>{STAGES[active].key}</span>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

@@ -35,10 +35,12 @@ export default function KnockoutHero() {
 
   return (
     <section ref={root} className="relative flex min-h-screen flex-col justify-end overflow-hidden px-5 pb-[12vh] pt-[24vh] md:px-10">
-      <p data-hero-line className="about-body mb-8 max-w-md text-[clamp(1rem,1.6vw,1.3rem)] leading-[1.4] text-[#f5f1e6]/85">
+      {/* top scrim — keeps the fixed nav legible over the hero */}
+      <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 z-[1] h-36 bg-gradient-to-b from-[#050505] via-[#050505]/70 to-transparent" />
+      <p data-hero-line className="about-body relative z-10 mb-8 max-w-md text-[clamp(1rem,1.6vw,1.3rem)] leading-[1.4] text-[#f5f1e6]/85">
         A creative media company making films for brands.
       </p>
-      <div data-knock-wrap className="flex items-end" style={{ willChange: "transform" }}>
+      <div data-knock-wrap className="relative z-10 flex items-end" style={{ willChange: "transform" }}>
         <h1
           data-knock
           className="about-display leading-[0.8]"

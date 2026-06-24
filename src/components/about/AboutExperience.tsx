@@ -4,6 +4,7 @@ import CustomCursor from "./CustomCursor";
 import AboutIntro from "./AboutIntro";
 import KnockoutHero from "./KnockoutHero";
 import Statement from "./Statement";
+import Work from "./Work";
 import Harry from "./Harry";
 import Method from "./Method";
 import ContactCircle from "./ContactCircle";
@@ -23,6 +24,7 @@ export default function AboutExperience() {
 
       <KnockoutHero />
       <Statement />
+      <Work />
       <Harry />
       <Method />
       <ContactCircle />

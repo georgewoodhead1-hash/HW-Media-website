@@ -7,115 +7,17 @@ import { safePlay } from "@/lib/video";
 import { BOOKING_URL } from "@/content/site";
 import { getLenis } from "@/lib/lenis";
 
-// CH.00 — the lens. A real cine prime hanging in dark space, starting small
-// (further out). Scroll approaches it, then passes through the LAYERS of the
-// glass: the barrel hardware and front element fly past first, then the
-// middle group (chromatic edges, refraction sheen), then the rear element —
-// each at its own speed, like moving through a real optical stack. The reel
-// recessed in the throat grows until it IS the viewport, the framing racks
-// back to the true shot, the headline lands and blends with the footage,
-// then a long buffer holds before the page releases. Fully reversible.
-
-const RIG_REST = 0.55; // the whole lens starts at half size — further out
-const VESSEL_REST = 0.16; // reel disc scale within the rig
-const INNER_REST = 2.85; // reel over-zoom so the disc is always covered
-
-/* Coords rounded so V8 and JSC serialise identically (Safari hydration). */
-function ring(r: number, count: number, longEvery: number, len: number, lenLong: number) {
-  return Array.from({ length: count }, (_, i) => {
-    const a = ((i * 360) / count) * (Math.PI / 180);
-    const long = i % longEvery === 0;
-    const l = long ? lenLong : len;
-    return {
-      key: i,
-      long,
-      x1: (500 + r * Math.cos(a)).toFixed(2),
-      y1: (500 + r * Math.sin(a)).toFixed(2),
-      x2: (500 + (r - l) * Math.cos(a)).toFixed(2),
-      y2: (500 + (r - l) * Math.sin(a)).toFixed(2),
-    };
-  });
-}
-
-function GlassArt() {
-  const knurl = ring(479, 120, 10, 7, 14);
-  const aperture = ["22", "16", "11", "8", "5.6", "4", "2.8"];
-
-  return (
-    <svg
-      viewBox="0 0 1000 1000"
-      className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2"
-      aria-hidden
-    >
-      <defs>
-        <linearGradient id="lens-spec" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="rgba(255,255,255,0.55)" />
-          <stop offset="100%" stopColor="rgba(255,255,255,0)" />
-        </linearGradient>
-        <path id="lens-engrave" d="M 500 95 A 405 405 0 1 1 499.99 95" fill="none" />
-        <path id="lens-scale" d="M 152 500 A 348 348 0 0 0 848 500" fill="none" />
-      </defs>
-
-      {/* rim edges + filter thread */}
-      <circle cx="500" cy="500" r="496" fill="none" stroke="rgba(245,241,230,0.3)" strokeWidth="1.5" />
-      <circle cx="500" cy="500" r="490" fill="none" stroke="rgba(245,241,230,0.08)" strokeWidth="1" />
-      <circle cx="500" cy="500" r="486" fill="none" stroke="rgba(245,241,230,0.06)" strokeWidth="1" />
-      <circle cx="500" cy="500" r="442" fill="none" stroke="rgba(245,241,230,0.12)" strokeWidth="1" />
-
-      {/* knurled grip */}
-      {knurl.map((t) => (
-        <line
-          key={t.key}
-          x1={t.x1}
-          y1={t.y1}
-          x2={t.x2}
-          y2={t.y2}
-          stroke={t.long ? "rgba(245,241,230,0.4)" : "rgba(245,241,230,0.18)"}
-          strokeWidth={t.long ? 1.5 : 1}
-        />
-      ))}
-
-      {/* the red index dot every real lens carries */}
-      <circle cx="500" cy="32" r="6" fill="var(--red)" opacity="0.9" />
-      <line x1="500" y1="44" x2="500" y2="62" stroke="var(--red)" strokeWidth="2" opacity="0.7" />
-
-      {/* specular streak on the front glass */}
-      <path d="M 181.27 269.36 A 396 396 0 0 1 437.14 110.02" fill="none" stroke="url(#lens-spec)" strokeWidth="6" strokeLinecap="round" opacity="0.55" />
-
-      {/* engraved spec ring — white with the red Ø mark */}
-      <text fill="rgba(245,241,230,0.4)" style={{ fontFamily: "var(--font-plex-mono), monospace", fontSize: 15, letterSpacing: 7 }}>
-        <textPath href="#lens-engrave">
-          HW MEDIA · CINE PRIME · 24–70 ƒ2.8 · LONDON · EST. MMXX ·
-        </textPath>
-      </text>
-      <text fill="var(--red)" opacity="0.85" style={{ fontFamily: "var(--font-plex-mono), monospace", fontSize: 15, letterSpacing: 7 }}>
-        <textPath href="#lens-engrave" startOffset="62%">
-          Ø82
-        </textPath>
-      </text>
-
-      {/* aperture scale along the lower arc */}
-      <text fill="rgba(245,241,230,0.28)" style={{ fontFamily: "var(--font-plex-mono), monospace", fontSize: 13, letterSpacing: 2 }}>
-        <textPath href="#lens-scale" startOffset="6%">
-          {aperture.join("   ·   ")}
-        </textPath>
-      </text>
-    </svg>
-  );
-}
-
+// CH.00 — the lens. The showreel sits INSIDE a real circular lens: the footage is
+// clipped to a glass disc, ringed by a machined barrel (brushed-metal ring, knurled
+// focus ring, gold aperture ring, index dot) with a specular highlight on the glass.
+// On load the disc grows and dives forward to fill the frame while the barrel rings
+// fade past, then the motto rises in liquid glass. Scroll is locked until the dive
+// finishes (safe failsafe). Click anywhere to play the reel with sound.
 export default function LensIntro() {
   const wrapRef = useRef<HTMLDivElement>(null);
   const unlockRef = useRef<(() => void) | null>(null);
-  const rigRef = useRef<HTMLDivElement>(null);
-  const vesselRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
-  const dimRef = useRef<HTMLDivElement>(null);
-  const veilRef = useRef<HTMLDivElement>(null);
-  const frontRef = useRef<HTMLDivElement>(null);
-  const midRef = useRef<HTMLDivElement>(null);
-  const rearRef = useRef<HTMLDivElement>(null);
-  const vignetteRef = useRef<HTMLDivElement>(null);
+  const lensRef = useRef<HTMLDivElement>(null);
+  const ringsRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -128,31 +30,18 @@ export default function LensIntro() {
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      gsap.set(wrap, { height: "100vh" });
-      gsap.set(rigRef.current, { scale: 1 });
-      gsap.set(vesselRef.current, { xPercent: -50, yPercent: -50, scale: 1 / RIG_REST });
-      gsap.set(
-        [frontRef.current, midRef.current, rearRef.current, vignetteRef.current, dimRef.current, cueRef.current],
-        { autoAlpha: 0 },
-      );
-      gsap.set(veilRef.current, { opacity: 1 });
+      gsap.set(lensRef.current, { scale: 4 });
+      gsap.set(ringsRef.current, { autoAlpha: 0 });
+      gsap.set(cueRef.current, { autoAlpha: 0 });
       gsap.set(".hero-motto", { autoAlpha: 1 });
       return;
     }
 
-    // RESTING — the lens hangs straight ahead, FAR back and small, with NO tilt
-    // and NO spin. 3D here means DEPTH: the whole move is a forward push INTO the
-    // barrel along Z. (Set synchronously so the dive only ever animates away.)
-    gsap.set(rigRef.current, { scale: RIG_REST, z: -2700, rotationX: 0, rotationY: 0, rotationZ: 0 });
-    gsap.set(frontRef.current, { z: 700 });
-    gsap.set(midRef.current, { z: 300 });
-    gsap.set(rearRef.current, { z: -340 });
-    gsap.set(vesselRef.current, { xPercent: -50, yPercent: -50, scale: VESSEL_REST });
-    gsap.set(innerRef.current, { xPercent: -50, yPercent: -50, scale: INNER_REST });
-    gsap.set(dimRef.current, { opacity: 0.5 });
-    gsap.set(vignetteRef.current, { opacity: 1 });
+    // RESTING — a mid-size lens dead centre, rings visible, motto hidden.
+    gsap.set(lensRef.current, { scale: 1, transformOrigin: "50% 50%" });
+    gsap.set(ringsRef.current, { autoAlpha: 1, scale: 1 });
     gsap.set(cueRef.current, { autoAlpha: 1 });
-    gsap.set(".hero-motto", { autoAlpha: 0 });
+    gsap.set(".hero-motto", { autoAlpha: 0, y: 24 });
 
     let ctx: gsap.Context | null = null;
     let started = false;
@@ -161,11 +50,8 @@ export default function LensIntro() {
       if (started) return;
       started = true;
 
-      // Lock scroll for the intro ONLY (client: "don't let you scroll until the
-      // animation is done"). Lenis.stop() halts the smooth scroller; a capture
-      // blocker stops raw wheel/touch/keys too. Both release the moment the dive
-      // finishes, with a hard failsafe timeout so scroll can NEVER stay dead even
-      // if the timeline is interrupted — that bug got the old lock removed.
+      // lock scroll for the dive only (Lenis stop + capture blocker), released on
+      // finish with a hard failsafe so scroll can never stay dead.
       const lenis = getLenis();
       lenis?.stop();
       window.scrollTo(0, 0);
@@ -187,41 +73,23 @@ export default function LensIntro() {
         lenis?.start();
       };
       unlockRef.current = release;
-      const failsafe = window.setTimeout(release, 5400);
+      const failsafe = window.setTimeout(release, 5600);
 
       ctx = gsap.context(() => {
-        gsap.set(veilRef.current, { opacity: 0 });
-        gsap.set(".hero-motto", { autoAlpha: 0, y: 22 });
-
-        // AUTO-PLAY DEPTH ZOOM — a straight push forward INTO the lens, full-bleed.
-        // Gentler master ease + a touch longer = smoother. Lands DEAD CLEAN at
-        // scale 1. On complete, the scroll lock lifts.
-        const DUR = 3.1;
         const tl = gsap.timeline({
-          delay: 0.15,
-          defaults: { ease: "power1.inOut" },
+          delay: 0.2,
           onComplete: () => { window.clearTimeout(failsafe); release(); },
         });
-        tl
-          .to(rigRef.current, { z: 0, scale: 1, duration: DUR }, 0)
-          .to(vesselRef.current, { scale: 1, duration: DUR }, 0)
-          .to(innerRef.current, { scale: 1, duration: DUR }, 0)
-          // glass rushes toward the camera in Z (depth) and dissolves as we pass
-          .to(frontRef.current, { z: 1700, scale: 5.2, autoAlpha: 0, filter: "blur(13px)", duration: 1.3, ease: "power2.in" }, 0.3)
-          .to(midRef.current, { z: 1700, scale: 4.4, autoAlpha: 0, filter: "blur(11px)", duration: 1.4, ease: "power2.in" }, 0.6)
-          .to(rearRef.current, { z: 1700, scale: 3.7, autoAlpha: 0, filter: "blur(9px)", duration: 1.5, ease: "power2.in" }, 0.95)
-          // the throat opens + the reel-dim lifts as we arrive
-          .to(vignetteRef.current, { opacity: 0, duration: 1.1, ease: "power1.out" }, 1.25)
-          .to(dimRef.current, { opacity: 0, duration: 1.35 }, 1.05)
-          .to(cueRef.current, { autoAlpha: 0, duration: 0.3 }, 0)
-          // ARRIVE — scrim + the motto rises
-          .to(veilRef.current, { opacity: 1, duration: 0.5 }, DUR - 0.7)
-          .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" }, DUR - 0.45);
+        // the barrel rings fade + spread as we pass through them
+        tl.to(ringsRef.current, { autoAlpha: 0, scale: 1.7, duration: 1.6, ease: "power2.in" }, 0);
+        // the glass disc grows forward and fills the frame — pure transform scale
+        tl.to(lensRef.current, { scale: 4.4, duration: 3.0, ease: "power2.inOut" }, 0);
+        tl.to(cueRef.current, { autoAlpha: 0, duration: 0.4 }, 0);
+        // ARRIVE — the motto rises in liquid glass
+        tl.to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" }, 2.45);
       }, wrap);
     };
 
-    // plays the instant the loading screen lifts (so the zoom is seen, not hidden
-    // behind the veil); fallback timer if the loader is ever absent.
     window.addEventListener("hw:reveal", startZoom, { once: true });
     const fallback = window.setTimeout(startZoom, 3200);
 
@@ -233,10 +101,6 @@ export default function LensIntro() {
     };
   }, []);
 
-  // NOTE: never stop Lenis here. The native <dialog> modal already blocks the
-  // background; stopping Lenis risked leaving scroll dead if the dialog was
-  // dismissed via Escape/backdrop (closeReel wouldn't run). Nothing in the app
-  // stops Lenis anymore, so scroll can never lock.
   const openReel = () => {
     setReelOpen(true);
     dialogRef.current?.showModal();
@@ -257,9 +121,18 @@ export default function LensIntro() {
 
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
+      {/* liquid-glass filter (animated turbulence -> displacement) for the motto */}
+      <svg aria-hidden width="0" height="0" className="absolute">
+        <filter id="liquidGlass" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="7" result="noise">
+            <animate attributeName="baseFrequency" dur="18s" values="0.006 0.012;0.012 0.007;0.006 0.012" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+
       <div
-        className="on-media sticky top-0 h-screen w-full overflow-hidden bg-black"
-        style={{ perspective: "820px", perspectiveOrigin: "50% 48%" }}
+        className="on-media sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {
@@ -272,195 +145,70 @@ export default function LensIntro() {
         role="button"
         aria-label="Play showreel with sound"
       >
-        {/* the rig: everything physical flies together on approach, in true 3D */}
-        <div ref={rigRef} className="absolute inset-0 will-change-transform" style={{ transformStyle: "preserve-3d" }}>
-          {/* the reel, recessed in the throat — already playing at rest */}
+        {/* THE LENS — barrel rings + circular glass disc holding the reel */}
+        <div className="relative" style={{ width: "62vmin", height: "62vmin" }}>
+          {/* barrel rings */}
+          <div ref={ringsRef} className="pointer-events-none absolute inset-0 will-change-transform">
+            {/* seating shadow */}
+            <div className="absolute -inset-[12%] rounded-full" style={{ background: "radial-gradient(circle, transparent 58%, rgba(0,0,0,0.6) 70%, transparent 84%)" }} />
+            {/* outer brushed-metal barrel */}
+            <div
+              className="absolute -inset-[8%] rounded-full"
+              style={{
+                background: "conic-gradient(from 210deg, #0c0c0c, #2c2c2c 12%, #0e0e0e 25%, #353535 38%, #0d0d0d 52%, #272727 68%, #0b0b0b 82%, #2a2a2a 94%, #0c0c0c)",
+                WebkitMaskImage: "radial-gradient(circle, transparent 60.5%, #000 61.5%, #000 100%)",
+                maskImage: "radial-gradient(circle, transparent 60.5%, #000 61.5%, #000 100%)",
+              }}
+            />
+            {/* knurled focus ring */}
+            <div
+              className="absolute -inset-[2.5%] rounded-full"
+              style={{
+                background: "repeating-conic-gradient(#111 0deg 1.05deg, #202020 1.05deg 2.1deg)",
+                WebkitMaskImage: "radial-gradient(circle, transparent 80%, #000 81%, #000 93%, transparent 94%)",
+                maskImage: "radial-gradient(circle, transparent 80%, #000 81%, #000 93%, transparent 94%)",
+              }}
+            />
+            {/* top-left rim light */}
+            <div
+              className="absolute -inset-[8%] rounded-full"
+              style={{
+                background: "conic-gradient(from 150deg, transparent 0deg, rgba(255,255,255,0.25) 38deg, rgba(255,255,255,0.04) 80deg, transparent 120deg, transparent 360deg)",
+                WebkitMaskImage: "radial-gradient(circle, transparent 67%, #000 68%, #000 72%, transparent 73%)",
+                maskImage: "radial-gradient(circle, transparent 67%, #000 68%, #000 72%, transparent 73%)",
+                filter: "blur(1px)",
+              }}
+            />
+            {/* gold aperture ring + index dot */}
+            <div className="absolute -inset-[1%] rounded-full border-2 border-[var(--gold)]/40" />
+            <div className="absolute left-1/2 -top-[2.5%] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-[var(--gold)] shadow-[0_0_10px_rgba(191,170,83,0.9)]" />
+          </div>
+
+          {/* the glass disc — the reel, clipped to a circle */}
           <div
-            ref={vesselRef}
-            className="lens-vessel absolute left-1/2 top-1/2 h-[124vmax] w-[124vmax] will-change-transform"
+            ref={lensRef}
+            className="absolute left-1/2 top-1/2 aspect-square w-[54vmin] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full will-change-transform"
           >
-            <div ref={innerRef} className="absolute left-1/2 top-1/2 h-screen w-screen will-change-transform">
-              <video
-                ref={videoRef}
-                className="h-full w-full object-cover"
-                src="/videos/showreel-full.mp4"
-                autoPlay
-                muted
-                loop
-                playsInline
-              />
-              <div ref={dimRef} className="absolute inset-0 bg-black" />
-            </div>
-          </div>
-
-          {/* REAR ELEMENT — last glass before the reel, exits last */}
-          <div ref={rearRef} className="pointer-events-none absolute inset-0 will-change-transform">
-            <div
-              className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle, transparent 8%, rgba(0,0,0,0.42) 12.5%, rgba(0,0,0,0.12) 15.5%, transparent 19%)",
-                filter: "blur(1.5px)",
-              }}
+            <video
+              ref={videoRef}
+              className="absolute inset-0 h-full w-full object-cover"
+              src="/videos/showreel-full.mp4"
+              autoPlay
+              muted
+              loop
+              playsInline
             />
-            <div
-              className="absolute left-1/2 top-1/2 h-[40vmin] w-[40vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f5f1e6]/[0.07]"
-              style={{ filter: "blur(0.5px)" }}
-            />
-            <div
-              className="absolute left-1/2 top-1/2 h-[36vmin] w-[36vmin] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
-              style={{ background: "radial-gradient(closest-side, rgba(196,74,168,0.08), transparent 78%)", filter: "blur(2px)" }}
-            />
-          </div>
-
-          {/* MIDDLE GROUP — chromatic edges + refraction sheen, exits second */}
-          <div ref={midRef} className="pointer-events-none absolute inset-0 will-change-transform">
-            <div
-              className="absolute left-1/2 top-1/2 h-[76vmin] w-[76vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#f5f1e6]/[0.08]"
-              style={{ filter: "blur(0.6px)" }}
-            />
-            {/* chromatic aberration: magenta outside, cyan inside the edge — feathered so it reads as a soft fringe, not a drawn ring */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[77vmin] w-[77vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[rgba(216,74,160,0.16)]"
-              style={{ filter: "blur(2.5px)" }}
-            />
-            <div
-              className="absolute left-1/2 top-1/2 h-[75vmin] w-[75vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-[rgba(64,196,210,0.14)]"
-              style={{ filter: "blur(2.5px)" }}
-            />
-            {/* curved refraction sheen — soft specular glaze across the glass */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[72vmin] w-[72vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background: "radial-gradient(ellipse at 62% 30%, rgba(255,255,255,0.08), transparent 52%)",
-                filter: "blur(3px)",
-              }}
-            />
-            {/* gentle internal vignette giving the group depth */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[74vmin] w-[74vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background: "radial-gradient(circle, transparent 58%, rgba(0,0,0,0.22) 84%, transparent 100%)",
-                filter: "blur(2px)",
-              }}
-            />
-            <div
-              className="absolute left-1/2 top-1/2 h-[70vmin] w-[70vmin] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
-              style={{ background: "radial-gradient(closest-side, rgba(64,196,160,0.08), transparent 78%)", filter: "blur(2px)" }}
-            />
-          </div>
-
-          {/* FRONT — barrel hardware + front element, exits first */}
-          <div ref={frontRef} className="pointer-events-none absolute inset-0 will-change-transform">
-            {/* shadow seating the barrel in the dark */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[150vmin] w-[150vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle, transparent 58%, rgba(0,0,0,0.5) 64%, rgba(0,0,0,0.18) 72%, transparent 80%)",
-              }}
-            />
-            {/* machined metal rim: brushed conic sheen masked to an annulus */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background:
-                  "conic-gradient(from 215deg, #0a0a0a, #232323 11%, #0c0c0c 23%, #2a2a2a 36%, #0b0b0b 52%, #1f1f1f 67%, #090909 81%, #222 93%, #0a0a0a)",
-                WebkitMaskImage:
-                  "radial-gradient(circle, transparent 65.8%, black 66.6%, black 75%, transparent 75.6%)",
-                maskImage:
-                  "radial-gradient(circle, transparent 65.8%, black 66.6%, black 75%, transparent 75.6%)",
-              }}
-            />
-            {/* soft edge-light catching the top-left of the rim */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background:
-                  "conic-gradient(from 150deg, transparent 0deg, rgba(255,255,255,0.16) 40deg, rgba(255,255,255,0.03) 80deg, transparent 120deg, transparent 360deg)",
-                WebkitMaskImage:
-                  "radial-gradient(circle, transparent 72.8%, black 74.4%, black 75.6%, transparent 77%)",
-                maskImage:
-                  "radial-gradient(circle, transparent 72.8%, black 74.4%, black 75.6%, transparent 77%)",
-                filter: "blur(1.2px)",
-              }}
-            />
-            {/* machined focus-ring band */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background: "repeating-conic-gradient(#101010 0deg 1.1deg, #1d1d1d 1.1deg 2.2deg)",
-                WebkitMaskImage:
-                  "radial-gradient(circle, transparent 56.5%, black 57.2%, black 62.5%, transparent 63.2%)",
-                maskImage:
-                  "radial-gradient(circle, transparent 56.5%, black 57.2%, black 62.5%, transparent 63.2%)",
-                opacity: 0.85,
-              }}
-            />
-            {/* stepped barrel-depth shadows */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[132vmin] w-[132vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background:
-                  "radial-gradient(circle, transparent 26%, rgba(0,0,0,0.4) 29%, transparent 33%, transparent 42%, rgba(0,0,0,0.45) 45.5%, transparent 50%, transparent 56%, rgba(0,0,0,0.5) 60%, transparent 64.5%)",
-              }}
-            />
-            {/* soft internal vignette across the front element for glass depth */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[126vmin] w-[126vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background: "radial-gradient(circle, transparent 40%, rgba(0,0,0,0.16) 70%, rgba(0,0,0,0.34) 88%, transparent 100%)",
-                filter: "blur(4px)",
-              }}
-            />
-            {/* front-element specular dome highlight, top-left — feathered like a real catch-light */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[88vmin] w-[88vmin] -translate-x-1/2 -translate-y-1/2 rounded-full"
-              style={{
-                background: "radial-gradient(ellipse at 36% 28%, rgba(255,255,255,0.12), rgba(255,255,255,0.04) 30%, transparent 52%)",
-                filter: "blur(3px)",
-              }}
-            />
-            {/* multicoating flares — diffuse and feathered */}
-            <div
-              className="absolute left-1/2 top-1/2 h-[58vmin] w-[58vmin] rounded-full mix-blend-screen"
-              style={{
-                transform: "translate(-88%, -86%)",
-                background: "radial-gradient(closest-side, rgba(196,74,168,0.16), transparent 78%)",
-                filter: "blur(4px)",
-              }}
-            />
-            <div
-              className="absolute left-1/2 top-1/2 h-[34vmin] w-[34vmin] rounded-full mix-blend-screen"
-              style={{
-                transform: "translate(-150%, 36%)",
-                background: "radial-gradient(closest-side, rgba(120,90,220,0.11), transparent 78%)",
-                filter: "blur(3px)",
-              }}
-            />
-            <GlassArt />
+            {/* specular glass highlight */}
+            <div className="pointer-events-none absolute inset-0 rounded-full" style={{ background: "radial-gradient(ellipse at 34% 26%, rgba(255,255,255,0.30), rgba(255,255,255,0.05) 30%, transparent 56%)" }} />
+            {/* glass-depth vignette + faint chromatic rim */}
+            <div className="pointer-events-none absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 70px 12px rgba(0,0,0,0.5)" }} />
+            <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-[rgba(216,74,160,0.14)]" />
           </div>
         </div>
 
-        {/* vignette REMOVED (client: "horrible vignette around the showreel").
-            Kept as an empty ref so the dive timeline still has a valid target. */}
-        <div ref={vignetteRef} className="pointer-events-none absolute inset-0" />
-
-        {/* legibility scrim — fades in under the motto so it sits cleanly over
-            any footage. A gradient surface, not a text shadow. */}
-        <div
-          ref={veilRef}
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-[9] h-[58%]"
-          style={{ background: "linear-gradient(to top, rgba(3,3,3,0.82), rgba(3,3,3,0.25) 52%, transparent)" }}
-        />
-
-        {/* the motto — our mainstream display font, solid and bold, standing
-            out over the reel. No knockout, no glass, no shadow, one clean rise. */}
+        {/* the motto — liquid glass over the footage */}
         <div className="hero-motto absolute left-0 top-[33%] z-10 px-5 md:px-10">
-          {/* solid display type. (A footage knockout boxes on bright frames —
-              the dark surround George rejected — so it stays clean solid until
-              his reference defines the exact interaction he wants.) */}
-          <h1 className="glass-motto font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]">
+          <h1 className="glass-motto font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]" style={{ filter: "url(#liquidGlass)" }}>
             Break the<br />
             <span className="glass-motto-gold">ordinary.</span>
           </h1>
@@ -474,6 +222,7 @@ export default function LensIntro() {
             href={BOOKING_URL}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={(e) => e.stopPropagation()}
             className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/55 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
@@ -481,7 +230,7 @@ export default function LensIntro() {
           </a>
         </div>
 
-        {/* scroll hint, fades in once the intro has played */}
+        {/* scroll cue */}
         <div ref={cueRef} className="absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2">
           <span className="label-mono text-[10px] opacity-70">Scroll</span>
           <span className="block h-8 w-px animate-pulse bg-[var(--gold)]" />

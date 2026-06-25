@@ -90,7 +90,7 @@ export default function OurWork() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 1.8,
+        scrub: 0.8,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
       });

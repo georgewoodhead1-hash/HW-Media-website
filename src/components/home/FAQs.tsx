@@ -52,7 +52,7 @@ export default function FAQs() {
       // entrance: fade everything up on enter — OPACITY ONLY (no transform, so it
       // can't fight the pin).
       gsap.set([head, ...qs, reel].filter(Boolean), { autoAlpha: 0 });
-      const introTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 70%", once: true } });
+      const introTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 82%", end: "top 45%", scrub: 0.8 } });
       introTl
         .to([head, reel].filter(Boolean), { autoAlpha: 1, duration: 1, ease: "power2.out" }, 0)
         .to(qs, { autoAlpha: 1, duration: 0.8, stagger: 0.08, ease: "power2.out" }, 0.2);
@@ -61,7 +61,7 @@ export default function FAQs() {
       const tween = gsap.to(reel, {
         autoAlpha: 0,
         ease: "none",
-        scrollTrigger: { trigger: root, start: "bottom 55%", end: "bottom 18%", scrub: 1 },
+        scrollTrigger: { trigger: root, start: "bottom 55%", end: "bottom 18%", scrub: 0.7 },
       });
       return () => { pinST?.kill(); introTl.scrollTrigger?.kill(); introTl.kill(); tween.scrollTrigger?.kill(); tween.kill(); };
     });

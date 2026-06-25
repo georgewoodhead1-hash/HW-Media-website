@@ -180,7 +180,7 @@ export default function EditorFCP() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 2.8,
+        scrub: 1.0,
         invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),

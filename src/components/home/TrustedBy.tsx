@@ -108,7 +108,7 @@ export default function TrustedBy() {
       const rows = gsap.utils.toArray<HTMLElement>(".tb-row", root);
 
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: root, start: "top 78%", once: true },
+        scrollTrigger: { trigger: root, start: "top 85%", end: "top 42%", scrub: 0.85 },
       });
 
       // clean, slow fade-up — one motion language across the site. No rotation

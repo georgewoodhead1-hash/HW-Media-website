@@ -136,18 +136,22 @@ export default function EditorFCP() {
           });
         });
 
-        // LETTERS — scattered across the page, draw home one at a time
-        chars.forEach((c, i) => {
-          const s = scatter[i];
-          const t = smooth(s.a, s.b, p);
-          gsap.set(c, {
-            x: lerp(s.x * vw, 0, t),
-            y: lerp(s.y * vh, 0, t),
-            rotation: lerp(s.rot, 0, t),
-            scale: lerp(s.sc, 1, t),
-            autoAlpha: t,
+        // LETTERS — scattered across the page, draw home one at a time. Skip the
+        // per-frame work once the title has handed off to the stage words (it is
+        // faded out by ~0.56), which lightens the heaviest part of the scrub.
+        if (p < 0.62) {
+          chars.forEach((c, i) => {
+            const s = scatter[i];
+            const t = smooth(s.a, s.b, p);
+            gsap.set(c, {
+              x: lerp(s.x * vw, 0, t),
+              y: lerp(s.y * vh, 0, t),
+              rotation: lerp(s.rot, 0, t),
+              scale: lerp(s.sc, 1, t),
+              autoAlpha: t,
+            });
           });
-        });
+        }
 
         // "Our process" leaves quickly right at the boundary so it never
         // shares the centre with the first stage word

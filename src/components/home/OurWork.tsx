@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { projects } from "@/content/projects";
 import { safePlay } from "@/lib/video";
 
@@ -44,46 +44,35 @@ export default function OurWork() {
       const bars = gsap.utils.toArray<HTMLElement>(".ow-bar", root);
       const head = root.querySelector<HTMLElement>(".ow-head");
       const N = bars.length;
-
-      // type the heading in char-by-char as the section pins, then settle it as
-      // a smaller title ABOVE the accordion row (it never fades away).
-      const split = head ? new SplitText(head, { type: "chars" }) : null;
-      const chars = split ? (split.chars as HTMLElement[]) : [];
-
-      // bars arrive between FROM and TO; the windows are wide and overlapping so
-      // each film glides across rather than popping. After TO the full accordion
-      // is held so there's a comfortable window to hover before release.
-      const FROM = 0.05;
-      const TO = 0.6;
-      const span = (TO - FROM) / N;
       const vids = bars.map((b) => b.querySelector("video"));
 
+      // GPU-ONLY reveal (transform + opacity, NO per-frame clip-path — that churn
+      // was the clunk): the heading lifts in, then each film slides up + fades in
+      // turn. On the section's EXIT the whole stage zooms out and lifts away as
+      // Our Process rises over it — the scroll transition out of Featured Projects.
+      const FROM = 0.05;
+      const TO = 0.58;
+      const span = (TO - FROM) / N;
+
+      gsap.set(head, { autoAlpha: 0, yPercent: 18 });
+      gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.955, force3D: true });
+
       const place = (p: number) => {
-        // heading is STATIC + always visible, so the pinned stage is never an
-        // empty black void at the seam — "OUR WORK" is on screen from frame one,
-        // the films reveal beneath it as you scroll.
-        if (head && chars.length) {
-          gsap.set(chars, { autoAlpha: 1, yPercent: 0 });
-        }
-        // bars: an ELEGANT masked reveal IN PLACE — each film wipes up from
-        // nothing with a slow ken-burns settle on the footage. No fly-in, no
-        // placeholder boxes, no pop. Wide overlapping windows = one continuous,
-        // premium unveiling, then held for hover.
+        const enterHead = smooth(0.02, 0.12, p);
+        const exit = smooth(0.86, 1, p);
+        gsap.set(head, { autoAlpha: enterHead * (1 - exit), yPercent: lerp(18, 0, enterHead) - exit * 26 });
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
-          const b = a + span * 2.6;
+          const b = a + span * 2.4;
           const t = smooth(a, b, p);
           gsap.set(bar, {
-            clipPath: `inset(${lerp(100, 0, t)}% 0% 0% 0% round 0.375rem)`,
-            yPercent: lerp(6, 0, t),
-            autoAlpha: t < 0.001 ? 0 : 1,
+            yPercent: lerp(48, 0, t) - exit * 10,
+            autoAlpha: t * (1 - exit),
+            scale: lerp(0.955, 1, t) * lerp(1, 0.92, exit),
           });
-          if (vids[i]) gsap.set(vids[i], { scale: lerp(1.14, 1, t), transformOrigin: "50% 60%" });
+          if (vids[i]) gsap.set(vids[i], { scale: lerp(1.12, 1, t) });
         });
       };
-
-      gsap.set(bars, { clipPath: "inset(100% 0% 0% 0% round 0.375rem)", autoAlpha: 0 });
-      if (chars.length) gsap.set(chars, { autoAlpha: 0 });
       place(0);
 
       const st = ScrollTrigger.create({
@@ -95,10 +84,7 @@ export default function OurWork() {
         onRefresh: (self) => place(self.progress),
       });
 
-      return () => {
-        st.kill();
-        split?.revert();
-      };
+      return () => { st.kill(); };
     });
 
     // mobile: the md:hidden tile stack is otherwise static — give each tile a

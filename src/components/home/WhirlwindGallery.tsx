@@ -240,46 +240,34 @@ export default function WhirlwindGallery() {
 
         {/* slim footer — rises up from the bottom edge at the very end of the scroll */}
         <div
-          className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-8 py-8 backdrop-blur-md will-change-transform"
+          className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-8 py-10 backdrop-blur-md will-change-transform md:px-12 md:py-12"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
-          {/* big HW Media signature with a gold light sweeping through it */}
-          <div className="footer-wordmark mx-auto mb-7 h-[clamp(2.2rem,6vw,4.5rem)] w-full max-w-[1180px]" role="img" aria-label="HW Media" />
-          {/* left padding clears the fixed theme toggle + social rail in the
-              bottom-left corner so the email is never occluded by them. */}
-          <div className="flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-3 pl-[172px] pr-2 text-sm text-[var(--fg)]">
-            <a
-              href="mailto:harry@hwmedia.productions"
-              className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"
-            >
-              harry@hwmedia.productions
-            </a>
-
-            <nav className="flex items-center gap-6" aria-label="Social links">
-              <a
-                href="https://www.instagram.com/hwmedia/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"
-              >
-                Instagram
-              </a>
-              <a
-                href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[var(--fg)]/85 transition-colors hover:text-[var(--gold-text)]"
-              >
-                LinkedIn
-              </a>
-            </nav>
-
-            <div className="flex items-center gap-6 text-[var(--fg)]/55">
-              <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
-              <Link href="/privacy" className="transition-colors hover:text-[var(--gold-text)]">
-                Privacy Policy
-              </Link>
+          <div className="flex w-full flex-wrap items-end justify-between gap-x-10 gap-y-8 pl-[150px]">
+            {/* LEFT — big HW mark, the IG + LinkedIn marks beneath it, copyright */}
+            <div className="flex flex-col gap-5">
+              <div className="footer-wordmark h-[clamp(3rem,7vw,5.5rem)] w-[clamp(180px,26vw,400px)]" role="img" aria-label="HW Media" />
+              <div className="flex items-center gap-5 text-[var(--fg)]/80">
+                <a href="https://www.instagram.com/hwmedia/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="transition-colors hover:text-[var(--gold-text)]">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg>
+                </a>
+                <a href="https://www.linkedin.com/in/harry-wallis-98b47b161/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="transition-colors hover:text-[var(--gold-text)]">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" /></svg>
+                </a>
+              </div>
+              <div className="flex items-center gap-5 text-xs text-[var(--fg)]/50">
+                <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
+                <Link href="/privacy" className="transition-colors hover:text-[var(--gold-text)]">Privacy Policy</Link>
+              </div>
             </div>
+            {/* RIGHT — the email, big */}
+            <a
+              href="mailto:harry@hwmedia.co.uk"
+              className="about-display text-[clamp(1.5rem,3.4vw,3.2rem)] leading-none text-[var(--fg)] transition-colors hover:text-[var(--gold-text)]"
+              style={{ textTransform: "none" }}
+            >
+              harry@hwmedia.co.uk
+            </a>
           </div>
         </div>
       </div>

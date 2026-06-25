@@ -108,7 +108,8 @@ export default function EditorFCP() {
         const STAGE_START = 0.46;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
-        const outro = 0; // client (Tuesday meeting): the process STAYS assembled — never flies off, so scrolling back never hits an empty screen. It hands into Testimonials, which assembles its heading from the same scattered letters.
+        const outro = 0; // no fly-off (the meeting killed that). Positions stay put.
+        const tail = smooth(0.9, 1.0, p); // a gentle scene fade at the very end so "We deliver" DISSOLVES into Testimonials instead of stopping dead.
 
         // FILMS — drift in from a corner during assemble, brighten/dim by the
         // active stage, then in the OUTRO fly back out to the corners + fade.
@@ -132,7 +133,7 @@ export default function EditorFCP() {
             y: lerp(homeY, offY * 1.5, outro),
             rotation: swirl + lerp(0, i % 2 === 0 ? -14 : 14, outro),
             scale: lerp(0.8, 1, t) * lerp(1, 1 + 0.06 * w, enter) * lerp(1, 0.55, outro),
-            autoAlpha: lerp(assembleA, 0.32 + 0.68 * w, enter) * (1 - outro),
+            autoAlpha: lerp(assembleA, 0.32 + 0.68 * w, enter) * (1 - tail),
           });
         });
 
@@ -164,12 +165,12 @@ export default function EditorFCP() {
           const fin = smooth(i * slot + 0.02, i * slot + 0.07, sp);
           const fout = i === nStage - 1 ? 1 : 1 - smooth((i + 1) * slot - 0.05, (i + 1) * slot, sp);
           // the last word ("We deliver") breaks apart in the outro too
-          gsap.set(s, { autoAlpha: fin * fout * (1 - outro), yPercent: lerp(10, 0, fin) + outro * -40 });
+          gsap.set(s, { autoAlpha: fin * fout * (1 - tail), yPercent: lerp(10, 0, fin) + outro * -40 });
         });
 
         // PLAY-BAR — pure translate sweep across the full row; gone in the outro
         const barX = (lerp(BAR_LEFT, BAR_RIGHT, sp) / 100) * vw;
-        gsap.set(barRef.current, { x: barX, autoAlpha: enter * (1 - outro) });
+        gsap.set(barRef.current, { x: barX, autoAlpha: enter * (1 - tail) });
 
         // video play/pause follows the dominant stage (throttled, not a tween)
         const dom = enter > 0.5 ? Math.min(nStage - 1, Math.max(0, Math.round(sp * nStage - 0.5))) : -1;

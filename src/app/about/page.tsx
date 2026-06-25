@@ -1,11 +1,21 @@
-import AboutExperience from "@/components/about/AboutExperience";
+import type { Metadata } from "next";
+import AboutReel from "@/components/about/reel/AboutReel";
+import SiteIntro from "@/components/shell/SiteIntro";
 
-// About — HW Media in Luke Baffait's register. A single, locked-dark,
-// scene-by-scene WebGL experience: text floats in front of media at depth, a
-// winding gold thread connects the scenes, a right-edge progress rail fills as
-// you scroll, and the Contact scene flips light with a rising masked bubble.
-// The dark halftone "HW Media." footer wordmark bookends the experience inside
-// the final scene, so this page renders the experience alone.
+export const metadata: Metadata = {
+  title: "About — HW Media",
+  description: "Who's behind the camera. HW Media, a London creative agency and production company.",
+};
+
+// About — rehauled to the cinematic "Reel" direction (matches the dark home): a
+// full-screen showreel cold open, the statement over footage, the crew held one
+// face at a time, the films full-bleed and moving, a client-wall breather, into
+// the kept "Let's create". An "About us" intro beat wipes up to it.
 export default function About() {
-  return <AboutExperience />;
+  return (
+    <>
+      <SiteIntro words={["About", "us"]} />
+      <AboutReel />
+    </>
+  );
 }

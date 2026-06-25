@@ -22,7 +22,7 @@ export default function Contact() {
         className="flex min-h-screen flex-col items-center justify-center bg-[var(--bg)] px-5 py-32 text-center text-[var(--fg)] md:px-10"
       >
         <div className="w-full max-w-xl">
-          <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
+          <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]">
             Tell us <span className="text-[var(--gold-text)]">more.</span>
           </h1>
           <p

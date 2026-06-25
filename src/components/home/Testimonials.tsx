@@ -172,10 +172,10 @@ export default function Testimonials() {
         </h2>
       </div>
 
-      <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
+      <div className="mt-8 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-12 md:px-10 lg:gap-16">
         {/* LEFT — the active quote + brand, with three clickable dots (client:
             dots instead of 01/02/03; manual selection only, no auto-scroll). */}
-        <div data-rise className="flex flex-col justify-center">
+        <div data-rise className="flex flex-col">
           <div ref={quoteRef}>
             <blockquote
               className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
@@ -221,7 +221,7 @@ export default function Testimonials() {
           data-rise
           href={`/work/${current.slug}`}
           aria-label={`View project — ${current.role}, ${current.sector}`}
-          className="group relative mx-auto block aspect-[3/4] w-full max-h-[70vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
+          className="group relative mx-auto block aspect-[3/4] w-full max-h-[60vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
         >
           {TESTIMONIALS.map((t, i) => {
             const film = filmFor(t.slug);

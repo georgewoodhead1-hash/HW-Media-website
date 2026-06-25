@@ -51,11 +51,13 @@ export default function FAQs() {
         : null;
       // entrance: fade everything up on enter — OPACITY ONLY (no transform, so it
       // can't fight the pin).
-      gsap.set([head, ...qs, reel].filter(Boolean), { autoAlpha: 0 });
-      const introTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 86%", end: "top 38%", scrub: 1.1 } });
+      gsap.set([head, reel].filter(Boolean), { autoAlpha: 0, y: 28 });
+      gsap.set(qs, { autoAlpha: 0, y: 34, clipPath: "inset(0% 0% 100% 0%)" });
+      const introTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 86%", end: "top 34%", scrub: 1.1 } });
       introTl
-        .to([head, reel].filter(Boolean), { autoAlpha: 1, duration: 1, ease: "power2.out" }, 0)
-        .to(qs, { autoAlpha: 1, duration: 0.8, stagger: 0.08, ease: "power2.out" }, 0.2);
+        .to([head, reel].filter(Boolean), { autoAlpha: 1, y: 0, duration: 1, ease: "power3.out" }, 0)
+        // each question wipes up + rises in turn (not a flat fade)
+        .to(qs, { autoAlpha: 1, y: 0, clipPath: "inset(0% 0% 0% 0%)", duration: 0.7, stagger: 0.1, ease: "power3.out" }, 0.2);
       // exit: the reel fades out IN PLACE (it's pinned, so it never moves) as the
       // section's tail leaves and the finale comes up over it.
       const tween = gsap.to(reel, {

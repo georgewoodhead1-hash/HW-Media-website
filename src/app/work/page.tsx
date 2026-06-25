@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Footer from "@/components/shell/Footer";
 import WorkGallery from "@/components/work/WorkGallery";
+import SiteIntro from "@/components/shell/SiteIntro";
 
 export const metadata: Metadata = {
   title: "Work — HW Media",
@@ -13,6 +14,7 @@ export const metadata: Metadata = {
 export default function WorkIndex() {
   return (
     <>
+      <SiteIntro words={["Our", "work"]} />
       <main data-theme="dark" data-surface="page" className="min-h-screen bg-[var(--bg)] pb-[8vh] text-[var(--fg)]">
         <div className="pt-28">
           <WorkGallery />

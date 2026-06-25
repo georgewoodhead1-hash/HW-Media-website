@@ -182,7 +182,7 @@ export default function EditorFCP() {
       place(0);
       const st = ScrollTrigger.create({
         trigger: root,
-        start: "top top",
+        start: "top bottom",
         end: "bottom bottom",
         scrub: 1.4,
         invalidateOnRefresh: true,

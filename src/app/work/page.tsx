@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { BOOKING_URL } from "@/content/site";
+import Link from "next/link";
 import Footer from "@/components/shell/Footer";
 import WorkGallery from "@/components/work/WorkGallery";
 
@@ -24,15 +24,13 @@ export default function WorkIndex() {
           <h2 className="about-display mt-4 text-[clamp(2rem,5vw,4rem)] leading-[0.95] text-[var(--fg)]">
             Have a project <span className="gold-lg">in mind?</span>
           </h2>
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/contact"
             className="mt-7 inline-flex items-center gap-2 rounded-full border border-[var(--fg)]/45 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] transition-colors duration-300 hover:bg-[var(--fg)] hover:text-[var(--bg)]"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
-            Book a call with us <span aria-hidden>⟶</span>
-          </a>
+            Start here <span aria-hidden>⟶</span>
+          </Link>
         </section>
       </main>
       <Footer />

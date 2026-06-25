@@ -34,7 +34,7 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
         <video ref={vid} className="absolute inset-0 h-full w-full scale-[1.05] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.1]" src={item.video} poster={item.poster} muted loop playsInline preload="metadata" />
       ) : item.micro ? (
         // eslint-disable-next-line jsx-a11y/media-has-caption
-        <video className="absolute inset-0 h-full w-full scale-[1.05] object-cover" src={`/videos/micro/${item.micro}.mp4`} poster={`/videos/micro/posters/${item.micro}.jpg`} autoPlay muted loop playsInline preload="none" style={{ filter: "grayscale(0.85) brightness(0.34) contrast(1.05)" }} />
+        <video ref={vid} className="absolute inset-0 h-full w-full scale-[1.05] object-cover transition-transform duration-700 ease-out group-hover:scale-[1.1]" src={`/videos/micro/${item.micro}.mp4`} poster={`/videos/micro/posters/${item.micro}.jpg`} muted loop playsInline preload="metadata" />
       ) : (
         <div className="absolute inset-0 bg-[#0a0a0a]" />
       )}
@@ -58,7 +58,7 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
     );
   }
   return (
-    <div onMouseEnter={isReal ? play : undefined} onMouseLeave={isReal ? stop : undefined} className={cls} aria-label={item.label}>
+    <div onMouseEnter={play} onMouseLeave={stop} className={cls} aria-label={item.label}>
       {inner}
     </div>
   );

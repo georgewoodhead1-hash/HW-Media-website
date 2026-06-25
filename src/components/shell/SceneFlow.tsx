@@ -18,10 +18,10 @@ export default function SceneFlow() {
           el,
           { autoAlpha: 1, yPercent: 0 },
           {
-            autoAlpha: 0.12,
-            yPercent: -9,
+            autoAlpha: 0.5,
+            yPercent: -4,
             ease: "none",
-            scrollTrigger: { trigger: el, start: "top 18%", end: "top -28%", scrub: 0.8 },
+            scrollTrigger: { trigger: el, start: "top 10%", end: "top -20%", scrub: 0.8 },
           },
         );
       });

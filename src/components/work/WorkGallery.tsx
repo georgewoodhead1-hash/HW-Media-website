@@ -19,8 +19,8 @@ export default function WorkGallery() {
     const ctx = gsap.context(() => {
       gsap.set(".gtile", { autoAlpha: 0, y: 56 });
       ScrollTrigger.batch(".gtile", {
-        start: "top 92%",
-        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.85, ease: "power3.out", stagger: 0.13, overwrite: true }),
+        start: "top 97%",
+        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 1.15, ease: "power3.out", stagger: 0.18, overwrite: true }),
       });
       gsap.from("[data-ghead]", { autoAlpha: 0, y: 24, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } });
       ScrollTrigger.refresh();

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
-import { BOOKING_URL } from "@/content/site";
 import { getLenis } from "@/lib/lenis";
 
 // CH.00 — the lens. The showreel sits INSIDE a real circular lens: the footage is
@@ -121,16 +120,6 @@ export default function LensIntro() {
 
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
-      {/* liquid-glass filter (animated turbulence -> displacement) for the motto */}
-      <svg aria-hidden width="0" height="0" className="absolute">
-        <filter id="liquidGlass" x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.006 0.012" numOctaves="2" seed="7" result="noise">
-            <animate attributeName="baseFrequency" dur="18s" values="0.006 0.012;0.012 0.007;0.006 0.012" repeatCount="indefinite" />
-          </feTurbulence>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="9" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-      </svg>
-
       <div
         className="on-media sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
         data-cursor="play"
@@ -206,28 +195,27 @@ export default function LensIntro() {
           </div>
         </div>
 
-        {/* the motto — liquid glass over the footage */}
+        {/* the motto — the footage plays THROUGH the text (mix-blend-difference,
+            the same effect the IG/LinkedIn marks use), not a distortion filter */}
         <div className="hero-motto absolute left-0 top-[33%] z-10 px-5 md:px-10">
-          <h1 className="glass-motto font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]" style={{ filter: "url(#liquidGlass)" }}>
+          <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-white mix-blend-difference">
             Break the<br />
-            <span className="glass-motto-gold">ordinary.</span>
+            ordinary.
           </h1>
           <p
-            className="mt-5 max-w-md text-[clamp(1.05rem,1.6vw,1.5rem)] leading-snug text-[#f5f1e6]/85"
+            className="mt-5 max-w-md text-[clamp(1.05rem,1.6vw,1.5rem)] leading-snug text-white"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             we go where the story is
           </p>
-          <a
-            href={BOOKING_URL}
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            href="/contact"
             onClick={(e) => e.stopPropagation()}
-            className="mt-7 inline-flex items-center gap-2 rounded-full border border-[#f5f1e6]/55 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-[#f5f1e6] transition-colors duration-300 hover:bg-[#f5f1e6] hover:text-black"
+            className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/70 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white transition-opacity duration-300 hover:opacity-70"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
-            Book a call with us <span aria-hidden>⟶</span>
-          </a>
+            Start here <span aria-hidden>⟶</span>
+          </Link>
         </div>
 
         {/* scroll cue */}

@@ -50,29 +50,34 @@ export default function OurWork() {
       // was the clunk): the heading lifts in, then each film slides up + fades in
       // turn. On the section's EXIT the whole stage zooms out and lifts away as
       // Our Process rises over it — the scroll transition out of Featured Projects.
-      const FROM = 0.05;
-      const TO = 0.58;
+      const FROM = 0.0;
+      const TO = 0.55;
       const span = (TO - FROM) / N;
 
       const cta = root.querySelector<HTMLElement>(".ow-cta");
       gsap.set(head, { autoAlpha: 0, yPercent: 18 });
-      gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.955, force3D: true });
+      gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.96, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
       const place = (p: number) => {
-        const enterHead = smooth(0.02, 0.12, p);
-        const exit = smooth(0.86, 1, p);
-        const ctaIn = smooth(0.45, 0.62, p);
-        gsap.set(head, { autoAlpha: enterHead * (1 - exit), yPercent: lerp(18, 0, enterHead) - exit * 26 });
-        if (cta) gsap.set(cta, { autoAlpha: ctaIn * (1 - exit), y: lerp(16, 0, ctaIn) - exit * 18 });
+        const enterHead = smooth(0, 0.06, p);
+        const headOut = smooth(0.72, 0.9, p);
+        const ctaIn = smooth(0.38, 0.52, p);
+        // EXIT — a slow, SYNCED show-curtain that drops on the TOP of every film
+        // (the bottom stays put, the top clips down). Starts early so the section
+        // is not just sitting there, runs long so it reads as a curtain.
+        const exit = smooth(0.64, 1, p);
+        gsap.set(head, { autoAlpha: enterHead * (1 - headOut), yPercent: lerp(18, 0, enterHead) - headOut * 30 });
+        if (cta) gsap.set(cta, { autoAlpha: ctaIn * (1 - headOut), y: lerp(16, 0, ctaIn) - headOut * 22 });
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
           const b = a + span * 2.4;
           const t = smooth(a, b, p);
           gsap.set(bar, {
-            yPercent: lerp(48, 0, t) - exit * 10,
-            autoAlpha: t * (1 - exit),
-            scale: lerp(0.955, 1, t) * lerp(1, 0.92, exit),
+            yPercent: lerp(48, 0, t),
+            autoAlpha: t,
+            scale: lerp(0.96, 1, t),
+            clipPath: `inset(${(exit * 100).toFixed(2)}% 0% 0% 0% round 0.375rem)`,
           });
           if (vids[i]) gsap.set(vids[i], { scale: lerp(1.12, 1, t) });
         });
@@ -81,7 +86,7 @@ export default function OurWork() {
 
       const st = ScrollTrigger.create({
         trigger: root,
-        start: "top top",
+        start: "top bottom",
         end: "bottom bottom",
         scrub: 1.1,
         onUpdate: (self) => place(self.progress),

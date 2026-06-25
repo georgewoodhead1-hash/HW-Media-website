@@ -155,7 +155,7 @@ export default function WhirlwindGallery() {
 
       const st = ScrollTrigger.create({
         trigger: root,
-        start: "top top",
+        start: "top bottom",
         end: "bottom bottom",
         scrub: 0.9,
         invalidateOnRefresh: true,

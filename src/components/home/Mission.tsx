@@ -40,6 +40,7 @@ export default function Mission() {
       data-theme="dark"
       data-surface="page"
       data-chapter="01 — Mission"
+      data-flow
       className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10 md:py-[10vh]"
       aria-label="Our mission"
       style={{ fontFamily: "var(--font-firma), sans-serif" }}

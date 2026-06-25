@@ -48,6 +48,7 @@ export default function StatsBlock() {
       data-theme="dark"
       data-surface="page"
       data-chapter="By the numbers"
+      data-flow
       className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10"
       aria-label="By the numbers"
     >

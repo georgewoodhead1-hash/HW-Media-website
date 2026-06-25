@@ -148,6 +148,7 @@ export default function TrustedBy() {
       data-theme="dark"
       data-surface="media"
       data-chapter="02 — Trusted by"
+      data-flow
       className="relative bg-[var(--bg)] px-5 py-[14vh] md:px-10"
       aria-label="Trusted by"
     >

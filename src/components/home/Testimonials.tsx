@@ -162,6 +162,7 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="media"
       data-chapter="05 — Testimonials"
+      data-flow
       className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"
     >

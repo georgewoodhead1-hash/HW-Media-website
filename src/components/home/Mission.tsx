@@ -27,7 +27,7 @@ export default function Mission() {
           opacity: 1,
           stagger: 0.03,
           ease: "none",
-          scrollTrigger: { trigger: root, start: "top 80%", end: "center 56%", scrub: 0.6 },
+          scrollTrigger: { trigger: root, start: "top 78%", end: "center 48%", scrub: 1.0 },
         },
       );
     });

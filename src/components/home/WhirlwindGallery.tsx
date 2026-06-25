@@ -157,7 +157,7 @@ export default function WhirlwindGallery() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.6,
+        scrub: 0.9,
         invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => { recompute(); place(self.progress); },
@@ -187,7 +187,7 @@ export default function WhirlwindGallery() {
       data-theme="dark"
       data-surface="media"
       data-chapter="The finale"
-      className="relative motion-safe:md:-mt-[16vh] motion-safe:md:h-[200vh]"
+      className="relative motion-safe:md:-mt-[16vh] motion-safe:md:h-[240vh]"
       aria-label="Every film is a chance to break the ordinary"
     >
       <div

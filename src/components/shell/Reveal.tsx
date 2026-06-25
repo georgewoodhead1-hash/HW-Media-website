@@ -32,7 +32,7 @@ export default function Reveal({
         duration: 1.15,
         delay,
         ease: "power3.out",
-        scrollTrigger: { trigger: el, start: "top 92%", end: "top 58%", scrub: 0.85 },
+        scrollTrigger: { trigger: el, start: "top 96%", end: "top 46%", scrub: 1.2 },
       },
     );
     return () => {

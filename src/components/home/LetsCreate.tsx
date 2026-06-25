@@ -24,7 +24,7 @@ export default function LetsCreate() {
       gsap.set("[data-lc-bubble]", { scale: 0 });
       gsap.set("[data-lc-content]", { autoAlpha: 0, scale: 0.92 });
       const tl = gsap.timeline({
-        scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 0.6 },
+        scrollTrigger: { trigger: el, start: "top top", end: "bottom bottom", scrub: 1.0 },
       });
       tl
         .to("[data-lc-bubble]", { scale: 1.4, duration: 1, ease: "power2.out" }, 0)
@@ -38,7 +38,7 @@ export default function LetsCreate() {
   }, []);
 
   return (
-    <section ref={root} data-theme="dark" data-surface="media" className="relative min-h-screen bg-[#050505] md:min-h-[160vh]">
+    <section ref={root} data-theme="dark" data-surface="media" className="relative min-h-screen bg-[#050505] md:min-h-[195vh]">
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden bg-[#050505]">
         {/* the white bubble — a cream circle scaled via transform (GPU) */}
         <div data-lc-bubble aria-hidden className="absolute aspect-square w-[150vmax] rounded-full bg-[#f9f6e4] will-change-transform" />

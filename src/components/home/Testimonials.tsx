@@ -101,7 +101,7 @@ export default function Testimonials() {
         trigger: root,
         start: "top 88%",
         end: "top 32%",
-        scrub: 0.7,
+        scrub: 1.0,
         onUpdate: (self) => {
           const p = self.progress;
           chars.forEach((c, i) => {

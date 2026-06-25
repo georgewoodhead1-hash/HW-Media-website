@@ -83,7 +83,7 @@ export default function OurWork() {
         trigger: root,
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.8,
+        scrub: 1.1,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
       });
@@ -142,7 +142,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[130vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[170vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}

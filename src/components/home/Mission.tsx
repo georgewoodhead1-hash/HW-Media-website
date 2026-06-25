@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import ScrollType from "@/components/shell/ScrollType";
+import MobileReveal from "@/components/shell/MobileReveal";
 
 // 01 — Mission. CONDENSED (client): a small, simple statement — heading + one
 // short line. No stats/numbers, no tall pinned layering. Just a quiet beat.
@@ -43,13 +44,11 @@ export default function Mission() {
       aria-label="Our mission"
       style={{ fontFamily: "var(--font-firma), sans-serif" }}
     >
-      <div className="mx-auto grid max-w-[1100px] gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-16">
+      <MobileReveal className="mx-auto grid max-w-[1100px] gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-16">
         <ScrollType
           as="h2"
           className="font-display text-[clamp(1.8rem,3vw,3rem)] leading-[0.95]"
-          gold={["not"]}
-          style={{ fontWeight: 400 }}
-        >
+          gold={["not"]}        >
           Films, not content.
         </ScrollType>
         <p className="max-w-xl text-[clamp(1.1rem,1.5vw,1.55rem)] leading-[1.32] text-[var(--fg)]/80">
@@ -59,7 +58,7 @@ export default function Mission() {
             </span>
           ))}
         </p>
-      </div>
+      </MobileReveal>
     </section>
   );
 }

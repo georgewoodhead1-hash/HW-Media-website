@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import MobileReveal from "@/components/shell/MobileReveal";
 
 // FAQ — click-to-open accordion. The left column keeps the "FAQs" heading and a
 // tall vertical video reel (sticky on desktop). The right column is the list of
@@ -100,7 +101,7 @@ export default function FAQs() {
         </div>
 
         {/* RIGHT — the questions as a click-to-open accordion. */}
-        <div className="md:flex-1 md:pt-[2vh]">
+        <MobileReveal className="md:flex-1 md:pt-[2vh]">
           {FAQS.map((f, i) => {
             const isOpen = open === i;
             return (
@@ -155,7 +156,7 @@ export default function FAQs() {
               </div>
             );
           })}
-        </div>
+        </MobileReveal>
       </div>
     </section>
   );

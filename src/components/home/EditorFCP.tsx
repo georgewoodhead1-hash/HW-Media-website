@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
+import MobileReveal from "@/components/shell/MobileReveal";
 
 // Our process — FULLY scroll-tied, zero time-based tweens (those were the
 // clunk). Arrive on a BLACK screen; as you scroll, the scattered letters of
@@ -107,7 +108,7 @@ export default function EditorFCP() {
         const STAGE_START = 0.56;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
-        const outro = smooth(OUTRO, 1.0, p); // fully flies off + clears by p=1 (client: must disappear on scroll-off)
+        const outro = 0; // client (Tuesday meeting): the process STAYS assembled — never flies off, so scrolling back never hits an empty screen. It hands into Testimonials, which assembles its heading from the same scattered letters.
 
         // FILMS — drift in from a corner during assemble, brighten/dim by the
         // active stage, then in the OUTRO fly back out to the corners + fade.
@@ -240,8 +241,7 @@ export default function EditorFCP() {
           <h2
             ref={titleRef}
             className="font-display text-[clamp(2.6rem,6vw,5.5rem)] leading-[0.9] [&_.fcp-char]:inline-block [&_.fcp-char]:will-change-transform"
-            style={{ fontWeight: 400 }}
-          >
+                     >
             Our process
           </h2>
           {STAGES.map((s, i) => (
@@ -267,8 +267,8 @@ export default function EditorFCP() {
         </div>
       </div>
 
-      {/* mobile / reduced: calm stack */}
-      <div className="px-5 py-24 md:hidden">
+      {/* mobile / reduced: calm stack, revealed on scroll */}
+      <MobileReveal className="px-5 py-24 md:hidden">
         <h2 className="font-display text-4xl" style={{ fontWeight: 400 }}>Our <span className="text-[var(--gold-text)]">process.</span></h2>
         {STAGES.map((s, i) => (
           <article key={s.name} className="border-t border-[var(--hairline-dark)] py-8">
@@ -277,7 +277,7 @@ export default function EditorFCP() {
             <p className="mt-2 text-[15px] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.sub}</p>
           </article>
         ))}
-      </div>
+      </MobileReveal>
     </section>
   );
 }

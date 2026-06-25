@@ -157,8 +157,7 @@ export default function OurWork() {
       <div className="hidden overflow-hidden px-5 motion-safe:md:sticky motion-safe:md:top-0 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
           className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
-          style={{ fontWeight: 400 }}
-        >
+                 >
           Featured <span className="text-[var(--gold-text)]">Projects</span>
         </h2>
 

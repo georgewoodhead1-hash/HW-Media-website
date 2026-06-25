@@ -155,9 +155,7 @@ export default function TrustedBy() {
         {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
             char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}
         <h2
-          className="font-display text-[clamp(1.7rem,3.2vw,2.8rem)] leading-none text-[var(--gold-text)]"
-          style={{ fontWeight: 400 }}
-        >
+          className="font-display text-[clamp(1.7rem,3.2vw,2.8rem)] leading-none text-[var(--gold-text)]"        >
           Trusted by
         </h2>
       </div>

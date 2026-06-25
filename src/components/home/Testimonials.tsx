@@ -2,10 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
 import { projects } from "@/content/projects";
 import { safePlay } from "@/lib/video";
-import ScrollType from "@/components/shell/ScrollType";
 
 // 05 — Testimonials, click-to-select (modelled on outerstudios/auteur).
 // Two columns. LEFT: a vertical stack of three numbered selectors (01/02/03)
@@ -76,33 +75,51 @@ export default function Testimonials() {
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const [active, setActive] = useState(0);
 
-  // scrubbed scroll-in — the columns rise and fade slowly on enter
+  // scroll-in — the heading's letters assemble from a scatter (an echo of the
+  // "Our process" letters reforming) and the columns rise, all SCRUBBED so it
+  // blends straight out of the process scene instead of popping up on its own.
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      const heading = root.querySelector<HTMLElement>(".t-head");
       const rise = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("[data-rise]"));
-      if (!rise.length) return;
+      const split = heading ? new SplitText(heading, { type: "chars", charsClass: "t-char" }) : null;
+      const chars = (split?.chars as HTMLElement[]) ?? [];
 
-      // one-shot entrance (NOT scrubbed) — the columns rise and settle ALL the
-      // way in, then stay. The old scrub tied it to scroll position so it never
-      // finished ("doesn't go the whole way") — this plays through cleanly.
-      const tween = gsap.from(rise, {
-        y: 64,
-        autoAlpha: 0,
-        duration: 1,
-        ease: "power3.out",
-        stagger: 0.14,
-        scrollTrigger: { trigger: root, start: "top 72%", once: true },
+      const scatter = chars.map((_, i) => ({
+        x: (i % 2 ? 1 : -1) * (40 + ((i * 17) % 70)),
+        y: -60 - ((i * 23) % 90),
+        r: (i % 2 ? 1 : -1) * (8 + ((i * 13) % 14)),
+      }));
+      gsap.set(chars, { display: "inline-block", autoAlpha: 0 });
+      gsap.set(rise, { autoAlpha: 0, yPercent: 16 });
+
+      const st = ScrollTrigger.create({
+        trigger: root,
+        start: "top 88%",
+        end: "top 32%",
+        scrub: 0.7,
+        onUpdate: (self) => {
+          const p = self.progress;
+          chars.forEach((c, i) => {
+            const raw = (p - (i / Math.max(1, chars.length)) * 0.4) / 0.6;
+            const t = Math.min(1, Math.max(0, raw));
+            const e = t * t * (3 - 2 * t);
+            gsap.set(c, { x: scatter[i].x * (1 - e), y: scatter[i].y * (1 - e), rotation: scatter[i].r * (1 - e), autoAlpha: e });
+          });
+          const rp = Math.min(1, Math.max(0, (p - 0.35) / 0.65));
+          const re = rp * rp * (3 - 2 * rp);
+          rise.forEach((el, i) => {
+            const o = Math.min(1, Math.max(0, re * 1.25 - i * 0.12));
+            gsap.set(el, { autoAlpha: o, yPercent: 16 * (1 - o) });
+          });
+        },
       });
 
-      return () => {
-        tween.scrollTrigger?.kill();
-        tween.kill();
-        gsap.set(rise, { clearProps: "transform,opacity,visibility" });
-      };
+      return () => { st.kill(); split?.revert(); gsap.set(rise, { clearProps: "opacity,transform,visibility" }); };
     });
 
     return () => mm.revert();
@@ -145,17 +162,13 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="band"
       data-chapter="05 — Testimonials"
-      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[6vh]"
+      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"
     >
       <div className="px-5 md:px-10">
-        <ScrollType
-          as="h2"
-          className="font-display max-w-3xl text-[clamp(2rem,4vw,3.6rem)] leading-[1.02]"
-          style={{ fontWeight: 400 }}
-        >
+        <h2 className="t-head about-display max-w-3xl text-[clamp(2rem,4.4vw,3.8rem)] leading-[1.0] text-[var(--fg)]">
           Testimonials
-        </ScrollType>
+        </h2>
       </div>
 
       <div className="mt-14 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-stretch md:gap-12 md:px-10 lg:gap-16">
@@ -164,8 +177,8 @@ export default function Testimonials() {
         <div data-rise className="flex flex-col justify-center">
           <div ref={quoteRef}>
             <blockquote
-              className="text-[clamp(1.7rem,3vw,3rem)] italic leading-[1.2]"
-              style={{ fontFamily: "var(--font-instrument), serif" }}
+              className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
+              style={{ fontWeight: 400 }}
             >
               <span className="not-italic text-[var(--gold-text)]">&ldquo;</span>
               {current.quote}

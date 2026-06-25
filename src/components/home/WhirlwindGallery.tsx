@@ -240,9 +240,11 @@ export default function WhirlwindGallery() {
 
         {/* slim footer — rises up from the bottom edge at the very end of the scroll */}
         <div
-          className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-8 py-5 backdrop-blur-md will-change-transform"
+          className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-8 py-8 backdrop-blur-md will-change-transform"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
+          {/* big HW Media signature with a gold light sweeping through it */}
+          <div className="footer-wordmark mx-auto mb-7 h-[clamp(2.2rem,6vw,4.5rem)] w-full max-w-[1180px]" role="img" aria-label="HW Media" />
           {/* left padding clears the fixed theme toggle + social rail in the
               bottom-left corner so the email is never occluded by them. */}
           <div className="flex w-full flex-wrap items-center justify-between gap-x-8 gap-y-3 pl-[172px] pr-2 text-sm text-[var(--fg)]">
@@ -298,9 +300,10 @@ export default function WhirlwindGallery() {
 
         {/* slim footer — static on mobile / reduced-motion */}
         <div
-          className="mt-16 border-t border-[var(--hairline-dark)] pt-6 text-sm"
+          className="mt-16 border-t border-[var(--hairline-dark)] pt-8 text-sm"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
+          <div className="footer-wordmark mb-7 h-12 w-full max-w-[320px]" role="img" aria-label="HW Media" />
           <a href="mailto:harry@hwmedia.productions" className="block text-[var(--fg)]/85">
             harry@hwmedia.productions
           </a>

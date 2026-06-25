@@ -109,7 +109,10 @@ html {
 }
 
 body {
-  font-family: var(--font-body), sans-serif;
+  /* Site-wide type (client): body now rides the About face (Archivo), so the whole
+     site shares one family. The nav, CTAs and micro-labels keep BR Firma via their
+     own explicit var(--font-firma). */
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
   /* Safety net against horizontal overflow on narrow viewports. `clip` (not
      `hidden`) is used so it never creates a scroll container — `position: sticky`
@@ -122,14 +125,15 @@ body {
    Display voice = Archivo Expanded Black (George's pick over the client Playfair kit).
    Normal keeps Archivo — compare :3003 vs :3004. */
 .font-display {
-  font-family: var(--font-archivo), sans-serif;
-  /* Weight left as-is (not forced). Width pulled back to NORMAL (was 125 =
-     expanded, which spaced every letter apart — the "gapping between letters").
-     Tight tracking so the words read as solid type, consistent everywhere. */
-  font-variation-settings: "wdth" 100;
-  letter-spacing: -0.02em;
+  /* Unified with the About display face (client: "change the rest to the About
+     font"): expanded width + the heavier about weight, so every heading on the
+     site reads like the About page. */
+  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  font-variation-settings: "wdth" 118;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   text-transform: uppercase;
-  line-height: 0.86;
+  line-height: 0.9;
 }
 
 /* Editorial-restraint display scale — nothing on the site exceeds display-xl. */
@@ -713,4 +717,23 @@ html[data-mode="dark"] .seam-out-band {
 .contact-bubble {
   -webkit-mask-image: radial-gradient(circle at center, #000 99%, transparent 100%);
   mask-image: radial-gradient(circle at center, #000 99%, transparent 100%);
+}
+
+/* ---- Footer signature wordmark — the HW Media mark masked from the white logo,
+   with a gold light sweeping through it (client: "a nice big logo, more space,
+   colour going through it"). Base colour follows the mode (ink on cream, cream on
+   black); the gold band travels across on a slow loop. ---- */
+.footer-wordmark {
+  -webkit-mask: url("/logos/hwmedia-white.png") center / contain no-repeat;
+  mask: url("/logos/hwmedia-white.png") center / contain no-repeat;
+  background: linear-gradient(100deg, var(--fg) 0%, var(--fg) 38%, var(--gold) 50%, var(--fg) 62%, var(--fg) 100%);
+  background-size: 230% 100%;
+  animation: footer-sweep 4.8s linear infinite;
+}
+@keyframes footer-sweep {
+  from { background-position: 130% 0; }
+  to { background-position: -30% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-wordmark { animation: none; background: var(--fg); }
 }

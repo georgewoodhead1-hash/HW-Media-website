@@ -5,6 +5,7 @@ import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
 import EditorFCP from "@/components/home/EditorFCP";
 import Testimonials from "@/components/home/Testimonials";
+import LetsCreate from "@/components/home/LetsCreate";
 import FAQs from "@/components/home/FAQs";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
 
@@ -21,6 +22,7 @@ export default function Home() {
       <OurWork />
       <EditorFCP />
       <Testimonials />
+      <LetsCreate />
       <FAQs />
       <WhirlwindGallery />
     </main>

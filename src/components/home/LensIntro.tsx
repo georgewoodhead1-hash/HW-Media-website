@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 import { BOOKING_URL } from "@/content/site";
+import { getLenis } from "@/lib/lenis";
 
 // CH.00 — the lens. A real cine prime hanging in dark space, starting small
 // (further out). Scroll approaches it, then passes through the LAYERS of the
@@ -105,6 +106,7 @@ function GlassArt() {
 
 export default function LensIntro() {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const unlockRef = useRef<(() => void) | null>(null);
   const rigRef = useRef<HTMLDivElement>(null);
   const vesselRef = useRef<HTMLDivElement>(null);
   const innerRef = useRef<HTMLDivElement>(null);
@@ -158,31 +160,63 @@ export default function LensIntro() {
     const startZoom = () => {
       if (started) return;
       started = true;
+
+      // Lock scroll for the intro ONLY (client: "don't let you scroll until the
+      // animation is done"). Lenis.stop() halts the smooth scroller; a capture
+      // blocker stops raw wheel/touch/keys too. Both release the moment the dive
+      // finishes, with a hard failsafe timeout so scroll can NEVER stay dead even
+      // if the timeline is interrupted — that bug got the old lock removed.
+      const lenis = getLenis();
+      lenis?.stop();
+      window.scrollTo(0, 0);
+      const opts: AddEventListenerOptions = { passive: false, capture: true };
+      const block = (e: Event) => e.preventDefault();
+      const blockKeys = (e: KeyboardEvent) => {
+        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(e.key)) e.preventDefault();
+      };
+      window.addEventListener("wheel", block, opts);
+      window.addEventListener("touchmove", block, opts);
+      window.addEventListener("keydown", blockKeys, opts);
+      let released = false;
+      const release = () => {
+        if (released) return;
+        released = true;
+        window.removeEventListener("wheel", block, opts);
+        window.removeEventListener("touchmove", block, opts);
+        window.removeEventListener("keydown", blockKeys, opts);
+        lenis?.start();
+      };
+      unlockRef.current = release;
+      const failsafe = window.setTimeout(release, 5400);
+
       ctx = gsap.context(() => {
         gsap.set(veilRef.current, { opacity: 0 });
         gsap.set(".hero-motto", { autoAlpha: 0, y: 22 });
 
-        // AUTO-PLAY DEPTH ZOOM — a straight push forward INTO the lens. The rig
-        // travels along Z (depth) and scales up as the reel racks to fill the
-        // frame; the glass elements rush toward the viewer and dissolve as we
-        // pass THROUGH them. ZERO rotation, ZERO tilt — pure depth. Lands DEAD
-        // CLEAN at scale 1 (no leftover zoom). Slow + cinematic.
-        const tl = gsap.timeline({ delay: 0.1 });
+        // AUTO-PLAY DEPTH ZOOM — a straight push forward INTO the lens, full-bleed.
+        // Gentler master ease + a touch longer = smoother. Lands DEAD CLEAN at
+        // scale 1. On complete, the scroll lock lifts.
+        const DUR = 3.1;
+        const tl = gsap.timeline({
+          delay: 0.15,
+          defaults: { ease: "power1.inOut" },
+          onComplete: () => { window.clearTimeout(failsafe); release(); },
+        });
         tl
-          .to(rigRef.current, { z: 0, scale: 1, duration: 2.7, ease: "power2.inOut" }, 0)
-          .to(vesselRef.current, { scale: 1, duration: 2.7, ease: "power2.inOut" }, 0)
-          .to(innerRef.current, { scale: 1, duration: 2.7, ease: "power2.inOut" }, 0)
+          .to(rigRef.current, { z: 0, scale: 1, duration: DUR }, 0)
+          .to(vesselRef.current, { scale: 1, duration: DUR }, 0)
+          .to(innerRef.current, { scale: 1, duration: DUR }, 0)
           // glass rushes toward the camera in Z (depth) and dissolves as we pass
-          .to(frontRef.current, { z: 1700, scale: 5.2, autoAlpha: 0, filter: "blur(13px)", duration: 1.05, ease: "power2.in" }, 0.2)
-          .to(midRef.current, { z: 1700, scale: 4.4, autoAlpha: 0, filter: "blur(11px)", duration: 1.15, ease: "power2.in" }, 0.5)
-          .to(rearRef.current, { z: 1700, scale: 3.7, autoAlpha: 0, filter: "blur(9px)", duration: 1.25, ease: "power2.in" }, 0.8)
+          .to(frontRef.current, { z: 1700, scale: 5.2, autoAlpha: 0, filter: "blur(13px)", duration: 1.3, ease: "power2.in" }, 0.3)
+          .to(midRef.current, { z: 1700, scale: 4.4, autoAlpha: 0, filter: "blur(11px)", duration: 1.4, ease: "power2.in" }, 0.6)
+          .to(rearRef.current, { z: 1700, scale: 3.7, autoAlpha: 0, filter: "blur(9px)", duration: 1.5, ease: "power2.in" }, 0.95)
           // the throat opens + the reel-dim lifts as we arrive
-          .to(vignetteRef.current, { opacity: 0, duration: 1.0, ease: "power1.out" }, 1.05)
-          .to(dimRef.current, { opacity: 0, duration: 1.15 }, 0.9)
-          .to(cueRef.current, { autoAlpha: 0, duration: 0.25 }, 0)
+          .to(vignetteRef.current, { opacity: 0, duration: 1.1, ease: "power1.out" }, 1.25)
+          .to(dimRef.current, { opacity: 0, duration: 1.35 }, 1.05)
+          .to(cueRef.current, { autoAlpha: 0, duration: 0.3 }, 0)
           // ARRIVE — scrim + the motto rises
-          .to(veilRef.current, { opacity: 1, duration: 0.4 }, 1.85)
-          .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.6, ease: "power2.out" }, 1.95);
+          .to(veilRef.current, { opacity: 1, duration: 0.5 }, DUR - 0.7)
+          .to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power2.out" }, DUR - 0.45);
       }, wrap);
     };
 
@@ -194,6 +228,7 @@ export default function LensIntro() {
     return () => {
       window.removeEventListener("hw:reveal", startZoom);
       window.clearTimeout(fallback);
+      unlockRef.current?.();
       ctx?.revert();
     };
   }, []);
@@ -223,7 +258,7 @@ export default function LensIntro() {
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
       <div
-        className="on-media sticky top-3 mx-3 h-[calc(100vh-1.5rem)] overflow-hidden rounded-2xl bg-black md:top-4 md:mx-4 md:h-[calc(100vh-2rem)] md:rounded-[1.75rem]"
+        className="on-media sticky top-0 h-screen w-full overflow-hidden bg-black"
         style={{ perspective: "820px", perspectiveOrigin: "50% 48%" }}
         data-cursor="play"
         onClick={openReel}

@@ -105,7 +105,7 @@ export default function EditorFCP() {
         // letters land ~0.32, "Our process" holds READABLE 0.32-0.46, fades
         // 0.46-0.50, THEN the stage words enter at 0.50 — so the two never share
         // the centre and there is a real, visible "Our process" hold.
-        const STAGE_START = 0.56;
+        const STAGE_START = 0.46;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
         const outro = 0; // client (Tuesday meeting): the process STAYS assembled — never flies off, so scrolling back never hits an empty screen. It hands into Testimonials, which assembles its heading from the same scattered letters.
@@ -210,9 +210,9 @@ export default function EditorFCP() {
       ref={rootRef}
       id="process"
       data-theme="dark"
-      data-surface="page"
+      data-surface="media"
       data-chapter="Our process"
-      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[12vh] motion-safe:md:h-[300vh]"
+      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[240vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

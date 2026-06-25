@@ -72,7 +72,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-mode="light"
+      data-mode="dark"
       suppressHydrationWarning
       className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${firma.variable} h-full antialiased`}
     >

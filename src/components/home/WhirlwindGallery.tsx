@@ -109,7 +109,7 @@ export default function WhirlwindGallery() {
       };
 
       const place = (p: number) => {
-        const head = smooth(0.02, 0.82, p) * HEAD_MAX;
+        const head = smooth(0.0, 0.72, p) * HEAD_MAX;
         tiles.forEach((t, i) => {
           const s = head - i * GAP; // unclamped: the ring never piles up
           if (s <= 0) {
@@ -185,9 +185,9 @@ export default function WhirlwindGallery() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="page"
+      data-surface="media"
       data-chapter="The finale"
-      className="relative motion-safe:md:-mt-[44vh] motion-safe:md:h-[220vh]"
+      className="relative motion-safe:md:-mt-[16vh] motion-safe:md:h-[200vh]"
       aria-label="Every film is a chance to break the ordinary"
     >
       <div

@@ -54,13 +54,17 @@ export default function OurWork() {
       const TO = 0.58;
       const span = (TO - FROM) / N;
 
+      const cta = root.querySelector<HTMLElement>(".ow-cta");
       gsap.set(head, { autoAlpha: 0, yPercent: 18 });
       gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.955, force3D: true });
+      if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
       const place = (p: number) => {
         const enterHead = smooth(0.02, 0.12, p);
         const exit = smooth(0.86, 1, p);
+        const ctaIn = smooth(0.45, 0.62, p);
         gsap.set(head, { autoAlpha: enterHead * (1 - exit), yPercent: lerp(18, 0, enterHead) - exit * 26 });
+        if (cta) gsap.set(cta, { autoAlpha: ctaIn * (1 - exit), y: lerp(16, 0, ctaIn) - exit * 18 });
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
           const b = a + span * 2.4;
@@ -122,7 +126,9 @@ export default function OurWork() {
       }),
       { rootMargin: "10% 0px" },
     );
-    root.querySelectorAll("video").forEach((v) => io.observe(v));
+    // mobile tiles only — the desktop accordion plays on hover (below), so all six
+    // films never decode at once (a real clunk source per the audit).
+    root.querySelectorAll(".ow-mtile video").forEach((v) => io.observe(v));
 
     return () => {
       mm.revert();
@@ -136,7 +142,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[155vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[130vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
@@ -153,6 +159,8 @@ export default function OurWork() {
             <Link
               key={p.slug}
               href={`/work/${p.slug}`}
+              onMouseEnter={(e) => { const v = e.currentTarget.querySelector("video"); if (v) v.play().catch(() => {}); }}
+              onMouseLeave={(e) => { const v = e.currentTarget.querySelector("video"); if (v) v.pause(); }}
               className="ow-bar group relative flex-1 overflow-hidden rounded-md ring-1 ring-[var(--hairline-dark)] transition-[flex-grow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:flex-[5]"
               aria-label={`${p.title} — ${p.client}`}
             >
@@ -199,7 +207,7 @@ export default function OurWork() {
 
         <Link
           href="/work"
-          className="group relative z-10 mt-6 inline-flex items-center gap-2 self-center rounded-full border border-[var(--fg)]/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+          className="ow-cta group relative z-10 mt-6 inline-flex items-center gap-2 self-center rounded-full border border-[var(--fg)]/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)]"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           Discover more

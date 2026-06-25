@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 // One surface for the whole site: gold and red are constant, only the
 // background/foreground contrast flips. Persisted.
 export default function ThemeToggle() {
-  const [mode, setMode] = useState<"dark" | "light">("light");
+  const [mode, setMode] = useState<"dark" | "light">("dark");
 
   useEffect(() => {
     const current = document.documentElement.dataset.mode;

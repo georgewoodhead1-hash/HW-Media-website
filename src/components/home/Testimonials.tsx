@@ -160,7 +160,7 @@ export default function Testimonials() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="band"
+      data-surface="media"
       data-chapter="05 — Testimonials"
       className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"

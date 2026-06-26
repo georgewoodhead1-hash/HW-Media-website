@@ -17,11 +17,23 @@ export default function WorkGallery() {
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
-      gsap.set(".gtile", { autoAlpha: 0, y: 56 });
-      ScrollTrigger.batch(".gtile", {
-        start: "top 97%",
-        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 1.15, ease: "power3.out", stagger: 0.18, overwrite: true }),
+      const tiles = gsap.utils.toArray<HTMLElement>(".gtile");
+      const featured = tiles.slice(0, FEATURED.length);
+      const rest = tiles.slice(FEATURED.length);
+
+      gsap.set(tiles, { autoAlpha: 0, y: 56 });
+
+      // Top six — NOT scroll-driven (they sit above the fold, so a scroll trigger
+      // fired them instantly). They HOLD until the page has landed (the "Our work"
+      // intro has lifted), then reveal SLOWLY, one after another.
+      gsap.to(featured, { autoAlpha: 1, y: 0, duration: 1.5, ease: "power3.out", stagger: 0.3, delay: 1.7 });
+
+      // The rest reveal on scroll as you reach them — also unhurried.
+      ScrollTrigger.batch(rest, {
+        start: "top 92%",
+        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 1.3, ease: "power3.out", stagger: 0.22, overwrite: true }),
       });
+
       gsap.from("[data-ghead]", { autoAlpha: 0, y: 24, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } });
       ScrollTrigger.refresh();
     }, el);

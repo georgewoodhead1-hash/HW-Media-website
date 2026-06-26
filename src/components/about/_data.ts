@@ -15,7 +15,7 @@ export const AGENCY = {
   statementGold: "refuse to be ordinary",
   lead: "HW Media is a London production agency led by director Harry Wallis. A small senior crew on every job, and no layers between you and the people making the work.",
   crewLead:
-    "Small on purpose. One director who shoots, a producer who runs the day, a photographer, and a collective of trusted creatives who scale around the job.",
+    "Small on purpose, and direct. Harry shoots every project himself, with a trusted collective of creatives who scale around the job when it gets bigger.",
   reachLine:
     "Based in London. Working wherever the story is: salt flats, grass strips, festival floors, factory lines.",
   creative: "Every film needs a story at its core, not just coverage.",
@@ -38,25 +38,13 @@ export const CREW: CrewMember[] = [
   {
     name: "Harry Wallis",
     role: "Director / DP",
-    line: "Finds the story, then shoots it. A CAA-authorised drone pilot, so the aerials are in-house too.",
+    line: "Directs and shoots every project himself — the person who promises the film is the person behind the camera. A CAA-authorised drone pilot, so the aerials are in-house too.",
     still: "/images/stills/s01.jpg",
-  },
-  {
-    name: "Glen",
-    role: "Producer",
-    line: "Runs the day. Boards, locations, crew, weather windows — the calm behind every shoot.",
-    still: "/images/stills/s03.jpg",
-  },
-  {
-    name: "Will",
-    role: "Photography",
-    line: "Stills with the same eye as the films. Campaign frames, editorial sets, behind the scenes.",
-    still: "/images/stills/s05.jpg",
   },
 ];
 
 export const COLLECTIVE =
-  "When the job is bigger, a trusted collective of creatives scales around them.";
+  "When the job is bigger, a trusted collective of creatives scales around him.";
 
 export interface Film {
   title: string;

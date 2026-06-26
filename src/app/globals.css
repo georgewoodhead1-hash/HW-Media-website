@@ -378,6 +378,7 @@ html[data-mode="dark"] [data-surface="band"] .logo-mark {
   filter: invert(1);
 }
 
+
 /* ---- Hero motto: solid, bright, present over the LIVE moving footage ----
    No frozen image-fill, no faint translucency — clean type that sits over the
    playing video (which provides the motion), lifted with a soft shadow for

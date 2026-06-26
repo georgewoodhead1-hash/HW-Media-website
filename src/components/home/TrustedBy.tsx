@@ -145,8 +145,7 @@ export default function TrustedBy() {
   return (
     <section
       ref={rootRef}
-      data-theme="dark"
-      data-surface="media"
+      data-surface="band"
       data-chapter="02 — Trusted by"
       data-flow
       className="relative bg-[var(--bg)] px-5 py-[14vh] md:px-10"
@@ -155,7 +154,7 @@ export default function TrustedBy() {
       <div className="tb-heading relative mb-[4vh] text-center">
         {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
             char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}
-        <h2 className="tb-shimmer font-display text-[clamp(1.7rem,3.2vw,2.8rem)] leading-none">
+        <h2 className="font-display text-[clamp(1.7rem,3.2vw,2.8rem)] leading-none text-[var(--gold-text)]">
           Trusted by
         </h2>
       </div>

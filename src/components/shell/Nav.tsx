@@ -173,34 +173,8 @@ export default function Nav() {
         ))}
       </div>
 
-      {/* social rail — pinned bottom-left, always visible (mix-blend keeps it
-          legible over any footage or surface) */}
-      <div className="pointer-events-none fixed bottom-4 left-5 z-40 flex items-center gap-4 mix-blend-difference md:bottom-5 md:left-10">
-        <a
-          href="https://www.instagram.com/hwmedia/"
-          aria-label="Instagram"
-          className="pointer-events-auto text-white/90 transition-opacity hover:opacity-60"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7">
-            <rect x="3" y="3" width="18" height="18" rx="5" />
-            <circle cx="12" cy="12" r="4.2" />
-            <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
-          </svg>
-        </a>
-        <a
-          href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
-          aria-label="LinkedIn"
-          className="pointer-events-auto text-white/90 transition-opacity hover:opacity-60"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" />
-          </svg>
-        </a>
-      </div>
+      {/* (the persistent bottom-left social rail was removed — socials now live in
+          the footer only, so they're not duplicated when the footer is up) */}
     </>
   );
 }

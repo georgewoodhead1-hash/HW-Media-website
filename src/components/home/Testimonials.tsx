@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { gsap, ScrollTrigger, SplitText } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { projects } from "@/content/projects";
 import { safePlay } from "@/lib/video";
 
@@ -87,68 +87,69 @@ export default function Testimonials() {
       const heading = root.querySelector<HTMLElement>(".t-head");
       const rise = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("[data-rise]"));
       const fullstop = root.querySelector<HTMLElement>(".t-fullstop");
+      const lineEl = root.querySelector<HTMLElement>(".t-line");
+      const linePath = root.querySelector<SVGPathElement>(".t-line-path");
       const dots = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".t-dot"));
-      const split = heading ? new SplitText(heading, { type: "chars", charsClass: "t-char" }) : null;
-      const chars = (split?.chars as HTMLElement[]) ?? [];
 
       const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
       const sm = (a: number, b: number, t: number) => { const x = clamp01((t - a) / (b - a)); return x * x * (3 - 2 * x); };
+      const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
-      const scatter = chars.map((_, i) => ({
-        x: (i % 2 ? 1 : -1) * (40 + ((i * 17) % 70)),
-        y: -60 - ((i * 23) % 90),
-        r: (i % 2 ? 1 : -1) * (8 + ((i * 13) % 14)),
-      }));
-      gsap.set(chars, { display: "inline-block", autoAlpha: 0 });
-      gsap.set(rise, { autoAlpha: 0, yPercent: 16 });
+      gsap.set(heading, { autoAlpha: 0, y: 22 });
+      gsap.set(rise, { autoAlpha: 0, y: 30 });
       gsap.set(dots, { scale: 0, autoAlpha: 0, transformOrigin: "50% 50%" });
       gsap.set(fullstop, { autoAlpha: 0 });
+      gsap.set(lineEl, { autoAlpha: 0 });
+      const lineLen = linePath ? linePath.getTotalLength() : 1;
+      if (linePath) gsap.set(linePath, { strokeDasharray: lineLen, strokeDashoffset: lineLen });
+
+      // The gold full stop from "We deliver." STAYS as the words fade, then DRIFTS
+      // diagonally down the (black) screen on a smooth quadratic-bezier river curve
+      // — Luke Baffait style — CLICKS into place and morphs square→circle. THEN the
+      // testimonials form (dots write in, content rises). The drift on black is
+      // intentional. Fixed to the viewport so the path reads cleanly.
+      let formed = false;
+      const form = () => {
+        if (formed) return;
+        formed = true;
+        gsap.timeline()
+          .to(dots, { scale: 1, autoAlpha: 1, duration: 0.4, stagger: 0.15, ease: "back.out(2)" }, 0)
+          .to(heading, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.18)
+          .to(rise, { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.12, ease: "power3.out" }, 0.34);
+      };
 
       const st = ScrollTrigger.create({
         trigger: root,
-        start: "top 90%",
-        end: "top 18%",
-        scrub: 1.0,
+        start: "top bottom",
+        end: "top 34%",
+        scrub: 0.6,
         onUpdate: (self) => {
           const p = self.progress;
-
-          // 1) the golden full stop (carried from "We deliver.") flies in from the
-          //    right, travels across the black in a little arc and CLICKS into the
-          //    spot where the dots live — Apple-style — then hands off to them.
-          if (fullstop) {
-            const travel = sm(0, 0.42, p);
-            const fx = (1 - travel) * window.innerWidth * 0.6;
-            const fy = Math.sin((1 - travel) * Math.PI * 2.2) * 30 * (1 - travel);
-            const click = sm(0.4, 0.5, p);
-            const pop = 1 + Math.sin(click * Math.PI) * 0.55; // overshoot snap
-            const handoff = sm(0.62, 0.74, p);
-            gsap.set(fullstop, { x: fx, y: fy, scale: p < 0.02 ? 0 : pop, autoAlpha: clamp01(travel * 6) * (1 - handoff) });
-          }
-          // the three real dots pop on right after the click
-          dots.forEach((d, i) => {
-            const t = sm(0.5 + i * 0.05, 0.64 + i * 0.05, p);
-            gsap.set(d, { scale: t, autoAlpha: t });
-          });
-
-          // 2) heading letters assemble + content rises — AFTER the click lands.
-          chars.forEach((c, i) => {
-            const raw = (p - 0.46 - (i / Math.max(1, chars.length)) * 0.22) / 0.42;
-            const e = sm(0, 1, raw);
-            gsap.set(c, { x: scatter[i].x * (1 - e), y: scatter[i].y * (1 - e), rotation: scatter[i].r * (1 - e), autoAlpha: e });
-          });
-          const re = sm(0.52, 1, p);
-          rise.forEach((el, i) => {
-            const o = clamp01(re * 1.25 - i * 0.12);
-            gsap.set(el, { autoAlpha: o, yPercent: 16 * (1 - o) });
-          });
+          const vw = window.innerWidth;
+          const vh = window.innerHeight;
+          // holds on "We deliver." (p<0.16), then rides a bezier river down-left
+          const t = sm(0.16, 0.74, p);
+          const Sx = 0.58 * vw, Sy = 0.27 * vh; // the "We deliver." full stop
+          const Cx = 0.30 * vw, Cy = 0.55 * vh; // control point — bows the river
+          const Ex = 0.08 * vw, Ey = 0.66 * vh; // lands where the dots form
+          const u = 1 - t;
+          const x = u * u * Sx + 2 * u * t * Cx + t * t * Ex;
+          const y = u * u * Sy + 2 * u * t * Cy + t * t * Ey;
+          const click = sm(0.74, 0.82, p);
+          const pop = 1 + Math.sin(click * Math.PI) * 0.5; // snap into place
+          const radius = lerp(3, 9, sm(0.5, 0.82, p)); // square → circle
+          const gone = sm(0.84, 0.92, p);
+          // the gold line DRAWS down the river path to the dot's leading edge
+          if (linePath) gsap.set(linePath, { strokeDashoffset: lineLen * (1 - t) });
+          gsap.set(lineEl, { autoAlpha: clamp01(sm(0.15, 0.2, p)) * (1 - sm(0.82, 0.9, p)) });
+          gsap.set(fullstop, { x, y, scale: p < 0.02 ? 0 : pop, borderRadius: `${radius}px`, autoAlpha: p < 0.02 ? 0 : 1 - gone });
+          if (p >= 0.82) form();
         },
       });
 
       return () => {
         st.kill();
-        split?.revert();
-        gsap.set(rise, { clearProps: "opacity,transform,visibility" });
-        gsap.set(dots, { clearProps: "all" });
+        gsap.set([heading, ...rise, ...dots, fullstop].filter(Boolean), { clearProps: "all" });
       };
     });
 
@@ -193,9 +194,17 @@ export default function Testimonials() {
       data-surface="media"
       data-chapter="05 — Testimonials"
       data-flow
-      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
+      className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[5vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"
     >
+      {/* the gold full stop carried from "We deliver." — fixed to the viewport, it
+          snakes down and clicks into the dots. Hidden until the journey (desktop). */}
+      {/* the gold line the full stop draws as it rivers diagonally down to the dots */}
+      <svg aria-hidden className="t-line pointer-events-none fixed inset-0 z-[79] h-full w-full opacity-0" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <path className="t-line-path" d="M58,27 Q30,55 8,66" fill="none" stroke="var(--gold)" strokeWidth="1.6" strokeLinecap="round" pathLength={1} style={{ vectorEffect: "non-scaling-stroke" }} />
+      </svg>
+      <span aria-hidden className="t-fullstop pointer-events-none fixed left-0 top-0 z-[80] h-[20px] w-[20px] rounded-[3px] bg-[var(--gold)] opacity-0 shadow-[0_0_24px_rgba(191,170,83,0.85)] will-change-transform" />
+
       <div className="grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-12 md:px-10 lg:gap-16">
         {/* LEFT — title at the top (so the film aligns to it), then the active
             quote + brand, then the three clickable dots. */}
@@ -204,7 +213,7 @@ export default function Testimonials() {
             Testimonials
           </h2>
 
-          <div data-rise className="mt-8" ref={quoteRef}>
+          <div data-rise className="mt-8 flex min-h-[clamp(13rem,19vw,16rem)] flex-col" ref={quoteRef}>
             <blockquote
               className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
               style={{ fontWeight: 400 }}
@@ -226,7 +235,6 @@ export default function Testimonials() {
           {/* the dots row — the flying gold full stop lands here and clicks into
               the (bigger) selector dots. */}
           <div className="relative -ml-3 mt-9 flex items-center">
-            <span aria-hidden className="t-fullstop pointer-events-none absolute left-3 top-1/2 -mt-[9px] h-[18px] w-[18px] rounded-[3px] bg-[var(--gold)] shadow-[0_0_18px_rgba(191,170,83,0.6)]" />
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}

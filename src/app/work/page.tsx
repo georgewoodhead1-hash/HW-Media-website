@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Footer from "@/components/shell/Footer";
 import WorkGallery from "@/components/work/WorkGallery";
-import WorkLetsCreate from "@/components/work/WorkLetsCreate";
+import ContactCircle from "@/components/about/ContactCircle";
 import SiteIntro from "@/components/shell/SiteIntro";
 
 export const metadata: Metadata = {
@@ -20,8 +20,8 @@ export default function WorkIndex() {
           <WorkGallery />
         </div>
 
-        {/* the cream "Let's create" bubble grows up and stays */}
-        <WorkLetsCreate />
+        {/* the SAME "Let's create" growing circle as the About page */}
+        <ContactCircle />
       </main>
       <Footer />
     </>

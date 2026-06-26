@@ -5,77 +5,58 @@ import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 
-// CH.00 — the lens. The showreel sits INSIDE a real circular lens: the footage is
-// clipped to a glass disc, ringed by a machined barrel (brushed-metal ring, knurled
-// focus ring, gold aperture ring, index dot) with a specular highlight on the glass.
-// On load the disc grows and dives forward to fill the frame while the barrel rings
-// fade past, then the motto rises in liquid glass. Scroll is locked until the dive
-// finishes (safe failsafe). Click anywhere to play the reel with sound.
+// CH.00 — hero. A full-bleed showreel (placeholder until Harry's cut) with the
+// motto "Break the ordinary" TYPING ON in real time and sitting slightly
+// see-through over the footage (you can read it, but the video shows through).
+// No scroll cue. Click anywhere to play the reel with sound.
+const LINES = ["Break the", "ordinary."];
+
 export default function LensIntro() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const lensRef = useRef<HTMLDivElement>(null);
-  const ringsRef = useRef<HTMLDivElement>(null);
-  const cueRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const fullReelRef = useRef<HTMLVideoElement>(null);
-  const bgRef = useRef<HTMLVideoElement>(null);
   const [reelOpen, setReelOpen] = useState(false);
 
   useEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
-
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      gsap.set(bgRef.current, { autoAlpha: 1 });
-      gsap.set([lensRef.current, ringsRef.current], { autoAlpha: 0 });
-      gsap.set(cueRef.current, { autoAlpha: 0 });
-      gsap.set(".hero-motto", { autoAlpha: 1 });
+      gsap.set(".hero-bg", { autoAlpha: 1 });
+      gsap.set(".hero-char", { autoAlpha: 1 });
+      gsap.set(".hero-sub", { autoAlpha: 1, y: 0 });
+      gsap.set(".hero-caret", { autoAlpha: 0 });
       return;
     }
+    gsap.set(".hero-bg", { autoAlpha: 0 });
+    gsap.set(".hero-char", { autoAlpha: 0 });
+    gsap.set(".hero-sub", { autoAlpha: 0, y: 16 });
+    gsap.set(".hero-caret", { autoAlpha: 1 });
 
-    // RESTING — a mid-size lens dead centre, rings visible, sharp bg + motto hidden.
-    gsap.set(bgRef.current, { autoAlpha: 0 });
-    gsap.set(lensRef.current, { scale: 1, transformOrigin: "50% 50%" });
-    gsap.set(ringsRef.current, { autoAlpha: 1, scale: 1 });
-    gsap.set(cueRef.current, { autoAlpha: 1 });
-    gsap.set(".hero-motto", { autoAlpha: 0, y: 24 });
-
-    let ctx: gsap.Context | null = null;
     let started = false;
-
-    // NO scroll-lock. The old version called Lenis.stop() + capture-phase
-    // wheel/touch/key blockers and relied on a release callback firing — if that
-    // ever missed, scroll died across the WHOLE site (the "scroll freezes" bug).
-    // The dive is fast enough now that it reads before you'd scroll anyway.
-    const startZoom = () => {
+    let ctx: gsap.Context | null = null;
+    const start = () => {
       if (started) return;
       started = true;
-
       ctx = gsap.context(() => {
-        const tl = gsap.timeline({ delay: 0.1 });
-        // the barrel rings fade + spread as we pass through them
-        tl.to(ringsRef.current, { autoAlpha: 0, scale: 1.7, duration: 1.0, ease: "power2.in" }, 0);
-        // the glass disc dives forward, then DISSOLVES into the sharp full-bleed
-        // footage — much faster (it took far too long to arrive before).
-        tl.to(lensRef.current, { scale: 3.2, duration: 1.5, ease: "power2.inOut" }, 0);
-        tl.to(cueRef.current, { autoAlpha: 0, duration: 0.35 }, 0);
-        tl.to(bgRef.current, { autoAlpha: 1, duration: 0.7, ease: "power2.out" }, 0.85);
-        tl.to(lensRef.current, { autoAlpha: 0, duration: 0.55, ease: "power2.in" }, 1.15);
-        // ARRIVE — the motto rises over the live footage (mix-blend interacts)
-        tl.to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.35);
+        const blink = gsap.to(".hero-caret", { autoAlpha: 0.15, duration: 0.45, repeat: -1, yoyo: true, ease: "power1.inOut" });
+        gsap
+          .timeline({ delay: 0.15 })
+          .to(".hero-bg", { autoAlpha: 1, duration: 0.8, ease: "power2.out" }, 0)
+          // TYPE the motto on, character by character (real-time writing)
+          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 0.4)
+          .add(() => blink.kill(), ">")
+          .to(".hero-caret", { autoAlpha: 0, duration: 0.3 }, ">")
+          .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "<0.1");
       }, wrap);
     };
-
-    window.addEventListener("hw:reveal", startZoom, { once: true });
-    // start almost immediately if the preloader event never fires (was 3.2s —
-    // that wait is why the camera "took far too long to come in").
-    const fallback = window.setTimeout(startZoom, 500);
+    window.addEventListener("hw:reveal", start, { once: true });
+    const fb = window.setTimeout(start, 500);
 
     return () => {
-      window.removeEventListener("hw:reveal", startZoom);
-      window.clearTimeout(fallback);
+      window.removeEventListener("hw:reveal", start);
+      window.clearTimeout(fb);
       ctx?.revert();
     };
   }, []);
@@ -99,7 +80,7 @@ export default function LensIntro() {
   };
 
   return (
-    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
+    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00" className="relative h-screen">
       <div
         className="on-media isolate sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
         data-cursor="play"
@@ -114,98 +95,57 @@ export default function LensIntro() {
         role="button"
         aria-label="Play showreel with sound"
       >
-        {/* sharp full-bleed hero footage — revealed as the dive dissolves */}
+        {/* full-bleed hero footage — placeholder until Harry's final cut */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video ref={bgRef} className="pointer-events-none absolute inset-0 h-full w-full object-cover" src="/videos/hero-loop.mp4" autoPlay muted loop playsInline style={{ filter: "brightness(0.9) contrast(1.06)" }} />
+        <video
+          ref={videoRef}
+          className="hero-bg pointer-events-none absolute inset-0 h-full w-full object-cover"
+          src="/videos/showreel-full.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+        />
+        {/* light bottom scrim for legibility only */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/10" />
 
-        {/* THE LENS — barrel rings + circular glass disc holding the reel */}
-        <div className="relative" style={{ width: "62vmin", height: "62vmin" }}>
-          {/* barrel rings */}
-          <div ref={ringsRef} className="pointer-events-none absolute inset-0 will-change-transform">
-            {/* seating shadow */}
-            <div className="absolute -inset-[12%] rounded-full" style={{ background: "radial-gradient(circle, transparent 58%, rgba(0,0,0,0.6) 70%, transparent 84%)" }} />
-            {/* outer brushed-metal barrel */}
-            <div
-              className="absolute -inset-[8%] rounded-full"
-              style={{
-                background: "conic-gradient(from 210deg, #0c0c0c, #2c2c2c 12%, #0e0e0e 25%, #353535 38%, #0d0d0d 52%, #272727 68%, #0b0b0b 82%, #2a2a2a 94%, #0c0c0c)",
-                WebkitMaskImage: "radial-gradient(circle, transparent 60.5%, #000 61.5%, #000 100%)",
-                maskImage: "radial-gradient(circle, transparent 60.5%, #000 61.5%, #000 100%)",
-              }}
-            />
-            {/* knurled focus ring */}
-            <div
-              className="absolute -inset-[2.5%] rounded-full"
-              style={{
-                background: "repeating-conic-gradient(#111 0deg 1.05deg, #202020 1.05deg 2.1deg)",
-                WebkitMaskImage: "radial-gradient(circle, transparent 80%, #000 81%, #000 93%, transparent 94%)",
-                maskImage: "radial-gradient(circle, transparent 80%, #000 81%, #000 93%, transparent 94%)",
-              }}
-            />
-            {/* top-left rim light */}
-            <div
-              className="absolute -inset-[8%] rounded-full"
-              style={{
-                background: "conic-gradient(from 150deg, transparent 0deg, rgba(255,255,255,0.25) 38deg, rgba(255,255,255,0.04) 80deg, transparent 120deg, transparent 360deg)",
-                WebkitMaskImage: "radial-gradient(circle, transparent 67%, #000 68%, #000 72%, transparent 73%)",
-                maskImage: "radial-gradient(circle, transparent 67%, #000 68%, #000 72%, transparent 73%)",
-                filter: "blur(1px)",
-              }}
-            />
-            {/* gold aperture ring + index dot */}
-            <div className="absolute -inset-[1%] rounded-full border-2 border-[var(--gold)]/40" />
-            <div className="absolute left-1/2 -top-[2.5%] h-2.5 w-2.5 -translate-x-1/2 rounded-full bg-[var(--gold)] shadow-[0_0_10px_rgba(191,170,83,0.9)]" />
-          </div>
-
-          {/* the glass disc — the reel, clipped to a circle */}
-          <div
-            ref={lensRef}
-            className="absolute left-1/2 top-1/2 aspect-square w-[54vmin] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-full will-change-transform"
+        <div className="absolute left-0 top-[32%] z-10 px-5 md:px-10">
+          {/* the motto — solid white, but mix-blend-difference makes it INTERACT
+              with the footage behind it (barstudios.co.uk style): the letters
+              invert against the moving video. */}
+          <h1
+            className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]"
+            style={{ color: "#ffffff", mixBlendMode: "exclusion" }}
+            aria-label="Break the ordinary."
           >
-            <video
-              ref={videoRef}
-              className="absolute inset-0 h-full w-full object-cover"
-              src="/videos/showreel-full.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-            />
-            {/* specular glass highlight */}
-            <div className="pointer-events-none absolute inset-0 rounded-full" style={{ background: "radial-gradient(ellipse at 34% 26%, rgba(255,255,255,0.30), rgba(255,255,255,0.05) 30%, transparent 56%)" }} />
-            {/* glass-depth vignette + faint chromatic rim */}
-            <div className="pointer-events-none absolute inset-0 rounded-full" style={{ boxShadow: "inset 0 0 70px 12px rgba(0,0,0,0.5)" }} />
-            <div className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-[rgba(216,74,160,0.14)]" />
-          </div>
-        </div>
-
-        {/* the motto — the footage plays THROUGH the text (mix-blend-difference,
-            the same effect the IG/LinkedIn marks use), not a distortion filter */}
-        <div className="hero-motto absolute left-0 top-[33%] z-10 px-5 md:px-10">
-          <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-white mix-blend-difference">
-            Break the<br />
-            ordinary.
+            {LINES.map((line, li) => (
+              <span key={li} className="block">
+                {line.split("").map((c, ci) => (
+                  <span key={ci} aria-hidden className="hero-char inline-block whitespace-pre">{c}</span>
+                ))}
+                {li === LINES.length - 1 && (
+                  <span aria-hidden className="hero-caret ml-1 inline-block h-[0.78em] w-[5px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
+                )}
+              </span>
+            ))}
           </h1>
-          <p
-            className="mt-5 max-w-md text-[clamp(1.05rem,1.6vw,1.5rem)] leading-snug text-white"
-            style={{ fontFamily: "var(--font-firma), sans-serif" }}
-          >
-            we go where the story is
-          </p>
-          <Link
-            href="/contact"
-            onClick={(e) => e.stopPropagation()}
-            className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/70 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white transition-opacity duration-300 hover:opacity-70"
-            style={{ fontFamily: "var(--font-firma), sans-serif" }}
-          >
-            Start here <span aria-hidden>⟶</span>
-          </Link>
-        </div>
 
-        {/* scroll cue */}
-        <div ref={cueRef} className="absolute inset-x-0 bottom-6 z-20 flex flex-col items-center gap-2">
-          <span className="label-mono text-[10px] opacity-70">Scroll</span>
-          <span className="block h-8 w-px animate-pulse bg-[var(--gold)]" />
+          <div className="hero-sub">
+            <p
+              className="mt-5 max-w-md text-[clamp(1rem,1.5vw,1.35rem)] uppercase leading-snug tracking-[0.16em] text-white/90"
+              style={{ fontFamily: "var(--font-archivo), sans-serif" }}
+            >
+              we go where the story is
+            </p>
+            <Link
+              href="/contact"
+              onClick={(e) => e.stopPropagation()}
+              className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/70 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white transition-opacity duration-300 hover:opacity-70"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+            >
+              Start here <span aria-hidden>⟶</span>
+            </Link>
+          </div>
         </div>
       </div>
 

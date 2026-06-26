@@ -86,8 +86,13 @@ export default function Testimonials() {
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
       const heading = root.querySelector<HTMLElement>(".t-head");
       const rise = gsap.utils.toArray<HTMLElement>(root.querySelectorAll("[data-rise]"));
+      const fullstop = root.querySelector<HTMLElement>(".t-fullstop");
+      const dots = gsap.utils.toArray<HTMLElement>(root.querySelectorAll(".t-dot"));
       const split = heading ? new SplitText(heading, { type: "chars", charsClass: "t-char" }) : null;
       const chars = (split?.chars as HTMLElement[]) ?? [];
+
+      const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
+      const sm = (a: number, b: number, t: number) => { const x = clamp01((t - a) / (b - a)); return x * x * (3 - 2 * x); };
 
       const scatter = chars.map((_, i) => ({
         x: (i % 2 ? 1 : -1) * (40 + ((i * 17) % 70)),
@@ -96,30 +101,55 @@ export default function Testimonials() {
       }));
       gsap.set(chars, { display: "inline-block", autoAlpha: 0 });
       gsap.set(rise, { autoAlpha: 0, yPercent: 16 });
+      gsap.set(dots, { scale: 0, autoAlpha: 0, transformOrigin: "50% 50%" });
+      gsap.set(fullstop, { autoAlpha: 0 });
 
       const st = ScrollTrigger.create({
         trigger: root,
-        start: "top 88%",
-        end: "top 32%",
+        start: "top 90%",
+        end: "top 18%",
         scrub: 1.0,
         onUpdate: (self) => {
           const p = self.progress;
+
+          // 1) the golden full stop (carried from "We deliver.") flies in from the
+          //    right, travels across the black in a little arc and CLICKS into the
+          //    spot where the dots live — Apple-style — then hands off to them.
+          if (fullstop) {
+            const travel = sm(0, 0.42, p);
+            const fx = (1 - travel) * window.innerWidth * 0.6;
+            const fy = Math.sin((1 - travel) * Math.PI * 2.2) * 30 * (1 - travel);
+            const click = sm(0.4, 0.5, p);
+            const pop = 1 + Math.sin(click * Math.PI) * 0.55; // overshoot snap
+            const handoff = sm(0.62, 0.74, p);
+            gsap.set(fullstop, { x: fx, y: fy, scale: p < 0.02 ? 0 : pop, autoAlpha: clamp01(travel * 6) * (1 - handoff) });
+          }
+          // the three real dots pop on right after the click
+          dots.forEach((d, i) => {
+            const t = sm(0.5 + i * 0.05, 0.64 + i * 0.05, p);
+            gsap.set(d, { scale: t, autoAlpha: t });
+          });
+
+          // 2) heading letters assemble + content rises — AFTER the click lands.
           chars.forEach((c, i) => {
-            const raw = (p - (i / Math.max(1, chars.length)) * 0.4) / 0.6;
-            const t = Math.min(1, Math.max(0, raw));
-            const e = t * t * (3 - 2 * t);
+            const raw = (p - 0.46 - (i / Math.max(1, chars.length)) * 0.22) / 0.42;
+            const e = sm(0, 1, raw);
             gsap.set(c, { x: scatter[i].x * (1 - e), y: scatter[i].y * (1 - e), rotation: scatter[i].r * (1 - e), autoAlpha: e });
           });
-          const rp = Math.min(1, Math.max(0, (p - 0.35) / 0.65));
-          const re = rp * rp * (3 - 2 * rp);
+          const re = sm(0.52, 1, p);
           rise.forEach((el, i) => {
-            const o = Math.min(1, Math.max(0, re * 1.25 - i * 0.12));
+            const o = clamp01(re * 1.25 - i * 0.12);
             gsap.set(el, { autoAlpha: o, yPercent: 16 * (1 - o) });
           });
         },
       });
 
-      return () => { st.kill(); split?.revert(); gsap.set(rise, { clearProps: "opacity,transform,visibility" }); };
+      return () => {
+        st.kill();
+        split?.revert();
+        gsap.set(rise, { clearProps: "opacity,transform,visibility" });
+        gsap.set(dots, { clearProps: "all" });
+      };
     });
 
     return () => mm.revert();
@@ -166,17 +196,15 @@ export default function Testimonials() {
       className="relative z-30 overflow-hidden bg-[var(--bg)] pb-[9vh] pt-[11vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"
     >
-      <div className="px-5 md:px-10">
-        <h2 className="t-head about-display max-w-3xl text-[clamp(2rem,4.4vw,3.8rem)] leading-[1.0] text-[var(--fg)]">
-          Testimonials
-        </h2>
-      </div>
+      <div className="grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-12 md:px-10 lg:gap-16">
+        {/* LEFT — title at the top (so the film aligns to it), then the active
+            quote + brand, then the three clickable dots. */}
+        <div className="flex flex-col">
+          <h2 className="t-head about-display max-w-3xl text-[clamp(2rem,4.4vw,3.8rem)] leading-[1.0] text-[var(--fg)]">
+            Testimonials
+          </h2>
 
-      <div className="mt-8 grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-12 md:px-10 lg:gap-16">
-        {/* LEFT — the active quote + brand, with three clickable dots (client:
-            dots instead of 01/02/03; manual selection only, no auto-scroll). */}
-        <div data-rise className="flex flex-col">
-          <div ref={quoteRef}>
+          <div data-rise className="mt-8" ref={quoteRef}>
             <blockquote
               className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
               style={{ fontWeight: 400 }}
@@ -195,8 +223,10 @@ export default function Testimonials() {
             </figcaption>
           </div>
 
-          {/* three clickable dots — bigger, generous tap target (client) */}
-          <div className="-ml-3 mt-9 flex items-center">
+          {/* the dots row — the flying gold full stop lands here and clicks into
+              the (bigger) selector dots. */}
+          <div className="relative -ml-3 mt-9 flex items-center">
+            <span aria-hidden className="t-fullstop pointer-events-none absolute left-3 top-1/2 -mt-[9px] h-[18px] w-[18px] rounded-[3px] bg-[var(--gold)] shadow-[0_0_18px_rgba(191,170,83,0.6)]" />
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}
@@ -207,8 +237,8 @@ export default function Testimonials() {
                 className="group flex items-center justify-center p-3"
               >
                 <span
-                  className={`block rounded-full transition-all duration-300 ${
-                    i === active ? "h-4 w-4 bg-[var(--gold)]" : "h-3 w-3 bg-[var(--fg)]/30 group-hover:bg-[var(--fg)]/60"
+                  className={`t-dot block rounded-full transition-[width,height,background-color] duration-300 ${
+                    i === active ? "h-5 w-5 bg-[var(--gold)]" : "h-3.5 w-3.5 bg-[var(--fg)]/30 group-hover:bg-[var(--fg)]/60"
                   }`}
                 />
               </button>
@@ -216,12 +246,12 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* RIGHT — tall portrait (3:4) film for the selected testimonial */}
+        {/* RIGHT — tall portrait (3:4) film, top-aligned with the title */}
         <Link
           data-rise
           href={`/work/${current.slug}`}
           aria-label={`View project — ${current.role}, ${current.sector}`}
-          className="group relative mx-auto block aspect-[3/4] w-full max-h-[60vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
+          className="group relative mx-auto block aspect-[3/4] w-full max-h-[64vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
         >
           {TESTIMONIALS.map((t, i) => {
             const film = filmFor(t.slug);

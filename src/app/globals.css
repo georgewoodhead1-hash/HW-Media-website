@@ -724,11 +724,11 @@ html[data-mode="dark"] .seam-out-band {
    colour going through it"). Base colour follows the mode (ink on cream, cream on
    black); the gold band travels across on a slow loop. ---- */
 .footer-wordmark {
-  -webkit-mask: url("/logos/hwmedia-white.png") center / contain no-repeat;
-  mask: url("/logos/hwmedia-white.png") center / contain no-repeat;
-  background: linear-gradient(100deg, var(--fg) 0%, var(--fg) 38%, var(--gold) 50%, var(--fg) 62%, var(--fg) 100%);
-  background-size: 230% 100%;
-  animation: footer-sweep 4.8s linear infinite;
+  -webkit-mask: url("/logos/hwmedia-white.png") left center / contain no-repeat;
+  mask: url("/logos/hwmedia-white.png") left center / contain no-repeat;
+  background: linear-gradient(100deg, var(--fg) 0%, var(--gold) 26%, #ecd98e 50%, var(--gold) 74%, var(--fg) 100%);
+  background-size: 220% 100%;
+  animation: footer-sweep 4s linear infinite;
 }
 @keyframes footer-sweep {
   from { background-position: 130% 0; }
@@ -736,4 +736,37 @@ html[data-mode="dark"] .seam-out-band {
 }
 @media (prefers-reduced-motion: reduce) {
   .footer-wordmark { animation: none; background: var(--fg); }
+}
+
+/* Footer email — same gold light flowing through it, masked to the text. */
+.footer-email {
+  background: linear-gradient(100deg, var(--fg) 0%, var(--gold) 32%, #ecd98e 50%, var(--gold) 68%, var(--fg) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: footer-sweep 4s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .footer-email { animation: none; color: var(--gold-text); -webkit-text-fill-color: var(--gold-text); }
+}
+
+/* ---- Trusted-by heading shimmer — white wordmark with a soft band that sweeps
+   into full white and back out (client ask). Monochrome, tasteful. ---- */
+.tb-shimmer {
+  background: linear-gradient(100deg, rgba(249,246,228,0.32) 36%, #ffffff 50%, rgba(249,246,228,0.32) 64%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: tb-shimmer 5s linear infinite;
+}
+@keyframes tb-shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tb-shimmer { animation: none; color: #f9f6e4; -webkit-text-fill-color: #f9f6e4; }
 }

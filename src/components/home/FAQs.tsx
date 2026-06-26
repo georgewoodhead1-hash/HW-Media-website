@@ -58,12 +58,15 @@ export default function FAQs() {
         .to([head, reel].filter(Boolean), { autoAlpha: 1, y: 0, duration: 1, ease: "power3.out" }, 0)
         // each question wipes up + rises in turn (not a flat fade)
         .to(qs, { autoAlpha: 1, y: 0, clipPath: "inset(0% 0% 0% 0%)", duration: 0.7, stagger: 0.1, ease: "power3.out" }, 0.2);
-      // exit: the reel fades out IN PLACE (it's pinned, so it never moves) as the
-      // section's tail leaves and the finale comes up over it.
-      const tween = gsap.to(reel, {
+      // exit: the WHOLE FAQ (heading, reel, questions) dissolves up and out as the
+      // section's tail leaves, so it JOINS straight into the finale rising over it
+      // instead of stopping dead (client: "join this together").
+      const exitEls = [head, reel, ...qs].filter(Boolean);
+      const tween = gsap.to(exitEls, {
         autoAlpha: 0,
+        y: -26,
         ease: "none",
-        scrollTrigger: { trigger: root, start: "bottom 55%", end: "bottom 18%", scrub: 0.7 },
+        scrollTrigger: { trigger: root, start: "bottom 64%", end: "bottom 12%", scrub: 0.7 },
       });
       return () => { pinST?.kill(); introTl.scrollTrigger?.kill(); introTl.kill(); tween.scrollTrigger?.kill(); tween.kill(); };
     });

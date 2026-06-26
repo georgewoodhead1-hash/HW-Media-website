@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
-import { getLenis } from "@/lib/lenis";
 
 // CH.00 — the lens. The showreel sits INSIDE a real circular lens: the footage is
 // clipped to a glass disc, ringed by a machined barrel (brushed-metal ring, knurled
@@ -14,7 +13,6 @@ import { getLenis } from "@/lib/lenis";
 // finishes (safe failsafe). Click anywhere to play the reel with sound.
 export default function LensIntro() {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const unlockRef = useRef<(() => void) | null>(null);
   const lensRef = useRef<HTMLDivElement>(null);
   const ringsRef = useRef<HTMLDivElement>(null);
   const cueRef = useRef<HTMLDivElement>(null);
@@ -47,61 +45,37 @@ export default function LensIntro() {
     let ctx: gsap.Context | null = null;
     let started = false;
 
+    // NO scroll-lock. The old version called Lenis.stop() + capture-phase
+    // wheel/touch/key blockers and relied on a release callback firing — if that
+    // ever missed, scroll died across the WHOLE site (the "scroll freezes" bug).
+    // The dive is fast enough now that it reads before you'd scroll anyway.
     const startZoom = () => {
       if (started) return;
       started = true;
 
-      // lock scroll for the dive only (Lenis stop + capture blocker), released on
-      // finish with a hard failsafe so scroll can never stay dead.
-      const lenis = getLenis();
-      lenis?.stop();
-      window.scrollTo(0, 0);
-      const opts: AddEventListenerOptions = { passive: false, capture: true };
-      const block = (e: Event) => e.preventDefault();
-      const blockKeys = (e: KeyboardEvent) => {
-        if (["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " "].includes(e.key)) e.preventDefault();
-      };
-      window.addEventListener("wheel", block, opts);
-      window.addEventListener("touchmove", block, opts);
-      window.addEventListener("keydown", blockKeys, opts);
-      let released = false;
-      const release = () => {
-        if (released) return;
-        released = true;
-        window.removeEventListener("wheel", block, opts);
-        window.removeEventListener("touchmove", block, opts);
-        window.removeEventListener("keydown", blockKeys, opts);
-        lenis?.start();
-      };
-      unlockRef.current = release;
-      const failsafe = window.setTimeout(release, 5600);
-
       ctx = gsap.context(() => {
-        const tl = gsap.timeline({
-          delay: 0.2,
-          onComplete: () => { window.clearTimeout(failsafe); release(); },
-        });
+        const tl = gsap.timeline({ delay: 0.1 });
         // the barrel rings fade + spread as we pass through them
-        tl.to(ringsRef.current, { autoAlpha: 0, scale: 1.7, duration: 1.6, ease: "power2.in" }, 0);
+        tl.to(ringsRef.current, { autoAlpha: 0, scale: 1.7, duration: 1.0, ease: "power2.in" }, 0);
         // the glass disc dives forward, then DISSOLVES into the sharp full-bleed
-        // footage (the disc was a cropped square — scaling it up is what looked
-        // zoomed + low-quality; the background video is the real, sharp frame).
-        tl.to(lensRef.current, { scale: 3.4, duration: 2.6, ease: "power2.inOut" }, 0);
-        tl.to(cueRef.current, { autoAlpha: 0, duration: 0.4 }, 0);
-        tl.to(bgRef.current, { autoAlpha: 1, duration: 0.9, ease: "power2.out" }, 1.9);
-        tl.to(lensRef.current, { autoAlpha: 0, duration: 0.7, ease: "power2.in" }, 2.2);
-        // ARRIVE — the motto rises over the live footage (mix-blend interacts with it)
-        tl.to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" }, 2.5);
+        // footage — much faster (it took far too long to arrive before).
+        tl.to(lensRef.current, { scale: 3.2, duration: 1.5, ease: "power2.inOut" }, 0);
+        tl.to(cueRef.current, { autoAlpha: 0, duration: 0.35 }, 0);
+        tl.to(bgRef.current, { autoAlpha: 1, duration: 0.7, ease: "power2.out" }, 0.85);
+        tl.to(lensRef.current, { autoAlpha: 0, duration: 0.55, ease: "power2.in" }, 1.15);
+        // ARRIVE — the motto rises over the live footage (mix-blend interacts)
+        tl.to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, 1.35);
       }, wrap);
     };
 
     window.addEventListener("hw:reveal", startZoom, { once: true });
-    const fallback = window.setTimeout(startZoom, 3200);
+    // start almost immediately if the preloader event never fires (was 3.2s —
+    // that wait is why the camera "took far too long to come in").
+    const fallback = window.setTimeout(startZoom, 500);
 
     return () => {
       window.removeEventListener("hw:reveal", startZoom);
       window.clearTimeout(fallback);
-      unlockRef.current?.();
       ctx?.revert();
     };
   }, []);
@@ -127,7 +101,7 @@ export default function LensIntro() {
   return (
     <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00 — The lens" className="relative h-screen">
       <div
-        className="on-media sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
+        className="on-media isolate sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {
@@ -142,7 +116,7 @@ export default function LensIntro() {
       >
         {/* sharp full-bleed hero footage — revealed as the dive dissolves */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video ref={bgRef} className="pointer-events-none absolute inset-0 h-full w-full object-cover" src="/videos/showreel-full.mp4" autoPlay muted loop playsInline style={{ filter: "brightness(0.82)" }} />
+        <video ref={bgRef} className="pointer-events-none absolute inset-0 h-full w-full object-cover" src="/videos/hero-loop.mp4" autoPlay muted loop playsInline style={{ filter: "brightness(0.9) contrast(1.06)" }} />
 
         {/* THE LENS — barrel rings + circular glass disc holding the reel */}
         <div className="relative" style={{ width: "62vmin", height: "62vmin" }}>

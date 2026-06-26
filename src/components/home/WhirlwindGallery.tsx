@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
+import { EMAIL } from "@/content/site";
 
 // SC.07 — the finale AND the end of the page. Tiles train in from the
 // bottom-left, slide UNDER the words first, swing up the far side into a
@@ -205,7 +206,7 @@ export default function WhirlwindGallery() {
           ))}
         </div>
 
-        <div className="relative z-10 max-w-2xl px-8 text-center">
+        <div className="relative z-10 max-w-2xl px-8 text-center motion-safe:md:-translate-y-[11vh]">
           <p className="font-display text-[clamp(1.7rem,1rem+2vw,3rem)] leading-tight" aria-label={LINE_A + LINE_B}>
             {LINE_A.trim().split(" ").map((w, wi) => (
               <span key={`a${wi}`} className="inline-block whitespace-nowrap" aria-hidden>
@@ -243,30 +244,29 @@ export default function WhirlwindGallery() {
           className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-8 py-10 backdrop-blur-md will-change-transform md:px-12 md:py-12"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
-          <div className="flex w-full flex-wrap items-end justify-between gap-x-10 gap-y-8 pl-[150px]">
-            {/* LEFT — big HW mark, the IG + LinkedIn marks beneath it, copyright */}
-            <div className="flex flex-col gap-5">
-              <div className="footer-wordmark h-[clamp(3rem,7vw,5.5rem)] w-[clamp(180px,26vw,400px)]" role="img" aria-label="HW Media" />
-              <div className="flex items-center gap-5 text-[var(--fg)]/80">
+          <div className="flex w-full items-center justify-between gap-x-8">
+            {/* LEFT — big HW mark, hard against the left edge, gold flowing through */}
+            <div className="footer-wordmark h-[clamp(4rem,9vw,7.5rem)] w-[clamp(220px,34vw,520px)] shrink-0" role="img" aria-label="HW Media" />
+
+            {/* CENTRE — socials, copyright, privacy */}
+            <div className="flex flex-col items-center gap-4">
+              <div className="flex items-center gap-6 text-[var(--fg)]/80">
                 <a href="https://www.instagram.com/hwmedia/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="transition-colors hover:text-[var(--gold-text)]">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg>
                 </a>
                 <a href="https://www.linkedin.com/in/harry-wallis-98b47b161/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="transition-colors hover:text-[var(--gold-text)]">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" /></svg>
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" /></svg>
                 </a>
               </div>
-              <div className="flex items-center gap-5 text-xs text-[var(--fg)]/50">
+              <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-[var(--fg)]/55">
                 <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
                 <Link href="/privacy" className="transition-colors hover:text-[var(--gold-text)]">Privacy Policy</Link>
               </div>
             </div>
-            {/* RIGHT — the email, big */}
-            <a
-              href="mailto:harry@hwmedia.co.uk"
-              className="about-display text-[clamp(1.5rem,3.4vw,3.2rem)] leading-none text-[var(--fg)] transition-colors hover:text-[var(--gold-text)]"
-              style={{ textTransform: "none" }}
-            >
-              harry@hwmedia.co.uk
+
+            {/* RIGHT — the email, big, caps, gold flowing through (matches the line) */}
+            <a href={`mailto:${EMAIL}`} className="footer-email font-display shrink-0 text-[clamp(1.3rem,3vw,2.9rem)] leading-none">
+              {EMAIL}
             </a>
           </div>
         </div>
@@ -292,8 +292,8 @@ export default function WhirlwindGallery() {
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           <div className="footer-wordmark mb-7 h-12 w-full max-w-[320px]" role="img" aria-label="HW Media" />
-          <a href="mailto:harry@hwmedia.productions" className="block text-[var(--fg)]/85">
-            harry@hwmedia.productions
+          <a href={`mailto:${EMAIL}`} className="block text-[var(--fg)]/85">
+            {EMAIL}
           </a>
           <div className="mt-4 flex items-center gap-6">
             <a

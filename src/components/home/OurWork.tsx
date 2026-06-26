@@ -51,23 +51,34 @@ export default function OurWork() {
       // turn. On the section's EXIT the whole stage zooms out and lifts away as
       // Our Process rises over it — the scroll transition out of Featured Projects.
       const FROM = 0.0;
-      const TO = 0.55;
+      const TO = 0.4;
       const span = (TO - FROM) / N;
 
       const cta = root.querySelector<HTMLElement>(".ow-cta");
-      gsap.set(head, { autoAlpha: 0, yPercent: 18 });
+      const chars = gsap.utils.toArray<HTMLElement>(".ow-char", root);
+      const caret = root.querySelector<HTMLElement>(".ow-caret");
+      gsap.set(head, { autoAlpha: 1, yPercent: 0 });
+      gsap.set(chars, { opacity: 0 });
+      gsap.set(caret, { autoAlpha: 1 });
       gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.96, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
+      // ENTRANCE — type "Featured Projects" like a typewriter, once, with a
+      // blinking gold caret that fades out when the line finishes.
+      const caretBlink = gsap.to(caret, { autoAlpha: 0.15, duration: 0.5, repeat: -1, yoyo: true, ease: "power1.inOut" });
+      const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 80%", once: true } });
+      typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.05, ease: "none" }, 0);
+      typeTl.to(caret, { autoAlpha: 0, duration: 0.4, onComplete: () => caretBlink.kill() }, ">0.35");
+
       const place = (p: number) => {
-        const enterHead = smooth(0, 0.06, p);
-        const headOut = smooth(0.72, 0.9, p);
-        const ctaIn = smooth(0.38, 0.52, p);
+        const headOut = smooth(0.84, 0.97, p);
+        const ctaIn = smooth(0.3, 0.44, p);
         // EXIT — a slow, SYNCED show-curtain that drops on the TOP of every film
-        // (the bottom stays put, the top clips down). Starts early so the section
-        // is not just sitting there, runs long so it reads as a curtain.
-        const exit = smooth(0.64, 1, p);
-        gsap.set(head, { autoAlpha: enterHead * (1 - headOut), yPercent: lerp(18, 0, enterHead) - headOut * 30 });
+        // (bottom stays put, top clips down). Held back to 0.72 so the films sit
+        // fully revealed for a long beat BEFORE the curtain falls (was exiting
+        // before the entrance even finished).
+        const exit = smooth(0.72, 1, p);
+        gsap.set(head, { autoAlpha: 1 - headOut, yPercent: -headOut * 30 });
         if (cta) gsap.set(cta, { autoAlpha: ctaIn * (1 - headOut), y: lerp(16, 0, ctaIn) - headOut * 22 });
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
@@ -147,15 +158,21 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[170vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[230vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
       <div className="hidden overflow-hidden px-5 motion-safe:md:sticky motion-safe:md:top-0 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
           className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
-                 >
-          Featured <span className="text-[var(--gold-text)]">Projects</span>
+        >
+          {"Featured ".split("").map((c, i) => (
+            <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
+          ))}
+          {"Projects".split("").map((c, i) => (
+            <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--gold-text)]">{c}</span>
+          ))}
+          <span aria-hidden className="ow-caret ml-1 inline-block h-[0.82em] w-[4px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
         </h2>
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}

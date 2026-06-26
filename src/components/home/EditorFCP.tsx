@@ -134,6 +134,7 @@ export default function EditorFCP() {
             rotation: swirl + lerp(0, i % 2 === 0 ? -14 : 14, outro),
             scale: lerp(0.8, 1, t) * lerp(1, 1 + 0.06 * w, enter) * lerp(1, 0.55, outro),
             autoAlpha: lerp(assembleA, 0.32 + 0.68 * w, enter) * (1 - tail),
+            force3D: true,
           });
         });
 
@@ -170,7 +171,7 @@ export default function EditorFCP() {
 
         // PLAY-BAR — pure translate sweep across the full row; gone in the outro
         const barX = (lerp(BAR_LEFT, BAR_RIGHT, sp) / 100) * vw;
-        gsap.set(barRef.current, { x: barX, autoAlpha: enter * (1 - tail) });
+        gsap.set(barRef.current, { x: barX, autoAlpha: enter * (1 - tail), force3D: true });
 
         // video play/pause follows the dominant stage (throttled, not a tween)
         const dom = enter > 0.5 ? Math.min(nStage - 1, Math.max(0, Math.round(sp * nStage - 0.5))) : -1;
@@ -185,7 +186,7 @@ export default function EditorFCP() {
         trigger: root,
         start: "top bottom",
         end: "bottom bottom",
-        scrub: 1.4,
+        scrub: 1.7,
         invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => place(self.progress),
@@ -213,7 +214,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="media"
       data-chapter="Our process"
-      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[320vh]"
+      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[360vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AboutReel from "@/components/about/reel/AboutReel";
+import AboutClean from "@/components/about/AboutClean";
 import SiteIntro from "@/components/shell/SiteIntro";
 
 export const metadata: Metadata = {
@@ -7,15 +7,13 @@ export const metadata: Metadata = {
   description: "Who's behind the camera. HW Media, a London creative agency and production company.",
 };
 
-// About — rehauled to the cinematic "Reel" direction (matches the dark home): a
-// full-screen showreel cold open, the statement over footage, the crew held one
-// face at a time, the films full-bleed and moving, a client-wall breather, into
-// the kept "Let's create". An "About us" intro beat wipes up to it.
+// About — rebuilt clean. Big type, one dimmed film, the crew stated plainly, the
+// kept "Let's create". No labels / counters / icon clutter. "About us" intro beat.
 export default function About() {
   return (
     <>
       <SiteIntro words={["About", "us"]} />
-      <AboutReel />
+      <AboutClean />
     </>
   );
 }

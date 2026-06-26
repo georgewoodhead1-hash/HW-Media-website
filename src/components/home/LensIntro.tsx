@@ -21,6 +21,7 @@ export default function LensIntro() {
   const videoRef = useRef<HTMLVideoElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const fullReelRef = useRef<HTMLVideoElement>(null);
+  const bgRef = useRef<HTMLVideoElement>(null);
   const [reelOpen, setReelOpen] = useState(false);
 
   useEffect(() => {
@@ -29,14 +30,15 @@ export default function LensIntro() {
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      gsap.set(lensRef.current, { scale: 4 });
-      gsap.set(ringsRef.current, { autoAlpha: 0 });
+      gsap.set(bgRef.current, { autoAlpha: 1 });
+      gsap.set([lensRef.current, ringsRef.current], { autoAlpha: 0 });
       gsap.set(cueRef.current, { autoAlpha: 0 });
       gsap.set(".hero-motto", { autoAlpha: 1 });
       return;
     }
 
-    // RESTING — a mid-size lens dead centre, rings visible, motto hidden.
+    // RESTING — a mid-size lens dead centre, rings visible, sharp bg + motto hidden.
+    gsap.set(bgRef.current, { autoAlpha: 0 });
     gsap.set(lensRef.current, { scale: 1, transformOrigin: "50% 50%" });
     gsap.set(ringsRef.current, { autoAlpha: 1, scale: 1 });
     gsap.set(cueRef.current, { autoAlpha: 1 });
@@ -81,11 +83,15 @@ export default function LensIntro() {
         });
         // the barrel rings fade + spread as we pass through them
         tl.to(ringsRef.current, { autoAlpha: 0, scale: 1.7, duration: 1.6, ease: "power2.in" }, 0);
-        // the glass disc grows forward and fills the frame — pure transform scale
-        tl.to(lensRef.current, { scale: 4.4, duration: 3.0, ease: "power2.inOut" }, 0);
+        // the glass disc dives forward, then DISSOLVES into the sharp full-bleed
+        // footage (the disc was a cropped square — scaling it up is what looked
+        // zoomed + low-quality; the background video is the real, sharp frame).
+        tl.to(lensRef.current, { scale: 3.4, duration: 2.6, ease: "power2.inOut" }, 0);
         tl.to(cueRef.current, { autoAlpha: 0, duration: 0.4 }, 0);
-        // ARRIVE — the motto rises in liquid glass
-        tl.to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" }, 2.45);
+        tl.to(bgRef.current, { autoAlpha: 1, duration: 0.9, ease: "power2.out" }, 1.9);
+        tl.to(lensRef.current, { autoAlpha: 0, duration: 0.7, ease: "power2.in" }, 2.2);
+        // ARRIVE — the motto rises over the live footage (mix-blend interacts with it)
+        tl.to(".hero-motto", { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" }, 2.5);
       }, wrap);
     };
 
@@ -134,6 +140,10 @@ export default function LensIntro() {
         role="button"
         aria-label="Play showreel with sound"
       >
+        {/* sharp full-bleed hero footage — revealed as the dive dissolves */}
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video ref={bgRef} className="pointer-events-none absolute inset-0 h-full w-full object-cover" src="/videos/showreel-full.mp4" autoPlay muted loop playsInline style={{ filter: "brightness(0.82)" }} />
+
         {/* THE LENS — barrel rings + circular glass disc holding the reel */}
         <div className="relative" style={{ width: "62vmin", height: "62vmin" }}>
           {/* barrel rings */}

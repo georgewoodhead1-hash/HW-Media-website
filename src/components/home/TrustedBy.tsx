@@ -152,7 +152,16 @@ export default function TrustedBy() {
       className="relative bg-[var(--bg)] px-5 py-[14vh] md:px-10"
       aria-label="Trusted by"
     >
-      <div className="tb-heading mb-[4vh] text-center">
+      {/* a soft gold wash that fades in then out behind the marks — gives the
+          band its own warmth against the black (client ask), CSS-only so it's
+          robust. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{ background: "linear-gradient(180deg, transparent, rgba(191,170,83,0.085) 44%, rgba(191,170,83,0.06) 56%, transparent)" }}
+      />
+
+      <div className="tb-heading relative mb-[4vh] text-center">
         {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
             char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}
         <h2
@@ -161,7 +170,7 @@ export default function TrustedBy() {
         </h2>
       </div>
 
-      <div className="flex flex-col gap-3 md:gap-4">
+      <div className="relative flex flex-col gap-3 md:gap-4">
         <Row logos={ROW_A} trackRef={trackARef} tweenRef={tweenARef} />
         <Row logos={ROW_B} reverse trackRef={trackBRef} tweenRef={tweenBRef} />
       </div>

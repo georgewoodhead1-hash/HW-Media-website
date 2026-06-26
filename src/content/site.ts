@@ -6,7 +6,10 @@
 // and say the word.
 export const BOOKING_URL = "https://calendly.com/hw-media/intro-call";
 
-export const EMAIL = "harry@hwmedia.productions";
+// Single source of truth for the public email. hwmedia.co.uk is the live domain
+// (hwmedia.productions was the old site). Used by the contact API, footer, and
+// the "Let's create" section — keep them all pointing here.
+export const EMAIL = "harry@hwmedia.co.uk";
 
 export const SOCIALS = {
   instagram: "https://www.instagram.com/hwmedia/",

@@ -5,8 +5,26 @@ import ContactCircle from "@/components/about/ContactCircle";
 import SiteIntro from "@/components/shell/SiteIntro";
 
 export const metadata: Metadata = {
-  title: "Work — HW Media",
-  description: "Selected brand films, documentary and commercial work by HW Media, London.",
+  title: "Work",
+  description:
+    "Selected brand films, documentary and commercial work by HW Media, London.",
+  alternates: { canonical: "/work" },
+  openGraph: {
+    type: "website",
+    siteName: "HW Media",
+    title: "Work — HW Media",
+    description:
+      "Selected brand films, documentary and commercial work by HW Media, London.",
+    url: "/work",
+    images: [{ url: "/images/hero-defocus.jpg", width: 1920, height: 1080, alt: "HW Media — Work" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Work — HW Media",
+    description:
+      "Selected brand films, documentary and commercial work by HW Media, London.",
+    images: ["/images/hero-defocus.jpg"],
+  },
 };
 
 // Work page — the gallery wall in Harry's hierarchy order (Featured → Discover More

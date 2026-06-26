@@ -125,7 +125,7 @@ export default function AboutClean() {
   }, []);
 
   return (
-    <main ref={root} className="on-media relative overflow-hidden bg-[#050505] text-[#f5f1e6]">
+    <main ref={root} className="on-media relative overflow-x-clip bg-[#050505] text-[#f5f1e6]">
       {/* HERO */}
       <section className="mx-auto flex min-h-[82vh] max-w-5xl flex-col items-center justify-center px-5 py-[18vh] text-center md:px-10">
         <p className="ab-hero-fade text-[var(--gold-text)] text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.22em]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>

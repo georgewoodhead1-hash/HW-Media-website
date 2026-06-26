@@ -4,8 +4,26 @@ import ContactIntro from "@/components/contact/ContactIntro";
 import ContactForm from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact — HW Media",
-  description: "Start a project with HW Media. Brand films, documentary, photography — London.",
+  title: "Contact",
+  description:
+    "Start a project with HW Media. Brand films, documentary, photography — London.",
+  alternates: { canonical: "/contact" },
+  openGraph: {
+    type: "website",
+    siteName: "HW Media",
+    title: "Contact — HW Media",
+    description:
+      "Start a project with HW Media. Brand films, documentary, photography — London.",
+    url: "/contact",
+    images: [{ url: "/images/hero-defocus.jpg", width: 1920, height: 1080, alt: "HW Media — Contact" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Contact — HW Media",
+    description:
+      "Start a project with HW Media. Brand films, documentary, photography — London.",
+    images: ["/images/hero-defocus.jpg"],
+  },
 };
 
 // Simple, centred contact page: one heading + the secure ContactForm (posts to

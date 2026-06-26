@@ -201,7 +201,7 @@ export default function Testimonials() {
           snakes down and clicks into the dots. Hidden until the journey (desktop). */}
       {/* the gold line the full stop draws as it rivers diagonally down to the dots */}
       <svg aria-hidden className="t-line pointer-events-none fixed inset-0 z-[79] h-full w-full opacity-0" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path className="t-line-path" d="M58,27 Q30,55 8,66" fill="none" stroke="var(--gold)" strokeWidth="1.6" strokeLinecap="round" pathLength={1} style={{ vectorEffect: "non-scaling-stroke" }} />
+        <path className="t-line-path" d="M58,27 Q30,55 8,66" fill="none" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" style={{ vectorEffect: "non-scaling-stroke" }} />
       </svg>
       <span aria-hidden className="t-fullstop pointer-events-none fixed left-0 top-0 z-[80] h-[20px] w-[20px] rounded-[3px] bg-[var(--gold)] opacity-0 shadow-[0_0_24px_rgba(191,170,83,0.85)] will-change-transform" />
 

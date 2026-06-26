@@ -58,10 +58,107 @@ const firma = localFont({
   display: "swap",
 });
 
+const SITE_URL = "https://hw-media-website-y7yi.vercel.app";
+const OG_IMAGE = "/images/hero-defocus.jpg";
+
 export const metadata: Metadata = {
-  title: "HW Media — Cinematic Brand Storytelling",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "HW Media — Film & Photography, London",
+    template: "%s — HW Media",
+  },
   description:
-    "Films for brands with a story worth telling. Brand films, documentary and photography. HW Media, London.",
+    "HW Media is a London director-led film and photography studio. Cinematic brand films, documentary and photography for brands with a story worth telling.",
+  keywords: [
+    "HW Media",
+    "London film studio",
+    "brand films",
+    "film production London",
+    "video production",
+    "documentary film",
+    "commercial photography",
+    "director-led production",
+    "cinematic brand storytelling",
+    "Harry Wallis",
+  ],
+  authors: [{ name: "HW Media" }, { name: "Harry Wallis" }],
+  creator: "HW Media",
+  publisher: "HW Media",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    siteName: "HW Media",
+    title: "HW Media — Film & Photography, London",
+    description:
+      "London director-led film and photography studio. Cinematic brand films, documentary and photography.",
+    url: SITE_URL,
+    locale: "en_GB",
+    images: [
+      {
+        url: OG_IMAGE,
+        width: 1920,
+        height: 1080,
+        alt: "HW Media — Film & Photography, London",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "HW Media — Film & Photography, London",
+    description:
+      "London director-led film and photography studio. Cinematic brand films, documentary and photography.",
+    images: [OG_IMAGE],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  icons: {
+    icon: "/favicon.ico",
+  },
+};
+
+// Structured data — static, no user input. Organization + WebSite schema so
+// search engines and AI crawlers understand who HW Media is.
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "HW Media",
+  url: SITE_URL,
+  logo: `${SITE_URL}/logos/hwmedia-white.png`,
+  image: `${SITE_URL}${OG_IMAGE}`,
+  description:
+    "London director-led film and photography studio. Cinematic brand films, documentary and photography.",
+  email: "harry@hwmedia.co.uk",
+  areaServed: "London",
+  founder: {
+    "@type": "Person",
+    name: "Harry Wallis",
+  },
+  sameAs: [
+    "https://instagram.com/hwmedia",
+    "https://www.linkedin.com/in/harry-wallis-98b47b161/",
+  ],
+};
+
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "HW Media",
+  url: SITE_URL,
+  publisher: {
+    "@type": "Organization",
+    name: "HW Media",
+  },
 };
 
 export default function RootLayout({
@@ -86,6 +183,14 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[200] focus:rounded-md focus:bg-[var(--fg)] focus:px-4 focus:py-2 focus:text-[var(--bg)]"

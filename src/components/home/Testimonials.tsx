@@ -100,8 +100,18 @@ export default function Testimonials() {
       gsap.set(dots, { scale: 0, autoAlpha: 0, transformOrigin: "50% 50%" });
       gsap.set(fullstop, { autoAlpha: 0 });
       gsap.set(lineEl, { autoAlpha: 0 });
-      const lineLen = linePath ? linePath.getTotalLength() : 1;
-      if (linePath) gsap.set(linePath, { strokeDasharray: lineLen, strokeDashoffset: lineLen });
+      // the river path is the SAME bezier the dot rides, in real pixels
+      let lineLen = 1;
+      const drawPath = () => {
+        if (!linePath) return;
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        linePath.setAttribute("d", `M ${0.58 * vw} ${0.27 * vh} Q ${0.3 * vw} ${0.55 * vh} ${0.08 * vw} ${0.66 * vh}`);
+        lineLen = linePath.getTotalLength();
+        gsap.set(linePath, { strokeDasharray: lineLen });
+      };
+      drawPath();
+      if (linePath) gsap.set(linePath, { strokeDashoffset: lineLen });
 
       // The gold full stop from "We deliver." STAYS as the words fade, then DRIFTS
       // diagonally down the (black) screen on a smooth quadratic-bezier river curve
@@ -123,6 +133,7 @@ export default function Testimonials() {
         start: "top bottom",
         end: "top 34%",
         scrub: 0.6,
+        onRefresh: () => drawPath(),
         onUpdate: (self) => {
           const p = self.progress;
           const vw = window.innerWidth;
@@ -199,9 +210,11 @@ export default function Testimonials() {
     >
       {/* the gold full stop carried from "We deliver." — fixed to the viewport, it
           snakes down and clicks into the dots. Hidden until the journey (desktop). */}
-      {/* the gold line the full stop draws as it rivers diagonally down to the dots */}
-      <svg aria-hidden className="t-line pointer-events-none fixed inset-0 z-[79] h-full w-full opacity-0" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path className="t-line-path" d="M58,27 Q30,55 8,66" fill="none" stroke="var(--gold)" strokeWidth="2" strokeLinecap="round" style={{ vectorEffect: "non-scaling-stroke" }} />
+      {/* the gold line the full stop draws as it rivers diagonally down to the dots.
+          No viewBox / non-scaling-stroke: the path is set in real pixels so the
+          dash length matches the rendered length and it draws SOLID. */}
+      <svg aria-hidden className="t-line pointer-events-none fixed inset-0 z-[79] h-full w-full opacity-0">
+        <path className="t-line-path" fill="none" stroke="var(--gold)" strokeWidth="2.5" strokeLinecap="round" />
       </svg>
       <span aria-hidden className="t-fullstop pointer-events-none fixed left-0 top-0 z-[80] h-[20px] w-[20px] rounded-[3px] bg-[var(--gold)] opacity-0 shadow-[0_0_24px_rgba(191,170,83,0.85)] will-change-transform" />
 

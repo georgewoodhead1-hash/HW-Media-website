@@ -26,8 +26,8 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     if (reduced) return;
 
     const lenis = new Lenis({
-      lerp: 0.06,
-      wheelMultiplier: 0.8,
+      lerp: 0.055, // a touch more glide = more fluid, premium weight
+      wheelMultiplier: 0.68, // slower scroll per wheel notch
       smoothWheel: true,
     });
     setLenis(lenis);

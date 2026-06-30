@@ -44,6 +44,20 @@ export const projects: Project[] = [
     credits: [{ role: "Director / DP", name: "Harry Wallis" }],
   },
   {
+    slug: "castle-air",
+    title: "Castle Air",
+    client: "Castle Air",
+    category: "Brand film",
+    year: "2025",
+    ...p("castle-air"),
+    tagline: "A cinematic campaign for Castle Air, the luxury helicopter charter — London to Ascot.",
+    stats: "1 shoot day · London & Ascot · 1-man crew",
+    story:
+      "A brand film for Castle Air, the UK's premier private helicopter charter. We followed the client experience from a London street to the Ascot heli-pad — the suit, the classic car, the lift-off — cutting between ground glamour and aerial scale to sell the feeling of arriving in a way nobody else can.",
+    services: ["Direction", "Cinematography", "Aerial", "Post Production"],
+    credits: [{ role: "Director / DP", name: "Harry Wallis" }],
+  },
+  {
     slug: "mclaren",
     title: "McLaren Artura",
     client: "McLaren",

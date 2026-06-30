@@ -36,14 +36,14 @@ export default function ScrollType({
 
     const split = new SplitText(el, { type: "chars", charsClass: "st-char" });
     gsap.set(split.chars, { autoAlpha: 0 });
-    // ONE-SHOT type-on (not scrub) — it completes on enter and STAYS assembled,
-    // so the resting state is never a half-typed word (the "TESTIMONIA" bug).
+    // SCRUBBED typewriter — chars light up SHARPLY (not a soft fade) tied to scroll,
+    // so the heading literally writes itself on as you scroll into the section.
     const tween = gsap.to(split.chars, {
       autoAlpha: 1,
-      ease: "power2.out",
-      duration: 0.5,
-      stagger: 0.035,
-      scrollTrigger: { trigger: el, start, once: true },
+      ease: "none",
+      duration: 0.01,
+      stagger: 0.06,
+      scrollTrigger: { trigger: el, start, end, scrub: 0.7 },
     });
 
     return () => {

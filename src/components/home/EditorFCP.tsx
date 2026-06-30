@@ -105,11 +105,11 @@ export default function EditorFCP() {
         // letters land ~0.32, "Our process" holds READABLE 0.32-0.46, fades
         // 0.46-0.50, THEN the stage words enter at 0.50 — so the two never share
         // the centre and there is a real, visible "Our process" hold.
-        const STAGE_START = 0.46;
+        const STAGE_START = 0.48;
         const enter = smooth(STAGE_START, STAGE_START + 0.06, p); // hold -> stages(1)
         const sp = clamp01((p - STAGE_START) / (OUTRO - STAGE_START)); // stage progress
         const outro = 0; // no fly-off (the meeting killed that). Positions stay put.
-        const tail = smooth(0.9, 1.0, p); // a gentle scene fade at the very end so "We deliver" DISSOLVES into Testimonials instead of stopping dead.
+        const tail = smooth(0.9, 0.97, p); // "We deliver" fades out QUICK + early, so the full stop is left alone before it travels.
 
         // FILMS — drift in from a corner during assemble, brighten/dim by the
         // active stage, then in the OUTRO fly back out to the corners + fade.
@@ -155,9 +155,9 @@ export default function EditorFCP() {
           });
         }
 
-        // "Our process" leaves quickly right at the boundary so it never
-        // shares the centre with the first stage word
-        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(0.5, 0.56, p) });
+        // "Our process" leaves QUICK + fully before the first stage word enters,
+        // so the two never share the centre (that was the overlap).
+        gsap.set(titleRef.current, { autoAlpha: 1 - smooth(0.41, 0.47, p) });
 
         // STAGE names — ONE at a time, non-overlapping fade windows so two big
         // words never occupy the centre together (that was the garble)

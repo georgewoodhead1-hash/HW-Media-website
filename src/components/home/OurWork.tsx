@@ -14,7 +14,12 @@ import { safePlay } from "@/lib/video";
 // the accordion behaves exactly as before (hover-expand). All scroll-driven,
 // slow and smooth.
 
-const WORKS = projects.slice(0, 6);
+// Featured order George specified: Otoko, McLaren, Hera, Salomon, Nike, Castle Air
+// (Zuma dropped). Picked by slug so projects.ts order stays free.
+const FEATURED_SLUGS = ["otoko", "mclaren", "hera", "salomon", "nike", "castle-air"];
+const WORKS = FEATURED_SLUGS.map((s) => projects.find((p) => p.slug === s)).filter(
+  (p): p is (typeof projects)[number] => Boolean(p),
+);
 
 // brand logos for the collapsed tiles (client: logos, not text labels)
 const LOGO: Record<string, string> = {
@@ -63,12 +68,11 @@ export default function OurWork() {
       gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.96, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
-      // ENTRANCE — type "Featured Projects" like a typewriter, once, with a
-      // blinking gold caret that fades out when the line finishes.
-      const caretBlink = gsap.to(caret, { autoAlpha: 0.15, duration: 0.5, repeat: -1, yoyo: true, ease: "power1.inOut" });
-      const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 80%", once: true } });
+      // ENTRANCE — type "Featured Projects" like a typewriter AS YOU SCROLL in: the
+      // chars light up tied to scroll, the gold caret fading out as the line finishes.
+      const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 84%", end: "top 50%", scrub: 0.7 } });
       typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.05, ease: "none" }, 0);
-      typeTl.to(caret, { autoAlpha: 0, duration: 0.4, onComplete: () => caretBlink.kill() }, ">0.35");
+      typeTl.to(caret, { autoAlpha: 0, duration: 0.06 }, ">0.06");
 
       const place = (p: number) => {
         const headOut = smooth(0.84, 0.97, p);

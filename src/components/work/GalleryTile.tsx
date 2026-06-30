@@ -40,9 +40,9 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/45 transition-opacity duration-500 group-hover:opacity-30" />
       {Mark}
-      {!isReal && (
+      {item.comingSoon && (
         <span className="about-label absolute bottom-3 left-3 text-[10px] text-[var(--fg)]/45">
-          {item.comingSoon ? "Coming soon" : "Film coming"}
+          Coming soon
         </span>
       )}
     </>

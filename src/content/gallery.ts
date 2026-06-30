@@ -24,7 +24,7 @@ export const FEATURED: GalleryItem[] = [
   { label: "Nike", logo: "nike-white", slug: "nike", video: "/videos/films/nike-w.mp4", poster: "/videos/films/posters/nike-w.jpg" },
   { label: "Salomon", logo: "salomon-logo-white", slug: "salomon", video: "/videos/films/salomon-w.mp4", poster: "/videos/films/posters/salomon-w.jpg" },
   { label: "Sans Matin — The Hera Video", logo: "sm-new-logo-design-white-2025", slug: "hera", video: "/videos/films/hera-w.mp4", poster: "/videos/films/posters/hera-w.jpg" },
-  { label: "Castle Air — Ascot Campaign", logo: "castle-air-white", micro: "m01" },
+  { label: "Castle Air — Ascot Campaign", logo: "castle-air-white", slug: "castle-air", video: "/videos/films/castle-air-w.mp4", poster: "/videos/films/posters/castle-air-w.jpg" },
   { label: "NatWest", logo: "natwest-white", micro: "m02" },
   { label: "Ferrari", micro: "m03" },
   { label: "Defender", logo: "defender-white", video: "/videos/films/defender-reel.mp4", poster: "/videos/micro/posters/m04.jpg" },

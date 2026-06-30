@@ -5,6 +5,7 @@ import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
 import EditorFCP from "@/components/home/EditorFCP";
 import Testimonials from "@/components/home/Testimonials";
+import FeatureBand from "@/components/home/FeatureBand";
 import FAQs from "@/components/home/FAQs";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
 import SceneFlow from "@/components/shell/SceneFlow";
@@ -23,6 +24,7 @@ export default function Home() {
       <OurWork />
       <EditorFCP />
       <Testimonials />
+      <FeatureBand />
       <FAQs />
       <WhirlwindGallery />
     </main>

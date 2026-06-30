@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import { gsap } from "@/lib/gsap";
-import { EMAIL } from "@/content/site";
 
 // "Let's create" — a cream circle that GROWS up out of the dark to take over the
 // screen as you scroll through the (tall, sticky) section, flipping the dark world
@@ -39,17 +39,15 @@ export default function ContactCircle() {
           <h2 className="about-display leading-[0.86]" style={{ fontSize: "clamp(3rem,13vw,10rem)" }}>
             Let&apos;s create.
           </h2>
-          <a
-            data-cursor="Email"
-            href={`mailto:${EMAIL}`}
-            className="about-display mt-8 inline-block text-[clamp(1.3rem,3vw,2.4rem)] underline-offset-[10px] transition-colors hover:text-[var(--gold-text)] hover:underline"
-            style={{ textTransform: "none" }}
-          >
-            {EMAIL}
-          </a>
-          <p className="about-body mx-auto mt-7 max-w-md text-[clamp(1rem,1.4vw,1.2rem)] leading-relaxed text-[#171717]/70">
-            Tell us the brand and the story. We will come to you and shoot it.
-          </p>
+          <div className="mt-10 flex justify-center">
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 rounded-full bg-[#171717] px-10 py-4 text-[clamp(15px,1.4vw,18px)] font-medium text-[#f9f6e4] transition-colors duration-300 hover:bg-[#2e2c26]"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+            >
+              Start here <span aria-hidden>⟶</span>
+            </Link>
+          </div>
         </div>
       </div>
     </section>

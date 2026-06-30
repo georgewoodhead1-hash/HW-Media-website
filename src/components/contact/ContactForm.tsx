@@ -69,6 +69,12 @@ export default function ContactForm() {
         {status === "sending" ? "Sending…" : <>Send <span aria-hidden>⟶</span></>}
       </button>
       {status === "error" && <p className="text-[14px] text-[#e0795f]">{error}</p>}
+      <div className="mt-6 border-t border-[var(--fg)]/12 pt-5 text-center">
+        <p className="text-[13px] text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+          Prefer email? Reach Harry directly at{" "}
+          <a href={`mailto:${EMAIL}`} className="text-[var(--gold-text)] underline-offset-4 hover:underline">{EMAIL}</a>
+        </p>
+      </div>
     </form>
   );
 }

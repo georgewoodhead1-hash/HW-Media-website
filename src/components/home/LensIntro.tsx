@@ -106,39 +106,34 @@ export default function LensIntro() {
           loop
           playsInline
         />
-        {/* KNOCKOUT MOTTO — one mix-blend-multiply layer: a mid-grey wash dims the
-            footage everywhere, but the WHITE letters punch through to the FULL
-            showreel, so the video literally plays INSIDE "Break the ordinary"
-            (interacts) while the dimmed surround keeps the scene visible + the text
-            readable. */}
-        <div className="pointer-events-none absolute inset-0 mix-blend-multiply">
-          <div className="absolute inset-0 bg-[#5e5e5e]" />
-          <div className="absolute left-0 top-[32%] px-5 md:px-10">
-            <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-white" aria-label="Break the ordinary.">
-              {LINES.map((line, li) => (
-                <span key={li} className="block">
-                  {line.split("").map((c, ci) => (
-                    <span key={ci} aria-hidden className="hero-char inline-block whitespace-pre">{c}</span>
-                  ))}
-                  {li === LINES.length - 1 && (
-                    <span aria-hidden className="hero-caret ml-1 inline-block h-[0.78em] w-[5px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
-                  )}
-                </span>
-              ))}
-            </h1>
-          </div>
+        {/* HEADLINE — its own blend layer (NO z-index, so it blends with the video
+            behind it). mix-blend-difference INVERTS the showreel inside the letters:
+            the type interacts with the footage, no wash dimming the video. */}
+        <div className="pointer-events-none absolute left-0 top-[30%] px-5 mix-blend-difference md:px-10">
+          <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-white" aria-label="Break the ordinary.">
+            {LINES.map((line, li) => (
+              <span key={li} className="block">
+                {line.split("").map((c, ci) => (
+                  <span key={ci} aria-hidden className="hero-char inline-block whitespace-pre">{c}</span>
+                ))}
+                {li === LINES.length - 1 && (
+                  <span aria-hidden className="hero-caret ml-1 inline-block h-[0.78em] w-[5px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
+                )}
+              </span>
+            ))}
+          </h1>
         </div>
 
-        {/* subtitle + CTA — normal blend, sitting under the headline (an invisible
-            copy of it reserves the space so they line up) */}
-        <div className="absolute left-0 top-[32%] z-10 px-5 md:px-10">
+        {/* subtitle + CTA — normal layer, left-aligned directly UNDER the headline
+            (an invisible copy reserves the headline's height so they line up). */}
+        <div className="absolute left-0 top-[30%] z-10 flex flex-col items-start px-5 md:px-10">
           <div aria-hidden className="invisible font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]">
             Break the<br />ordinary.
           </div>
           <div className="hero-sub">
             <p
               className="mt-5 max-w-md text-[clamp(1rem,1.5vw,1.35rem)] uppercase leading-snug tracking-[0.16em] text-white/90"
-              style={{ fontFamily: "var(--font-archivo), sans-serif" }}
+              style={{ fontFamily: "var(--font-archivo), sans-serif", textShadow: "0 2px 14px rgba(0,0,0,0.65)" }}
             >
               we go where the story is
             </p>

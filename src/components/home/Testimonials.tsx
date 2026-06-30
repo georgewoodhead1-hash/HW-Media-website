@@ -218,95 +218,101 @@ export default function Testimonials() {
       </svg>
       <span aria-hidden className="t-fullstop pointer-events-none fixed left-0 top-0 z-[80] h-[20px] w-[20px] rounded-[3px] bg-[var(--gold)] opacity-0 shadow-[0_0_24px_rgba(191,170,83,0.85)] will-change-transform" />
 
-      <div className="grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-12 md:px-10 lg:gap-16">
-        {/* LEFT — title at the top (so the film aligns to it), then the active
-            quote + brand, then the three clickable dots. */}
-        <div className="flex flex-col">
-          <h2 className="t-head about-display max-w-3xl text-[clamp(2rem,4.4vw,3.8rem)] leading-[1.0] text-[var(--fg)]">
-            Testimonials
-          </h2>
-
-          <div data-rise className="mt-8 flex min-h-[clamp(13rem,19vw,16rem)] flex-col" ref={quoteRef}>
-            <blockquote
-              className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
-              style={{ fontWeight: 400 }}
-            >
-              <span className="not-italic text-[var(--gold-text)]">&ldquo;</span>
-              {current.quote}
-              <span className="not-italic text-[var(--gold-text)]">&rdquo;</span>
-            </blockquote>
-
-            <figcaption
-              className="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
-            >
-              <span className="text-base font-medium text-[var(--fg)]">{current.brand}</span>
-              <span className="text-sm text-[var(--fg)]/45">{current.role} · {current.sector}</span>
-            </figcaption>
-          </div>
-
-          {/* the dots row — the flying gold full stop lands here and clicks into
-              the (bigger) selector dots. */}
-          <div className="relative -ml-3 mt-9 flex items-center">
-            {TESTIMONIALS.map((t, i) => (
-              <button
-                key={t.slug}
-                type="button"
-                onClick={() => setActive(i)}
-                aria-pressed={i === active}
-                aria-label={`Show ${t.brand} testimonial`}
-                className="group flex items-center justify-center p-3"
-              >
-                <span
-                  className={`t-dot block rounded-full transition-[width,height,background-color] duration-300 ${
-                    i === active ? "h-5 w-5 bg-[var(--gold)]" : "h-3.5 w-3.5 bg-[var(--fg)]/30 group-hover:bg-[var(--fg)]/60"
-                  }`}
-                />
-              </button>
-            ))}
-          </div>
+      <div className="px-5 md:px-10 lg:px-14">
+        {/* eyebrow + index */}
+        <div className="t-head flex items-center gap-5">
+          <span className="text-[clamp(0.7rem,0.9vw,0.85rem)] font-medium uppercase tracking-[0.3em] text-[var(--gold-text)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+            What they say
+          </span>
+          <span aria-hidden className="h-px w-[clamp(36px,7vw,110px)] bg-[var(--hairline-dark)]" />
+          <span className="label-mono text-[11px] tracking-[0.22em] text-[var(--fg)]/35">
+            {String(active + 1).padStart(2, "0")} &mdash; {String(TESTIMONIALS.length).padStart(2, "0")}
+          </span>
         </div>
 
-        {/* RIGHT — tall portrait (3:4) film, top-aligned with the title */}
-        <Link
-          data-rise
-          href={`/work/${current.slug}`}
-          aria-label={`View project — ${current.role}, ${current.sector}`}
-          className="group relative mx-auto block aspect-[3/4] w-full max-h-[64vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
-        >
-          {TESTIMONIALS.map((t, i) => {
-            const film = filmFor(t.slug);
-            return (
-              <video
-                key={t.slug}
-                ref={(el) => {
-                  videoRefs.current[i] = el;
-                }}
-                className="absolute inset-0 h-full w-full object-cover opacity-0 will-change-[opacity]"
-                data-src={film.loop}
-                poster={film.poster}
-                muted
-                loop
-                playsInline
-                preload="none"
-              />
-            );
-          })}
-          {/* subtle gradient so the View-project affordance stays legible */}
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"
-          />
-          <span
-            className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold-text)]"
-            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+        <div className="mt-[6vh] grid grid-cols-1 items-end gap-12 lg:grid-cols-[1fr_minmax(300px,400px)] lg:gap-20">
+          {/* LEFT — the quote is the hero, then the brand, then the selectors */}
+          <div ref={quoteRef} className="flex flex-col">
+            <blockquote
+              data-rise
+              className="about-display flex min-h-[clamp(15rem,24vw,21rem)] flex-col justify-end text-[#f5f1e6]"
+              style={{ fontSize: "clamp(1.85rem,3.8vw,3.6rem)", lineHeight: 1.08, textTransform: "none", fontWeight: 500 }}
+            >
+              <span>
+                <span className="text-[var(--gold-text)]">&ldquo;</span>
+                {current.quote}
+                <span className="text-[var(--gold-text)]">&rdquo;</span>
+              </span>
+            </blockquote>
+
+            <div data-rise className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-3">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={`/logos/${current.logo}.png`} alt={current.brand} className={`max-h-7 w-auto ${current.logoMaxW} object-contain opacity-90`} />
+              <span aria-hidden className="hidden h-8 w-px bg-[var(--hairline-dark)] sm:block" />
+              <span className="text-[clamp(0.85rem,1vw,1.05rem)] text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+                {current.role} · {current.sector}
+              </span>
+            </div>
+
+            {/* selectors — refined progress pills; the gold line lands here */}
+            <div className="-ml-1 mt-11 flex items-center gap-2.5">
+              {TESTIMONIALS.map((t, i) => (
+                <button
+                  key={t.slug}
+                  type="button"
+                  onClick={() => setActive(i)}
+                  aria-pressed={i === active}
+                  aria-label={`Show ${t.brand} testimonial`}
+                  className="group flex items-center justify-center py-3"
+                >
+                  <span
+                    className={`t-dot block h-[7px] rounded-full transition-[width,background-color] duration-500 ${
+                      i === active ? "w-10 bg-[var(--gold)]" : "w-[7px] bg-[var(--fg)]/25 group-hover:bg-[var(--fg)]/55"
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT — tall portrait film, crossfading between brands */}
+          <Link
+            data-rise
+            href={`/work/${current.slug}`}
+            aria-label={`View project — ${current.role}, ${current.sector}`}
+            className="group relative block aspect-[3/4] max-h-[70vh] w-full overflow-hidden rounded-xl ring-1 ring-[var(--hairline-dark)] transition-[box-shadow,transform] duration-500 hover:shadow-[0_30px_80px_-30px_rgba(0,0,0,0.8)] hover:ring-[var(--gold)]/45"
           >
-            VIEW PROJECT
-            <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">
-              &rarr;
+            {TESTIMONIALS.map((t, i) => {
+              const film = filmFor(t.slug);
+              return (
+                <video
+                  key={t.slug}
+                  ref={(el) => {
+                    videoRefs.current[i] = el;
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover opacity-0 transition-transform duration-700 will-change-[opacity] group-hover:scale-[1.04]"
+                  data-src={film.loop}
+                  poster={film.poster}
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                />
+              );
+            })}
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/15" />
+            {/* brand mark, top-left */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={`/logos/${current.logo}.png`} alt="" aria-hidden className={`absolute left-5 top-5 z-10 max-h-5 w-auto ${current.logoMaxW} object-contain opacity-85`} />
+            <span
+              className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold-text)]"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+            >
+              VIEW PROJECT
+              <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">&rarr;</span>
             </span>
-          </span>
-        </Link>
+          </Link>
+        </div>
       </div>
     </section>
   );

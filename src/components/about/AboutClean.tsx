@@ -92,7 +92,7 @@ export default function AboutClean() {
         <p className="ab-fade text-[var(--gold-text)] text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.24em]" style={{ fontFamily: "var(--font-archivo), sans-serif" }}>
           About — HW Media
         </p>
-        <h1 className="ab-opener about-display mt-8 max-w-[19ch] text-[#f5f1e6]" style={{ fontSize: "clamp(2.4rem,6vw,5.4rem)", lineHeight: 1.04, textTransform: "none" }}>
+        <h1 className="ab-opener about-display mt-8 max-w-[19ch] text-[#f5f1e6]" style={{ fontSize: "clamp(2.4rem,6vw,5.4rem)", lineHeight: 1.04 }}>
           {OPENER}
         </h1>
         <div className="ab-fade mt-12">
@@ -101,7 +101,7 @@ export default function AboutClean() {
             className="inline-flex items-center gap-2 rounded-full bg-[var(--gold)] px-9 py-4 text-[clamp(14px,1.3vw,16px)] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-[#d7c476]"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
-            Start a project <span aria-hidden>⟶</span>
+            Start here <span aria-hidden>⟶</span>
           </Link>
         </div>
       </section>
@@ -109,14 +109,14 @@ export default function AboutClean() {
       {/* WHAT WE VALUE — LIGHT band for contrast, editorial row layout */}
       <section className="bg-[#f5f1e6] px-5 py-[16vh] text-[#171717] md:px-10">
         <div className="mx-auto max-w-6xl">
-          <h2 className="ab-head about-display mb-12 text-[#171717]" style={{ fontSize: "clamp(2rem,4.4vw,3.6rem)", textTransform: "none" }}>
+          <h2 className="ab-head about-display mb-12 text-[#171717]" style={{ fontSize: "clamp(2rem,4.4vw,3.6rem)" }}>
             What we value
           </h2>
           <div className="divide-y divide-[#171717]/12 border-y border-[#171717]/12">
             {VALUES.map((v) => (
               <div key={v.n} data-rise className="grid grid-cols-1 gap-2 py-7 md:grid-cols-[auto_0.8fr_1.5fr] md:items-baseline md:gap-12">
                 <span className="about-display text-[var(--gold-text)]" style={{ fontSize: "clamp(1rem,1.3vw,1.2rem)" }}>{v.n}</span>
-                <h3 className="about-display text-[#171717]" style={{ fontSize: "clamp(1.7rem,2.8vw,2.6rem)", textTransform: "none" }}>{v.name}</h3>
+                <h3 className="about-display text-[#171717]" style={{ fontSize: "clamp(1.7rem,2.8vw,2.6rem)" }}>{v.name}</h3>
                 <p className="about-body text-[#171717]/65 text-[clamp(1rem,1.2vw,1.18rem)] leading-relaxed">{v.line}</p>
               </div>
             ))}
@@ -127,14 +127,14 @@ export default function AboutClean() {
       {/* WHAT WE DO — dark */}
       <section className="px-5 py-[16vh] md:px-10">
         <div className="mx-auto max-w-6xl">
-          <h2 className="ab-head about-display mb-12 text-[#f5f1e6]" style={{ fontSize: "clamp(2rem,4.4vw,3.6rem)", textTransform: "none" }}>
+          <h2 className="ab-head about-display mb-12 text-[#f5f1e6]" style={{ fontSize: "clamp(2rem,4.4vw,3.6rem)" }}>
             What we do
           </h2>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {/* editorial grid — top-ruled service names, not fake-clickable cards */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-9 sm:grid-cols-3 lg:grid-cols-4">
             {SERVICES.map((s) => (
-              <div key={s} data-rise className="group flex aspect-[4/3] flex-col justify-between rounded-md border border-[var(--gold)]/15 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--gold)]/55 hover:bg-[var(--gold)]/[0.04]">
-                <span className="text-[11px] uppercase tracking-[0.2em] text-[#f5f1e6]/40" style={{ fontFamily: "var(--font-archivo), sans-serif" }}>Service</span>
-                <h3 className="about-display text-[#f5f1e6] transition-colors duration-300 group-hover:text-[var(--gold-text)]" style={{ fontSize: "clamp(1.4rem,2.2vw,2.1rem)", textTransform: "none" }}>{s}</h3>
+              <div key={s} data-rise className="border-t border-[var(--gold)]/20 pt-4">
+                <h3 className="about-display text-[#f5f1e6]" style={{ fontSize: "clamp(1.3rem,1.9vw,1.9rem)" }}>{s}</h3>
               </div>
             ))}
           </div>
@@ -153,7 +153,7 @@ export default function AboutClean() {
             <span className="ab-fade block text-[var(--gold-text)] text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.2em]" style={{ fontFamily: "var(--font-archivo), sans-serif" }}>
               Behind the camera
             </span>
-            <h2 className="ab-head about-display mt-4 text-[#f5f1e6]" style={{ fontSize: "clamp(2.8rem,6vw,5rem)", lineHeight: 0.95, textTransform: "none" }}>
+            <h2 className="ab-head about-display mt-4 text-[#f5f1e6]" style={{ fontSize: "clamp(2.8rem,6vw,5rem)", lineHeight: 0.95 }}>
               Harry Wallis
             </h2>
             <p data-rise className="about-body mt-7 max-w-[56ch] text-[#f5f1e6]/75 text-[clamp(1.2rem,1.7vw,1.55rem)] leading-relaxed">

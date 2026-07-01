@@ -739,18 +739,9 @@ html[data-mode="dark"] .seam-out-band {
   .footer-wordmark { animation: none; background: var(--fg); }
 }
 
-/* Footer email — same gold light flowing through it, masked to the text. */
+/* Footer email — solid gold (no gradient-on-text). */
 .footer-email {
-  background: linear-gradient(100deg, var(--fg) 0%, var(--gold) 32%, #ecd98e 50%, var(--gold) 68%, var(--fg) 100%);
-  background-size: 220% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: footer-sweep 4s linear infinite;
-}
-@media (prefers-reduced-motion: reduce) {
-  .footer-email { animation: none; color: var(--gold-text); -webkit-text-fill-color: var(--gold-text); }
+  color: var(--gold-text);
 }
 
 /* ---- Trusted-by heading shimmer — white wordmark with a soft band that sweeps

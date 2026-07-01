@@ -56,11 +56,11 @@ export default function ContactForm() {
   return (
     <form onSubmit={onSubmit} className="mt-12 flex flex-col gap-4 text-left" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <input name="firstName" placeholder="First name" autoComplete="given-name" maxLength={80} className={FIELD} required />
-        <input name="lastName" placeholder="Last name" autoComplete="family-name" maxLength={80} className={FIELD} />
+        <input name="firstName" placeholder="First name" aria-label="First name" autoComplete="given-name" maxLength={80} className={FIELD} required />
+        <input name="lastName" placeholder="Last name (optional)" aria-label="Last name (optional)" autoComplete="family-name" maxLength={80} className={FIELD} />
       </div>
-      <input type="email" name="email" placeholder="Email address" autoComplete="email" maxLength={160} className={FIELD} required />
-      <textarea name="message" rows={5} placeholder="Message" maxLength={4000} className={FIELD} required />
+      <input type="email" name="email" placeholder="Email address" aria-label="Email address" autoComplete="email" maxLength={160} className={FIELD} required />
+      <textarea name="message" rows={5} placeholder="Message" aria-label="Message" maxLength={4000} className={FIELD} required />
       <button
         type="submit"
         disabled={status === "sending"}

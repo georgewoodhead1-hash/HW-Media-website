@@ -43,15 +43,15 @@ export default function Footer() {
         </nav>
 
         {/* socials */}
-        <div className="flex items-center gap-5">
-          <a href="https://www.instagram.com/hwmedia/" aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="opacity-70 transition-opacity hover:opacity-100">
+        <div className="-mr-3 flex items-center gap-1">
+          <a href="https://www.instagram.com/hwmedia/" aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-3 opacity-70 transition-opacity hover:opacity-100">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <rect x="3" y="3" width="18" height="18" rx="5" />
               <circle cx="12" cy="12" r="4.2" />
               <circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" />
             </svg>
           </a>
-          <a href="https://www.linkedin.com/in/harry-wallis-98b47b161/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" className="opacity-70 transition-opacity hover:opacity-100">
+          <a href="https://www.linkedin.com/in/harry-wallis-98b47b161/" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center p-3 opacity-70 transition-opacity hover:opacity-100">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
               <path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" />
             </svg>

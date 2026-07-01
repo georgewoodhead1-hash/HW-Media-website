@@ -109,11 +109,12 @@ html {
 }
 
 body {
-  /* Site-wide type (client): body now rides the About face (Archivo), so the whole
-     site shares one family. The nav, CTAs and micro-labels keep BR Firma via their
-     own explicit var(--font-firma). */
-  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  /* Site-wide body type: Geist — the clean grotesque 1820 Productions uses (free
+     / OFL), adopted to match their font style. Big display headings keep Archivo
+     (condensed) below; nav/CTAs/labels keep BR Firma via their own --font-firma. */
+  font-family: var(--font-geist), "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
+  letter-spacing: -0.01em;
   /* Safety net against horizontal overflow on narrow viewports. `clip` (not
      `hidden`) is used so it never creates a scroll container — `position: sticky`
      (OurWork pin, nav) keeps working. Full-bleed marquees / animation transients

@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Footer from "@/components/shell/Footer";
 import WorkGallery from "@/components/work/WorkGallery";
 import ProjectCTA from "@/components/shell/ProjectCTA";
-import SiteIntro from "@/components/shell/SiteIntro";
 
 export const metadata: Metadata = {
   title: "Work",
@@ -32,14 +31,13 @@ export const metadata: Metadata = {
 export default function WorkIndex() {
   return (
     <>
-      <SiteIntro words={["Our", "work"]} />
       <main data-theme="dark" data-surface="page" className="min-h-screen bg-[var(--bg)] text-[var(--fg)]">
         <div className="pt-28">
           <WorkGallery />
         </div>
 
-        {/* the SAME "Let's create" growing circle as the About page */}
-        <ProjectCTA />
+        {/* client: "Have a project in mind? Start here" — centered on the Work page */}
+        <ProjectCTA centered />
       </main>
       <Footer />
     </>

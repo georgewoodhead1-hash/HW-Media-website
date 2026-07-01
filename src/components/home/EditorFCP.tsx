@@ -1,72 +1,108 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
-import { safePlay } from "@/lib/video";
+import { useEffect, useRef } from "react";
+import { gsap, SplitText } from "@/lib/gsap";
 
-// Our process — a HOVER interaction (not a scroll-scrub). Four films in a
-// symmetric row; hover (or focus/tap) one and the big stage line at the top
-// swaps to that stage, the film brightens + plays, the others dim. The "We
-// deliver." tile carries a gold full stop (.wd-stop) that the testimonials
-// section peels off into its dots.
+// Our process — a full-bleed STACKING SERVICES list (1820 Productions structure,
+// client-requested): a big statement, then four numbered rows edge-to-edge, each
+// split by a hairline — number + title on the left, copy on the right. A gold
+// timeline line fills down the left as you scroll (timeline feel, no sky imagery).
+// The last row's full stop ("In motion.") is what the testimonials dot peels off.
+
 interface Stage {
+  n: string;
   name: string;
-  sub: string;
-  clip: string;
+  copy: string;
 }
 
 const STAGES: Stage[] = [
-  { name: "We plan", sub: "Brief, treatment, locations, schedule.", clip: "/videos/micro/m02.mp4" },
-  { name: "We film", sub: "Direction and cinematography, on location.", clip: "/videos/micro/m07.mp4" },
-  { name: "We edit", sub: "Edit, grade, sound and motion, all in-house.", clip: "/videos/micro/m10.mp4" },
-  { name: "We deliver", sub: "The master plus every cutdown your channels need.", clip: "/videos/micro/m12.mp4" },
+  {
+    n: "01",
+    name: "Pre-production",
+    copy: "Brief, treatment, casting, locations and schedule. We map the whole shoot before a single frame is captured, so the day runs like clockwork and the idea survives contact with the real world.",
+  },
+  {
+    n: "02",
+    name: "Production",
+    copy: "Direction and cinematography on location. A tight crew, the right kit, and a director behind the camera rather than watching a monitor. Wherever it can be done in-camera, we do it in-camera.",
+  },
+  {
+    n: "03",
+    name: "Post-production",
+    copy: "Edit, grade, sound and motion, all under one roof. Where the film finds its rhythm: cut with intent, coloured with care, finished to a master plus every cutdown your channels need.",
+  },
+  {
+    n: "04",
+    name: "In motion",
+    copy: "Aerial, timelapse and the moving-image extras that lift a film. CAA-authorised drone work and motion design, handled by the same crew, so nothing is outsourced and nothing is lost in translation.",
+  },
 ];
 
 export default function EditorFCP() {
   const rootRef = useRef<HTMLElement>(null);
-  const vids = useRef<(HTMLVideoElement | null)[]>([]);
-  const [active, setActive] = useState(3); // default to "We deliver" so the full stop is home on load
+  const lineRef = useRef<HTMLSpanElement>(null);
 
-  // entrance — eyebrow, heading and tiles rise in as the section enters
   useEffect(() => {
     const el = rootRef.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
     const ctx = gsap.context(() => {
+      const splits: SplitText[] = [];
+
+      // header rises in
       gsap.from(".proc-rise", {
         autoAlpha: 0,
-        y: 44,
+        y: 40,
         duration: 0.85,
         ease: "power3.out",
-        stagger: 0.09,
+        stagger: 0.1,
         scrollTrigger: { trigger: el, start: "top 72%" },
       });
+
+      // each row: number + title rise as it enters; the copy WRITES itself in
+      // (greyed words filling as you scroll — the house motif).
+      gsap.utils.toArray<HTMLElement>(".proc-row").forEach((row) => {
+        gsap.from(row.querySelectorAll(".proc-rowhead"), {
+          autoAlpha: 0,
+          y: 30,
+          duration: 0.7,
+          ease: "power3.out",
+          scrollTrigger: { trigger: row, start: "top 82%" },
+        });
+        const copy = row.querySelector<HTMLElement>(".proc-copy");
+        if (copy) {
+          const s = new SplitText(copy, { type: "words", wordsClass: "proc-word" });
+          splits.push(s);
+          gsap.set(s.words, { autoAlpha: 0.18 });
+          gsap.to(s.words, {
+            autoAlpha: 1,
+            ease: "none",
+            stagger: 0.03,
+            scrollTrigger: { trigger: row, start: "top 78%", end: "top 40%", scrub: 0.7 },
+          });
+        }
+      });
+
+      // gold timeline line fills down the left as the section scrolls
+      if (lineRef.current) {
+        gsap.fromTo(
+          lineRef.current,
+          { scaleY: 0 },
+          {
+            scaleY: 1,
+            ease: "none",
+            transformOrigin: "top",
+            scrollTrigger: { trigger: ".proc-rows", start: "top 70%", end: "bottom 72%", scrub: 0.8 },
+          },
+        );
+      }
+
+      return () => splits.forEach((s) => s.revert());
     }, el);
+
     return () => ctx.revert();
   }, []);
-
-  // play the active film, pause the rest
-  useEffect(() => {
-    vids.current.forEach((v, i) => {
-      if (!v) return;
-      if (i === active) safePlay(v);
-      else v.pause();
-    });
-  }, [active]);
-
-  // swap the big stage line smoothly on hover
-  useEffect(() => {
-    const el = rootRef.current;
-    if (!el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    gsap.fromTo(
-      el.querySelectorAll(".proc-active"),
-      { autoAlpha: 0, y: 14 },
-      { autoAlpha: 1, y: 0, duration: 0.4, ease: "power2.out", stagger: 0.05, overwrite: true },
-    );
-  }, [active]);
-
-  const current = STAGES[active];
 
   return (
     <section
@@ -74,66 +110,47 @@ export default function EditorFCP() {
       id="process"
       data-theme="dark"
       data-surface="media"
-      className="relative z-20 bg-[var(--bg)] px-5 py-[11vh] text-[var(--fg)] md:px-10"
+      className="relative z-20 border-y border-[var(--hairline-dark)] bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our process"
     >
-      <div className="mx-auto max-w-6xl">
-        <p className="proc-rise label-mono text-[11px] uppercase tracking-[0.26em] text-[var(--gold-text)]">Our process</p>
+      {/* header — full width, generous */}
+      <div className="px-5 pb-[7vh] pt-[13vh] md:px-10">
+        <p className="proc-rise label-mono text-[11px] uppercase tracking-[0.28em] text-[var(--gold-text)]">Our process</p>
+        <h2 className="proc-rise mt-6 max-w-[16ch] font-display text-[clamp(2.6rem,6.4vw,5.6rem)] leading-[0.9]">
+          Idea to master, every frame in-house.
+        </h2>
+      </div>
 
-        {/* the active stage — swaps on hover */}
-        <div className="proc-rise mt-5 min-h-[clamp(5.5rem,9vw,8rem)]">
-          <h2 className="proc-active font-display text-[clamp(2.6rem,6vw,5.2rem)] leading-[0.88]">
-            {current.name}
-            <span className="text-[var(--gold-text)]">.</span>
-          </h2>
-          <p
-            className="proc-active mt-4 max-w-md text-[clamp(1rem,1.4vw,1.25rem)] leading-snug text-[var(--fg)]/85"
-            style={{ fontFamily: "var(--font-firma), sans-serif" }}
+      {/* the stacking rows — edge to edge, split by hairlines, timeline line left */}
+      <div className="proc-rows relative">
+        {/* the timeline rail + gold fill, in the left gutter (desktop) */}
+        <span aria-hidden className="pointer-events-none absolute bottom-0 top-0 left-5 hidden w-px bg-[var(--hairline-dark)] md:left-10 md:block" />
+        <span
+          ref={lineRef}
+          aria-hidden
+          className="pointer-events-none absolute bottom-0 top-0 left-5 hidden w-px origin-top bg-[var(--gold)] md:left-10 md:block"
+        />
+
+        {STAGES.map((s, i) => (
+          <div
+            key={s.name}
+            className="proc-row grid grid-cols-1 gap-y-4 border-t border-[var(--hairline-dark)] px-5 py-[7vh] md:grid-cols-[6rem_minmax(0,0.85fr)_minmax(0,1.35fr)] md:items-baseline md:gap-x-10 md:px-10 md:py-[8vh]"
           >
-            {current.sub}
-          </p>
-        </div>
-
-        {/* the four films — symmetric row */}
-        <div className="proc-rise mt-[4vh] grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
-          {STAGES.map((s, i) => (
-            <button
-              key={s.name}
-              type="button"
-              onMouseEnter={() => setActive(i)}
-              onFocus={() => setActive(i)}
-              aria-label={s.name}
-              aria-pressed={i === active}
-              className={`group relative aspect-[3/4] overflow-hidden rounded-lg ring-1 transition-all duration-500 ${
-                i === active ? "ring-[var(--gold)]/60" : "ring-[var(--hairline-dark)]"
-              }`}
+            <span className="proc-rowhead label-mono text-[13px] tracking-[0.18em] text-[var(--gold-text)] md:pl-[calc(1.25rem)]">
+              {s.n}
+            </span>
+            <h3 className="proc-rowhead font-display text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[0.98]">
+              {s.name}
+              {i === STAGES.length - 1 && <span className="wd-stop text-[var(--gold-text)]">.</span>}
+            </h3>
+            <p
+              className="proc-copy max-w-[52ch] text-[clamp(1.02rem,1.35vw,1.28rem)] leading-[1.5] text-[var(--fg)]/85"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
-              <video
-                ref={(el) => {
-                  vids.current[i] = el;
-                }}
-                className={`absolute inset-0 h-full w-full object-cover transition-all duration-[650ms] ${
-                  i === active ? "scale-105 opacity-100" : "opacity-45 grayscale"
-                }`}
-                src={s.clip}
-                poster={s.clip.replace("micro/", "micro/posters/").replace(".mp4", ".jpg")}
-                muted
-                loop
-                playsInline
-                preload="metadata"
-                aria-hidden
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 flex items-baseline justify-between p-4">
-                <span className="label-mono text-[11px] tracking-[0.2em] text-white/80">0{i + 1}</span>
-                <span className="font-display text-[clamp(0.95rem,1.4vw,1.35rem)] text-white">
-                  {s.name}
-                  {i === 3 && <span className="wd-stop text-[var(--gold-text)]">.</span>}
-                </span>
-              </div>
-            </button>
-          ))}
-        </div>
+              {s.copy}
+            </p>
+          </div>
+        ))}
       </div>
     </section>
   );

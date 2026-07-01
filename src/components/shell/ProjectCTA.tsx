@@ -4,7 +4,8 @@ import Link from "next/link";
 
 // Footer CTA for the About + Work pages (replaces the "Let's create" circle, per
 // client): one big on-location image, a short line, and a "Start here" button.
-export default function ProjectCTA() {
+// `centered` stacks the line + button in the middle (client wants this on Work).
+export default function ProjectCTA({ centered = false }: { centered?: boolean }) {
   return (
     <section
       data-theme="dark"
@@ -18,8 +19,14 @@ export default function ProjectCTA() {
         alt="HW Media on location"
         className="absolute inset-0 h-full w-full object-cover object-center"
       />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/25" />
-      <div className="relative z-10 flex min-h-[82vh] flex-col items-start justify-end px-5 pb-[11vh] md:px-10 md:pb-[13vh]">
+      <div aria-hidden className={`absolute inset-0 ${centered ? "bg-black/55" : "bg-gradient-to-t from-black/85 via-black/45 to-black/25"}`} />
+      <div
+        className={`relative z-10 flex min-h-[82vh] flex-col px-5 md:px-10 ${
+          centered
+            ? "items-center justify-center pb-0 text-center"
+            : "items-start justify-end pb-[11vh] md:pb-[13vh]"
+        }`}
+      >
         <p className="font-display text-white" style={{ fontSize: "clamp(2.4rem,6vw,5rem)", lineHeight: 0.92 }}>
           Have a project in mind?
         </p>

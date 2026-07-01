@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import {
   Archivo,
   Dancing_Script,
+  Geist,
   Hanken_Grotesk,
   IBM_Plex_Mono,
   Instrument_Serif,
@@ -19,6 +20,14 @@ const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   axes: ["wdth"],
+});
+
+// Geist — the clean grotesque 1820 Productions serves (free / OFL). Adopted as
+// the body/UI face to match their font style. (Their display face is the paid
+// Suisse Int'l Condensed; buy a licence if an exact match is wanted later.)
+const geist = Geist({
+  variable: "--font-geist",
+  subsets: ["latin"],
 });
 
 const instrument = Instrument_Serif({
@@ -171,7 +180,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${firma.variable} h-full antialiased`}
+      className={`${archivo.variable} ${geist.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${firma.variable} h-full antialiased`}
     >
       <head>
         {/* restore the saved mode before first paint — no flash */}

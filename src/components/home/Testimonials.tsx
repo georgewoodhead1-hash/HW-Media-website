@@ -266,10 +266,10 @@ export default function Testimonials() {
   return (
     <section
       ref={rootRef}
-      data-theme="dark"
-      data-surface="media"
+      data-theme="light"
+      data-surface="band"
       data-chapter="05 — Testimonials"
-      className="relative z-30 overflow-x-clip bg-[var(--bg)] pb-[9vh] pt-[5vh] text-[var(--fg)] motion-safe:md:-mt-[12vh]"
+      className="relative z-30 overflow-x-clip rounded-t-[2rem] bg-[var(--bg)] pb-[9vh] pt-[8vh] text-[var(--fg)] shadow-[0_-40px_80px_rgba(0,0,0,0.35)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"
     >
       {/* the gold full stop carried from "We deliver." — fixed to the viewport, it

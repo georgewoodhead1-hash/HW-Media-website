@@ -88,7 +88,7 @@ export default function AboutClean() {
   return (
     <main ref={root} className="on-media relative overflow-x-clip bg-[#050505] text-[#f5f1e6]">
       {/* OPENER — the statement IS the heading; writes itself in */}
-      <section className="mx-auto flex min-h-[90vh] max-w-6xl flex-col justify-center px-5 py-[16vh] md:px-10">
+      <section className="mx-auto flex min-h-[90vh] max-w-[1600px] flex-col justify-center px-5 py-[16vh] md:px-10">
         <p className="ab-fade text-[var(--gold-text)] text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.24em]" style={{ fontFamily: "var(--font-archivo), sans-serif" }}>
           About — HW Media
         </p>
@@ -108,7 +108,7 @@ export default function AboutClean() {
 
       {/* WHAT WE VALUE — LIGHT band for contrast, editorial row layout */}
       <section className="bg-[#f5f1e6] px-5 py-[16vh] text-[#171717] md:px-10">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-[1600px]">
           <h2 className="ab-head about-display mb-12 text-[#171717]" style={{ fontSize: "clamp(2rem,4.4vw,3.6rem)", textTransform: "none" }}>
             What we value
           </h2>
@@ -126,7 +126,7 @@ export default function AboutClean() {
 
       {/* WHAT WE DO — dark */}
       <section className="px-5 py-[16vh] md:px-10">
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto max-w-[1600px]">
           <h2 className="ab-head about-display mb-12 text-[#f5f1e6]" style={{ fontSize: "clamp(2rem,4.4vw,3.6rem)", textTransform: "none" }}>
             What we do
           </h2>
@@ -143,7 +143,7 @@ export default function AboutClean() {
 
       {/* BEHIND THE CAMERA — Harry, smaller photo + bigger text */}
       <section className="px-5 py-[18vh] md:px-10">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 md:grid-cols-[0.6fr_1.4fr] md:gap-16">
+        <div className="mx-auto grid max-w-[1600px] items-center gap-10 md:grid-cols-[0.6fr_1.4fr] md:gap-16">
           <div data-rise className="ab-portrait relative aspect-[3/2] w-full max-w-[460px] overflow-hidden rounded-md ring-1 ring-[var(--gold)]/15">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/harry-field.jpg" alt="Harry Wallis behind the camera" className="h-[116%] w-full object-cover object-[30%_center]" />

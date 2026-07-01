@@ -70,7 +70,7 @@ export default function OurWork() {
 
       // ENTRANCE — type "Featured Projects" like a typewriter AS YOU SCROLL in: the
       // chars light up tied to scroll, the gold caret fading out as the line finishes.
-      const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 84%", end: "top 50%", scrub: 0.7 } });
+      const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 68%", end: "top 42%", scrub: 0.7 } });
       typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.05, ease: "none" }, 0);
       typeTl.to(caret, { autoAlpha: 0, duration: 0.06 }, ">0.06");
 
@@ -101,7 +101,7 @@ export default function OurWork() {
 
       const st = ScrollTrigger.create({
         trigger: root,
-        start: "top bottom",
+        start: "top 55%",
         end: "bottom bottom",
         scrub: 1.1,
         onUpdate: (self) => place(self.progress),

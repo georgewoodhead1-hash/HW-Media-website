@@ -53,6 +53,13 @@ export default function Nav() {
       { y: -12, autoAlpha: 0 },
       { y: 0, autoAlpha: 1, duration: 0.6, stagger: 0.06, ease: "expo.out", delay: 0.2, clearProps: "opacity,transform" },
     );
+    // top-right links ride UP into place one after another, left→right — a single
+    // Mexican-wave that settles as the page loads.
+    gsap.fromTo(
+      el.querySelectorAll(".nav-link"),
+      { yPercent: 120, autoAlpha: 0 },
+      { yPercent: 0, autoAlpha: 1, duration: 0.6, stagger: 0.09, ease: "back.out(1.7)", delay: 0.4, clearProps: "opacity,transform" },
+    );
   }, []);
 
   // the nav re-themes to the surface it sits over so it stays readable
@@ -135,7 +142,7 @@ export default function Nav() {
               key={l.label}
               href={l.href}
               onMouseEnter={movePill}
-              className="nav-enter relative rounded-full px-4 py-2 text-[14px] font-medium uppercase tracking-[0.14em] text-[var(--fg)] transition-colors duration-300"
+              className="nav-link relative rounded-full px-4 py-2 text-[14px] font-medium uppercase tracking-[0.14em] text-[var(--fg)] transition-colors duration-300"
             >
               {l.label}
             </Link>

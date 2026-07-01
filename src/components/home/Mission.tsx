@@ -50,7 +50,6 @@ export default function Mission() {
           as="h2"
           className="font-display text-[clamp(2rem,3.4vw,3.4rem)] leading-[0.95]"
           gold={["not"]}
-          style={{ textShadow: "0 4px 26px rgba(0,0,0,0.7), 0 1px 2px rgba(0,0,0,0.6)" }}
         >
           Films, not content.
         </ScrollType>

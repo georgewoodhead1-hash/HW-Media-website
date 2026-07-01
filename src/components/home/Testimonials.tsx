@@ -100,26 +100,30 @@ export default function Testimonials() {
       gsap.set(root.querySelectorAll(".t-qword"), { opacity: 0 }); // greyed scroll-write words start hidden
 
       const HALF = 14; // half the 28px dot, to centre it on a point
-      // the LIVE "We deliver." full stop element, so the dot sits ON it on any screen
-      const wdStop = (() => {
-        const ss = Array.from(document.querySelectorAll<HTMLElement>("#process h2 span")).filter((s) => s.textContent?.trim() === ".");
-        return ss[ss.length - 1] ?? null;
-      })();
+      // the LIVE gold full stop on the "We deliver" TILE in the hover process, so the
+      // dot peels off that exact tile on any screen (George's pick).
+      const wdStop = document.querySelector<HTMLElement>("#process .wd-stop");
       let lockedSx = 0, lockedSy = 0; // the full stop's position, latched during the hold
       let firstOff = -1, firstX = 0; // the first dot's layout offset from the section top, cached while unpinned
 
-      const procTop = () => {
-        const p = document.querySelector<HTMLElement>("#process");
-        return p ? p.getBoundingClientRect().top + window.scrollY : 0;
+      // absolute document Y of the tile full stop, and of the testimonials root — both
+      // stable regardless of scroll, so the ride's scroll range is screen-independent.
+      const wdAbsY = () => {
+        if (!wdStop) return root.getBoundingClientRect().top + window.scrollY - window.innerHeight;
+        const r = wdStop.getBoundingClientRect();
+        return r.top + window.scrollY;
       };
+      const rootTop = () => root.getBoundingClientRect().top + window.scrollY;
 
       // ── PHASE 1 — the full stop HOLDS on "We deliver." while the words fade out,
       // THEN glides across to the first dot on ONE clean bezier, CLICKS into place,
       // and crossfades into the real dot (no jump). NO line.
       const ride = ScrollTrigger.create({
         trigger: root,
-        start: () => procTop() + 2.05 * window.innerHeight,
-        end: () => procTop() + 3.7 * window.innerHeight,
+        // the dot appears while the "We deliver" tile sits ~62% down the viewport,
+        // holds on it, then rides into the testimonials as the section pins.
+        start: () => wdAbsY() - 0.62 * window.innerHeight,
+        end: () => rootTop() + 0.25 * window.innerHeight,
         scrub: 1.4, // buttery
         invalidateOnRefresh: true,
         onUpdate: (self) => {

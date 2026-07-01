@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap, SplitText } from "@/lib/gsap";
-import ContactCircle from "./ContactCircle";
+import ProjectCTA from "@/components/shell/ProjectCTA";
 
 // About — opens on the statement (writes itself in on load + scroll), then a LIGHT
 // values band for contrast, what we do, Harry behind the camera, and Let's create.
@@ -163,7 +163,7 @@ export default function AboutClean() {
         </div>
       </section>
 
-      <ContactCircle />
+      <ProjectCTA />
     </main>
   );
 }

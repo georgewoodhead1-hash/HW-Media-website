@@ -285,11 +285,11 @@ export default function Testimonials() {
               className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
               style={{ fontWeight: 400 }}
             >
-              <span className="not-italic text-[var(--gold-text)]">&ldquo;</span>
+              <span className="t-qword not-italic text-[var(--gold-text)]">&ldquo;</span>
               {current.quote.split(" ").map((w, i) => (
                 <span key={`${active}-${i}`} className="t-qword">{w}{" "}</span>
               ))}
-              <span className="not-italic text-[var(--gold-text)]">&rdquo;</span>
+              <span className="t-qword not-italic text-[var(--gold-text)]">&rdquo;</span>
             </blockquote>
 
             <figcaption

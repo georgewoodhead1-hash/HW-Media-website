@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Footer from "@/components/shell/Footer";
 import WorkGallery from "@/components/work/WorkGallery";
-import ContactCircle from "@/components/about/ContactCircle";
+import ProjectCTA from "@/components/shell/ProjectCTA";
 import SiteIntro from "@/components/shell/SiteIntro";
 
 export const metadata: Metadata = {
@@ -39,7 +39,7 @@ export default function WorkIndex() {
         </div>
 
         {/* the SAME "Let's create" growing circle as the About page */}
-        <ContactCircle />
+        <ProjectCTA />
       </main>
       <Footer />
     </>

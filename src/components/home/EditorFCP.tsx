@@ -214,7 +214,7 @@ export default function EditorFCP() {
       data-theme="dark"
       data-surface="media"
       data-chapter="Our process"
-      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[10vh] motion-safe:md:h-[360vh]"
+      className="relative z-20 bg-[var(--bg)] motion-safe:md:-mt-[26vh] motion-safe:md:h-[360vh]"
       aria-label="Our process"
     >
       <div className="sticky top-0 hidden h-screen overflow-hidden bg-[var(--bg)] md:block">
@@ -255,7 +255,7 @@ export default function EditorFCP() {
               <h2 className="font-display text-[clamp(3rem,8vw,7rem)] leading-[0.88]" style={{ fontWeight: 400 }}>
                 {s.name}<span className="text-[var(--gold-text)]">.</span>
               </h2>
-              <p className="mx-auto mt-5 max-w-md text-center text-[clamp(0.95rem,1.4vw,1.2rem)] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+              <p className="mx-auto mt-5 max-w-md text-center text-[clamp(0.95rem,1.4vw,1.2rem)] leading-snug text-[var(--fg)]/85" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
                 {s.sub}
               </p>
             </div>
@@ -280,7 +280,7 @@ export default function EditorFCP() {
           <article key={s.name} className="border-t border-[var(--hairline-dark)] py-8">
             <span className="text-[10px] text-[var(--gold-text)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>0{i + 1}</span>
             <h3 className="font-display mt-2 text-2xl">{s.name}.</h3>
-            <p className="mt-2 text-[15px] leading-snug text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.sub}</p>
+            <p className="mt-2 text-[15px] leading-snug text-[var(--fg)]/85" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.sub}</p>
           </article>
         ))}
       </MobileReveal>

@@ -20,8 +20,14 @@ const VALUES = [
 ];
 
 const SERVICES = [
-  "Brand films", "Documentary", "Commercial", "Photography",
-  "Live events", "Aerial", "Edit & grade", "Social cutdowns",
+  { name: "Brand films", clip: "/videos/micro/m01.mp4" },
+  { name: "Documentary", clip: "/videos/micro/m03.mp4" },
+  { name: "Commercial", clip: "/videos/micro/m05.mp4" },
+  { name: "Photography", clip: "/videos/micro/m04.mp4" },
+  { name: "Live events", clip: "/videos/micro/m06.mp4" },
+  { name: "Aerial", clip: "/videos/micro/m08.mp4" },
+  { name: "Edit & grade", clip: "/videos/micro/m10.mp4" },
+  { name: "Social cutdowns", clip: "/videos/micro/m11.mp4" },
 ];
 
 export default function AboutClean() {
@@ -132,9 +138,26 @@ export default function AboutClean() {
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((s) => (
-              <div key={s} data-rise className="group flex aspect-[4/3] flex-col justify-between rounded-md border border-[#f5f1e6]/12 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#f5f1e6]/50 hover:bg-[#f5f1e6]/[0.04]">
-                <span className="text-[11px] uppercase tracking-[0.2em] text-[#f5f1e6]/40" style={{ fontFamily: "var(--font-firma), sans-serif" }}>Service</span>
-                <h3 className="about-display text-[#f5f1e6] transition-colors duration-300 group-hover:text-[#f5f1e6]" style={{ fontSize: "clamp(1.4rem,2.2vw,2.1rem)", textTransform: "none" }}>{s}</h3>
+              <div
+                key={s.name}
+                data-rise
+                className="group relative flex aspect-[4/3] flex-col justify-end overflow-hidden rounded-md border border-[#f5f1e6]/12 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#f5f1e6]/45"
+                onMouseEnter={(e) => { const v = e.currentTarget.querySelector("video"); v?.play().catch(() => {}); }}
+                onMouseLeave={(e) => { e.currentTarget.querySelector("video")?.pause(); }}
+              >
+                {/* the service's film lives BEHIND the card, waking on hover */}
+                <video
+                  className="absolute inset-0 h-full w-full object-cover opacity-25 transition-opacity duration-500 group-hover:opacity-75"
+                  src={s.clip}
+                  poster={s.clip.replace("micro/", "micro/posters/").replace(".mp4", ".jpg")}
+                  muted
+                  loop
+                  playsInline
+                  preload="none"
+                  aria-hidden
+                />
+                <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+                <h3 className="about-display relative text-[#f5f1e6]" style={{ fontSize: "clamp(1.4rem,2.2vw,2.1rem)", textTransform: "none" }}>{s.name}</h3>
               </div>
             ))}
           </div>

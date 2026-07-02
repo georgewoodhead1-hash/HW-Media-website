@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { COMING, DISCOVER, FEATURED } from "@/content/gallery";
+import { DISCOVER, FEATURED } from "@/content/gallery";
+import Rule from "@/components/shell/Rule";
 import GalleryTile from "./GalleryTile";
 
 // The work wall. Three flush 3-col blocks in Harry's hierarchy order. Tiles reveal
@@ -48,8 +49,9 @@ export default function WorkGallery() {
         ))}
       </div>
 
-      <h2 data-ghead className="about-display px-5 pb-7 pt-[13vh] text-[clamp(1.7rem,4vw,3.2rem)] text-[var(--fg)] md:px-10">
-        Discover <span className="gold-lg">more</span>
+      <div className="px-5 pt-[13vh] md:px-10"><Rule /></div>
+      <h2 data-ghead className="about-display px-5 pb-9 pt-9 text-center text-[clamp(1.7rem,4vw,3.2rem)] text-[var(--fg)] md:px-10">
+        Discover more<span className="text-[var(--gold-text)]">.</span>
       </h2>
       <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
         {DISCOVER.map((it) => (
@@ -57,14 +59,7 @@ export default function WorkGallery() {
         ))}
       </div>
 
-      <h2 data-ghead className="about-display px-5 pb-7 pt-[13vh] text-[clamp(1.7rem,4vw,3.2rem)] text-[var(--fg)] md:px-10">
-        Coming <span className="gold-lg">soon</span>
-      </h2>
-      <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
-        {COMING.map((it) => (
-          <GalleryTile key={it.label} item={it} />
-        ))}
-      </div>
+
     </div>
   );
 }

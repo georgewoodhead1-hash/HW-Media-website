@@ -34,7 +34,7 @@ export default function ScrollType({
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const split = new SplitText(el, { type: "chars", charsClass: "st-char" });
+    const split = new SplitText(el, { type: "words,chars", charsClass: "st-char" }); // words+chars: chars-only drops whitespace ("FILMS,NOT")
     gsap.set(split.chars, { autoAlpha: 0 });
     // SCRUBBED typewriter — chars light up SHARPLY (not a soft fade) tied to scroll,
     // so the heading literally writes itself on as you scroll into the section.

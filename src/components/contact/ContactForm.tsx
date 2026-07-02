@@ -64,7 +64,7 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="lift-hover mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[var(--gold)] px-8 py-3.5 text-[15px] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-[#d7c476] disabled:opacity-60"
+        className="lift-hover mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f1e6] px-8 py-3.5 text-[15px] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-white disabled:opacity-60"
       >
         {status === "sending" ? "Sending…" : <>Send <span aria-hidden>⟶</span></>}
       </button>

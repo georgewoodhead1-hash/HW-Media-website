@@ -123,12 +123,19 @@ body {
 }
 
 /* ---- Type roles ----
-   Display voice = Archivo Expanded Black (George's pick over the client Playfair kit).
-   Normal keeps Archivo — compare :3003 vs :3004. */
+   Display voice = Suisse Int'l Condensed SemiBold — the 1820 display face
+   (George, 2026-07-02: "the font isn't the 1820, and it needs to be").
+   Archivo Expanded survives ONLY on the contact "Tell us more." heading
+   (via .display-archivo). */
 .font-display {
-  /* Unified with the About display face (client: "change the rest to the About
-     font"): expanded width + the heavier about weight, so every heading on the
-     site reads like the About page. */
+  font-family: var(--font-suisse-cond), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  text-transform: uppercase;
+  line-height: 0.92;
+}
+.display-archivo {
+  /* the kept "Tell us more." face */
   font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
   font-variation-settings: "wdth" 118;
   font-weight: 600;
@@ -649,24 +656,19 @@ html[data-mode="dark"] .seam-out-band {
   }
 }
 
-/* ---- About font (Bar Studios uses Owners Wide for everything). Owners is a
-   commercial Displaay / Adobe Fonts face — licence before launch. Until then we
-   stand it in with Archivo at expanded width, the closest face already loaded. */
+/* ---- About body rides the site subtext face (Suisse Book) ---- */
 .about-body {
-  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
-  font-variation-settings: "wdth" 100;
+  font-family: var(--font-suisse-book), "Helvetica Neue", Arial, sans-serif;
 }
 .about-display {
-  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
-  font-variation-settings: "wdth" 118;
+  font-family: var(--font-suisse-cond), "Helvetica Neue", Arial, sans-serif;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: -0.005em;
-  line-height: 0.9;
+  letter-spacing: -0.015em;
+  line-height: 0.92;
 }
 .about-label {
-  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
-  font-variation-settings: "wdth" 112;
+  font-family: var(--font-firma), "Helvetica Neue", Arial, sans-serif;
   font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.05em;

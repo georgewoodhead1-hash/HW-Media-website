@@ -48,7 +48,7 @@ export default function AboutClean() {
 
       // 2) SECTION HEADINGS — greyed characters that fill in as you scroll into them
       gsap.utils.toArray<HTMLElement>(".ab-head").forEach((h) => {
-        const s = new SplitText(h, { type: "chars", charsClass: "ab-hchar" });
+        const s = new SplitText(h, { type: "words,chars", charsClass: "ab-hchar" });
         splits.push(s);
         gsap.set(s.chars, { autoAlpha: 0.16 });
         gsap.to(s.chars, {
@@ -89,7 +89,7 @@ export default function AboutClean() {
     <main ref={root} className="on-media relative overflow-x-clip bg-[#050505] text-[#f5f1e6]">
       {/* OPENER — the statement IS the heading; writes itself in */}
       <section className="mx-auto flex min-h-[90vh] max-w-[1600px] flex-col justify-center px-5 py-[16vh] md:px-10">
-        <p className="ab-fade text-[var(--gold-text)] text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.24em]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+        <p className="ab-fade text-[#f5f1e6]/55 text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.24em]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
           About — HW Media
         </p>
         <h1 className="ab-opener about-display mt-8 max-w-[19ch] text-[#f5f1e6]" style={{ fontSize: "clamp(2.4rem,6vw,5.4rem)", lineHeight: 1.04, textTransform: "none" }}>
@@ -98,7 +98,7 @@ export default function AboutClean() {
         <div className="ab-fade mt-12">
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-full bg-[var(--gold)] px-9 py-4 text-[clamp(14px,1.3vw,16px)] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-[#d7c476]"
+            className="inline-flex items-center gap-2 rounded-full bg-[#f5f1e6] px-9 py-4 text-[clamp(14px,1.3vw,16px)] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-white"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             Start a project <span aria-hidden>⟶</span>
@@ -115,7 +115,7 @@ export default function AboutClean() {
           <div className="divide-y divide-[#171717]/12 border-y border-[#171717]/12">
             {VALUES.map((v) => (
               <div key={v.n} data-rise className="grid grid-cols-1 gap-2 py-7 md:grid-cols-[auto_0.8fr_1.5fr] md:items-baseline md:gap-12">
-                <span className="about-display text-[var(--gold-text)]" style={{ fontSize: "clamp(1rem,1.3vw,1.2rem)" }}>{v.n}</span>
+                <span className="about-display text-[#171717]/40" style={{ fontSize: "clamp(1rem,1.3vw,1.2rem)" }}>{v.n}</span>
                 <h3 className="about-display text-[#171717]" style={{ fontSize: "clamp(1.7rem,2.8vw,2.6rem)", textTransform: "none" }}>{v.name}</h3>
                 <p className="about-body text-[#171717]/65 text-[clamp(1rem,1.2vw,1.18rem)] leading-relaxed">{v.line}</p>
               </div>
@@ -132,9 +132,9 @@ export default function AboutClean() {
           </h2>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {SERVICES.map((s) => (
-              <div key={s} data-rise className="group flex aspect-[4/3] flex-col justify-between rounded-md border border-[var(--gold)]/15 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[var(--gold)]/55 hover:bg-[var(--gold)]/[0.04]">
+              <div key={s} data-rise className="group flex aspect-[4/3] flex-col justify-between rounded-md border border-[#f5f1e6]/12 p-6 transition-all duration-300 hover:-translate-y-1 hover:border-[#f5f1e6]/50 hover:bg-[#f5f1e6]/[0.04]">
                 <span className="text-[11px] uppercase tracking-[0.2em] text-[#f5f1e6]/40" style={{ fontFamily: "var(--font-firma), sans-serif" }}>Service</span>
-                <h3 className="about-display text-[#f5f1e6] transition-colors duration-300 group-hover:text-[var(--gold-text)]" style={{ fontSize: "clamp(1.4rem,2.2vw,2.1rem)", textTransform: "none" }}>{s}</h3>
+                <h3 className="about-display text-[#f5f1e6] transition-colors duration-300 group-hover:text-[#f5f1e6]" style={{ fontSize: "clamp(1.4rem,2.2vw,2.1rem)", textTransform: "none" }}>{s}</h3>
               </div>
             ))}
           </div>
@@ -150,7 +150,7 @@ export default function AboutClean() {
             <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/45 to-transparent" />
           </div>
           <div>
-            <span className="ab-fade block text-[var(--gold-text)] text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.2em]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+            <span className="ab-fade block text-[#f5f1e6]/55 text-[clamp(0.78rem,1vw,0.95rem)] uppercase tracking-[0.2em]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
               Behind the camera
             </span>
             <h2 className="ab-head about-display mt-4 text-[#f5f1e6]" style={{ fontSize: "clamp(2.8rem,6vw,5rem)", lineHeight: 0.95, textTransform: "none" }}>

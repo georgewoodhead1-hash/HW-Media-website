@@ -106,11 +106,15 @@ export default function LensIntro() {
           loop
           playsInline
         />
-        {/* HEADLINE — its own blend layer (NO z-index, so it blends with the video
-            behind it). mix-blend-difference INVERTS the showreel inside the letters:
-            the type interacts with the footage, no wash dimming the video. */}
-        <div className="pointer-events-none absolute left-0 top-[30%] px-5 mix-blend-difference md:px-10">
-          <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-white" aria-label="Break the ordinary.">
+        {/* HEADLINE — solid cream, always legible. The difference-blend "invert"
+            rendered the brand line a random muddy colour per clip (slate on sand,
+            lilac on forest, bronze on snow) — killed for a scrim + solid type. */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 top-1/4 bg-gradient-to-t from-black/55 via-black/25 to-transparent"
+        />
+        <div className="pointer-events-none absolute left-0 top-[30%] px-5 md:px-10">
+          <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-[#f5f1e6]" aria-label="Break the ordinary.">
             {LINES.map((line, li) => (
               <span key={li} className="block">
                 {line.split("").map((c, ci) => (

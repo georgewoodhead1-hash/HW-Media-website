@@ -158,7 +158,7 @@ export default function WhirlwindGallery() {
         // start only when the section is PINNED and filling the screen — not when
         // its top edge first appears (that made the whole thing animate while the
         // FAQs were still on screen / way too early).
-        start: "top top",
+        start: "top 75%",
         end: "bottom bottom",
         scrub: 0.9,
         invalidateOnRefresh: true,
@@ -190,7 +190,7 @@ export default function WhirlwindGallery() {
       data-theme="dark"
       data-surface="media"
       data-chapter="The finale"
-      className="relative motion-safe:md:h-[340vh]"
+      className="relative motion-safe:md:h-[300vh]"
       aria-label="Every film is a chance to break the ordinary"
     >
       <div
@@ -222,7 +222,7 @@ export default function WhirlwindGallery() {
               {LINE_B.split(" ").map((w, wi, arr) => {
                 const isGold = w.replace(/[^a-zA-Z]/g, "").toLowerCase() === "break";
                 return (
-                  <span key={`b${wi}`} className={`inline-block whitespace-nowrap ${isGold ? "text-[var(--gold-text)]" : ""}`}>
+                  <span key={`b${wi}`} className={`inline-block whitespace-nowrap ${isGold ? "" : ""}`}>
                     {w.split("").map((c, i) => (
                       <span key={i} className="type-char">{c}</span>
                     ))}
@@ -280,7 +280,7 @@ export default function WhirlwindGallery() {
       {/* mobile/reduced: line + grid + CTA + slim footer */}
       <div className="px-5 py-24 md:hidden">
         <p className="font-display text-2xl">
-          Every film is a chance to <span className="text-[var(--gold-text)]">break</span> the ordinary.
+          Every film is a chance to break the ordinary.
         </p>
         <div className="mt-8 grid grid-cols-2 gap-4">
           {TILES.slice(0, 6).map((src, i) => (

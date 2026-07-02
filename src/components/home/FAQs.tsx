@@ -87,7 +87,7 @@ export default function FAQs() {
         <div className="relative md:w-[40%] md:pl-6 lg:w-[36%] lg:pl-10">
           <div className="faq-pin">
           <h2 className="faq-head font-display text-[clamp(2.4rem,4.4vw,4.2rem)] leading-[0.95]">
-            <span className="text-[var(--gold-text)]">FAQs</span>
+            <span>FAQs</span>
           </h2>
           <div ref={reelRef} className="mt-9 aspect-[9/16] w-full max-w-[300px] overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black will-change-transform md:mt-9 md:w-[clamp(180px,80%,300px)]">
             <video
@@ -120,7 +120,7 @@ export default function FAQs() {
                   <span className="flex items-baseline gap-4 md:gap-6">
                     <span
                       className={`label-mono shrink-0 text-[11px] tracking-[0.2em] transition-colors duration-300 ${
-                        isOpen ? "text-[var(--gold-text)]" : "text-[var(--fg)]/30"
+                        isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/30"
                       }`}
                     >
                       {String(i + 1).padStart(2, "0")}
@@ -135,7 +135,7 @@ export default function FAQs() {
                   </span>
                   <span
                     aria-hidden
-                    className={`shrink-0 text-2xl leading-none text-[var(--gold-text)] transition-transform duration-300 ${
+                    className={`shrink-0 text-2xl leading-none text-[var(--fg)]/70 transition-transform duration-300 ${
                       isOpen ? "rotate-45" : "rotate-0"
                     }`}
                   >

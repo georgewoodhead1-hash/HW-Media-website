@@ -65,7 +65,7 @@ export default function OurWork() {
       gsap.set(head, { autoAlpha: 1, yPercent: 0 });
       gsap.set(chars, { opacity: 0 });
       gsap.set(caret, { autoAlpha: 1 });
-      gsap.set(bars, { autoAlpha: 0, yPercent: 48, scale: 0.96, force3D: true });
+      gsap.set(bars, { autoAlpha: 0, yPercent: 26, scale: 0.98, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
       // ENTRANCE — type "Featured Projects" like a typewriter AS YOU SCROLL in: the
@@ -86,12 +86,12 @@ export default function OurWork() {
         if (cta) gsap.set(cta, { autoAlpha: ctaIn * (1 - headOut), y: lerp(16, 0, ctaIn) - headOut * 22 });
         bars.forEach((bar, i) => {
           const a = FROM + i * span;
-          const b = a + span * 2.4;
+          const b = a + span * 1.7;
           const t = smooth(a, b, p);
           gsap.set(bar, {
-            yPercent: lerp(48, 0, t),
+            yPercent: lerp(26, 0, t),
             autoAlpha: t,
-            scale: lerp(0.96, 1, t),
+            scale: lerp(0.98, 1, t),
             clipPath: `inset(${(exit * 100).toFixed(2)}% 0% 0% 0% round 0.375rem)`,
           });
           if (vids[i]) gsap.set(vids[i], { scale: lerp(1.12, 1, t) });
@@ -162,7 +162,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[230vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[185vh]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
@@ -174,7 +174,7 @@ export default function OurWork() {
             <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
           ))}
           {"Projects".split("").map((c, i) => (
-            <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--gold-text)]">{c}</span>
+            <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--fg)]">{c}</span>
           ))}
           <span aria-hidden className="ow-caret ml-1 inline-block h-[0.82em] w-[4px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
         </h2>
@@ -219,7 +219,7 @@ export default function OurWork() {
 
               {/* expanded — title + watch */}
               <div className="absolute inset-x-0 bottom-0 p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--gold-text)]">
+                <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]/55">
                   {String(i + 1).padStart(2, "0")} · {p.client.toUpperCase()}
                 </span>
                 <h3 className="font-display mt-2 whitespace-nowrap text-[clamp(1.6rem,2.6vw,2.6rem)] leading-none text-white" style={{ fontWeight: 400 }}>
@@ -243,13 +243,13 @@ export default function OurWork() {
 
       {/* mobile stack */}
       <div className="flex flex-col gap-4 px-5 py-[10vh] md:hidden">
-        <h2 className="font-display mb-2 text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured <span className="text-[var(--gold-text)]">Projects</span></h2>
+        <h2 className="font-display mb-2 text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured Projects<span className="text-[var(--gold-text)]">.</span></h2>
         {WORKS.map((p) => (
           <Link key={p.slug} href={`/work/${p.slug}`} className="ow-mtile relative block aspect-video overflow-hidden rounded-md">
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
             <div className="absolute bottom-3 left-3">
-              <span className="label-mono text-[9px] tracking-[0.2em] text-[var(--gold-text)]">{p.client.toUpperCase()}</span>
+              <span className="label-mono text-[9px] tracking-[0.2em] text-[var(--fg)]/55">{p.client.toUpperCase()}</span>
               <h3 className="font-display text-xl text-white" style={{ fontWeight: 400 }}>{p.title}</h3>
             </div>
           </Link>

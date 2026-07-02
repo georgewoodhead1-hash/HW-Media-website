@@ -56,7 +56,7 @@ export default function StatsBlock() {
         {STATS.map((s) => (
           <div key={s.label}>
             <span
-              className="stat-num font-display block text-[clamp(2rem,4.2vw,3.4rem)] leading-none text-[var(--gold-text)]"
+              className="stat-num font-display block text-[clamp(2rem,4.2vw,3.4rem)] leading-none text-[var(--fg)]"
               data-n={s.n}
               data-suffix={s.suffix}
               style={{ fontWeight: 400 }}

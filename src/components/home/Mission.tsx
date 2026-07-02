@@ -48,7 +48,7 @@ export default function Mission() {
         <ScrollType
           as="h2"
           className="font-display text-[clamp(2rem,3.4vw,3.4rem)] leading-[0.95]"
-          gold={["not"]}
+
         >
           Films, not content.
         </ScrollType>

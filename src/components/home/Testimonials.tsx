@@ -188,7 +188,7 @@ export default function Testimonials() {
       const reveal = ScrollTrigger.create({
         trigger: root,
         start: "top 10%",
-        end: "+=235%",
+        end: "+=170%",
         pin: content || true,
         anticipatePin: 1,
         scrub: 1,
@@ -198,25 +198,25 @@ export default function Testimonials() {
           // 1) the 2nd + 3rd dots write in after the first
           dots.forEach((d, i) => {
             if (i === 0) return;
-            const a = sm(0.18 + (i - 1) * 0.1, 0.3 + (i - 1) * 0.1, q);
+            const a = sm(0.04 + (i - 1) * 0.07, 0.14 + (i - 1) * 0.07, q);
             gsap.set(d, { scale: a, autoAlpha: a });
           });
           // 2) the heading rises
-          const h = sm(0.32, 0.46, q);
+          const h = sm(0.08, 0.2, q);
           gsap.set(heading, { autoAlpha: h, y: lerp(24, 0, h) });
           // 3) the QUOTE WRITES ITSELF in — greyed words filling to full one by one,
           //    tied to scroll. This is the slow, dynamic build (not one block at once).
-          const appear = sm(0.46, 0.5, q);
+          const appear = sm(0.18, 0.24, q);
           const qw = root.querySelectorAll<HTMLElement>(".t-qword");
           const n = qw.length || 1;
           qw.forEach((w, i) => {
-            const a0 = 0.52 + (i / n) * 0.34;
+            const a0 = 0.26 + (i / n) * 0.44;
             const fill = sm(a0, a0 + 0.1, q);
             w.style.opacity = String(appear * lerp(0.16, 1, fill));
           });
           // 4) brand + film rise last
           rise.forEach((el, i) => {
-            const r = sm(0.8 + i * 0.07, 0.96 + i * 0.07, q);
+            const r = sm(0.6 + i * 0.07, 0.78 + i * 0.07, q);
             gsap.set(el, { autoAlpha: r, y: lerp(34, 0, r) });
           });
         },

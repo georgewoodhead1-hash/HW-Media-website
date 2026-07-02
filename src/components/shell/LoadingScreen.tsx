@@ -21,6 +21,21 @@ export default function LoadingScreen() {
       setDone(true);
       return;
     }
+    // the full painted-on signature plays ONCE per session — every other full
+    // load (contact, work, refreshes) gets a fast lift instead of a 4s veil.
+    let seen = false;
+    try { seen = sessionStorage.getItem("hw-intro-seen") === "1"; sessionStorage.setItem("hw-intro-seen", "1"); } catch {}
+    if (seen) {
+      const quick = gsap.to(rootRef.current, {
+        autoAlpha: 0,
+        duration: 0.5,
+        ease: "power2.inOut",
+        delay: 0.15,
+        onStart: reveal,
+        onComplete: () => setDone(true),
+      });
+      return () => { quick.kill(); };
+    }
     const logo = logoRef.current;
     const nib = nibRef.current;
     const setMask = (r: number) => {

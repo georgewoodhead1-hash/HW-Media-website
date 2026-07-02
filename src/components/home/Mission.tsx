@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "@/lib/gsap";
 import ScrollType from "@/components/shell/ScrollType";
+import Rule from "@/components/shell/Rule";
 import MobileReveal from "@/components/shell/MobileReveal";
 
 // 01 — Mission. CONDENSED (client): a small, simple statement — heading + one
@@ -44,15 +45,16 @@ export default function Mission() {
       className="relative z-10 -mt-[10vh] rounded-t-[2rem] bg-[#080807] px-5 py-[13vh] text-[var(--fg)] shadow-[0_-24px_60px_rgba(0,0,0,0.6)] md:px-10 md:py-[15vh]"
       aria-label="Our mission"
     >
-      <MobileReveal className="mx-auto grid max-w-[1100px] gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-16">
+      <Rule className="mb-[10vh]" />
+      <MobileReveal className="mx-auto flex max-w-[900px] flex-col items-center gap-8 text-center">
         <ScrollType
           as="h2"
-          className="font-display text-[clamp(2.6rem,4.8vw,4.8rem)] leading-[0.95]"
+          className="font-display text-[clamp(2.8rem,5.6vw,5.6rem)] leading-[0.95]"
 
         >
           Films, not content.
         </ScrollType>
-        <p className="max-w-xl text-[clamp(1.1rem,1.5vw,1.55rem)] leading-[1.42] text-[var(--fg)]/80">
+        <p className="mx-auto max-w-[52ch] text-[clamp(1.1rem,1.5vw,1.5rem)] leading-[1.5] text-[var(--fg)]/80">
           {PARA.split(" ").map((w, i) => (
             <span key={i} className="ms-word">
               {w}{" "}

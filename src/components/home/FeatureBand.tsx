@@ -45,7 +45,18 @@ export default function FeatureBand() {
         alt="HW Media film production"
         className="absolute inset-x-0 top-[-9%] h-[118%] w-full object-cover object-[center_26%]"
       />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-black/15" />
+      {/* the fade-down George likes — image sinks into the dark at the bottom */}
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent via-40% to-[#050505]" />
+      {/* the interactive cue — one liquid-glass invitation, nothing else */}
+      <div className="absolute inset-x-0 bottom-[12vh] flex justify-center">
+        <a
+          href="/contact"
+          className="glass backdrop-blur-xl backdrop-saturate-150 inline-flex items-center gap-2 rounded-full px-9 py-4 text-[clamp(15px,1.4vw,17px)] text-white"
+          style={{ fontFamily: "var(--font-firma), sans-serif" }}
+        >
+          Start here <span aria-hidden>⟶</span>
+        </a>
+      </div>
     </section>
   );
 }

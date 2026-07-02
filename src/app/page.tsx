@@ -1,6 +1,5 @@
 import LensIntro from "@/components/home/LensIntro";
 import Mission from "@/components/home/Mission";
-import StatsBlock from "@/components/home/StatsBlock";
 import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
 import EditorFCP from "@/components/home/EditorFCP";
@@ -19,7 +18,6 @@ export default function Home() {
       <SceneFlow />
       <LensIntro />
       <Mission />
-      <StatsBlock />
       <TrustedBy />
       <OurWork />
       <EditorFCP />

@@ -366,7 +366,7 @@ export default function Testimonials() {
             className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"
           />
           <span
-            className="absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full border border-white/25 bg-black/35 px-4 py-2 text-xs tracking-[0.18em] text-white/90 backdrop-blur-sm transition-colors duration-300 group-hover:border-[var(--gold)]/70 group-hover:text-[var(--gold-text)]"
+            className="glass backdrop-blur-xl backdrop-saturate-150 absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs tracking-[0.14em] text-white"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             VIEW PROJECT

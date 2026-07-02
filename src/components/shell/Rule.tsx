@@ -30,7 +30,7 @@ export default function Rule({ className = "" }: { className?: string }) {
     <span
       ref={ref}
       aria-hidden
-      className={`block h-px w-full bg-[var(--fg)]/25 will-change-transform ${className}`}
+      className={`block h-px w-full bg-[var(--fg)]/50 will-change-transform ${className}`}
     />
   );
 }

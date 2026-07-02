@@ -37,8 +37,8 @@ export default function RouteTransitions() {
       gsap.set(veil, { yPercent: 100, autoAlpha: 1, pointerEvents: "auto" });
       gsap.to(veil, {
         yPercent: 0,
-        duration: 0.45,
-        ease: "power3.inOut",
+        duration: 0.6,
+        ease: "power4.inOut",
         onComplete: () => router.push(href),
       });
     };
@@ -62,9 +62,9 @@ export default function RouteTransitions() {
     const tl = gsap.timeline();
     tl.to(veil, {
       yPercent: -100,
-      duration: 0.55,
-      delay: 0.08,
-      ease: "power3.inOut",
+      duration: 0.75,
+      delay: 0.12,
+      ease: "power4.inOut",
       onComplete: () => gsap.set(veil, { autoAlpha: 0, pointerEvents: "none", yPercent: 100 }),
     });
     return () => { tl.kill(); };
@@ -76,8 +76,9 @@ export default function RouteTransitions() {
       aria-hidden
       className="pointer-events-none fixed inset-0 z-[200] bg-[#050505] opacity-0 will-change-transform"
     >
-      {/* a hairline of gold rides the veil's leading edge — the one accent */}
-      <span className="absolute inset-x-0 top-0 h-px bg-[var(--gold)]/70" />
+      {/* a soft tonal edge leads the sweep — depth, no line */}
+      <span className="absolute inset-x-0 top-0 h-40 -translate-y-full bg-gradient-to-t from-[#050505] to-transparent" />
+      <span className="absolute inset-x-0 bottom-0 h-40 translate-y-full bg-gradient-to-b from-[#050505] to-transparent" />
     </div>
   );
 }

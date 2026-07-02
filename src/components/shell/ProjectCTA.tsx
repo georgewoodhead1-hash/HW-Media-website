@@ -32,7 +32,7 @@ export default function ProjectCTA({ centered = false }: { centered?: boolean })
         </p>
         <Link
           href="/contact"
-          className="mt-9 inline-flex items-center gap-2 rounded-full bg-[#f5f1e6] px-9 py-4 text-[clamp(14px,1.3vw,16px)] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-white"
+          className="glass backdrop-blur-xl backdrop-saturate-150 mt-9 inline-flex items-center gap-2 rounded-full px-9 py-4 text-[clamp(14px,1.3vw,16px)] font-medium text-white"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           Start here <span aria-hidden>⟶</span>

@@ -1,7 +1,7 @@
 import LensIntro from "@/components/home/LensIntro";
 import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
-import PlayReel from "@/components/home/PlayReel";
+import Statement from "@/components/home/Statement";
 import EditorFCP from "@/components/home/EditorFCP";
 import Testimonials from "@/components/home/Testimonials";
 import FeatureBand from "@/components/home/FeatureBand";
@@ -16,7 +16,7 @@ export default function Home() {
     <main>
       <LensIntro />
       <TrustedBy />
-      <PlayReel />
+      <Statement />
       <OurWork />
       <EditorFCP />
       <Testimonials />

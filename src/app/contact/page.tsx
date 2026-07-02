@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Footer from "@/components/shell/Footer";
-import ContactIntro from "@/components/contact/ContactIntro";
 import ContactForm from "@/components/contact/ContactForm";
 
 export const metadata: Metadata = {
@@ -32,7 +31,6 @@ export const metadata: Metadata = {
 export default function Contact() {
   return (
     <>
-      <ContactIntro />
       <main
         data-theme="dark"
         data-surface="page"

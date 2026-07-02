@@ -71,7 +71,7 @@ export default function FAQs() {
       data-theme="dark"
       data-surface="page"
       data-chapter="06 — FAQs"
-      className="relative bg-[var(--bg)] px-5 pb-[20vh] pt-[5vh] text-[var(--fg)] md:px-10"
+      className="relative z-20 -mt-[8vh] rounded-t-[2rem] bg-[#0b0b0a] px-5 pb-[20vh] pt-[9vh] text-[var(--fg)] shadow-[0_-24px_60px_rgba(0,0,0,0.55)] md:px-10"
       aria-label="Frequently asked questions"
     >
       {/* items-stretch (not items-start) so the LEFT column is as tall as the

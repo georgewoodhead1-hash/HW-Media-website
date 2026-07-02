@@ -117,7 +117,7 @@ export default function EditorFCP() {
       aria-label="Our process"
     >
       {/* header — one drawn line, one big statement, air around it */}
-      <div className="bg-[#050505] px-5 pb-[10vh] pt-[16vh] md:px-10">
+      <div className="bg-[#050505] px-5 pb-[8vh] pt-[10vh] md:px-10">
         <Rule />
         <h2 className="font-display mt-10 max-w-[14ch] text-[clamp(3rem,8vw,7.5rem)] leading-[0.9]">
           Idea to master, in-house.

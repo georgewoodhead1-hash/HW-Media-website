@@ -41,13 +41,13 @@ export default function Mission() {
       data-surface="page"
       data-chapter="01 — Mission"
       data-flow
-      className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10 md:py-[10vh]"
+      className="relative z-10 -mt-[10vh] rounded-t-[2rem] bg-[#080807] px-5 py-[13vh] text-[var(--fg)] shadow-[0_-24px_60px_rgba(0,0,0,0.6)] md:px-10 md:py-[15vh]"
       aria-label="Our mission"
     >
       <MobileReveal className="mx-auto grid max-w-[1100px] gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-16">
         <ScrollType
           as="h2"
-          className="font-display text-[clamp(2rem,3.4vw,3.4rem)] leading-[0.95]"
+          className="font-display text-[clamp(2.6rem,4.8vw,4.8rem)] leading-[0.95]"
 
         >
           Films, not content.

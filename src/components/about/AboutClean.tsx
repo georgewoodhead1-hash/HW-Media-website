@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap, SplitText } from "@/lib/gsap";
 import ProjectCTA from "@/components/shell/ProjectCTA";
+import TrailField from "@/components/shell/TrailField";
 
 // About — opens on the statement (writes itself in on load + scroll), then a LIGHT
 // values band for contrast, what we do, Harry behind the camera, and Let's create.
@@ -165,8 +166,12 @@ export default function AboutClean() {
       </section>
 
       {/* BEHIND THE CAMERA — Harry, smaller photo + bigger text */}
-      <section className="px-5 py-[18vh] md:px-10">
-        <div className="mx-auto grid max-w-[1600px] items-center gap-10 md:grid-cols-[0.6fr_1.4fr] md:gap-16">
+      <section className="relative px-5 py-[22vh] md:px-10">
+        {/* BTS trail — move the mouse through and stills follow it (1820 snake) */}
+        <TrailField
+          images={["/videos/micro/posters/m01.jpg","/videos/micro/posters/m02.jpg","/videos/micro/posters/m04.jpg","/videos/micro/posters/m05.jpg","/videos/micro/posters/m06.jpg","/videos/micro/posters/m07.jpg","/videos/micro/posters/m08.jpg","/videos/micro/posters/m09.jpg","/videos/micro/posters/m11.jpg","/videos/micro/posters/m12.jpg"]}
+        />
+        <div className="pointer-events-none relative z-10 mx-auto grid max-w-[1600px] items-center gap-10 md:grid-cols-[0.6fr_1.4fr] md:gap-16">
           <div data-rise className="ab-portrait relative aspect-[3/2] w-full max-w-[460px] overflow-hidden rounded-md ring-1 ring-[var(--gold)]/15">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/images/harry-field.jpg" alt="Harry Wallis behind the camera" className="h-[116%] w-full object-cover object-[30%_center]" />

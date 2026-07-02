@@ -7,6 +7,7 @@ import LoadingScreen from "@/components/shell/LoadingScreen";
 import Nav from "@/components/shell/Nav";
 import Grain from "@/components/shell/Grain";
 import Cursor from "@/components/shell/Cursor";
+import RouteTransitions from "@/components/shell/RouteTransitions";
 
 // THE 3-FONT SYSTEM (George, 2026-07-02). Nothing else loads.
 // 1) DISPLAY — Archivo Expanded (the "TELL US MORE" face). Big headings only.
@@ -193,6 +194,7 @@ export default function RootLayout({
           {children}
           <Grain />
           <Cursor />
+          <RouteTransitions />
         </SmoothScroll>
       </body>
     </html>

@@ -41,7 +41,7 @@ export default function FeatureBand() {
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         ref={img}
-        src="/images/feature.jpg"
+        src="/images/harry-field.jpg"
         alt="HW Media film production"
         className="absolute inset-x-0 top-[-9%] h-[118%] w-full object-cover object-[center_26%]"
       />

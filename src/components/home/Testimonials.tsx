@@ -114,15 +114,22 @@ export default function Testimonials() {
         return r.top + window.scrollY;
       };
       const rootTop = () => root.getBoundingClientRect().top + window.scrollY;
+      // the process is now STICKY STACKED panels — the wd-stop's own absolute Y
+      // shifts with scroll, so the ride anchors to the SECTION's bottom instead
+      // (stable): the last panel is fully stuck for the final viewport.
+      const procBottom = () => {
+        const p = document.querySelector<HTMLElement>("#process");
+        return p ? p.getBoundingClientRect().bottom + window.scrollY : rootTop();
+      };
 
       // ── PHASE 1 — the full stop HOLDS on "We deliver." while the words fade out,
       // THEN glides across to the first dot on ONE clean bezier, CLICKS into place,
       // and crossfades into the real dot (no jump). NO line.
       const ride = ScrollTrigger.create({
         trigger: root,
-        // the dot appears while the "We deliver" tile sits ~62% down the viewport,
-        // holds on it, then rides into the testimonials as the section pins.
-        start: () => wdAbsY() - 0.62 * window.innerHeight,
+        // the dot appears while the LAST stacked panel ("In motion.") is held on
+        // screen, latches its gold period live, then rides into the testimonials.
+        start: () => procBottom() - 1.45 * window.innerHeight,
         end: () => rootTop() + 0.25 * window.innerHeight,
         scrub: 1.4, // buttery
         invalidateOnRefresh: true,

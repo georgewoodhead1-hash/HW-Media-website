@@ -253,22 +253,7 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
 .nav-link {
   position: relative;
 }
-.nav-link::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  height: 1px;
-  width: 100%;
-  background: currentColor;
-  transform: scaleX(0);
-  transform-origin: right;
-  transition: transform var(--dur-base) var(--ease-expo);
-}
-.nav-link:hover::after {
-  transform: scaleX(1);
-  transform-origin: left;
-}
+/* nav hover = the sliding pill ONLY (George: bubble, not underline) */
 
 /* ---- Film grain (dark sections only) ---- */
 .grain {

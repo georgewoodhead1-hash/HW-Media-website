@@ -145,7 +145,7 @@ export default function TrustedBy() {
   return (
     <section
       ref={rootRef}
-      data-surface="band"
+      data-surface="page"
       data-chapter="02 — Trusted by"
       data-flow
       className="relative bg-[var(--bg)] px-5 py-[14vh] md:px-10"

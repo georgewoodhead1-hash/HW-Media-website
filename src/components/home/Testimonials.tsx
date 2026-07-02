@@ -266,8 +266,8 @@ export default function Testimonials() {
   return (
     <section
       ref={rootRef}
-      data-theme="light"
-      data-surface="band"
+      data-theme="dark"
+      data-surface="page"
       data-chapter="05 — Testimonials"
       className="relative z-30 overflow-x-clip rounded-t-[2rem] bg-[var(--bg)] pb-[9vh] pt-[8vh] text-[var(--fg)] shadow-[0_-40px_80px_rgba(0,0,0,0.35)] motion-safe:md:-mt-[12vh]"
       aria-label="Testimonials"

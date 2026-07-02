@@ -9,7 +9,7 @@ import { safePlay } from "@/lib/video";
 // motto "Break the ordinary" TYPING ON in real time and sitting slightly
 // see-through over the footage (you can read it, but the video shows through).
 // No scroll cue. Click anywhere to play the reel with sound.
-const LINES = ["Break the", "ordinary."];
+const LINES = ["Break the ordinary."];
 
 export default function LensIntro() {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -106,15 +106,10 @@ export default function LensIntro() {
           loop
           playsInline
         />
-        {/* HEADLINE — solid cream, always legible. The difference-blend "invert"
-            rendered the brand line a random muddy colour per clip (slate on sand,
-            lilac on forest, bronze on snow) — killed for a scrim + solid type. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 top-1/4 bg-gradient-to-t from-black/55 via-black/25 to-transparent"
-        />
-        <div className="pointer-events-none absolute left-0 top-[30%] px-5 md:px-10">
-          <h1 className="font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82] text-[#f5f1e6]" aria-label="Break the ordinary.">
+        {/* HEADLINE — ONE line, and the see-through/mirrored footage interplay
+            George likes (difference blend). */}
+        <div className="pointer-events-none absolute left-0 top-[34%] px-5 mix-blend-difference md:px-10">
+          <h1 className="font-display whitespace-nowrap text-[clamp(2.4rem,7vw,7.4rem)] leading-[0.9] text-white" aria-label="Break the ordinary.">
             {LINES.map((line, li) => (
               <span key={li} className="block">
                 {line.split("").map((c, ci) => (
@@ -131,8 +126,8 @@ export default function LensIntro() {
         {/* subtitle + CTA — normal layer, left-aligned directly UNDER the headline
             (an invisible copy reserves the headline's height so they line up). */}
         <div className="absolute left-0 top-[30%] z-10 flex flex-col items-start px-5 md:px-10">
-          <div aria-hidden className="invisible font-display text-[clamp(2.8rem,9vw,8.2rem)] leading-[0.82]">
-            Break the<br />ordinary.
+          <div aria-hidden className="invisible font-display whitespace-nowrap text-[clamp(2.4rem,7vw,7.4rem)] leading-[0.9]">
+            Break the ordinary.
           </div>
           <div className="hero-sub">
             <p
@@ -144,7 +139,7 @@ export default function LensIntro() {
             <Link
               href="/contact"
               onClick={(e) => e.stopPropagation()}
-              className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/70 px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white transition-opacity duration-300 hover:opacity-70"
+              className="mt-7 inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-md px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white transition-opacity duration-300 hover:opacity-70"
               style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               Start here <span aria-hidden>⟶</span>

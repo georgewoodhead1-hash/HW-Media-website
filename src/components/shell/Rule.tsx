@@ -19,7 +19,7 @@ export default function Rule({ className = "" }: { className?: string }) {
       {
         scaleX: 1,
         ease: "none",
-        transformOrigin: "left center",
+        transformOrigin: "center center",
         scrollTrigger: { trigger: el, start: "top 92%", end: "top 55%", scrub: 0.6 },
       },
     );

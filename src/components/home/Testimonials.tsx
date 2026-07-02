@@ -366,7 +366,7 @@ export default function Testimonials() {
             className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"
           />
           <span
-            className="glass backdrop-blur-xl backdrop-saturate-150 absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs tracking-[0.14em] text-white"
+            className="glass backdrop-blur-md backdrop-saturate-150 absolute bottom-5 left-5 z-10 inline-flex items-center gap-2 rounded-full px-5 py-2.5 text-xs tracking-[0.14em] text-white"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             VIEW PROJECT

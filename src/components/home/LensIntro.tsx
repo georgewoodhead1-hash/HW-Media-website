@@ -108,7 +108,7 @@ export default function LensIntro() {
         />
         {/* HEADLINE — ONE line, and the see-through/mirrored footage interplay
             George likes (difference blend). */}
-        <div className="pointer-events-none absolute inset-x-0 top-[32%] px-5 text-center mix-blend-difference md:px-10">
+        <div className="pointer-events-none absolute left-0 top-[36%] px-5 mix-blend-difference md:px-10">
           <h1 className="font-display whitespace-nowrap text-[clamp(2.4rem,7vw,7.4rem)] leading-[0.9] text-white" aria-label="Break the ordinary.">
             {LINES.map((line, li) => (
               <span key={li} className="block">
@@ -125,7 +125,7 @@ export default function LensIntro() {
 
         {/* subtitle + CTA — normal layer, left-aligned directly UNDER the headline
             (an invisible copy reserves the headline's height so they line up). */}
-        <div className="absolute inset-x-0 top-[28%] z-10 flex flex-col items-center px-5 text-center md:px-10">
+        <div className="absolute left-0 top-[32%] z-10 flex flex-col items-start px-5 text-left md:px-10">
           <div aria-hidden className="invisible font-display whitespace-nowrap text-[clamp(2.4rem,7vw,7.4rem)] leading-[0.9]">
             Break the ordinary.
           </div>
@@ -139,7 +139,7 @@ export default function LensIntro() {
             <Link
               href="/contact"
               onClick={(e) => e.stopPropagation()}
-              className="glass backdrop-blur-xl backdrop-saturate-150 mt-10 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white"
+              className="glass backdrop-blur-md backdrop-saturate-150 mt-10 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white"
               style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               Start here <span aria-hidden>⟶</span>

@@ -51,7 +51,7 @@ export default function FeatureBand() {
       <div className="absolute inset-x-0 bottom-[12vh] flex justify-center">
         <a
           href="/contact"
-          className="glass backdrop-blur-xl backdrop-saturate-150 inline-flex items-center gap-2 rounded-full px-9 py-4 text-[clamp(15px,1.4vw,17px)] text-white"
+          className="glass backdrop-blur-md backdrop-saturate-150 inline-flex items-center gap-2 rounded-full px-9 py-4 text-[clamp(15px,1.4vw,17px)] text-white"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           Start here <span aria-hidden>⟶</span>

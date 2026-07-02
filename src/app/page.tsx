@@ -1,5 +1,4 @@
 import LensIntro from "@/components/home/LensIntro";
-import Mission from "@/components/home/Mission";
 import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
 import EditorFCP from "@/components/home/EditorFCP";
@@ -17,7 +16,6 @@ export default function Home() {
     <main>
       <SceneFlow />
       <LensIntro />
-      <Mission />
       <TrustedBy />
       <OurWork />
       <EditorFCP />

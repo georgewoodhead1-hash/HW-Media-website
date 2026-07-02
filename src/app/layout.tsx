@@ -1,12 +1,5 @@
 import type { Metadata } from "next";
-import {
-  Archivo,
-  Dancing_Script,
-  Geist,
-  Hanken_Grotesk,
-  IBM_Plex_Mono,
-  Instrument_Serif,
-} from "next/font/google";
+import { Archivo } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
@@ -16,54 +9,43 @@ import Grain from "@/components/shell/Grain";
 import Cursor from "@/components/shell/Cursor";
 import ThemeToggle from "@/components/shell/ThemeToggle";
 
+// THE 3-FONT SYSTEM (George, 2026-07-02). Nothing else loads.
+// 1) DISPLAY — Archivo Expanded (the "TELL US MORE" face). Big headings only.
 const archivo = Archivo({
   variable: "--font-archivo",
   subsets: ["latin"],
   axes: ["wdth"],
 });
 
-// Geist — the clean grotesque 1820 Productions serves (free / OFL). Adopted as
-// the body/UI face to match their font style. (Their display face is the paid
-// Suisse Int'l Condensed; buy a licence if an exact match is wanted later.)
-const geist = Geist({
-  variable: "--font-geist",
-  subsets: ["latin"],
-});
-
-const instrument = Instrument_Serif({
-  variable: "--font-instrument",
-  subsets: ["latin"],
-  weight: "400",
-  style: "italic",
-});
-
-const hanken = Hanken_Grotesk({
-  variable: "--font-body",
-  subsets: ["latin"],
-});
-
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
-  subsets: ["latin"],
-  weight: ["400", "500"],
-});
-
-const caveat = Dancing_Script({
-  variable: "--font-hand",
-  subsets: ["latin"],
-  weight: "600",
-});
-
-// BR Firma SemiBold — the ACTUAL auteurstudios font, pulled from their CDN.
-// On auteur this is the face on "Get in touch" and "PIONEERS IN BRAND
-// STORYTELLING" (verified: computed font-family "BR Firma", weight 600). Used
-// for every CTA / label / subtext here, exactly as auteur uses it, via
-// --font-firma. NOTE: BR Firma is a licensed commercial font — buy a licence
-// before launch.
-const firma = localFont({
-  src: "../fonts/BRFirma-SemiBold.otf",
+// 2) MAIN — Suisse Int'l Medium (1820 Productions' main face). All UI, nav,
+//    CTAs, labels, sub-headings. Kept on the legacy --font-firma variable so
+//    every existing component flips without edits.
+//    NOTE: Suisse Int'l is a commercial font (Swiss Typefaces) — pulled from
+//    1820's CDN for the dev build; LICENCE BEFORE LAUNCH (same as BR Firma was).
+const suisseMain = localFont({
+  src: "../fonts/SuisseIntl-Medium.woff2",
   variable: "--font-firma",
-  weight: "600",
+  weight: "500",
+  display: "swap",
+});
+
+// 3) SUBTEXT — Suisse Int'l Book (1820's body face). Paragraphs and quiet text,
+//    wired as the site-wide body default in globals.css.
+const suisseBook = localFont({
+  src: "../fonts/SuisseIntl-Book.woff2",
+  variable: "--font-suisse-book",
+  weight: "400",
+  display: "swap",
+});
+
+// Suisse Int'l Condensed (Medium + SemiBold) — 1820's display cuts, loaded for
+// the process rebuild / accents where the condensed voice is wanted.
+const suisseCond = localFont({
+  src: [
+    { path: "../fonts/SuisseIntl-MediumCondensed.woff2", weight: "500" },
+    { path: "../fonts/SuisseIntl-SemiBoldCondensed.woff2", weight: "600" },
+  ],
+  variable: "--font-suisse-cond",
   display: "swap",
 });
 
@@ -180,7 +162,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${geist.variable} ${instrument.variable} ${hanken.variable} ${plexMono.variable} ${caveat.variable} ${firma.variable} h-full antialiased`}
+      className={`${archivo.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
     >
       <head>
         {/* restore the saved mode before first paint — no flash */}

@@ -109,12 +109,12 @@ html {
 }
 
 body {
-  /* Site-wide body type: Geist — the clean grotesque 1820 Productions uses (free
-     / OFL), adopted to match their font style. Big display headings keep Archivo
-     (condensed) below; nav/CTAs/labels keep BR Firma via their own --font-firma. */
-  font-family: var(--font-geist), "Helvetica Neue", Arial, sans-serif;
+  /* THE 3-FONT SYSTEM: body/subtext = Suisse Int'l Book (1820's body face).
+     Display = Archivo Expanded via .font-display; main/UI = Suisse Medium via
+     --font-firma. Nothing else loads. */
+  font-family: var(--font-suisse-book), "Helvetica Neue", Arial, sans-serif;
   font-weight: 400;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.005em;
   /* Safety net against horizontal overflow on narrow viewports. `clip` (not
      `hidden`) is used so it never creates a scroll container — `position: sticky`
      (OurWork pin, nav) keeps working. Full-bleed marquees / animation transients

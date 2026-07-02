@@ -157,7 +157,7 @@ export default function Testimonials() {
           let Ey = firstOff >= 0 ? 0.1 * vh + firstOff : 0.651 * vh; // first dot, pinned
           // once the section is actually pinned, home on the dot's LIVE centre so it
           // lands dead-on (exact on any screen, no half-cm-high drift)
-          if (reveal && reveal.isActive) {
+          if (typeof reveal !== "undefined" && reveal && reveal.isActive) {
             const lb = dots[0]?.parentElement;
             if (lb) { const lr = lb.getBoundingClientRect(); Ex = lr.left + lr.width / 2; Ey = lr.top + lr.height / 2; }
           }

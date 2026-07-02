@@ -1,4 +1,7 @@
 @import "tailwindcss";
+/* never scan the audit rig (minified refs corrupt the class scanner) */
+@source not "../../_audit";
+@source not "../../.next-b";
 
 :root {
   --black: #050505;

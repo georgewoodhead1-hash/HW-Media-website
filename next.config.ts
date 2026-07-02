@@ -53,6 +53,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  distDir: process.env.HW_VARIANT === "b" ? ".next-b" : ".next",
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

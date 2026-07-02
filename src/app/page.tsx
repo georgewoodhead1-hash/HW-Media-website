@@ -6,18 +6,13 @@ import Testimonials from "@/components/home/Testimonials";
 import FeatureBand from "@/components/home/FeatureBand";
 import FAQs from "@/components/home/FAQs";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
-import SceneFlow from "@/components/shell/SceneFlow";
-import HomeB from "@/components/b/HomeB";
 
-// TWO VARIANTS (George, 2026-07-02):
-//  - :3005 (default)      → Variant A — the evolving 1820-feel build below.
-//  - :3006 (HW_VARIANT=b) → Variant B — "The Strip", the no-rules rebuild.
-// Variant B is also always reachable at /b on either port.
+// Home: hero -> trusted by -> featured work -> process -> testimonials ->
+// Defender band -> FAQs -> finale ("Every film is a chance to break the
+// ordinary" is the finale AND the footer).
 export default function Home() {
-  if (process.env.HW_VARIANT === "b") return <HomeB />;
   return (
     <main>
-      <SceneFlow />
       <LensIntro />
       <TrustedBy />
       <OurWork />

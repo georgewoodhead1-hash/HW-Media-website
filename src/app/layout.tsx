@@ -49,7 +49,7 @@ const suisseCond = localFont({
   display: "swap",
 });
 
-const SITE_URL = "https://hw-media-website-y7yi.vercel.app";
+const SITE_URL = "https://hw-media-website-5pbo.vercel.app";
 const OG_IMAGE = "/images/hero-defocus.jpg";
 
 export const metadata: Metadata = {
@@ -164,15 +164,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${archivo.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
     >
-      <head>
-        {/* restore the saved mode before first paint — no flash */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "try{var m=localStorage.getItem('hwm-mode-v2');if(m==='light'||m==='dark')document.documentElement.dataset.mode=m}catch(e){}",
-          }}
-        />
-      </head>
+
       <body className="min-h-full">
         <script
           type="application/ld+json"

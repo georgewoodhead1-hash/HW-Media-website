@@ -20,7 +20,7 @@ export default function Rule({ className = "" }: { className?: string }) {
         scaleX: 1,
         ease: "none",
         transformOrigin: "center center",
-        scrollTrigger: { trigger: el, start: "top 92%", end: "top 55%", scrub: 0.6 },
+        scrollTrigger: { trigger: el, start: "top 96%", end: "top 30%", scrub: 1.3 },
       },
     );
     return () => { tween.scrollTrigger?.kill(); tween.kill(); };

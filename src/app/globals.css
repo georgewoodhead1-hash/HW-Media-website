@@ -58,14 +58,7 @@ html[data-mode="dark"] {
   --hairline-dark: rgba(245, 241, 230, 0.14);
   --hairline-light: rgba(245, 241, 230, 0.14);
 }
-html[data-mode="light"] {
-  --bg: var(--cream);
-  --fg: #171717;
-  --ink: #171717;
-  --paper-text: #171717;
-  --hairline-dark: rgba(23, 23, 23, 0.16);
-  --hairline-light: #d8d2bd;
-}
+
 
 /* always-cinema surfaces (lens stage, menu overlay, finale, text over
    footage): locked to dark regardless of mode. The lens intro and the
@@ -87,23 +80,8 @@ section[data-surface="media"] {
    Always take the OPPOSITE palette to the global mode, so they read as a
    distinct band whichever way the toggle is set: a dark band on the light
    site, a light band on the dark site. */
-html[data-mode="light"] [data-surface="band"],
-html:not([data-mode]) [data-surface="band"] {
-  --bg: #050505;
-  --fg: #f5f1e6;
-  --ink: #f5f1e6;
-  --paper-text: #f5f1e6;
-  --hairline-dark: rgba(245, 241, 230, 0.14);
-  --hairline-light: rgba(245, 241, 230, 0.14);
-}
-html[data-mode="dark"] [data-surface="band"] {
-  --bg: var(--cream);
-  --fg: #171717;
-  --ink: #171717;
-  --paper-text: #171717;
-  --hairline-dark: rgba(23, 23, 23, 0.16);
-  --hairline-light: #d8d2bd;
-}
+
+
 
 html {
   background: var(--bg);
@@ -148,18 +126,9 @@ body {
 }
 
 /* Editorial-restraint display scale — nothing on the site exceeds display-xl. */
-.display-xl {
-  font-size: clamp(2.45rem, 1.1rem + 4.6vw, 6rem); /* 39 → 96px */
-  line-height: 0.86;
-}
-.display-lg {
-  font-size: clamp(2.25rem, 1.1rem + 3.2vw, 4rem); /* 36 → 64px */
-  line-height: 0.9;
-}
-.display-md {
-  font-size: clamp(1.75rem, 1rem + 1.9vw, 2.75rem); /* 28 → 44px */
-  line-height: 0.95;
-}
+
+
+
 
 /* Scene markers — the one sanctioned label grammar (edit-timeline indices). */
 .scene-marker {
@@ -179,13 +148,7 @@ body {
 /* BANNED (George): the italic-serif / "in your hands" accent face is neutralised
    site-wide — any stray use just renders as normal inherited type. Never bring it
    back. Same for .font-hand below. */
-.font-accent {
-  font-family: inherit !important;
-  font-style: normal !important;
-  font-weight: inherit !important;
-  text-transform: inherit !important;
-  letter-spacing: inherit !important;
-}
+
 
 /* GOLDEN RULE: never the military monospace font. This class (used in 60+
    places) renders in BR Firma via --font-firma — the real auteurstudios font. */
@@ -197,10 +160,7 @@ body {
   letter-spacing: 0.05em;
 }
 
-.font-hand {
-  font-family: inherit !important;
-  color: inherit !important;
-}
+
 
 /* ---- Section theming: every section follows the global mode ---- */
 [data-theme] {
@@ -224,22 +184,12 @@ body {
    editorial sections leave it inheriting the global mode */
 /* hero nav (the only media surface) simply INVERTS with the mode — dark links
    in light mode, light links in dark. No glow, no scrim, just the colour. */
-html[data-mode="light"] .nav-root[data-surface="media"] {
-  --fg: #171717;
-}
-html[data-mode="dark"] .nav-root[data-surface="media"] {
-  --fg: #f5f1e6;
-}
+
+
 /* nav over a contrasting band inverts with the mode so it stays readable:
    light nav on the dark band (light mode), dark nav on the light band. */
-html[data-mode="light"] .nav-root[data-surface="band"] {
-  --bg: #050505;
-  --fg: #f5f1e6;
-}
-html[data-mode="dark"] .nav-root[data-surface="band"] {
-  --bg: var(--cream);
-  --fg: #171717;
-}
+
+
 html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-color { display: none; }
 html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-black { display: block; }
 /* nav logo: colour (gold) mark by default and on dark; the black mark swaps
@@ -393,9 +343,7 @@ html[data-mode="light"] .grain {
 
 /* client logos sit on the contrasting band: white when the band is dark
    (light mode), inverted to dark when the band is light (dark mode). */
-html[data-mode="dark"] [data-surface="band"] .logo-mark {
-  filter: invert(1);
-}
+
 
 
 /* ---- Hero motto: solid, bright, present over the LIVE moving footage ----

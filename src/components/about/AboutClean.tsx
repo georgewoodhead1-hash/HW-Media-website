@@ -142,21 +142,13 @@ export default function AboutClean() {
         <TrailField
           images={["/videos/micro/posters/m01.jpg","/videos/micro/posters/m02.jpg","/videos/micro/posters/m04.jpg","/videos/micro/posters/m05.jpg","/videos/micro/posters/m06.jpg","/videos/micro/posters/m07.jpg","/videos/micro/posters/m08.jpg","/videos/micro/posters/m09.jpg","/videos/micro/posters/m11.jpg","/videos/micro/posters/m12.jpg"]}
         />
-        <div className="pointer-events-none relative z-10 mx-auto max-w-[1600px]">
-          <h2 data-rise className="about-display text-center text-[clamp(2.8rem,8vw,7.6rem)] leading-[0.9]">
+        <div className="pointer-events-none relative z-10 mx-auto flex min-h-[70vh] max-w-[1100px] flex-col items-center justify-center text-center">
+          <h2 data-rise className="about-display text-[clamp(2.8rem,8vw,7.6rem)] leading-[0.9]">
             Behind the camera
           </h2>
-          <div className="mx-auto mt-[8vh] grid items-center gap-12 md:grid-cols-[1fr_1.1fr] md:gap-20">
-            <div data-rise className="relative aspect-[4/5] w-full overflow-hidden rounded-xl">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img data-para src="/images/harry-color.jpg" alt="Harry Wallis — HW Media" className="absolute inset-x-0 top-[-7%] h-[114%] w-full object-cover" />
-              <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
-              <span className="about-display absolute bottom-6 left-6 text-[clamp(1.6rem,2.6vw,2.6rem)] text-white" style={{ textTransform: "none" }}>Harry Wallis</span>
-            </div>
-            <p data-rise className="about-body max-w-[54ch] text-[clamp(1.25rem,1.8vw,1.7rem)] leading-[1.55] text-[#f5f1e6]/85">
-              Every HW Media film is directed and shot by Harry — a CAA-authorised drone pilot, so the aerials stay in-house too. When a job needs more, a trusted collective scales around it, but the camera never leaves his hands. The person who promises the film is the person behind it.
-            </p>
-          </div>
+          <p data-rise className="about-body mt-10 max-w-[56ch] text-[clamp(1.25rem,1.8vw,1.7rem)] leading-[1.55] text-[#f5f1e6]/85">
+            Every HW Media film is directed and shot by Harry Wallis — a CAA-authorised drone pilot, so the aerials stay in-house too. When a job needs more, a trusted collective scales around it, but the camera never leaves his hands. The person who promises the film is the person behind it.
+          </p>
         </div>
       </section>
 

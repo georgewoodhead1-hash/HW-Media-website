@@ -49,7 +49,7 @@ export default function WorkGallery() {
         ))}
       </div>
 
-      <div className="px-5 pt-[13vh] md:px-10"><Rule /></div>
+      <div className="px-5 pt-[13vh] md:px-10"><Rule label="Discover more" /></div>
       <h2 data-ghead className="about-display px-5 pb-9 pt-9 text-center text-[clamp(1.7rem,4vw,3.2rem)] text-[var(--fg)] md:px-10">
         Discover more<span className="text-[var(--gold-text)]">.</span>
       </h2>

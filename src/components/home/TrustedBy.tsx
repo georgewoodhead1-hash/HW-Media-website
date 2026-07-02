@@ -152,7 +152,7 @@ export default function TrustedBy() {
       className="relative bg-[var(--bg)] px-5 py-[15vh] md:px-10"
       aria-label="Trusted by"
     >
-      <Rule className="mb-[10vh]" />
+      <Rule label="Trusted by" className="mb-[10vh]" bg="#050505" />
       <div className="tb-heading relative mb-[5vh] text-center">
         {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
             char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}

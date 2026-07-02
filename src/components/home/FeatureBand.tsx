@@ -17,15 +17,28 @@ export default function FeatureBand() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px)", () => {
+      // Exo Ape speed-split: image near-frozen, text ~3x faster riding over it
       gsap.fromTo(
         el,
-        { yPercent: -8 },
+        { yPercent: -6 },
         {
-          yPercent: 8,
+          yPercent: 6,
           ease: "none",
           scrollTrigger: { trigger: sec, start: "top bottom", end: "bottom top", scrub: true },
         },
       );
+      const line = sec.querySelector(".fb-line");
+      if (line) {
+        gsap.fromTo(
+          line,
+          { yPercent: 130 },
+          {
+            yPercent: -130,
+            ease: "none",
+            scrollTrigger: { trigger: sec, start: "top bottom", end: "bottom top", scrub: true },
+          },
+        );
+      }
     });
     return () => mm.revert();
   }, []);
@@ -47,6 +60,12 @@ export default function FeatureBand() {
       />
       {/* the fade-down George likes — image sinks into the dark at the bottom */}
       <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/20 via-transparent via-40% to-[#050505]" />
+      {/* the line that rides OVER the image (speed-split parallax) */}
+      <div className="pointer-events-none absolute inset-0 flex items-center px-5 md:px-10">
+        <h2 className="fb-line font-display text-[clamp(2.6rem,7vw,7rem)] leading-[0.92] text-[#f5f1e6] will-change-transform">
+          Wherever the story is<span className="text-[var(--gold-text)]">.</span>
+        </h2>
+      </div>
       {/* the interactive cue — one liquid-glass invitation, nothing else */}
       <div className="absolute inset-x-0 bottom-[12vh] flex justify-center">
         <a

@@ -90,6 +90,13 @@ export default function EditorFCP() {
             const a = i === f ? 1 : i === f - 1 ? 1 - sm(0, 0.25, local) : 0;
             gsap.set(v, { autoAlpha: a });
           });
+          // Division cut: dip through BLACK at every stage boundary, like a film edit
+          const dip = el.querySelector(".ps-dip");
+          if (dip) {
+            const dEdge = Math.min(local, 1 - local);
+            const black = f === 0 && local < 0.5 ? 0 : (1 - sm(0.02, 0.16, dEdge)) * 0.92;
+            gsap.set(dip, { opacity: black });
+          }
           if (f !== active) {
             active = f;
             if (counter) counter.textContent = STAGES[f].n;
@@ -127,6 +134,8 @@ export default function EditorFCP() {
             aria-hidden
           />
         ))}
+        {/* the black frame every cut passes through */}
+        <div aria-hidden className="ps-dip pointer-events-none absolute inset-0 bg-black opacity-0" />
         {/* one calm wash so the type always reads; the film still breathes */}
         <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-[#050505]" />
 

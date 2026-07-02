@@ -43,7 +43,6 @@ export default function Mission() {
       data-flow
       className="relative bg-[var(--bg)] px-5 py-[8vh] text-[var(--fg)] md:px-10 md:py-[10vh]"
       aria-label="Our mission"
-      style={{ fontFamily: "var(--font-firma), sans-serif" }}
     >
       <MobileReveal className="mx-auto grid max-w-[1100px] gap-7 md:grid-cols-[0.72fr_1.28fr] md:items-start md:gap-16">
         <ScrollType
@@ -53,7 +52,7 @@ export default function Mission() {
         >
           Films, not content.
         </ScrollType>
-        <p className="max-w-xl text-[clamp(1.1rem,1.5vw,1.55rem)] leading-[1.42] text-[var(--fg)]/80" style={{ fontFamily: "var(--font-archivo), sans-serif" }}>
+        <p className="max-w-xl text-[clamp(1.1rem,1.5vw,1.55rem)] leading-[1.42] text-[var(--fg)]/80">
           {PARA.split(" ").map((w, i) => (
             <span key={i} className="ms-word">
               {w}{" "}

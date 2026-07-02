@@ -132,8 +132,8 @@ export default function LensIntro() {
           </div>
           <div className="hero-sub">
             <p
-              className="mt-5 max-w-md text-[clamp(1rem,1.5vw,1.35rem)] uppercase leading-snug tracking-[0.16em] text-white/90"
-              style={{ fontFamily: "var(--font-archivo), sans-serif", textShadow: "0 2px 14px rgba(0,0,0,0.65)" }}
+              className="mt-5 max-w-md text-[clamp(0.95rem,1.35vw,1.2rem)] uppercase leading-snug tracking-[0.18em] text-white/90"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               we go where the story is
             </p>

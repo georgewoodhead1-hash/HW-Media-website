@@ -24,13 +24,13 @@ const ROW_B = LOGOS.slice(mid);
 
 function Logo({ slug }: { slug: string }) {
   return (
-    <span className="tb-logo flex h-20 w-[150px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:h-24 md:w-[240px]">
+    <span className="tb-logo flex h-24 w-[190px] shrink-0 cursor-pointer items-center justify-center will-change-transform md:h-32 md:w-[300px]">
       {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={`/logos/${slug}.png`}
         alt=""
         aria-hidden
-        className="logo-mark max-h-[38px] max-w-[118px] object-contain md:max-h-[64px] md:max-w-[200px]"
+        className="logo-mark max-h-[52px] max-w-[150px] object-contain md:max-h-[84px] md:max-w-[250px]"
         loading="lazy"
       />
     </span>
@@ -156,7 +156,7 @@ export default function TrustedBy() {
       <div className="tb-heading relative mb-[5vh] text-center">
         {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
             char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}
-        <h2 className="font-display text-[clamp(1.7rem,3.2vw,2.8rem)] leading-none text-[var(--fg)]">
+        <h2 className="font-display text-[clamp(2.6rem,5.5vw,5rem)] leading-none text-[var(--fg)]">
           Trusted by
         </h2>
       </div>

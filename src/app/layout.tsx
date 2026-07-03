@@ -23,9 +23,9 @@ const archivo = Archivo({
 //    NOTE: Suisse Int'l is a commercial font (Swiss Typefaces) — pulled from
 //    1820's CDN for the dev build; LICENCE BEFORE LAUNCH (same as BR Firma was).
 const suisseMain = localFont({
-  // the 1820 kit: ALL UI/subheads ride Suisse Intl CONDENSED Medium (their
-  // "EXPLORE MORE WORK" / "OUR SERVICES" face) — George: copy their fonts exactly.
-  src: "../fonts/SuisseIntl-MediumCondensed.woff2",
+  // the 1820 kit, corrected: their SMALL/UI face is Suisse Intl Medium at
+  // REGULAR width with near-zero tracking (probe: -0.125px) — NOT condensed.
+  src: "../fonts/SuisseIntl-Medium.woff2",
   variable: "--font-firma",
   weight: "500",
   display: "swap",

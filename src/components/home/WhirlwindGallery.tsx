@@ -112,7 +112,7 @@ export default function WhirlwindGallery() {
         // the first ~30% of the section happens BEHIND the FAQs curtain
         // (Stone Visuals stage-curtain reveal) — the show starts once revealed
         const p = Math.min(1, Math.max(0, (pRaw - 0.3) / 0.7));
-        const head = smooth(0.0, 0.72, p) * HEAD_MAX;
+        const head = smooth(0.0, 0.62, p) * HEAD_MAX;
         tiles.forEach((t, i) => {
           const s = head - i * GAP; // unclamped: the ring never piles up
           if (s <= 0) {
@@ -124,25 +124,30 @@ export default function WhirlwindGallery() {
           // scatter out… hold a beat… LOOP BACK onto the (still turning) ring…
           // then fly PAST the camera (George: spread for a second, loop back
           // in, then off screen — the 3D exit)
-          const eOut = smooth(0.55 + i * 0.015, 0.68 + i * 0.015, p);
-          const eBack = smooth(0.78, 0.87, p);
-          const eFly = smooth(0.88, 0.98, p);
+          const eOut = smooth(0.48 + i * 0.012, 0.58 + i * 0.012, p);
+          const eBack = smooth(0.62, 0.7, p);
+          // SPIRAL OFF SCREEN while still looping: the ring radius blows out and
+          // the tiles ride their spinning angle right off the edges (George)
+          const eFly = smooth(0.72 + i * 0.006, 0.86 + i * 0.006, p);
           let x = lerp(pos.x, (SCATTER[i][0] / 100) * W, eOut);
           let y = lerp(pos.y, (SCATTER[i][1] / 100) * H, eOut);
           x = lerp(x, pos.x, eBack);
           y = lerp(y, pos.y, eBack);
+          const blow = 1 + eFly * 3.4;
+          x *= blow;
+          y *= blow;
           let scale = lerp(lerp(0.55, 1.1, d), 0.8, eOut);
-          scale = lerp(scale, lerp(0.55, 1.1, d), eBack) * (1 + eFly * 2.6);
+          scale = lerp(scale, lerp(0.55, 1.1, d), eBack) * (1 + eFly * 0.9);
           gsap.set(t, {
             x, y, scale,
-            rotationY: Math.sin(pos.theta) * -40 * (1 - eOut) * (1 - eBack) - eFly * 24,
-            opacity: Math.min(1, s * 16) * lerp(lerp(0.55, 1, d), 1, eOut) * (1 - eFly),
-            autoAlpha: Math.min(1, s * 16) * (1 - smooth(0.94, 0.99, p)),
+            rotationY: Math.sin(pos.theta) * -40 * (1 - eOut) * (1 - eBack) - eFly * 30,
+            opacity: Math.min(1, s * 16) * lerp(lerp(0.55, 1, d), 1, eOut),
+            autoAlpha: Math.min(1, s * 16) * (1 - smooth(0.93, 0.99, eFly)),
             zIndex: Math.round(lerp(lerp(2, 30, d), 6, eOut)),
           });
         });
 
-        const want = Math.floor(smooth(0.03, 0.32, p) * chars.length);
+        const want = Math.floor(smooth(0.78, 0.92, p) * chars.length);
         if (want !== typedRef.current) {
           typedRef.current = want;
           chars.forEach((c, i) => {
@@ -150,11 +155,11 @@ export default function WhirlwindGallery() {
           });
         }
 
-        const e = smooth(0.9, 0.96, p);
+        const e = smooth(0.9, 0.955, p);
         gsap.set(cta, { opacity: e, pointerEvents: e > 0.5 ? "auto" : "none", y: 26 * (1 - e) });
 
         // slim footer rises up from the bottom edge at the very end
-        const f = smooth(0.94, 0.995, p);
+        const f = smooth(0.93, 0.99, p);
         gsap.set(foot, {
           yPercent: 110 * (1 - f),
           autoAlpha: f,

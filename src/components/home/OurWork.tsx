@@ -219,7 +219,7 @@ export default function OurWork() {
 
               {/* expanded — title + watch */}
               <div className="absolute inset-x-0 bottom-0 p-6 opacity-0 transition-opacity duration-500 group-hover:opacity-100">
-                <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]/55">
+                <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]">
                   {String(i + 1).padStart(2, "0")} · {p.client.toUpperCase()}
                 </span>
                 <h3 className="font-display mt-2 whitespace-nowrap text-[clamp(1.6rem,2.6vw,2.6rem)] leading-none text-white" style={{ fontWeight: 400 }}>
@@ -233,11 +233,9 @@ export default function OurWork() {
 
         <Link
           href="/work"
-          className="ow-cta group relative z-10 mt-6 inline-flex items-center gap-2 self-center rounded-full border border-[var(--fg)]/30 px-7 py-3 text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)] hover:bg-[var(--fg)] hover:text-[var(--bg)]"
-          style={{ fontFamily: "var(--font-firma), sans-serif" }}
+          className="ow-cta blink relative z-10 mt-6 self-center text-[14px] font-medium"
         >
           Discover more
-          <span aria-hidden className="transition-transform duration-300 group-hover:translate-x-1">→</span>
         </Link>
       </div>
 
@@ -249,7 +247,7 @@ export default function OurWork() {
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
             <div className="absolute bottom-3 left-3">
-              <span className="label-mono text-[9px] tracking-[0.2em] text-[var(--fg)]/55">{p.client.toUpperCase()}</span>
+              <span className="label-mono text-[9px] tracking-[0.2em] text-[var(--fg)]">{p.client.toUpperCase()}</span>
               <h3 className="font-display text-xl text-white" style={{ fontWeight: 400 }}>{p.title}</h3>
             </div>
           </Link>

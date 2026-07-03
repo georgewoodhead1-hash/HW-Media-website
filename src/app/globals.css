@@ -208,6 +208,31 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
 }
 /* nav hover = the sliding pill ONLY (George: bubble, not underline) */
 
+/* ---- 1820 bracket link: [ TEXT ] that becomes a solid cream block with an
+   underline on hover. THE small-link treatment sitewide. */
+.blink {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+  font-family: var(--font-firma), sans-serif;
+  text-transform: uppercase;
+  letter-spacing: -0.01em;
+  color: #f5f1e6;
+  transition: background 0.25s var(--ease-expo), color 0.25s var(--ease-expo);
+  padding: 0.15em 0.35em;
+}
+.blink::before { content: "["; opacity: 0.55; transition: opacity 0.25s; }
+.blink::after { content: "]"; opacity: 0.55; transition: opacity 0.25s; }
+.blink:hover {
+  background: #f5f1e6;
+  color: #0a0a08;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.blink:hover::before, .blink:hover::after { opacity: 0; }
+
+
 /* ---- Liquid glass (the real thing): translucent panel that refracts what's
    behind it — blur + saturation lift, a specular top edge, soft inner glow and
    a deep drop. Use on CTAs and floating chips. */

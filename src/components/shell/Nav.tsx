@@ -142,7 +142,7 @@ export default function Nav() {
               key={l.label}
               href={l.href}
               onMouseEnter={movePill}
-              className="nav-link relative rounded-full px-4 py-2 text-[14px] font-medium uppercase tracking-[0.14em] text-[var(--fg)] transition-colors duration-300"
+              className="nav-link relative rounded-full px-4 py-2 text-[14px] font-medium uppercase tracking-[0.01em] text-[var(--fg)] transition-colors duration-300"
             >
               {l.label}
             </Link>

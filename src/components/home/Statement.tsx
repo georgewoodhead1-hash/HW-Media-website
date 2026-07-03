@@ -19,7 +19,7 @@ export default function Statement() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const ctx = gsap.context(() => {
       const chars = gsap.utils.toArray<HTMLElement>(".st2-char");
-      gsap.set(chars, { opacity: 0.13 });
+      gsap.set(chars, { opacity: 0.45 });
       gsap.to(chars, {
         opacity: 1,
         ease: "none",
@@ -39,7 +39,7 @@ export default function Statement() {
       aria-label="Films, not content."
     >
       <Rule className="mb-[9vh]" />
-      <h2 className="font-display text-[clamp(3.2rem,10.5vw,10.5rem)] leading-[0.92]" aria-label="Films, not content.">
+      <h2 className="font-display text-center text-[clamp(3.2rem,10.5vw,10.5rem)] leading-[0.92]" aria-label="Films, not content.">
         {LINES.map((line, li) => (
           <span key={li} className="block">
             {line.split("").map((c, ci) => (

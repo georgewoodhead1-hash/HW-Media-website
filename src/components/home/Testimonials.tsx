@@ -219,7 +219,7 @@ export default function Testimonials() {
           qw.forEach((w, i) => {
             const a0 = 0.26 + (i / n) * 0.44;
             const fill = sm(a0, a0 + 0.1, q);
-            w.style.opacity = String(appear * lerp(0.16, 1, fill));
+            w.style.opacity = String(appear * lerp(0.5, 1, fill));
           });
           // 4) brand + film rise last
           rise.forEach((el, i) => {
@@ -283,15 +283,15 @@ export default function Testimonials() {
           rides down (no drawn line) and settles into the first dot. Desktop only. */}
       <span aria-hidden className="t-fullstop pointer-events-none fixed left-0 top-0 z-[80] h-[28px] w-[28px] rounded-[6px] bg-[var(--gold)] opacity-0 shadow-[0_0_24px_rgba(191,170,83,0.85)] will-change-transform" />
 
-      <div className="t-content grid grid-cols-1 gap-10 px-5 md:grid-cols-[1.05fr_0.95fr] md:items-start md:gap-12 md:px-10 lg:gap-16">
+      <div className="t-content mx-auto flex max-w-[1100px] flex-col items-center px-5 text-center md:px-10">
         {/* LEFT — title at the top (so the film aligns to it), then the active
             quote + brand, then the three clickable dots. */}
-        <div className="flex flex-col">
-          <h2 className="t-head about-display max-w-3xl text-[clamp(2rem,4.4vw,3.8rem)] leading-[1.0] text-[var(--fg)]">
+        <div className="flex w-full flex-col items-center">
+          <h2 className="t-head about-display text-[clamp(2.4rem,5.4vw,4.8rem)] leading-[1.0] text-[var(--fg)]">
             Testimonials
           </h2>
 
-          <div className="mt-8 flex min-h-[clamp(13rem,19vw,16rem)] flex-col" ref={quoteRef}>
+          <div className="mt-8 flex min-h-[clamp(11rem,16vw,14rem)] flex-col items-center" ref={quoteRef}>
             <blockquote
               className="about-body text-[clamp(1.55rem,2.8vw,2.7rem)] leading-[1.25]"
               style={{ fontWeight: 400 }}
@@ -305,17 +305,17 @@ export default function Testimonials() {
 
             <figcaption
               data-rise
-              className="mt-7 flex flex-wrap items-baseline gap-x-3 gap-y-1"
+              className="mt-7 flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1"
               style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               <span className="text-base font-medium text-[var(--fg)]">{current.brand}</span>
-              <span className="text-sm text-[var(--fg)]/45">{current.role} · {current.sector}</span>
+              <span className="text-sm text-[var(--fg)]">{current.role} · {current.sector}</span>
             </figcaption>
           </div>
 
           {/* the dots row — the flying gold full stop lands here and clicks into
               the (bigger) selector dots. */}
-          <div className="relative -ml-3 mt-9 flex items-center">
+          <div className="relative mt-9 flex items-center justify-center">
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}
@@ -340,7 +340,7 @@ export default function Testimonials() {
           data-rise
           href={`/work/${current.slug}`}
           aria-label={`View project — ${current.role}, ${current.sector}`}
-          className="group relative mx-auto block aspect-[3/4] w-full max-h-[64vh] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)] md:mx-0"
+          className="group relative mx-auto mt-12 block aspect-video w-full max-w-[900px] overflow-hidden rounded-2xl border border-[var(--hairline-dark)] bg-[var(--bg)]"
         >
           {TESTIMONIALS.map((t, i) => {
             const film = filmFor(t.slug);

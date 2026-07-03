@@ -81,18 +81,18 @@ export default function EditorFCP() {
       <Rule label="Our process" bg="#0e0e0d" />
 
       {/* the statement stack (1820 work-page opener) */}
-      <div className="mx-auto mt-[10vh] max-w-[1400px]">
+      <div className="mx-auto mt-[10vh] max-w-[1200px] text-center">
         {STATEMENTS.map((s) => (
           <div key={s.line} className="proc-stmt py-[4.5vh]">
             <h3 className="font-display text-[clamp(2.8rem,7.5vw,7.5rem)] leading-[0.94]">{s.line}</h3>
-            <p className="mt-3 max-w-[46ch] text-[clamp(1rem,1.25vw,1.2rem)] leading-[1.5] text-[#f5f1e6]/60">{s.sub}</p>
+            <p className="mx-auto mt-4 max-w-[46ch] text-[clamp(1.05rem,1.35vw,1.3rem)] leading-[1.5] text-[#f5f1e6]">{s.sub}</p>
           </div>
         ))}
-        <div className="py-[6vh]">
-          <h3 className="proc-sign font-display text-[clamp(1.9rem,4.2vw,4.2rem)] leading-[1.02] text-[#f5f1e6]/85">
+        <div className="py-[6vh] text-center">
+          <h3 className="proc-sign font-display text-[clamp(1.9rem,4.2vw,4.2rem)] leading-[1.02] text-[#f5f1e6]">
             Stylish production. Seamless execution.
           </h3>
-          <p className="proc-sign mt-4 text-[clamp(1.05rem,1.4vw,1.3rem)] text-[#f5f1e6]/55">
+          <p className="proc-sign mt-4 text-[clamp(1.05rem,1.4vw,1.3rem)] text-[#f5f1e6]">
             We&rsquo;re not a cult. But people do keep coming back.
           </p>
         </div>
@@ -104,12 +104,12 @@ export default function EditorFCP() {
           <div key={s.n} className="proc-row relative py-[7vh]">
             <span className="proc-hair absolute left-0 top-0 block h-px w-full bg-[#f5f1e6]/16" />
             <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[6rem_1.1fr_1fr_0.9fr] md:gap-10">
-              <span className="proc-cell text-[clamp(0.95rem,1.1vw,1.1rem)] text-[#f5f1e6]/45" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.n}</span>
+              <span className="proc-cell text-[clamp(0.95rem,1.1vw,1.1rem)] text-[#f5f1e6]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.n}</span>
               <h3 className="proc-cell font-display text-[clamp(2.4rem,5.6vw,5.6rem)] leading-[0.92]">
                 {s.name}
                 {s.n === "04" && <span className="wd-stop text-[var(--gold-text)]">.</span>}
               </h3>
-              <p className="proc-cell max-w-[44ch] text-[clamp(1rem,1.3vw,1.2rem)] leading-[1.55] text-[#f5f1e6]/70">{s.copy}</p>
+              <p className="proc-cell max-w-[44ch] text-[clamp(1rem,1.3vw,1.2rem)] leading-[1.55] text-[#f5f1e6]">{s.copy}</p>
               <div className="proc-img relative aspect-[4/3] overflow-hidden rounded-md">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={s.img} alt={s.name.toLowerCase()} className="h-full w-full object-cover" />

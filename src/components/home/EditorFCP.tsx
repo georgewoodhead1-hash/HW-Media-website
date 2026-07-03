@@ -1,52 +1,31 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { safePlay } from "@/lib/video";
+import { gsap, SplitText } from "@/lib/gsap";
+import Rule from "@/components/shell/Rule";
 
-// Our process — ONE continuous film you scrub through (rebuild #3, blend-first).
-// No boxes, no stack: the stage's film fills the screen edge to edge, one huge
-// centred word over it, and a LIVE line drawing across the top of the page as
-// you move 01 → 04. Scrolling crossfades stage into stage like a cut in an
-// edit — the section reads as part of the site's film, not a diagram beside it.
-// The last stage ("In motion.") carries the gold full stop the testimonials
-// dot peels off.
-interface Stage {
-  n: string;
-  name: string;
-  copy: string;
-  clip: string;
-}
+// Our process — copied from 1820productions (George's direction, 2026-07-03):
+//   1. tiny label, then the staggered STATEMENT stack with subtext lines
+//      ("We listen. / We craft. / We deliver." + the sign-off pair) —
+//      ⚠ placeholder copy lifted from 1820; reword before launch.
+//   2. the SERVICES stack: 01–04 numbered rows on drawn hairlines — number,
+//      big condensed title, paragraph, and an image per row (stock/micro
+//      posters as placeholders).
+// Flowing (no pin), everything mask-rises; the "Deliver." full stop is what
+// the testimonials dot peels off (cream now — accents are zero-gold).
 
-const STAGES: Stage[] = [
-  {
-    n: "01",
-    name: "Pre-production",
-    copy: "Brief, treatment, casting, locations, schedule — the film is planned to the minute before a frame is shot.",
-    clip: "/videos/micro/m02.mp4",
-  },
-  {
-    n: "02",
-    name: "Production",
-    copy: "Direction and cinematography on location. If it can be done in-camera, it's done in-camera.",
-    clip: "/videos/micro/m07.mp4",
-  },
-  {
-    n: "03",
-    name: "Post-production",
-    copy: "Edit, grade, sound and motion, all under one roof — the film finds its rhythm.",
-    clip: "/videos/micro/m10.mp4",
-  },
-  {
-    n: "04",
-    name: "In motion",
-    copy: "Aerial and motion design by the same crew, so nothing is lost in translation.",
-    clip: "/videos/micro/m12.mp4",
-  },
+const STATEMENTS = [
+  { line: "We listen.", sub: "Every film starts with your story, not our showreel." },
+  { line: "We craft.", sub: "Cinema standards, whatever the budget." },
+  { line: "We deliver.", sub: "The master, plus every cutdown your channels need." },
 ];
 
-const clamp01 = (x: number) => Math.min(1, Math.max(0, x));
-const sm = (a: number, b: number, t: number) => { const x = clamp01((t - a) / (b - a)); return x * x * (3 - 2 * x); };
+const STAGES = [
+  { n: "01", name: "PRE-PRODUCTION", copy: "Brief, treatment, casting, locations, schedule. The film is planned to the minute before a frame is shot.", img: "/videos/micro/posters/m02.jpg" },
+  { n: "02", name: "PRODUCTION", copy: "Direction and cinematography on location. If it can be done in-camera, it's done in-camera.", img: "/videos/micro/posters/m07.jpg" },
+  { n: "03", name: "EDIT", copy: "Edit, grade, sound and motion under one roof. The film finds its rhythm.", img: "/videos/micro/posters/m10.jpg" },
+  { n: "04", name: "DELIVER", copy: "The master plus every cutdown, mastered properly — nothing cropped as an afterthought.", img: "/videos/micro/posters/m12.jpg" },
+];
 
 export default function EditorFCP() {
   const rootRef = useRef<HTMLElement>(null);
@@ -56,58 +35,38 @@ export default function EditorFCP() {
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
-    const ctx = gsap.context(() => {
-      const stages = gsap.utils.toArray<HTMLElement>(".ps-stage");
-      const films = gsap.utils.toArray<HTMLVideoElement>(".ps-film");
-      const line = el.querySelector<HTMLElement>(".ps-line");
-      const counter = el.querySelector<HTMLElement>(".ps-count");
-      const N = STAGES.length;
+    let cancelled = false;
+    let ctx: gsap.Context | undefined;
+    const splits: SplitText[] = [];
 
-      gsap.set(stages, { autoAlpha: 0, y: 30 });
-      gsap.set(films, { autoAlpha: 0 });
+    document.fonts.ready.then(() => {
+      if (cancelled) return;
+      ctx = gsap.context(() => {
+        // statement lines mask-rise one after another as you scroll to them
+        gsap.utils.toArray<HTMLElement>(".proc-stmt").forEach((stmt) => {
+          const s = new SplitText(stmt.querySelector("h3"), { type: "lines", mask: "lines" });
+          splits.push(s);
+          const tl = gsap.timeline({ scrollTrigger: { trigger: stmt, start: "top 84%" } });
+          tl.from(s.lines, { yPercent: 112, duration: 1.15, ease: "power3.out" })
+            .from(stmt.querySelector("p"), { autoAlpha: 0, y: 16, duration: 0.8, ease: "power3.out" }, 0.25);
+        });
+        // the sign-off pair
+        gsap.utils.toArray<HTMLElement>(".proc-sign").forEach((n) => {
+          gsap.from(n, { autoAlpha: 0, y: 30, duration: 1, ease: "power3.out", scrollTrigger: { trigger: n, start: "top 86%" } });
+        });
+        // service rows: hairline draws, number/title/copy rise, image clip-reveals
+        gsap.utils.toArray<HTMLElement>(".proc-row").forEach((row) => {
+          const tl = gsap.timeline({ scrollTrigger: { trigger: row, start: "top 84%" } });
+          tl.from(row.querySelector(".proc-hair"), { scaleX: 0, transformOrigin: "left center", duration: 1.3, ease: "expo.out" }, 0)
+            .from(row.querySelectorAll(".proc-cell"), { autoAlpha: 0, y: 34, duration: 0.95, ease: "power3.out", stagger: 0.09 }, 0.15)
+            .from(row.querySelector(".proc-img"), { clipPath: "inset(0% 0% 100% 0%)", duration: 1.3, ease: "expo.out" }, 0.2);
+          const img = row.querySelector("img");
+          if (img) tl.from(img, { scale: 1.15, duration: 1.9, ease: "expo.out" }, 0.2);
+        });
+      }, el);
+    });
 
-      let active = -1;
-      const st = ScrollTrigger.create({
-        trigger: el,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.6,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-          // the live line — draws across the page as you move through the stages
-          if (line) gsap.set(line, { scaleX: p, transformOrigin: "left center" });
-          // which stage owns this point of the scroll
-          const f = Math.min(N - 1, Math.floor(p * N));
-          const local = p * N - f; // 0..1 inside the stage
-          stages.forEach((s, i) => {
-            if (i !== f) { gsap.set(s, { autoAlpha: 0 }); return; }
-            const inA = sm(0.0, 0.16, local);
-            const outA = i === N - 1 ? 1 : 1 - sm(0.86, 1, local);
-            gsap.set(s, { autoAlpha: Math.min(inA, outA), y: 30 * (1 - sm(0, 0.2, local)) });
-          });
-          films.forEach((v, i) => {
-            const a = i === f ? 1 : i === f - 1 ? 1 - sm(0, 0.25, local) : 0;
-            gsap.set(v, { autoAlpha: a });
-          });
-          // Division cut: dip through BLACK at every stage boundary, like a film edit
-          const dip = el.querySelector(".ps-dip");
-          if (dip) {
-            const dEdge = Math.min(local, 1 - local);
-            const black = f === 0 && local < 0.5 ? 0 : (1 - sm(0.02, 0.16, dEdge)) * 0.92;
-            gsap.set(dip, { opacity: black });
-          }
-          if (f !== active) {
-            active = f;
-            if (counter) counter.textContent = STAGES[f].n;
-            films.forEach((v, i) => { if (i === f) safePlay(v); else v.pause(); });
-          }
-        },
-      });
-      return () => st.kill();
-    }, el);
-
-    return () => ctx.revert();
+    return () => { cancelled = true; ctx?.revert(); splits.forEach((s) => s.revert()); };
   }, []);
 
   return (
@@ -116,54 +75,49 @@ export default function EditorFCP() {
       id="process"
       data-theme="dark"
       data-surface="media"
-      className="relative z-20 h-[420vh] text-[#f5f1e6]"
+      className="relative z-20 bg-[#0e0e0d] px-5 py-[16vh] text-[#f5f1e6] md:px-10"
       aria-label="Our process"
     >
-      <div className="sticky top-0 h-screen overflow-hidden bg-[#050505]">
-        {/* the films — full bleed, one at a time, cutting like an edit */}
-        {STAGES.map((s) => (
-          <video
-            key={s.n}
-            className="ps-film absolute inset-0 h-full w-full object-cover"
-            src={s.clip}
-            poster={s.clip.replace("micro/", "micro/posters/").replace(".mp4", ".jpg")}
-            muted
-            loop
-            playsInline
-            preload="metadata"
-            aria-hidden
-          />
+      <Rule label="Our process" bg="#0e0e0d" />
+
+      {/* the statement stack (1820 work-page opener) */}
+      <div className="mx-auto mt-[10vh] max-w-[1400px]">
+        {STATEMENTS.map((s) => (
+          <div key={s.line} className="proc-stmt py-[4.5vh]">
+            <h3 className="font-display text-[clamp(2.8rem,7.5vw,7.5rem)] leading-[0.94]">{s.line}</h3>
+            <p className="mt-3 max-w-[46ch] text-[clamp(1rem,1.25vw,1.2rem)] leading-[1.5] text-[#f5f1e6]/60">{s.sub}</p>
+          </div>
         ))}
-        {/* the black frame every cut passes through */}
-        <div aria-hidden className="ps-dip pointer-events-none absolute inset-0 bg-black opacity-0" />
-        {/* one calm wash so the type always reads; the film still breathes */}
-        <div aria-hidden className="absolute inset-0 bg-gradient-to-b from-black/55 via-black/25 to-[#050505]" />
-
-        {/* the DYNAMIC line — draws across the top of the page 01 → 04 */}
-        <div className="absolute inset-x-0 top-0 px-5 pt-[12vh] md:px-10">
-          <div className="relative h-px w-full bg-[#f5f1e6]/15">
-            <span className="ps-line absolute inset-0 origin-left bg-[#f5f1e6]/80" style={{ transform: "scaleX(0)" }} />
-          </div>
-          <div className="mt-6 flex items-baseline justify-between">
-            <h2 className="about-display text-[clamp(1.5rem,2.4vw,2.4rem)]">Our process</h2>
-            <span className="ps-count about-display text-[clamp(1.5rem,2.4vw,2.4rem)] text-[#f5f1e6]/55">01</span>
-          </div>
+        <div className="py-[6vh]">
+          <h3 className="proc-sign font-display text-[clamp(1.9rem,4.2vw,4.2rem)] leading-[1.02] text-[#f5f1e6]/85">
+            Stylish production. Seamless execution.
+          </h3>
+          <p className="proc-sign mt-4 text-[clamp(1.05rem,1.4vw,1.3rem)] text-[#f5f1e6]/55">
+            We&rsquo;re not a cult. But people do keep coming back.
+          </p>
         </div>
+      </div>
 
-        {/* the stages — everything centred on the page's axis */}
-        <div className="relative flex h-full items-center justify-center px-5 text-center md:px-10">
-          {STAGES.map((s, i) => (
-            <div key={s.n} className="ps-stage absolute inset-x-0 mx-auto max-w-[1100px] px-5 will-change-transform">
-              <h3 className="font-display text-[clamp(3.4rem,10vw,10rem)] leading-[0.9]">
+      {/* the services stack: 01–04 with images */}
+      <div className="mx-auto mt-[6vh] max-w-[1400px]">
+        {STAGES.map((s) => (
+          <div key={s.n} className="proc-row relative py-[7vh]">
+            <span className="proc-hair absolute left-0 top-0 block h-px w-full bg-[#f5f1e6]/16" />
+            <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[6rem_1.1fr_1fr_0.9fr] md:gap-10">
+              <span className="proc-cell text-[clamp(0.95rem,1.1vw,1.1rem)] text-[#f5f1e6]/45" style={{ fontFamily: "var(--font-firma), sans-serif" }}>{s.n}</span>
+              <h3 className="proc-cell font-display text-[clamp(2.4rem,5.6vw,5.6rem)] leading-[0.92]">
                 {s.name}
-                {i === STAGES.length - 1 && <span className="wd-stop text-[var(--gold-text)]">.</span>}
+                {s.n === "04" && <span className="wd-stop text-[var(--gold-text)]">.</span>}
               </h3>
-              <p className="mx-auto mt-8 max-w-[46ch] text-[clamp(1.05rem,1.4vw,1.3rem)] leading-[1.55] text-[#f5f1e6]/85">
-                {s.copy}
-              </p>
+              <p className="proc-cell max-w-[44ch] text-[clamp(1rem,1.3vw,1.2rem)] leading-[1.55] text-[#f5f1e6]/70">{s.copy}</p>
+              <div className="proc-img relative aspect-[4/3] overflow-hidden rounded-md">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={s.img} alt={s.name.toLowerCase()} className="h-full w-full object-cover" />
+              </div>
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
+        <div className="block h-px w-full bg-[#f5f1e6]/16" />
       </div>
     </section>
   );

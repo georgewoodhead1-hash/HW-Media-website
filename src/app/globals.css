@@ -9,9 +9,9 @@
   --cream: #f9f6e4;
   --ink: #171717;
   --paper-text: #f5f1e6;
-  --gold: #bfaa53; /* brand gold — for FILLS (bars, pills, playhead) */
-  --gold-text: #bfaa53; /* gold used as TEXT; darkens in light mode for AA contrast */
-  --red: #bfaa53; /* legacy alias — every former red now resolves to gold */
+  --gold: #e9e5d8; /* accents now CREAM (George: gold accents annoyed him); logo PNG stays gold */
+  --gold-text: #f5f1e6; /* accent text = cream (1820 zero-accent) */
+  --red: #e9e5d8; /* legacy alias */
   --tint-w: rgba(255, 255, 255, 0.1);
   --tint-b: rgba(0, 0, 0, 0.1);
   --hairline-dark: rgba(245, 241, 230, 0.14);
@@ -153,7 +153,7 @@ body {
 /* GOLDEN RULE: never the military monospace font. This class (used in 60+
    places) renders in BR Firma via --font-firma — the real auteurstudios font. */
 .label-mono {
-  font-family: var(--font-firma), sans-serif;
+  font-family: var(--font-geist-mono), monospace;
   font-size: 11px;
   font-weight: 500;
   text-transform: uppercase;

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo } from "next/font/google";
+import { Archivo, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
@@ -23,10 +23,19 @@ const archivo = Archivo({
 //    NOTE: Suisse Int'l is a commercial font (Swiss Typefaces) — pulled from
 //    1820's CDN for the dev build; LICENCE BEFORE LAUNCH (same as BR Firma was).
 const suisseMain = localFont({
-  src: "../fonts/SuisseIntl-Medium.woff2",
+  // the 1820 kit: ALL UI/subheads ride Suisse Intl CONDENSED Medium (their
+  // "EXPLORE MORE WORK" / "OUR SERVICES" face) — George: copy their fonts exactly.
+  src: "../fonts/SuisseIntl-MediumCondensed.woff2",
   variable: "--font-firma",
   weight: "500",
   display: "swap",
+});
+
+// Geist Mono — 1820's micro-label face (tiny technical labels only)
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+  weight: ["400", "500"],
 });
 
 // 3) SUBTEXT — Suisse Int'l Book (1820's body face). Paragraphs and quiet text,
@@ -162,7 +171,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
+      className={`${archivo.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
     >
 
       <body className="min-h-full">

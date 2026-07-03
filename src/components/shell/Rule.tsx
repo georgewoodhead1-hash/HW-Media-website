@@ -20,14 +20,15 @@ export default function Rule({ className = "", label, bg = "#050505" }: { classN
       scrollTrigger: { trigger: el, start: "top 96%", end: "top 30%", scrub: 1.3 },
     });
     tl.fromTo(line, { scaleX: 0 }, { scaleX: 1, ease: "none", transformOrigin: "center center" }, 0)
-      .fromTo(plus, { autoAlpha: 0, rotate: -90 }, { autoAlpha: 1, rotate: 0, ease: "none" }, 0.55);
-    if (lab) tl.fromTo(lab, { autoAlpha: 0 }, { autoAlpha: 1, ease: "none" }, 0.3);
+      .fromTo(plus, { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, ease: "none" }, 0.5);
+    if (lab) tl.fromTo(lab, { autoAlpha: 0, letterSpacing: "0.55em" }, { autoAlpha: 1, letterSpacing: "0.22em", ease: "none" }, 0.25);
     return () => { tl.scrollTrigger?.kill(); tl.kill(); };
   }, []);
 
   return (
     <div ref={ref} aria-hidden className={`relative flex items-center gap-3 ${className}`}>
-      <span className="rule-plus shrink-0 text-[15px] leading-none text-[var(--fg)]/60" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+      <style>{`@keyframes ruleSpin { to { transform: rotate(360deg); } } .rule-plus{ animation: ruleSpin 26s linear infinite; } @media (prefers-reduced-motion: reduce){ .rule-plus{ animation: none; } }`}</style>
+      <span className="rule-plus shrink-0 text-[19px] leading-none text-[var(--fg)]/70" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
       <span className="rule-line block h-px flex-1 bg-[var(--fg)]/40 will-change-transform" />
       {label && (
         <span
@@ -37,7 +38,7 @@ export default function Rule({ className = "", label, bg = "#050505" }: { classN
           {label}
         </span>
       )}
-      <span className="rule-plus shrink-0 text-[15px] leading-none text-[var(--fg)]/60" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+      <span className="rule-plus shrink-0 text-[19px] leading-none text-[var(--fg)]/70" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
     </div>
   );
 }

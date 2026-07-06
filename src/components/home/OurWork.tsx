@@ -61,54 +61,74 @@ export default function OurWork() {
 
       const cta = root.querySelector<HTMLElement>(".ow-cta");
       const chars = gsap.utils.toArray<HTMLElement>(".ow-char", root);
-      const caret = root.querySelector<HTMLElement>(".ow-caret");
+      const underline = root.querySelector<HTMLElement>(".ow-underline");
       gsap.set(head, { autoAlpha: 1, yPercent: 0 });
       gsap.set(chars, { opacity: 0 });
-      gsap.set(caret, { autoAlpha: 1 });
-      gsap.set(bars, { autoAlpha: 0, yPercent: 26, scale: 0.98, force3D: true });
+      gsap.set(bars, { autoAlpha: 0, yPercent: 34, scale: 0.97, force3D: true });
+      if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
+      if (underline) gsap.set(underline, { scaleX: 0, transformOrigin: "center center" });
+      gsap.set(bars, { autoAlpha: 0, yPercent: 34, scale: 0.97, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
       // ENTRANCE — type "Featured Projects" like a typewriter AS YOU SCROLL in: the
       // chars light up tied to scroll, the gold caret fading out as the line finishes.
       const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 55%", end: "top 32%", scrub: 0.7 } });
       typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.05, ease: "none" }, 0);
-      typeTl.to(caret, { autoAlpha: 0, duration: 0.06 }, ">0.06");
+      if (underline) typeTl.to(underline, { scaleX: 1, duration: 0.5, ease: "none" }, 0.1);
 
-      const place = (p: number) => {
-        const headOut = smooth(0.84, 0.97, p);
-        const ctaIn = smooth(0.3, 0.44, p);
-        // EXIT — a slow, SYNCED show-curtain that drops on the TOP of every film
-        // (bottom stays put, top clips down). Held back to 0.72 so the films sit
-        // fully revealed for a long beat BEFORE the curtain falls (was exiting
-        // before the entrance even finished).
-        const exit = smooth(0.72, 1, p);
-        gsap.set(head, { autoAlpha: 1 - headOut, yPercent: -headOut * 30 });
-        if (cta) gsap.set(cta, { autoAlpha: ctaIn * (1 - headOut), y: lerp(16, 0, ctaIn) - headOut * 22 });
-        bars.forEach((bar, i) => {
-          const a = FROM + i * span;
-          const b = a + span * 1.7;
-          const t = smooth(a, b, p);
-          gsap.set(bar, {
-            yPercent: lerp(26, 0, t),
-            autoAlpha: t,
-            scale: lerp(0.98, 1, t),
-            clipPath: `inset(${(exit * 100).toFixed(2)}% 0% 0% 0% round 0.375rem)`,
-          });
-          if (vids[i]) gsap.set(vids[i], { scale: lerp(1.12, 1, t) });
-        });
-      };
-      place(0);
-
-      const st = ScrollTrigger.create({
+      // ENTRANCE on passage — the bars fly in one after another as the
+      // section arrives; the page NEVER stops (1820: no pins anywhere).
+      // WINDOW RETIMED (George: "no in animation"): the old 78%→8% window
+      // finished the fade while the bars were still BELOW THE FOLD — it ran,
+      // but off-screen. Now it resolves as the section fills the frame.
+      const enter = ScrollTrigger.create({
         trigger: root,
-        start: "top 42%",
-        end: "bottom bottom",
-        scrub: 1.1,
-        onUpdate: (self) => place(self.progress),
-        onRefresh: (self) => place(self.progress),
+        start: "top 75%",
+        end: "top 0%",
+        scrub: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          const ctaIn = smooth(0.62, 0.82, p);
+          if (cta) gsap.set(cta, { autoAlpha: ctaIn, y: lerp(16, 0, ctaIn) });
+          bars.forEach((bar, i) => {
+            const a = i * 0.09;
+            const t = smooth(a, a + 0.42, p);
+            gsap.set(bar, {
+              yPercent: lerp(34, 0, t),
+              autoAlpha: t,
+              scale: lerp(0.97, 1, t),
+              force3D: true,
+            });
+            if (vids[i]) gsap.set(vids[i], { scale: lerp(1.12, 1, t) });
+          });
+        },
       });
 
-      return () => { st.kill(); };
+      // EXIT on passage — the show-curtain drop George likes. It must COMPLETE
+      // BEFORE the next section shows up (George), so the trigger is the STAGE
+      // (heading + tiles), not the section: the section carries a 50vh black
+      // runway after the stage, and the wipe finishes while Process is still
+      // below that runway — tiles gone, a beat of black, THEN Process enters.
+      // runway tightened to 30vh (George: gap was too big) — the wipe window
+      // ends at 74%, Process enters at 70%, so the order still holds
+      const stage = root.querySelector<HTMLElement>(".ow-stage");
+      const leave = ScrollTrigger.create({
+        trigger: stage ?? root,
+        start: "bottom 98%",
+        end: "bottom 78%",
+        scrub: true,
+        onUpdate: (self) => {
+          const p = self.progress;
+          gsap.set(head, { autoAlpha: 1 - p, yPercent: -p * 30 });
+          if (underline) gsap.set(underline, { autoAlpha: 1 - p, scaleX: Math.max(0.001, 1 - p) });
+          if (cta) gsap.set(cta, { autoAlpha: 1 - p });
+          bars.forEach((bar) => {
+            gsap.set(bar, { clipPath: `inset(${(p * 100).toFixed(2)}% 0% 0% 0% round 0.375rem)` });
+          });
+        },
+      });
+
+      return () => { enter.kill(); leave.kill(); };
     });
 
     // mobile: the md:hidden tile stack is otherwise static — give each tile a
@@ -162,11 +182,11 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)] motion-safe:md:h-[168vh]"
+      className="relative z-10 bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our work"
     >
-      {/* ----- desktop / motion: pinned stage — heading then bars fly in to the accordion ----- */}
-      <div className="hidden overflow-hidden px-5 motion-safe:md:sticky motion-safe:md:top-0 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
+      {/* ----- desktop / motion: the stage — heading then bars fly in to the accordion ----- */}
+      <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:min-h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
           className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
         >
@@ -176,8 +196,10 @@ export default function OurWork() {
           {"Projects".split("").map((c, i) => (
             <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--fg)]">{c}</span>
           ))}
-          <span aria-hidden className="ow-caret ml-1 inline-block h-[0.82em] w-[4px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
         </h2>
+        {/* the underline (George) — a bright hairline drawn under the heading */}
+        <span aria-hidden className="ow-underline relative z-10 mx-auto -mt-[2vh] mb-[3vh] block h-px w-[min(46vw,540px)] bg-[var(--fg)]" />
+
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
         <div className="relative z-0 flex h-[52vh] gap-2">
@@ -239,9 +261,13 @@ export default function OurWork() {
         </Link>
       </div>
 
-      {/* mobile stack */}
-      <div className="flex flex-col gap-4 px-5 py-[10vh] md:hidden">
-        <h2 className="font-display mb-2 text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured Projects<span className="text-[var(--gold-text)]">.</span></h2>
+      {/* the exit runway — just enough black scroll room for the curtain to
+          finish BEFORE Process enters the frame (tightened from 50vh, George) */}
+      <div aria-hidden className="hidden h-[30vh] md:block" />
+
+      {/* mobile stack — centred + tighter (George's mobile pass) */}
+      <div className="flex flex-col gap-4 px-5 py-[7vh] md:hidden">
+        <h2 className="font-display mb-2 text-center text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured Projects<span className="text-[var(--gold-text)]">.</span></h2>
         {WORKS.map((p) => (
           <Link key={p.slug} href={`/work/${p.slug}`} className="ow-mtile relative block aspect-video overflow-hidden rounded-md">
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Footer from "@/components/shell/Footer";
+import FooterReveal from "@/components/shell/FooterReveal";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
@@ -13,7 +13,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "1. Who we are",
     p: [
-      "This website (hwmedia.productions) is operated by HW Media, a film and photography production company based in London, United Kingdom (“HW Media”, “we”, “us”). For any privacy question or to exercise your rights, contact harry@hwmedia.productions. We are the data controller for the personal information described here.",
+      "This website (hwmedia.co.uk) is operated by HW Media, a film and photography production company based in London, United Kingdom (“HW Media”, “we”, “us”). For any privacy question or to exercise your rights, contact harry@hwmedia.co.uk. We are the data controller for the personal information described here.",
     ],
   },
   {
@@ -51,7 +51,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
   {
     h: "7. Your rights",
     p: [
-      "Under UK data protection law you can access your data, have it corrected or erased, restrict or object to processing, and request portability. Where we rely on consent you may withdraw it at any time. To exercise any right, email harry@hwmedia.productions; we respond within one month. You may also complain to the Information Commissioner’s Office (ico.org.uk), though we’d appreciate the chance to put things right first.",
+      "Under UK data protection law you can access your data, have it corrected or erased, restrict or object to processing, and request portability. Where we rely on consent you may withdraw it at any time. To exercise any right, email harry@hwmedia.co.uk; we respond within one month. You may also complain to the Information Commissioner’s Office (ico.org.uk), though we’d appreciate the chance to put things right first.",
     ],
   },
   {
@@ -71,7 +71,7 @@ const SECTIONS: { h: string; p: string[] }[] = [
 export default function PrivacyPage() {
   return (
     <>
-      <main data-theme="dark" data-surface="page" className="min-h-screen bg-[var(--bg)] px-5 pb-24 pt-[18vh] text-[var(--fg)] md:px-10">
+      <main data-theme="dark" data-surface="page" className="relative z-10 min-h-screen bg-[var(--bg)] px-5 pb-24 pt-[18vh] text-[var(--fg)] md:px-10">
         <div className="mx-auto max-w-3xl">
           <span className="label-mono text-[11px] tracking-[0.28em] text-[var(--gold-text)]/80">LEGAL</span>
           <h1 className="font-display mt-4 text-[clamp(2.4rem,5vw,4rem)] leading-[0.95]" style={{ fontWeight: 400 }}>
@@ -91,7 +91,7 @@ export default function PrivacyPage() {
           </div>
         </div>
       </main>
-      <Footer />
+      <FooterReveal />
     </>
   );
 }

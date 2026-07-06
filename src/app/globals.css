@@ -11,6 +11,7 @@
   --paper-text: #f5f1e6;
   --gold: #e9e5d8; /* accents now CREAM (George: gold accents annoyed him); logo PNG stays gold */
   --gold-text: #f5f1e6; /* accent text = cream (1820 zero-accent) */
+  --surface: #100f0e; /* raised sheets (testimonial/FAQ/what-we-do panels) */
   --red: #e9e5d8; /* legacy alias */
   --tint-w: rgba(255, 255, 255, 0.1);
   --tint-b: rgba(0, 0, 0, 0.1);
@@ -51,6 +52,7 @@
    follows without edits. */
 html,
 html[data-mode="dark"] {
+  --page-bg: var(--black);
   --bg: var(--black);
   --fg: #f5f1e6;
   --ink: #f5f1e6;
@@ -65,6 +67,16 @@ html[data-mode="dark"] {
    finale are the cinema bookends — they NEVER flip to cream. Any section
    flagged data-surface="media" inherits this lock so its background stays
    black in light mode (not just the nav over it). */
+.nav-root[data-surface="media"] {
+  --fg: #f5f1e6;
+  color: #f5f1e6;
+  /* keeps the links readable over bright footage (light skies etc.) */
+  text-shadow: 0 1px 14px rgba(0, 0, 0, 0.45);
+}
+[data-mode="light"] .logo-mark {
+  /* white client marks would vanish on cream — invert them to ink */
+  filter: invert(1) hue-rotate(180deg);
+}
 .on-media,
 section[data-surface="media"] {
   --bg: #050505;
@@ -218,19 +230,29 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
   font-family: var(--font-firma), sans-serif;
   text-transform: uppercase;
   letter-spacing: -0.01em;
-  color: #f5f1e6;
+  color: var(--fg);
   transition: background 0.25s var(--ease-expo), color 0.25s var(--ease-expo);
   padding: 0.15em 0.35em;
 }
 .blink::before { content: "["; opacity: 0.55; transition: opacity 0.25s; }
 .blink::after { content: "]"; opacity: 0.55; transition: opacity 0.25s; }
 .blink:hover {
-  background: #f5f1e6;
-  color: #0a0a08;
+  background: var(--fg);
+  color: var(--bg);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .blink:hover::before, .blink:hover::after { opacity: 0; }
+/* blink fill driven by a PARENT hover — for tiles where the whole card is the
+   link and the bracketed label should go solid when the card is hovered
+   (George: "so people know they can click on it") */
+.group:hover .blink-fill {
+  background: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.group:hover .blink-fill::before,
+.group:hover .blink-fill::after { opacity: 0; }
 
 
 /* ---- Liquid glass (the real thing): translucent panel that refracts what's
@@ -452,6 +474,38 @@ html[data-mode="light"] .grain {
   border-radius: 50%;
 }
 
+/* ---- LIGHT MODE — the cream canvas; dark stays the default ---- */
+[data-mode="light"] {
+  --page-bg: #f5f1e6;
+  --bg: #f5f1e6;
+  --fg: #0a0a08;
+  --gold: #0a0a08;
+  --gold-text: #0a0a08;
+  --surface: #ece6d8;
+  --hairline-dark: rgba(10, 10, 8, 0.3);
+}
+
+/* ---- Smooth link underline (Stone Visuals feel): the line draws from the
+   left on hover, eases out the same way — one motion for every text link ---- */
+.u-link {
+  position: relative;
+}
+.u-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.5s var(--ease-expo);
+}
+.u-link:hover::after {
+  transform: scaleX(1);
+}
+
 /* ---- Interaction polish ---- */
 :focus-visible {
   outline: 2px solid var(--gold);
@@ -492,13 +546,14 @@ html[data-mode="light"] .grain {
 /* ---- Trusted-by: dimmed by default; hover a mark and it grows + goes white
    while the rest of that row blow back ---- */
 .tb-logo {
-  opacity: 0.38;
-  filter: brightness(0.9);
+  /* was 0.38 + dimmed — the thin white marks vanished into the black and the
+     marquee read as broken gaps (George). Rest state now clearly visible. */
+  opacity: 0.85;
   transition: opacity 0.45s var(--ease-expo), transform 0.45s var(--ease-expo), filter 0.45s var(--ease-expo);
 }
 .tb-row:has(.tb-logo:hover) .tb-logo:not(:hover) {
-  opacity: 0.12;
-  transform: scale(0.82);
+  opacity: 0.35;
+  transform: scale(0.9);
 }
 .tb-logo:hover {
   opacity: 1;

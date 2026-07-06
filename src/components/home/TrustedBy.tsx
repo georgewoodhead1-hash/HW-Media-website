@@ -31,7 +31,6 @@ function Logo({ slug }: { slug: string }) {
         alt=""
         aria-hidden
         className="logo-mark max-h-[52px] max-w-[150px] object-contain md:max-h-[84px] md:max-w-[250px]"
-        loading="lazy"
       />
     </span>
   );
@@ -130,8 +129,20 @@ export default function TrustedBy() {
         "-=0.6",
       );
 
+      // FADE OUT in place as the section leaves (the site-wide rule)
+      const exit = ScrollTrigger.create({
+        trigger: root,
+        start: "bottom 55%",
+        end: "bottom 14%",
+        scrub: true,
+        onUpdate: (self) => {
+          gsap.set([heading, ...rows], { autoAlpha: 1 - self.progress });
+        },
+      });
+
       return () => {
         tl.kill();
+        exit.kill();
       };
     });
 
@@ -152,12 +163,23 @@ export default function TrustedBy() {
       className="relative bg-[var(--bg)] px-5 py-[15vh] md:px-10"
       aria-label="Trusted by"
     >
-      <Rule label="Trusted by" className="mb-[10vh]" bg="#050505" />
+      {/* no label on the rule — the huge heading right below already says it
+          (label + heading read as a duplicated "TRUSTED BY TRUSTED BY") */}
+      <Rule className="mb-[10vh]" bg="var(--bg)" />
       <div className="tb-heading relative mb-[5vh] text-center">
-        {/* plain h2 (NOT SplitText) so the space in "Trusted by" survives — the
-            char-split was collapsing it to "TRUSTEDBY". Bumped up from too-small. */}
-        <h2 className="font-display text-[clamp(2.6rem,5.5vw,5rem)] leading-none text-[var(--fg)]">
-          Trusted by
+        {/* bracket heading (George): [ TRUSTED BY ] — hover fills to a solid
+            cream block like the small bracket-links, scaled up to display size.
+            .blink supplies the brackets + hover fill; font-display overrides the
+            small-caps face so it stays the condensed display cut. */}
+        {/* inline font so .blink's small-caps face can't win the cascade —
+            the heading stays the condensed display cut. Sized down (George). */}
+        <h2 className="inline-block">
+          <span
+            className="blink font-display text-[clamp(1.6rem,3vw,2.6rem)] leading-none"
+            style={{ fontFamily: "var(--font-suisse-cond), 'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.015em" }}
+          >
+            Trusted by
+          </span>
         </h2>
       </div>
 
@@ -165,6 +187,9 @@ export default function TrustedBy() {
         <Row logos={ROW_A} trackRef={trackARef} tweenRef={tweenARef} />
         <Row logos={ROW_B} reverse trackRef={trackBRef} tweenRef={tweenBRef} />
       </div>
+
+      {/* closing hairline — the line between this and the next section (George) */}
+      <Rule className="mt-[10vh]" bg="var(--bg)" />
     </section>
   );
 }

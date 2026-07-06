@@ -6,7 +6,7 @@ import { gsap } from "@/lib/gsap";
 // The 1820 hairline grammar: a line that draws FROM THE CENTRE outward with a
 // small + mark at each end (and an optional tiny centred label). The one
 // repeating divider used sitewide — no other separators.
-export default function Rule({ className = "", label, bg = "#050505" }: { className?: string; label?: string; bg?: string }) {
+export default function Rule({ className = "", label, bg = "var(--bg)" }: { className?: string; label?: string; bg?: string }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -28,17 +28,17 @@ export default function Rule({ className = "", label, bg = "#050505" }: { classN
   return (
     <div ref={ref} aria-hidden className={`relative flex items-center gap-3 ${className}`}>
       <style>{`@keyframes ruleSpin { to { transform: rotate(360deg); } } .rule-plus{ animation: ruleSpin 26s linear infinite; } @media (prefers-reduced-motion: reduce){ .rule-plus{ animation: none; } }`}</style>
-      <span className="rule-plus shrink-0 text-[19px] leading-none text-[var(--fg)]/70" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
-      <span className="rule-line block h-px flex-1 bg-[var(--fg)]/40 will-change-transform" />
+      <span className="rule-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+      <span className="rule-line block h-px flex-1 bg-[var(--fg)] will-change-transform" />
       {label && (
         <span
-          className="rule-label absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-4 text-[11px] uppercase tracking-[0.22em] text-[var(--fg)]/55"
+          className="rule-label absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 px-4 text-[11px] uppercase tracking-[0.22em] text-[var(--fg)]"
           style={{ fontFamily: "var(--font-firma), sans-serif", backgroundColor: bg }}
         >
           {label}
         </span>
       )}
-      <span className="rule-plus shrink-0 text-[19px] leading-none text-[var(--fg)]/70" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+      <span className="rule-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
     </div>
   );
 }

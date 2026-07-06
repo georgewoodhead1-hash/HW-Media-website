@@ -22,21 +22,44 @@ Every rule George has set. Nothing ships that violates these.
 - Huge or tiny type, nothing mid. Generous air.
 - Trusted By: BIG (heading + logos were too small).
 
-## SECTIONS (home)
+## SECTIONS (home) — REVISED 2026-07-03 (George's voice-note round)
 1. Hero: reel, "Break the ordinary." left, glass Start here. ✓
-2. Trusted By: keep concept, bigger everything.
-3. Statement "FILMS, NOT CONTENT." — centred, bright, fill starts ≥0.45.
-4. Featured Projects: keep. DISCOVER MORE as bracket-link.
-5. OUR PROCESS (1820 copy): centred statement stack (We listen./We craft./We deliver. + subtexts,
-   sign-off pair) → 01 PRE-PRODUCTION / 02 PRODUCTION / 03 EDIT / 04 DELIVER rows with images.
-   ⚠ placeholder copy from 1820 — reword before launch. White text throughout.
-6. Testimonials: CENTRED composition (heading, quote, attribution, dots centred; film centred below).
-   Keep the dot-ride landing into the dots. Cream dot.
+2. Trusted By: keep, but heading = BRACKETS `[ TRUSTED BY ]`, hover → solid cream block (blink effect).
+3. ~~Statement "FILMS, NOT CONTENT."~~ **KILLED — George doesn't like it.** In its place between
+   Trusted By and Featured: a BIG PHOTO band, nice and simple (harry-field.jpg), maybe tiny label.
+4. Featured Projects: keep. Add small bracket SUBHEADING under the big heading. DISCOVER MORE bracket-link ✓.
+5. OUR PROCESS = THE 1820 PATTERN: tiny label on hairline, then FOUR FULL-VIEWPORT **IMAGE**
+   panels (stills from /videos/posters — NOT videos, 4 decoding videos janked the scroll),
+   stage word centred at 1820 scale (NOT huge — George: font was too big), copy beneath,
+   ONE pinned stage, each panel GLIDES up over the last (eased, scrub 1.2 — "smooth").
+   ⚠ copy still 1820-derived — reword before launch.
+6. Testimonials = FULL-BLEED CINEMA BAND (v3, complete revamp): the campaign film fills the
+   screen; quote lower-LEFT types itself in on switch; attribution small (label small-caps +
+   micro mono); bottom-right HUD = square marker + mono number + thin progress line per slide;
+   AUTO-ADVANCES every 7s like a reel, click to jump. **NO travelling full stop — the dot-ride
+   is BINNED (George: "don't understand why that's there").**
 7. Defender band ("Wherever the story is." riding over image) + glass Start here.
-8. FAQs: centred header, full-width bright rows, no side column.
-9. FINALE: FAQs lift like a stage curtain revealing the stage. Tiles train in, ring, scatter for a
-   beat, LOOP BACK into the spinning ring, then **spiral OFF SCREEN while looping**; THEN the
-   heading types + "Start here" + footer rise from underneath. Slim footer = the only place grey meta is allowed.
+8. FAQs: NOT a thin middle column — spread out, use the whole width. GO HEAVY with the font
+   (big display questions). Nice hairlines separating each row that draw as you scroll.
+   Little video on the LEFT. More interactive, 1820-aligned.
+9. FINALE: tiles train in → ring SPINS AROUND the line while it TYPES ON ("Every film is a chance
+   to break the ordinary.") → tiles SPREAD OUT and fill the page → HOLD there → keep scrolling and
+   the FOOTER reveals LAYERED BEHIND (Stone Visuals sticky-reveal: the page lifts off the footer).
+   NO spiral-off-screen (that broke it — reverted).
+10. FOOTER (1820-exact, revealed layered behind the page): small wordmark top · statement left
+    ("Got a story? We go where it is.") + quick links stacked right · three hairline columns
+    with tiny mono labels (OUR BASE / GET IN TOUCH / SOCIALS) · © line. Only grey lives here.
+11. SCROLL FEEL: Lenis lerp 0.06 (was 0.09 — George: "site doesn't scroll smoothly").
+    FAQ questions clamp(1.5rem,2.8vw,2.6rem) — heavy but not shouting; number inverts to a
+    filled tag on the open row.
+
+## ROUTE TRANSITIONS — REVISED
+- NO black veil ("weird black blur"). The NEW page slides UP over the current page in real time —
+  you see it overlap and cover the old one. Smooth blend, 1820/stone feel.
+
+## SITE-WIDE
+- MORE bracket effects — `[ ]` grammar is the house style for labels/links.
+- BLEND everything: same label grammar, same alignment logic, one motion language.
 
 ## MOTION
 - Route changes: dark veil sweep (no gold line). ✓
@@ -53,6 +76,51 @@ Reword 1820 placeholder copy · licence Suisse Intl · Harry's lens loading vide
 RESEND_API_KEY + CONTACT_FROM in Vercel · deploy only to hw-media-website-5pbo on explicit go.
 
 ---
+
+# ROUND 2026-07-03 (later) — CURRENT STATE
+- LOADING: B&W chalk handwriting — HW writes with a SPARKLER tip, media scribbles after. Once/session.
+- HERO: lens-opens from a small circle on reveal; solid white heading (bigger, lower); sub in display
+  face aligned under it; [ START HERE ] no arrow. NO carets anywhere (hero + Featured).
+- TESTIMONIALS+FAQS = ONE pinned morph section (TestimonialsFaqs.tsx): testimonial ledger dissolves
+  in place, FAQ ledger forms out of it, rule label crossfades. MINIMAL lines (one separator per row).
+  Old Testimonials.tsx/FAQs.tsx retired to the disposal bin.
+- PROCESS: 1820 window mechanic (clip-path windows onto viewport-FIXED stills) + extra word drift
+  + subtext + bracket CTAs per stage.
+- FOOTER: solid black; showreel visible ONLY through the HUGE wordmark bottom-far-right; big email
+  left; columns left; bright lines; © grey.
+- ALL LINES BRIGHT WHITE site-wide. Bracket CTAs everywhere, no arrows, no glass.
+- ROUTE MORPH: old page eases back + dims, new page rises through, ~0.9s.
+- George may supply a Higgsfield intro video — drop at public/videos/intro.mp4 and wire into hero.
+- Deploys: PREVIEW only via CLI; PROD promote must be run by George (permission-gated here).
+
+# ROUND 2026-07-03 (evening) — LATEST
+- NAV TRANSITIONS: next page RISES FROM BELOW over the frozen current page (both visible, no cuts).
+- PROCESS v7: stills scroll WITH the page (no fixed frames), words follow w/ light 3D tilt drift.
+- TESTIMONIALS⟶FAQS: one pinned stage, 240vh — writing out → lines retract → FAQ rows one-by-one
+  (full width) → everything incl. rule fades out; LAST line stays, shrinks + drifts down = the pen.
+- SNAKE: one continuous 1.5px path in the Defender band — wanders down then wraps a GENEROUS
+  hand-drawn ring around "Wherever the story is." (never touches the words). No centre thread.
+- LIGHT/DARK TOGGLE in nav (upright switch): light = CREAM #f5f1e6 canvas via [data-mode="light"]
+  vars. Media sections stay cinema-dark; nav stays cream over media; logos invert in light
+  ([data-mode="light"] .logo-mark). Finale + footer flip with the mode. --page-bg = fade-to-page
+  gradients (band bottoms) so they blend to cream in light.
+- About v3 = 1820 page language (still opener + sky-band + What We Do + crew). Contact/privacy on
+  the reveal footer; contact Send button themed.
+- OPEN: Higgsfield intro video (public/videos/intro.mp4), "creative agency" band rework (George
+  will direct), hero-film ambiguity, prod promote = George.
+
+# ROUND 2026-07-03 (night) — LOCKED CHOREOGRAPHY, DO NOT REGRESS
+- FEATURED PROJECTS exit = the show-curtain drop (0.72→1) — GEORGE'S KEEPER, never remove again.
+  Gap fix = Process overlaps ONLY the post-wipe tail (-mt-[40vh], z-20). Section 168vh.
+- FAQ exit: rows+lines FADE (dissipate, no retraction), LAST LINE stays whole and rides with the
+  page. NO vertical thread. The band below draws ONE continuous 1.5px pen line: in from the LEFT,
+  across, off the RIGHT edge, U-bend outside, back in, LEFT above the words, then ANTI-CLOCKWISE
+  hand-drawn loops around "Wherever the story is." (band pinned 220vh, draw 0.03→0.72).
+- ALL hairlines FULL WHITE (var(--fg)) everywhere.
+- ONE footer everywhere incl. /work/[slug] (FooterReveal). v1–v4 routes + Footer.tsx +
+  ProjectCTA.tsx retired to the disposal bin.
+- Transitions: rise-from-below over live-frame canvas clone; template.tsx black wipe REMOVED
+  (it was the "two pages/black screen" bug).
 
 # HANDOVER — READ FIRST IN THE NEXT CHAT (written 2026-07-03, end of session)
 
@@ -94,3 +162,11 @@ WhirlwindGallery finale (curtain reveal; tiles spiral off; heading+footer rise).
 - He reviews on his own browser — after CSS changes, tell him to hard-refresh AND restart server first.
 - When he says a font is wrong: check WIDTH and TRACKING, not just family.
 - Short answers. No progress spam. Build → verify → show one link.
+
+## SEO (implemented 2026-07-04)
+- Canonical domain everywhere = https://hwmedia.co.uk (single source: `SITE_URL` in src/content/site.ts) — deliberate even while on the Vercel URL; nothing to touch at launch.
+- Root layout NO LONGER sets a global canonical (it was marking every page as the homepage). Every page sets its own.
+- Bespoke titles/descriptions per page (30–60 char titles, 120–160 char descriptions). Sitemap includes all 13 case pages.
+- JSON-LD: Organization+ProfessionalService (London, services, clients), Person (Harry, E-E-A-T), WebSite, FAQPage on home (FAQS moved to src/content/site.ts — single source with the FAQ ledger), VideoObject + BreadcrumbList on /work/[slug].
+- public/llms.txt for AI answer engines. /work has an sr-only H1.
+- At launch: point hwmedia.co.uk DNS at the Vercel project, then submit sitemap in Google Search Console + create a Google Business Profile (London) — the two external actions Claude can't do.

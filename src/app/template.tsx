@@ -1,40 +1,17 @@
 "use client";
 
-import { ReactNode, useEffect, useRef } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { ReactNode, useEffect } from "react";
+import { ScrollTrigger } from "@/lib/gsap";
 
-// Route-change wipe: black overlay clears upward as each page mounts.
+// Route template. The old black wipe that lived here was fighting the real
+// page transition (RouteTransitions' rise-from-below) — it blacked out the
+// whole viewport on every navigation, which read as "loading two pages".
+// Now it only re-measures the scroll triggers once the new page settles.
 export default function Template({ children }: { children: ReactNode }) {
-  const wipeRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
-    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const wipe = wipeRef.current;
-    if (!wipe) return;
-    if (reduced) {
-      gsap.set(wipe, { display: "none" });
-      return;
-    }
-    gsap.fromTo(
-      wipe,
-      { scaleY: 1 },
-      {
-        scaleY: 0,
-        duration: 0.7,
-        ease: "expo.inOut",
-        transformOrigin: "top center",
-        onComplete: () => {
-          gsap.set(wipe, { display: "none" });
-          ScrollTrigger.refresh();
-        },
-      },
-    );
+    const id = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    return () => window.clearTimeout(id);
   }, []);
 
-  return (
-    <>
-      <div ref={wipeRef} className="fixed inset-0 z-[70] bg-[var(--black)]" aria-hidden />
-      {children}
-    </>
-  );
+  return <>{children}</>;
 }

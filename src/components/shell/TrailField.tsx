@@ -7,14 +7,15 @@ import { gsap } from "@/lib/gsap";
 // move the mouse through the field and stills spawn at the cursor, stacking and
 // fading behind it like a trail. When nobody interacts, an AUTO-PULSE teases the
 // effect (random spawns) — and switches off permanently the moment the visitor
-// discovers it. Desktop/fine pointers only. No text, just pictures.
+// discovers it. On TOUCH devices there's no cursor to chase, so a TAP anywhere
+// in the field spawns a still at the fingertip (George). No text, just pictures.
 interface TrailFieldProps {
   images: string[];
   className?: string;
 }
 
-const MOVE_THRESHOLD = 110; // px of cursor travel between spawns
-const POOL = 12;
+const MOVE_THRESHOLD = 105; // px of cursor travel between spawns — denser trail (George: more images)
+const POOL = 18;
 
 export default function TrailField({ images, className = "" }: TrailFieldProps) {
   const fieldRef = useRef<HTMLDivElement>(null);
@@ -22,8 +23,8 @@ export default function TrailField({ images, className = "" }: TrailFieldProps) 
   useEffect(() => {
     const field = fieldRef.current;
     if (!field) return;
-    if (!window.matchMedia("(pointer: fine)").matches) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const fine = window.matchMedia("(pointer: fine)").matches;
 
     const items = Array.from(field.querySelectorAll<HTMLElement>(".tf-item"));
     let idx = 0;
@@ -47,9 +48,10 @@ export default function TrailField({ images, className = "" }: TrailFieldProps) 
         .fromTo(
           el,
           { autoAlpha: 0, scale: 0.72, clipPath: "inset(18% 18% 18% 18% round 10px)" },
-          { autoAlpha: 1, scale: 1, clipPath: "inset(0% 0% 0% 0% round 10px)", duration: 0.38, ease: "power3.out" },
+          { autoAlpha: 1, scale: 1, clipPath: "inset(0% 0% 0% 0% round 10px)", duration: 0.32, ease: "power3.out" },
         )
-        .to(el, { autoAlpha: 0, scale: 0.94, duration: 0.7, ease: "power2.in" }, "+=0.45");
+        // quicker release (George) — the trail breathes instead of stacking up
+        .to(el, { autoAlpha: 0, scale: 0.94, duration: 0.3, ease: "power2.in" }, "+=0.04");
     };
 
     const randomSpawn = () => {
@@ -98,10 +100,24 @@ export default function TrailField({ images, className = "" }: TrailFieldProps) 
         spawn(lx, ly);
       }
     };
-    window.addEventListener("pointermove", onMove, { passive: true });
+    if (fine) window.addEventListener("pointermove", onMove, { passive: true });
+
+    // TAP / CLICK anywhere in the field — a still pops at the point (the
+    // mobile way in, and a bonus on desktop clicks)
+    const onDown = (e: PointerEvent) => {
+      const r = field.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+      if (!discovered) {
+        discovered = true;
+        if (pulseTimer) { clearTimeout(pulseTimer); pulseTimer = null; }
+      }
+      spawn(e.clientX - r.left, e.clientY - r.top);
+    };
+    window.addEventListener("pointerdown", onDown, { passive: true });
 
     return () => {
-      window.removeEventListener("pointermove", onMove);
+      if (fine) window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
       if (pulseTimer) clearTimeout(pulseTimer);
       io.disconnect();
       items.forEach((el) => gsap.killTweensOf(el));
@@ -111,7 +127,9 @@ export default function TrailField({ images, className = "" }: TrailFieldProps) 
   const pool = Array.from({ length: POOL }, (_, i) => images[i % images.length]);
 
   return (
-    <div ref={fieldRef} aria-hidden className={`pointer-events-none absolute inset-0 overflow-hidden ${className}`}>
+    // z-0 creates a stacking context so the items' internal z-indexes can never
+    // escape above the section's content (George: images must sit BEHIND the text)
+    <div ref={fieldRef} aria-hidden className={`pointer-events-none absolute inset-0 z-0 overflow-hidden ${className}`}>
       {pool.map((src, i) => (
         <div key={i} className="tf-item invisible absolute left-0 top-0 w-[clamp(140px,16vw,230px)] will-change-transform">
           {/* eslint-disable-next-line @next/next/no-img-element */}

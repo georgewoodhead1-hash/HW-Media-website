@@ -5,13 +5,13 @@ import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 
-// SC.07 — the finale AND the end of the page. Tiles train in from the
-// bottom-left, slide UNDER the words first, swing up the far side into a
-// circle, and KEEP SPINNING — and while the ring is still turning, each
-// tile fires off in turn to its own spot on the screen. The line types
-// itself with the scroll and never leaves. "Start here" rises, the page
-// LOCKS (nothing below this section), and a slim footer slides up from
-// the bottom edge: contacts left, socials right. That's the site.
+// SC.07 — the finale. Tiles train in from the bottom-left, swing up into the
+// tilted ring and KEEP SPINNING while the line types itself in the middle
+// ("Every film is a chance to break the ordinary."). Then the tiles SPREAD
+// OUT to their resting spots, fill the page, and HOLD there — and as you keep
+// scrolling the whole stage lifts off the FOOTER revealed layered behind it
+// (Stone Visuals sticky reveal — see shell/FooterReveal). No fly-off, no
+// spiral exit: George reverted that.
 
 const TILES = [
   "/videos/micro/m01.mp4", "/videos/micro/m02.mp4", "/videos/micro/m03.mp4",
@@ -52,7 +52,6 @@ export default function WhirlwindGallery() {
       const tiles = gsap.utils.toArray<HTMLElement>(".whirl-tile", root);
       const chars = gsap.utils.toArray<HTMLElement>(".type-char", root);
       const cta = root.querySelector(".cta-start");
-      const foot = root.querySelector(".finale-foot");
       const N = tiles.length;
       // geometry recomputed on refresh so a resize/orientation change never
       // leaves the whirlwind firing tiles to stale positions (audit fix)
@@ -78,7 +77,6 @@ export default function WhirlwindGallery() {
       gsap.set(tiles, { x: START.x, y: START.y, scale: 0.5, autoAlpha: 0 });
       gsap.set(chars, { opacity: 0 });
       gsap.set(cta, { opacity: 0, y: 26 });
-      gsap.set(foot, { yPercent: 110, autoAlpha: 0 });
 
       const pathPos = (s: number) => {
         if (s < ENTRY) {
@@ -109,10 +107,12 @@ export default function WhirlwindGallery() {
       };
 
       const place = (pRaw: number) => {
-        // the first ~30% of the section happens BEHIND the FAQs curtain
-        // (Stone Visuals stage-curtain reveal) — the show starts once revealed
-        const p = Math.min(1, Math.max(0, (pRaw - 0.3) / 0.7));
-        const head = smooth(0.0, 0.62, p) * HEAD_MAX;
+        // the first ~22% of the section happens BEHIND the FAQs curtain
+        // (Stone Visuals stage-curtain reveal) — tiles are already training in
+        // as the curtain clears, so there's no dead black viewport between the
+        // last FAQ row leaving and the show starting
+        const p = Math.min(1, Math.max(0, (pRaw - 0.17) / 0.83));
+        const head = smooth(0.0, 0.58, p) * HEAD_MAX;
         tiles.forEach((t, i) => {
           const s = head - i * GAP; // unclamped: the ring never piles up
           if (s <= 0) {
@@ -121,33 +121,24 @@ export default function WhirlwindGallery() {
           }
           const pos = pathPos(s);
           const d = (Math.cos(pos.theta) + 1) / 2;
-          // scatter out… hold a beat… LOOP BACK onto the (still turning) ring…
-          // then fly PAST the camera (George: spread for a second, loop back
-          // in, then off screen — the 3D exit)
-          const eOut = smooth(0.48 + i * 0.012, 0.58 + i * 0.012, p);
-          const eBack = smooth(0.62, 0.7, p);
-          // SPIRAL OFF SCREEN while still looping: the ring radius blows out and
-          // the tiles ride their spinning angle right off the edges (George)
-          const eFly = smooth(0.72 + i * 0.006, 0.86 + i * 0.006, p);
-          let x = lerp(pos.x, (SCATTER[i][0] / 100) * W, eOut);
-          let y = lerp(pos.y, (SCATTER[i][1] / 100) * H, eOut);
-          x = lerp(x, pos.x, eBack);
-          y = lerp(y, pos.y, eBack);
-          const blow = 1 + eFly * 3.4;
-          x *= blow;
-          y *= blow;
-          let scale = lerp(lerp(0.55, 1.1, d), 0.8, eOut);
-          scale = lerp(scale, lerp(0.55, 1.1, d), eBack) * (1 + eFly * 0.9);
+          // ring spins while the line types (below) … then the tiles SPREAD OUT
+          // to their resting spots and HOLD there to the end — the spread page
+          // is the final frame the footer reveal lifts away
+          const eOut = smooth(0.6 + i * 0.012, 0.74 + i * 0.012, p);
+          const x = lerp(pos.x, (SCATTER[i][0] / 100) * W, eOut);
+          const y = lerp(pos.y, (SCATTER[i][1] / 100) * H, eOut);
+          const scale = lerp(lerp(0.55, 1.1, d), 0.8, eOut);
           gsap.set(t, {
             x, y, scale,
-            rotationY: Math.sin(pos.theta) * -40 * (1 - eOut) * (1 - eBack) - eFly * 30,
-            opacity: Math.min(1, s * 16) * lerp(lerp(0.55, 1, d), 1, eOut),
-            autoAlpha: Math.min(1, s * 16) * (1 - smooth(0.93, 0.99, eFly)),
+            rotationY: Math.sin(pos.theta) * -40 * (1 - eOut),
+            opacity: Math.min(1, s * 8) * lerp(lerp(0.55, 1, d), 1, eOut),
+            autoAlpha: Math.min(1, s * 8),
             zIndex: Math.round(lerp(lerp(2, 30, d), 6, eOut)),
           });
         });
 
-        const want = Math.floor(smooth(0.78, 0.92, p) * chars.length);
+        // the line types itself WHILE the ring is still spinning around it
+        const want = Math.floor(smooth(0.26, 0.56, p) * chars.length);
         if (want !== typedRef.current) {
           typedRef.current = want;
           chars.forEach((c, i) => {
@@ -155,16 +146,9 @@ export default function WhirlwindGallery() {
           });
         }
 
-        const e = smooth(0.9, 0.955, p);
+        // Start here follows the finished line, before the spread completes
+        const e = smooth(0.6, 0.78, p);
         gsap.set(cta, { opacity: e, pointerEvents: e > 0.5 ? "auto" : "none", y: 26 * (1 - e) });
-
-        // slim footer rises up from the bottom edge at the very end
-        const f = smooth(0.93, 0.99, p);
-        gsap.set(foot, {
-          yPercent: 110 * (1 - f),
-          autoAlpha: f,
-          pointerEvents: f > 0.5 ? "auto" : "none",
-        });
       };
       place(0);
 
@@ -175,12 +159,28 @@ export default function WhirlwindGallery() {
         // FAQs were still on screen / way too early).
         start: "top top",
         end: "bottom bottom",
-        scrub: 0.9,
+        scrub: 1.6, // heavier catch-up = the smooth, weighted feel (George)
         invalidateOnRefresh: true,
         onUpdate: (self) => place(self.progress),
         onRefresh: (self) => { recompute(); place(self.progress); },
       });
-      return () => st.kill();
+
+      // the HAND-OFF into the footer: as the page starts lifting off the
+      // fixed footer, the whole finale stage drifts up and dims — the last
+      // frame flows into the reveal instead of cutting (scrubbed = reversible)
+      const stage = root.querySelector<HTMLElement>(".whirl-stage");
+      const handoff = stage
+        ? gsap.fromTo(
+            stage,
+            { y: 0, autoAlpha: 1 },
+            {
+              y: -90, autoAlpha: 0.45, ease: "none",
+              scrollTrigger: { trigger: root, start: "bottom bottom", end: "bottom 30%", scrub: 1.2 },
+            },
+          )
+        : null;
+
+      return () => { st.kill(); handoff?.scrollTrigger?.kill(); handoff?.kill(); };
     });
 
     const vids = root.querySelectorAll<HTMLVideoElement>("video");
@@ -203,13 +203,13 @@ export default function WhirlwindGallery() {
     <section
       ref={rootRef}
       data-theme="dark"
-      data-surface="media"
+      data-surface="page"
       data-chapter="The finale"
       className="relative z-0 motion-safe:md:-mt-[100vh] motion-safe:md:h-[400vh]"
       aria-label="Every film is a chance to break the ordinary"
     >
       <div
-        className="sticky top-0 hidden h-screen items-center justify-center overflow-hidden md:flex"
+        className="whirl-stage sticky top-0 hidden h-screen items-center justify-center overflow-hidden will-change-transform md:flex"
         style={{ perspective: "1100px" }}
       >
         <div className="absolute left-1/2 top-1/2 h-0 w-0" style={{ transformStyle: "preserve-3d" }}>
@@ -247,52 +247,14 @@ export default function WhirlwindGallery() {
               })}
             </span>
           </p>
-          <Link
-            href="/contact"
-            className="cta-start mt-10 inline-block rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]"
-            style={{ fontFamily: "var(--font-firma), sans-serif" }}
-          >
-            Start here ⟶
+          <Link href="/contact" className="cta-start blink mt-10 inline-block text-[14px] tracking-[0.05em]">
+            Start here
           </Link>
         </div>
 
-        {/* slim footer — ONE short low row that rises at the very end. Kept short so
-            it sits BELOW the bottom two films instead of covering them. Left→right:
-            logo (far left) · IG/LinkedIn · credits+privacy · email (far right). */}
-        <div
-          className="finale-foot absolute inset-x-0 bottom-0 z-[60] border-t border-[var(--hairline-dark)] bg-[var(--bg)]/95 px-6 py-5 backdrop-blur-md will-change-transform md:px-10 md:py-5"
-          style={{ fontFamily: "var(--font-firma), sans-serif" }}
-        >
-          <div className="flex w-full items-center gap-x-6 md:gap-x-8">
-            {/* logo — hard against the far left */}
-            <div className="footer-wordmark h-[clamp(1.9rem,3.2vw,2.8rem)] w-[clamp(110px,15vw,220px)] shrink-0" role="img" aria-label="HW Media" />
-            {/* IG + LinkedIn */}
-            <div className="flex shrink-0 items-center gap-4 text-[var(--fg)]/80">
-              <a href="https://www.instagram.com/hwmedia/" target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="transition-colors hover:text-[var(--gold-text)]">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor" stroke="none" /></svg>
-              </a>
-              <a href="https://www.linkedin.com/in/harry-wallis-98b47b161/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="transition-colors hover:text-[var(--gold-text)]">
-                <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.49 2.49 0 1 1 5 8.48a2.49 2.49 0 0 1-.02-4.98zM3 9.75h4v10.75H3zM9.5 9.75h3.83v1.47h.05c.53-.95 1.84-1.95 3.78-1.95 4.04 0 4.79 2.6 4.79 5.98v5.25h-4v-4.65c0-1.11-.02-2.54-1.58-2.54-1.59 0-1.83 1.21-1.83 2.46v4.73h-4.04z" /></svg>
-              </a>
-            </div>
-            {/* credits + privacy */}
-            <div className="hidden shrink-0 items-center gap-x-4 text-xs text-[var(--fg)]/55 lg:flex">
-              <span>© {new Date().getFullYear()} HW Media · London</span>
-              <Link href="/privacy" className="transition-colors hover:text-[var(--gold-text)]">Privacy Policy</Link>
-            </div>
-            {/* email — far right */}
-            <a
-              href="mailto:harry@hwmedia.co.uk"
-              className="about-display ml-auto shrink-0 text-[clamp(1.05rem,2.3vw,2rem)] leading-none text-[var(--fg)] transition-colors hover:text-[var(--gold-text)]"
-              style={{ textTransform: "none" }}
-            >
-              harry@hwmedia.co.uk
-            </a>
-          </div>
-        </div>
       </div>
 
-      {/* mobile/reduced: line + grid + CTA + slim footer */}
+      {/* mobile/reduced: line + grid + CTA (footer = shell/FooterReveal) */}
       <div className="px-5 py-24 md:hidden">
         <p className="font-display text-2xl">
           Every film is a chance to break the ordinary.
@@ -302,42 +264,9 @@ export default function WhirlwindGallery() {
             <video key={`${src}-${i}`} className="aspect-video w-full rounded-md object-cover" src={src} muted loop playsInline preload="none" />
           ))}
         </div>
-        <Link href="/contact" className="mt-10 inline-block rounded-full border border-transparent px-5 py-2 text-[14px] font-medium uppercase tracking-[0.06em] text-[var(--fg)] transition-colors duration-300 hover:border-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
-          Start here ⟶
+        <Link href="/contact" className="blink mt-10 inline-block text-[14px] tracking-[0.05em]">
+          Start here
         </Link>
-
-        {/* slim footer — static on mobile / reduced-motion */}
-        <div
-          className="mt-16 border-t border-[var(--hairline-dark)] pt-8 text-sm"
-          style={{ fontFamily: "var(--font-firma), sans-serif" }}
-        >
-          <div className="footer-wordmark mb-7 h-12 w-full max-w-[320px]" role="img" aria-label="HW Media" />
-          <a href="mailto:harry@hwmedia.co.uk" className="block text-[var(--fg)]/85">
-            harry@hwmedia.co.uk
-          </a>
-          <div className="mt-4 flex items-center gap-6">
-            <a
-              href="https://www.instagram.com/hwmedia/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--fg)]/85"
-            >
-              Instagram
-            </a>
-            <a
-              href="https://www.linkedin.com/in/harry-wallis-98b47b161/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[var(--fg)]/85"
-            >
-              LinkedIn
-            </a>
-          </div>
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[var(--fg)]/55">
-            <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
-            <Link href="/privacy">Privacy Policy</Link>
-          </div>
-        </div>
       </div>
     </section>
   );

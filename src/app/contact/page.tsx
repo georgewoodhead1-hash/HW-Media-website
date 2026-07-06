@@ -1,26 +1,26 @@
 import type { Metadata } from "next";
-import Footer from "@/components/shell/Footer";
+import FooterReveal from "@/components/shell/FooterReveal";
 import ContactForm from "@/components/contact/ContactForm";
 
+const DESC =
+  "Start a project with HW Media, London's director-led film production company. Tell us about the film and we'll come back with ideas and a fixed quote within days.";
+
 export const metadata: Metadata = {
-  title: "Contact",
-  description:
-    "Start a project with HW Media. Brand films, documentary, photography — London.",
+  title: "Contact — Start a Film Project",
+  description: DESC,
   alternates: { canonical: "/contact" },
   openGraph: {
     type: "website",
     siteName: "HW Media",
     title: "Contact — HW Media",
-    description:
-      "Start a project with HW Media. Brand films, documentary, photography — London.",
+    description: DESC,
     url: "/contact",
     images: [{ url: "/images/hero-defocus.jpg", width: 1920, height: 1080, alt: "HW Media — Contact" }],
   },
   twitter: {
     card: "summary_large_image",
     title: "Contact — HW Media",
-    description:
-      "Start a project with HW Media. Brand films, documentary, photography — London.",
+    description: DESC,
     images: ["/images/hero-defocus.jpg"],
   },
 };
@@ -34,7 +34,7 @@ export default function Contact() {
       <main
         data-theme="dark"
         data-surface="page"
-        className="flex min-h-screen flex-col items-center justify-center bg-[var(--bg)] px-5 py-32 text-center text-[var(--fg)] md:px-10"
+        className="relative z-10 flex min-h-screen flex-col items-center justify-center bg-[var(--bg)] px-5 py-32 text-center text-[var(--fg)] md:px-10"
       >
         <div className="w-full max-w-xl">
           <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]">
@@ -50,7 +50,7 @@ export default function Contact() {
           <ContactForm />
         </div>
       </main>
-      <Footer />
+      <FooterReveal />
     </>
   );
 }

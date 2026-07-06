@@ -6,8 +6,10 @@ import SmoothScroll from "@/components/shell/SmoothScroll";
 import LoadingScreen from "@/components/shell/LoadingScreen";
 import Nav from "@/components/shell/Nav";
 import Grain from "@/components/shell/Grain";
+import { jsonLd } from "@/lib/jsonld";
 import Cursor from "@/components/shell/Cursor";
 import RouteTransitions from "@/components/shell/RouteTransitions";
+import { EMAIL, SITE_URL, SOCIALS } from "@/content/site";
 
 // THE 3-FONT SYSTEM (George, 2026-07-02). Nothing else loads.
 // 1) DISPLAY — Archivo Expanded (the "TELL US MORE" face). Big headings only.
@@ -58,41 +60,41 @@ const suisseCond = localFont({
   display: "swap",
 });
 
-const SITE_URL = "https://hw-media-website-5pbo.vercel.app";
 const OG_IMAGE = "/images/hero-defocus.jpg";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: "HW Media — Film & Photography, London",
+    default: "HW Media — Film Production Company, London",
     template: "%s — HW Media",
   },
   description:
-    "HW Media is a London director-led film and photography studio. Cinematic brand films, documentary and photography for brands with a story worth telling.",
+    "HW Media is a director-led film production company in London. Brand films, commercials and photography for McLaren, Nike, Aston Martin, Land Rover and more.",
   keywords: [
     "HW Media",
-    "London film studio",
+    "film production company London",
+    "video production agency London",
     "brand films",
-    "film production London",
-    "video production",
+    "commercial video production",
+    "automotive film production",
+    "luxury brand videographer",
     "documentary film",
     "commercial photography",
     "director-led production",
-    "cinematic brand storytelling",
     "Harry Wallis",
   ],
   authors: [{ name: "HW Media" }, { name: "Harry Wallis" }],
   creator: "HW Media",
   publisher: "HW Media",
-  alternates: {
-    canonical: "/",
-  },
+  // NO global canonical here — a root-level `canonical: "/"` is inherited by
+  // every page that doesn't override it, telling Google all 13 case pages ARE
+  // the homepage (the audit's worst finding). Each page sets its own.
   openGraph: {
     type: "website",
     siteName: "HW Media",
-    title: "HW Media — Film & Photography, London",
+    title: "HW Media — Film Production Company, London",
     description:
-      "London director-led film and photography studio. Cinematic brand films, documentary and photography.",
+      "Director-led film production company in London. Brand films, commercials and photography for McLaren, Nike, Aston Martin and more.",
     url: SITE_URL,
     locale: "en_GB",
     images: [
@@ -106,9 +108,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "HW Media — Film & Photography, London",
+    title: "HW Media — Film Production Company, London",
     description:
-      "London director-led film and photography studio. Cinematic brand films, documentary and photography.",
+      "Director-led film production company in London. Brand films, commercials and photography for McLaren, Nike, Aston Martin and more.",
     images: [OG_IMAGE],
   },
   robots: {
@@ -127,27 +129,53 @@ export const metadata: Metadata = {
   },
 };
 
-// Structured data — static, no user input. Organization + WebSite schema so
-// search engines and AI crawlers understand who HW Media is.
+// Structured data — static, no user input. Organization (as a local
+// professional service, so "film production company London" queries and AI
+// answer engines get location + services), Person (Harry — the E-E-A-T
+// expertise signal) and WebSite schema.
 const orgJsonLd = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": ["Organization", "ProfessionalService"],
+  "@id": `${SITE_URL}/#organization`,
   name: "HW Media",
   url: SITE_URL,
   logo: `${SITE_URL}/logos/hwmedia-white.png`,
   image: `${SITE_URL}${OG_IMAGE}`,
   description:
-    "London director-led film and photography studio. Cinematic brand films, documentary and photography.",
-  email: "harry@hwmedia.co.uk",
-  areaServed: "London",
-  founder: {
-    "@type": "Person",
-    name: "Harry Wallis",
+    "Director-led film production company in London. Brand films, commercials, documentary and photography for McLaren, Nike, Aston Martin, Land Rover and more.",
+  email: EMAIL,
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "London",
+    addressCountry: "GB",
   },
-  sameAs: [
-    "https://instagram.com/hwmedia",
-    "https://www.linkedin.com/in/harry-wallis-98b47b161/",
+  areaServed: [
+    { "@type": "City", name: "London" },
+    { "@type": "Country", name: "United Kingdom" },
   ],
+  knowsAbout: [
+    "brand film production",
+    "commercial video production",
+    "automotive film production",
+    "documentary filmmaking",
+    "aerial cinematography",
+    "commercial photography",
+  ],
+  founder: { "@id": `${SITE_URL}/#harry` },
+  sameAs: [SOCIALS.instagram, SOCIALS.linkedin],
+};
+
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "@id": `${SITE_URL}/#harry`,
+  name: "Harry Wallis",
+  jobTitle: "Director & Cinematographer",
+  worksFor: { "@id": `${SITE_URL}/#organization` },
+  description:
+    "Director and cinematographer behind every HW Media film, and a CAA-authorised drone pilot — aerials stay in-house.",
+  knowsAbout: ["film direction", "cinematography", "drone cinematography", "editing and colour grading"],
+  sameAs: [SOCIALS.linkedin, SOCIALS.instagram],
 };
 
 const websiteJsonLd = {
@@ -155,10 +183,7 @@ const websiteJsonLd = {
   "@type": "WebSite",
   name: "HW Media",
   url: SITE_URL,
-  publisher: {
-    "@type": "Organization",
-    name: "HW Media",
-  },
+  publisher: { "@id": `${SITE_URL}/#organization` },
 };
 
 export default function RootLayout({
@@ -177,11 +202,15 @@ export default function RootLayout({
       <body className="min-h-full">
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(orgJsonLd) }}
         />
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+          dangerouslySetInnerHTML={{ __html: jsonLd(personJsonLd) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLd(websiteJsonLd) }}
         />
         <a
           href="#main"

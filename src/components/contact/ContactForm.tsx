@@ -64,16 +64,22 @@ export default function ContactForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="lift-hover mt-2 inline-flex items-center justify-center gap-2 rounded-full bg-[#f5f1e6] px-8 py-3.5 text-[15px] font-medium text-[#0a0a08] transition-colors duration-300 hover:bg-white disabled:opacity-60"
+        className="blink mt-2 self-center text-[15px] tracking-[0.05em] disabled:opacity-60"
       >
-        {status === "sending" ? "Sending…" : <>Send <span aria-hidden>⟶</span></>}
+        {status === "sending" ? "Sending…" : "Send"}
       </button>
       {status === "error" && <p className="text-[14px] text-[#e0795f]">{error}</p>}
-      <div className="mt-6 border-t border-[var(--fg)]/12 pt-5 text-center">
-        <p className="text-[13px] text-[var(--fg)]/55" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
-          Prefer email? Reach Harry directly at{" "}
-          <a href={`mailto:${EMAIL}`} className="text-[var(--gold-text)] underline-offset-4 hover:underline">{EMAIL}</a>
+      <div className="mt-8 border-t border-[var(--fg)]/60 pt-7 text-center">
+        <p className="label-mono mb-4 text-[11px] tracking-[0.22em] text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
+          PREFER EMAIL? REACH HARRY DIRECTLY
         </p>
+        <a
+          href={`mailto:${EMAIL}`}
+          className="about-display u-link inline-block text-[clamp(1.5rem,3.4vw,3rem)] leading-none text-[var(--fg)]"
+          style={{ textTransform: "none" }}
+        >
+          {EMAIL}
+        </a>
       </div>
     </form>
   );

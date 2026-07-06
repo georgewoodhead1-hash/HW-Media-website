@@ -24,15 +24,14 @@ export default function WorkGallery() {
 
       gsap.set(tiles, { autoAlpha: 0, y: 56 });
 
-      // Top six — NOT scroll-driven (they sit above the fold, so a scroll trigger
-      // fired them instantly). They HOLD until the page has landed (the "Our work"
-      // intro has lifted), then reveal SLOWLY, one after another.
-      gsap.to(featured, { autoAlpha: 1, y: 0, duration: 1.5, ease: "power3.out", stagger: 0.3, delay: 1.7 });
+      // Top six — NOT scroll-driven (they sit above the fold). Reveal QUICKLY
+      // once the page lands (George: the films didn't come up fast enough).
+      gsap.to(featured, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.12, delay: 0.55 });
 
-      // The rest reveal on scroll as you reach them — also unhurried.
+      // The rest reveal on scroll as you reach them — snappy, not laboured.
       ScrollTrigger.batch(rest, {
-        start: "top 92%",
-        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 1.3, ease: "power3.out", stagger: 0.22, overwrite: true }),
+        start: "top 96%",
+        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1, overwrite: true }),
       });
 
       gsap.from("[data-ghead]", { autoAlpha: 0, y: 24, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } });
@@ -49,20 +48,14 @@ export default function WorkGallery() {
         ))}
       </div>
 
-      <div className="px-5 pt-[13vh] md:px-10"><Rule label="Discover more" /></div>
-      <h2 data-ghead className="about-display px-5 pb-9 pt-9 text-center text-[clamp(1.7rem,4vw,3.2rem)] text-[var(--fg)] md:px-10">
-        Discover more<span className="text-[var(--gold-text)]">.</span>
-      </h2>
+      <div className="px-5 pb-[7vh] pt-[13vh] md:px-10"><Rule label="Discover more" /></div>
       <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
         {DISCOVER.map((it) => (
           <GalleryTile key={it.label} item={it} />
         ))}
       </div>
 
-      <div className="px-5 pt-[13vh] md:px-10"><Rule /></div>
-      <h2 data-ghead className="about-display px-5 pb-9 pt-9 text-center text-[clamp(1.7rem,4vw,3.2rem)] text-[var(--fg)] md:px-10">
-        Coming soon<span className="text-[var(--gold-text)]">.</span>
-      </h2>
+      <div className="px-5 pb-[7vh] pt-[13vh] md:px-10"><Rule label="Coming soon" /></div>
       <div className="grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-3">
         {COMING.map((it) => (
           <GalleryTile key={it.label} item={it} />

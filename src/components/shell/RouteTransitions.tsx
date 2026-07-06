@@ -1,24 +1,23 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-// Page-to-page blend (George: "home/work/about/contact still doesn't blend").
-// A dark veil sweeps UP over the page before navigation and lifts away on the
-// new page — every route change reads as one continuous dark cut, 1820-style,
-// instead of a cold swap. Works by event delegation on internal links, so no
-// per-Link edits. Reduced-motion users get an instant cut.
+// Page-to-page blend, v2 (George: no black veil — "you can see the page coming
+// up in real time and overlapping the current page"). On an internal link click
+// the CURRENT page is cloned and frozen in place (videos swapped for their
+// posters), navigation happens immediately, and the NEW page slides up from the
+// bottom edge OVER the frozen old one — a real overlap, like a sheet laid over
+// the last. Reduced-motion users get an instant cut.
 export default function RouteTransitions() {
-  const veilRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const router = useRouter();
   const navigating = useRef(false);
+  const cloneRef = useRef<HTMLDivElement | null>(null);
 
-  // EXIT — intercept internal link clicks, sweep the veil in, then navigate
+  // EXIT — freeze a visual copy of the page, then navigate straight away
   useEffect(() => {
-    const veil = veilRef.current;
-    if (!veil) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     const onClick = (e: MouseEvent) => {
@@ -34,51 +33,98 @@ export default function RouteTransitions() {
       if (navigating.current) return;
       navigating.current = true;
       if (reduced) { router.push(href); return; }
-      gsap.set(veil, { yPercent: 100, autoAlpha: 1, pointerEvents: "auto" });
-      gsap.to(veil, {
-        yPercent: 0,
-        duration: 0.6,
-        ease: "power4.inOut",
-        onComplete: () => router.push(href),
-      });
+
+      const main = document.querySelector("main");
+      if (main) {
+        // freeze the old page: clone it at the current scroll offset, swap the
+        // videos for their posters (a clone can't keep playing), park it under
+        // where the new page will slide in
+        const wrap = document.createElement("div");
+        wrap.setAttribute("aria-hidden", "true");
+        wrap.className = "pointer-events-none fixed inset-0 z-[5] overflow-hidden";
+        const inner = main.cloneNode(true) as HTMLElement;
+        inner.style.transform = `translateY(${-window.scrollY}px)`;
+        inner.style.margin = "0";
+        const origVids = Array.from(main.querySelectorAll("video"));
+        inner.querySelectorAll("video").forEach((v, i) => {
+          const ov = origVids[i];
+          // freeze the LIVE frame onto a CANVAS — canvases paint synchronously,
+          // so the frozen page never blinks black while an image decodes
+          if (ov && ov.videoWidth) {
+            try {
+              const c = document.createElement("canvas");
+              c.width = ov.videoWidth;
+              c.height = ov.videoHeight;
+              c.getContext("2d")?.drawImage(ov, 0, 0);
+              c.className = v.className;
+              v.replaceWith(c);
+              return;
+            } catch { /* cross-origin — fall through to the poster */ }
+          }
+          const img = document.createElement("img");
+          if (v.poster) img.src = v.poster;
+          img.className = v.className;
+          img.alt = "";
+          v.replaceWith(img);
+        });
+        wrap.appendChild(inner);
+        document.body.appendChild(wrap);
+        cloneRef.current = wrap;
+      }
+      router.push(href);
     };
 
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
   }, [pathname, router]);
 
-  // ENTER — new pathname mounted under the veil: lift it away
-  useEffect(() => {
-    const veil = veilRef.current;
-    if (!veil) return;
+  // ENTER — the new page slides up OVER the frozen old one. LAYOUT effect:
+  // it must park the incoming page below the fold BEFORE the browser paints,
+  // or you see the new page flash at rest for a frame (the "two pages" glitch)
+  useLayoutEffect(() => {
     navigating.current = false;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      gsap.set(veil, { autoAlpha: 0, pointerEvents: "none" });
+    const clone = cloneRef.current;
+    if (!clone) return; // direct load / back-forward — nothing to blend from
+    cloneRef.current = null;
+
+    const cleanup = () => { clone.remove(); };
+    const main = document.querySelector("main");
+    if (!main || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      cleanup();
       return;
     }
-    // only animate if the veil is actually covering (i.e. we swept in)
-    const covering = Number(gsap.getProperty(veil, "yPercent")) === 0 && Number(gsap.getProperty(veil, "opacity")) > 0;
-    if (!covering) return;
-    const tl = gsap.timeline();
-    tl.to(veil, {
-      yPercent: -100,
-      duration: 0.75,
-      delay: 0.12,
-      ease: "power4.inOut",
-      onComplete: () => gsap.set(veil, { autoAlpha: 0, pointerEvents: "none", yPercent: 100 }),
+
+    window.scrollTo(0, 0);
+    // park it ONE VIEWPORT below, synchronously — before first paint
+    gsap.set(main, {
+      y: window.innerHeight,
+      position: "relative",
+      zIndex: 20,
+      backgroundColor: "var(--bg)",
+      borderRadius: "1.6rem 1.6rem 0 0",
+      boxShadow: "0 -30px 80px rgba(0,0,0,0.55)",
     });
-    return () => { tl.kill(); };
+    // THE NAVIGATION (George, final spec): the next page RISES FROM BELOW and
+    // fills the screen IN FRONT of the current page. You can see both the
+    // whole time — the old page stays put underneath (a gentle settle for
+    // depth, never dimmed to black), the new one slides up over it. No cuts,
+    // no veils, no fades.
+    const oldInner = clone.firstElementChild as HTMLElement | null;
+    const tl = gsap.timeline({
+      onComplete: () => {
+        cleanup();
+        gsap.set(main, { clearProps: "all" });
+        ScrollTrigger.refresh();
+      },
+    });
+    if (oldInner) {
+      tl.to(oldInner, { scale: 0.96, duration: 1.0, ease: "power3.inOut" }, 0);
+    }
+    tl.to(main, { y: 0, duration: 1.0, ease: "power3.inOut" }, 0)
+      .set(main, { borderRadius: "0", boxShadow: "none" });
+
+    return () => { tl.kill(); cleanup(); };
   }, [pathname]);
 
-  return (
-    <div
-      ref={veilRef}
-      aria-hidden
-      className="pointer-events-none fixed inset-0 z-[200] bg-[#050505] opacity-0 will-change-transform"
-    >
-      {/* a soft tonal edge leads the sweep — depth, no line */}
-      <span className="absolute inset-x-0 top-0 h-40 -translate-y-full bg-gradient-to-t from-[#050505] to-transparent" />
-      <span className="absolute inset-x-0 bottom-0 h-40 translate-y-full bg-gradient-to-b from-[#050505] to-transparent" />
-    </div>
-  );
+  return null;
 }

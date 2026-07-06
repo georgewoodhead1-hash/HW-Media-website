@@ -10,7 +10,7 @@ export default function ProjectCTA({ centered = false }: { centered?: boolean })
     <section
       data-theme="dark"
       data-surface="media"
-      className="relative min-h-[82vh] overflow-hidden bg-[#050505]"
+      className="relative min-h-[82vh] overflow-hidden bg-[var(--bg)]"
       aria-label="Start a project"
     >
       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -27,14 +27,11 @@ export default function ProjectCTA({ centered = false }: { centered?: boolean })
             : "items-start justify-end pb-[11vh] md:pb-[13vh]"
         }`}
       >
-        <p className="font-display text-white" style={{ fontSize: "clamp(2.4rem,6vw,5rem)", lineHeight: 0.92 }}>
+        {/* smaller display line + bracket CTA — glass binned site-wide (George) */}
+        <p className="font-display text-white" style={{ fontSize: "clamp(1.9rem,4.2vw,3.6rem)", lineHeight: 0.95 }}>
           Have a project in mind?
         </p>
-        <Link
-          href="/contact"
-          className="glass backdrop-blur-md backdrop-saturate-150 mt-9 inline-flex items-center gap-2 rounded-full px-9 py-4 text-[clamp(14px,1.3vw,16px)] font-medium text-white"
-          style={{ fontFamily: "var(--font-firma), sans-serif" }}
-        >
+        <Link href="/contact" className="blink mt-8 text-[clamp(13px,1.2vw,15px)] tracking-[0.05em]">
           Start here <span aria-hidden>⟶</span>
         </Link>
       </div>

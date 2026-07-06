@@ -2,11 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, projects } from "@/content/projects";
-import Footer from "@/components/shell/Footer";
+import FooterReveal from "@/components/shell/FooterReveal";
+import { SITE_URL } from "@/content/site";
+import { jsonLd } from "@/lib/jsonld";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
 }
+
+// SERP description: the tagline (already a one-line pitch) padded with the
+// client + category so it lands in the 120–160 char sweet spot.
+const serpDescription = (p: (typeof projects)[number]) => {
+  const base = `${p.tagline} A ${p.category.toLowerCase()} by HW Media, the director-led film production company in London.`;
+  return base.length > 158 ? `${base.slice(0, 155).trimEnd()}…` : base;
+};
 
 export async function generateMetadata({
   params,
@@ -15,9 +24,25 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const project = getProject(slug);
+  if (!project) return { title: "Work" };
   return {
-    title: project ? `${project.title} — HW Media` : "Work — HW Media",
-    description: project?.story,
+    title: `${project.title} — ${project.category} for ${project.client}`,
+    description: serpDescription(project),
+    alternates: { canonical: `/work/${slug}` },
+    openGraph: {
+      type: "video.other",
+      siteName: "HW Media",
+      title: `${project.title} — ${project.category} — HW Media`,
+      description: serpDescription(project),
+      url: `/work/${slug}`,
+      images: [{ url: project.posterWide, width: 1280, height: 720, alt: `${project.title} — ${project.category} by HW Media` }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${project.title} — ${project.category} — HW Media`,
+      description: serpDescription(project),
+      images: [project.posterWide],
+    },
   };
 }
 
@@ -36,12 +61,42 @@ export default async function CaseStudy({
   const idx = projects.findIndex((p) => p.slug === slug);
   const next = projects[(idx + 1) % projects.length];
 
+  // VideoObject — lets Google/AI surface the film itself in video results —
+  // and BreadcrumbList so case pages sit under Work in the SERP trail.
+  const videoJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name: `${project.title} — ${project.category} for ${project.client}`,
+    description: project.story,
+    thumbnailUrl: `${SITE_URL}${project.posterWide}`,
+    contentUrl: `${SITE_URL}${project.wide}`,
+    uploadDate: `${project.year}-01-01`,
+    creator: { "@id": `${SITE_URL}/#organization` },
+  };
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+      { "@type": "ListItem", position: 2, name: "Work", item: `${SITE_URL}/work` },
+      { "@type": "ListItem", position: 3, name: project.title, item: `${SITE_URL}/work/${project.slug}` },
+    ],
+  };
+
   return (
     <>
-      <main data-theme="dark" data-surface="page" className="bg-[var(--bg)] text-[var(--fg)]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(videoJsonLd) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
+      />
+      <main data-theme="dark" data-surface="page" className="relative z-10 bg-[var(--bg)] text-[var(--fg)]">
         <section className="px-5 pt-[16vh] md:px-10">
-          <Link href="/work" className="label-mono text-[11px] tracking-[0.24em] opacity-60 transition-colors hover:text-[var(--gold-text)]">
-            ← ALL WORK
+          <Link href="/work" className="blink text-[12px] tracking-[0.05em]">
+            All work
           </Link>
           <h1 className="font-display mt-6 text-[clamp(2.6rem,7vw,6rem)] leading-[0.9]" style={{ fontWeight: 400 }}>
             {project.title}
@@ -74,12 +129,12 @@ export default async function CaseStudy({
               ["Discipline", project.category],
             ] as const).map(([k, v]) => (
               <div key={k}>
-                <p className="label-mono text-[10px] tracking-[0.24em] opacity-45">{k}</p>
+                <p className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]">{k}</p>
                 <p className="mt-1 text-lg">{v}</p>
               </div>
             ))}
             <div>
-              <p className="label-mono text-[10px] tracking-[0.24em] opacity-45">Services</p>
+              <p className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]">Services</p>
               <ul className="mt-2 space-y-1">
                 {project.services.map((s) => (
                   <li key={s} className="text-[var(--fg)]/80">{s}</li>
@@ -88,24 +143,24 @@ export default async function CaseStudy({
             </div>
           </div>
           <div>
-            <p className="label-mono text-[10px] tracking-[0.24em] opacity-45">The brief</p>
+            <p className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]">The brief</p>
             <p className="mt-4 max-w-2xl text-xl leading-relaxed md:text-2xl">{project.story}</p>
           </div>
         </section>
 
         {/* next */}
         <section className="border-t border-[var(--hairline-dark)] px-5 py-[8vh] md:px-10">
-          <p className="label-mono mb-4 text-[10px] tracking-[0.24em] opacity-45">Next project</p>
+          <p className="label-mono mb-4 text-[10px] tracking-[0.24em] text-[var(--fg)]">Next project</p>
           <Link
             href={`/work/${next.slug}`}
             className="font-display text-[clamp(2rem,4vw,3.5rem)] leading-none transition-colors hover:text-[var(--gold-text)]"
             style={{ fontWeight: 400 }}
           >
-            {next.title} ⟶
+            {next.title}
           </Link>
         </section>
       </main>
-      <Footer />
+      <FooterReveal />
     </>
   );
 }

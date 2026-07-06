@@ -24,10 +24,15 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     window.scrollTo(0, 0);
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) return;
+    // TOUCH DEVICES: no Lenis at all — the wheel-tuned smoothing fought the
+    // native momentum scroll (George: "clunky, sometimes just stops" on
+    // mobile). Native scroll + ScrollTrigger's own listener is butter there;
+    // the laptop wheel feel is untouched.
+    if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const lenis = new Lenis({
-      lerp: 0.09, // a touch more glide = more fluid, premium weight
-      wheelMultiplier: 0.9, // slower scroll per wheel notch
+      lerp: 0.06, // softer catch-up — George: site wasn't scrolling smoothly
+      wheelMultiplier: 0.55, // George: slower, so the choreography is readable
       smoothWheel: true,
     });
     setLenis(lenis);

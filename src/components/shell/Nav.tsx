@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import ThemeToggle from "@/components/shell/ThemeToggle";
 
 // Nav (client feedback): logo left; Home/Work/About/Contact links right on
 // desktop, or a fullscreen hamburger menu on mobile; social rail bottom-left.
@@ -20,6 +22,7 @@ export default function Nav() {
   const navListRef = useRef<HTMLElement>(null);
   const pillRef = useRef<HTMLSpanElement>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   // sliding nav pill (auteur): one outlined capsule that glides to the hovered
   // item instead of every link drawing its own ring.
@@ -62,28 +65,41 @@ export default function Nav() {
     );
   }, []);
 
-  // the nav re-themes to the surface it sits over so it stays readable
+  // the nav re-themes to the surface it sits over so it stays readable.
+  // RE-RUNS ON EVERY ROUTE (the nav lives in the layout — without the pathname
+  // dep it kept watching the PREVIOUS page's dead sections and stayed locked
+  // in the media state: cream text + shadow on the cream Contact page, George)
   useEffect(() => {
     const nav = rootRef.current;
     if (!nav) return;
     const NAV_LINE = 56;
-    const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-surface]"));
+    let triggers: ScrollTrigger[] = [];
     const apply = (s: string) => { nav.dataset.surface = s; };
-    const here = sections.find((s) => {
-      const r = s.getBoundingClientRect();
-      return r.top <= NAV_LINE && r.bottom > NAV_LINE;
-    });
-    apply(here?.dataset.surface ?? sections[0]?.dataset.surface ?? "media");
-    const triggers = sections.map((sec) =>
-      ScrollTrigger.create({
-        trigger: sec,
-        start: `top ${NAV_LINE}px`,
-        end: `bottom ${NAV_LINE}px`,
-        onToggle: (self) => { if (self.isActive) apply(sec.dataset.surface ?? "page"); },
-      }),
-    );
-    return () => triggers.forEach((t) => t.kill());
-  }, []);
+
+    const wire = () => {
+      triggers.forEach((t) => t.kill());
+      const sections = Array.from(document.querySelectorAll<HTMLElement>("[data-surface]"));
+      const here = sections.find((s) => {
+        const r = s.getBoundingClientRect();
+        return r.top <= NAV_LINE && r.bottom > NAV_LINE;
+      });
+      apply(here?.dataset.surface ?? sections[0]?.dataset.surface ?? "page");
+      triggers = sections.map((sec) =>
+        ScrollTrigger.create({
+          trigger: sec,
+          start: `top ${NAV_LINE}px`,
+          end: `bottom ${NAV_LINE}px`,
+          onToggle: (self) => { if (self.isActive) apply(sec.dataset.surface ?? "page"); },
+        }),
+      );
+    };
+
+    wire();
+    // the route transition rises the new page over 1s — re-measure only after
+    // it has fully settled, or the rects are mid-transform and lie
+    const settle = window.setTimeout(wire, 1250);
+    return () => { window.clearTimeout(settle); triggers.forEach((t) => t.kill()); };
+  }, [pathname]);
 
   // hide on scroll-down, reveal on scroll-up (whole site). Stays put near the
   // top so the hero always shows it.
@@ -117,9 +133,9 @@ export default function Nav() {
             swaps in only in light mode over a page surface. */}
         <Link href="/" className="nav-enter block shrink-0" aria-label="HW Media — home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/hwmedia-dark.png" alt="HW Media" className="nav-logo-color h-14 w-auto md:h-16" />
+          <img src="/logos/hwmedia-white.png" alt="HW Media" className="nav-logo-color h-16 w-auto mix-blend-difference md:h-20" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/hwmedia-light.png" alt="" aria-hidden className="nav-logo-black h-14 w-auto md:h-16" />
+          <img src="/logos/hwmedia-light.png" alt="" aria-hidden className="nav-logo-black h-16 w-auto md:h-20" />
         </Link>
 
         {/* RIGHT — flat nav. No permanent borders; a hard-line ring appears
@@ -128,25 +144,27 @@ export default function Nav() {
         <nav
           ref={navListRef}
           onMouseLeave={hidePill}
-          className="relative hidden items-center gap-3 md:flex md:gap-7"
+          className="relative hidden items-center gap-2 md:flex md:gap-5"
           style={{ fontFamily: "var(--font-firma), sans-serif" }}
         >
           {/* sliding pill — one outlined capsule that glides to the hovered item */}
           <span
             ref={pillRef}
             aria-hidden
-            className="pointer-events-none absolute left-0 top-0 rounded-full border border-[var(--fg)] opacity-0 will-change-transform"
+            className="pointer-events-none absolute left-0 top-0 rounded-[3px] bg-[var(--fg)] opacity-0 will-change-transform"
           />
           {LINKS.map((l) => (
             <Link
               key={l.label}
               href={l.href}
               onMouseEnter={movePill}
-              className="nav-link relative rounded-full px-4 py-2 text-[14px] font-medium uppercase tracking-[0.01em] text-[var(--fg)] transition-colors duration-300"
+              className="nav-link relative px-4 py-2 text-[14px] font-medium uppercase tracking-[0.01em] text-[var(--fg)] transition-colors duration-300 hover:text-[var(--bg)] active:text-[#c9a96a]"
             >
               {l.label}
             </Link>
           ))}
+          {/* the light/dark switch — a little upright toggle (George) */}
+          <ThemeToggle />
         </nav>
 
         {/* mobile hamburger */}
@@ -168,12 +186,14 @@ export default function Nav() {
         className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-8 bg-[var(--bg)] transition-opacity duration-300 md:hidden ${menuOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}`}
         style={{ fontFamily: "var(--font-firma), sans-serif" }}
       >
+        {/* tap feedback (George): links flash GOLD on touch, so the route
+            transition never reads as a dead tap */}
         {LINKS.map((l) => (
           <Link
             key={l.label}
             href={l.href}
             onClick={() => setMenuOpen(false)}
-            className="font-display text-[clamp(2rem,9vw,3rem)] uppercase tracking-[-0.01em] text-[var(--fg)]"
+            className="font-display text-[clamp(2rem,9vw,3rem)] uppercase tracking-[-0.01em] text-[var(--fg)] transition-colors duration-150 active:text-[#c9a96a]"
           >
             {l.label}
           </Link>

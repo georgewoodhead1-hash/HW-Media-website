@@ -43,7 +43,7 @@ export default function Cursor() {
       <div
         className={`flex items-center justify-center rounded-full transition-all duration-300 ${
           mode === "play"
-            ? "h-16 w-16 bg-[var(--cream)] text-[var(--black)]"
+            ? "h-16 w-16 bg-[var(--cream)] text-[var(--black)] shadow-[0_4px_24px_rgba(0,0,0,0.35)] ring-1 ring-black/10"
             : "h-2.5 w-2.5 bg-[var(--gold)]"
         }`}
         style={{ transitionTimingFunction: "var(--ease-expo)" }}

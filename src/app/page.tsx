@@ -1,28 +1,55 @@
+import type { Metadata } from "next";
 import LensIntro from "@/components/home/LensIntro";
 import TrustedBy from "@/components/home/TrustedBy";
+import ImageBand from "@/components/home/ImageBand";
 import OurWork from "@/components/home/OurWork";
-import Statement from "@/components/home/Statement";
-import EditorFCP from "@/components/home/EditorFCP";
-import Testimonials from "@/components/home/Testimonials";
+import Process from "@/components/home/Process";
+import TestimonialsFaqs from "@/components/home/TestimonialsFaqs";
 import FeatureBand from "@/components/home/FeatureBand";
-import FAQs from "@/components/home/FAQs";
+import { jsonLd } from "@/lib/jsonld";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
+import FooterReveal from "@/components/shell/FooterReveal";
+import { FAQS } from "@/content/site";
 
-// Home: hero -> trusted by -> featured work -> process -> testimonials ->
-// Defender band -> FAQs -> finale ("Every film is a chance to break the
-// ordinary" is the finale AND the footer).
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
+
+// The FAQ ledger as FAQPage JSON-LD — AI answer engines (ChatGPT, Perplexity,
+// AI Overviews) lift Q&A pairs from here when someone asks what a brand film
+// costs or how long production takes.
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map(({ q, a }) => ({
+    "@type": "Question",
+    name: q,
+    acceptedAnswer: { "@type": "Answer", text: a },
+  })),
+};
+
+// Home: hero -> trusted by -> photo band -> featured work -> process (1820
+// full-screen panels) -> testimonials -> Defender band -> FAQs -> finale
+// ("Every film is a chance to break the ordinary" spread-and-hold) -> the
+// footer reveals LAYERED BEHIND the page (Stone Visuals sticky reveal).
 export default function Home() {
   return (
-    <main>
-      <LensIntro />
-      <TrustedBy />
-      <Statement />
-      <OurWork />
-      <EditorFCP />
-      <Testimonials />
-      <FeatureBand />
-      <FAQs />
-      <WhirlwindGallery />
-    </main>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLd(faqJsonLd) }}
+      />
+      <main className="relative z-10 bg-[var(--bg)]">
+        <LensIntro />
+        <TrustedBy />
+        <ImageBand />
+        <OurWork />
+        <Process />
+        <TestimonialsFaqs />
+        <FeatureBand />
+        <WhirlwindGallery />
+      </main>
+      <FooterReveal />
+    </>
   );
 }

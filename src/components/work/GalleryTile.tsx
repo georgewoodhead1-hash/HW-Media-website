@@ -16,13 +16,21 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
   const play = () => { const v = vid.current; if (v) v.play().catch(() => {}); };
   const stop = () => { const v = vid.current; if (v) { v.pause(); v.currentTime = 0; } };
 
-  const Mark = (
+  // bare = no overlay at all (the footage carries its own baked-in logo —
+  // overlaying the same mark read as a duplicate, George). mark = text
+  // override so repeated client logos don't appear twice on the wall.
+  const Mark = item.bare ? null : (
     <div className="pointer-events-none absolute inset-0 flex items-center justify-center p-6">
-      {item.logo ? (
+      {item.logo && !item.mark ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={`/logos/${item.logo}.png`} alt={item.label} className="h-10 w-auto max-w-[58%] object-contain opacity-95 transition-transform duration-500 group-hover:scale-105 md:h-12" />
       ) : (
-        <span className="about-display max-w-[80%] text-center text-[clamp(1.1rem,2vw,1.7rem)] leading-tight text-white/95">{item.label.split(" — ")[0]}</span>
+        <span
+          className="max-w-[80%] text-center text-[clamp(0.95rem,1.4vw,1.25rem)] uppercase leading-tight tracking-[0.18em] text-white"
+          style={{ fontFamily: "var(--font-firma), sans-serif" }}
+        >
+          {item.mark ?? item.label.split(" — ")[0]}
+        </span>
       )}
     </div>
   );
@@ -41,7 +49,7 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/45 transition-opacity duration-500 group-hover:opacity-30" />
       {Mark}
       {item.comingSoon && (
-        <span className="about-label absolute bottom-3 left-3 text-[10px] text-[var(--fg)]/45">
+        <span className="label-mono absolute bottom-3 left-3 text-[10px] tracking-[0.22em] text-white/75">
           Coming soon
         </span>
       )}

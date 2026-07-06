@@ -23,16 +23,16 @@ export default function LensIntro() {
     if (!wrap) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      gsap.set(".hero-bg", { autoAlpha: 1 });
+      gsap.set(".hero-bg", { autoAlpha: 1, clipPath: "none" });
       gsap.set(".hero-char", { autoAlpha: 1 });
       gsap.set(".hero-sub", { autoAlpha: 1, y: 0 });
-      gsap.set(".hero-caret", { autoAlpha: 0 });
       return;
     }
-    gsap.set(".hero-bg", { autoAlpha: 0 });
+    // the LENS: the reel wakes inside a small circle of glass and the lens
+    // opens to full frame on reveal
+    gsap.set(".hero-bg", { autoAlpha: 0, clipPath: "circle(14% at 50% 50%)" });
     gsap.set(".hero-char", { autoAlpha: 0 });
     gsap.set(".hero-sub", { autoAlpha: 0, y: 16 });
-    gsap.set(".hero-caret", { autoAlpha: 1 });
 
     let started = false;
     let ctx: gsap.Context | null = null;
@@ -40,15 +40,15 @@ export default function LensIntro() {
       if (started) return;
       started = true;
       ctx = gsap.context(() => {
-        const blink = gsap.to(".hero-caret", { autoAlpha: 0.15, duration: 0.45, repeat: -1, yoyo: true, ease: "power1.inOut" });
         gsap
           .timeline({ delay: 0.15 })
-          .to(".hero-bg", { autoAlpha: 1, duration: 0.8, ease: "power2.out" }, 0)
-          // TYPE the motto on, character by character (real-time writing)
-          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 0.4)
-          .add(() => blink.kill(), ">")
-          .to(".hero-caret", { autoAlpha: 0, duration: 0.3 }, ">")
-          .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, "<0.1");
+          .to(".hero-bg", { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 0)
+          // the lens opens — small circle of footage to full frame
+          .to(".hero-bg", { clipPath: "circle(75% at 50% 50%)", duration: 1.5, ease: "expo.inOut" }, 0.15)
+          .set(".hero-bg", { clipPath: "none" })
+          // TYPE the motto on, character by character (no caret — binned)
+          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 1.0)
+          .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, ">0.05");
       }, wrap);
     };
     window.addEventListener("hw:reveal", start, { once: true });
@@ -106,18 +106,15 @@ export default function LensIntro() {
           loop
           playsInline
         />
-        {/* HEADLINE — ONE line, and the see-through/mirrored footage interplay
-            George likes (difference blend). */}
-        <div className="pointer-events-none absolute left-0 top-[36%] px-5 mix-blend-difference md:px-10">
-          <h1 className="font-display whitespace-nowrap text-[clamp(2.4rem,7vw,7.4rem)] leading-[0.9] text-white" aria-label="Break the ordinary.">
+        {/* HEADLINE — ONE line, solid WHITE (George binned the difference-blend
+            interplay: the heading read brown against the footage) */}
+        <div className="pointer-events-none absolute left-0 top-[39%] px-5 md:px-10">
+          <h1 className="font-display whitespace-nowrap text-[clamp(2.6rem,7.6vw,8.2rem)] leading-[0.9] text-white" aria-label="Break the ordinary.">
             {LINES.map((line, li) => (
               <span key={li} className="block">
                 {line.split("").map((c, ci) => (
                   <span key={ci} aria-hidden className="hero-char inline-block whitespace-pre">{c}</span>
                 ))}
-                {li === LINES.length - 1 && (
-                  <span aria-hidden className="hero-caret ml-1 inline-block h-[0.78em] w-[5px] translate-y-[0.06em] bg-[var(--gold)] align-baseline" />
-                )}
               </span>
             ))}
           </h1>
@@ -125,24 +122,23 @@ export default function LensIntro() {
 
         {/* subtitle + CTA — normal layer, left-aligned directly UNDER the headline
             (an invisible copy reserves the headline's height so they line up). */}
-        <div className="absolute left-0 top-[32%] z-10 flex flex-col items-start px-5 text-left md:px-10">
-          <div aria-hidden className="invisible font-display whitespace-nowrap text-[clamp(2.4rem,7vw,7.4rem)] leading-[0.9]">
+        <div className="absolute left-0 top-[35%] z-10 flex flex-col items-start px-5 text-left md:px-10">
+          <div aria-hidden className="invisible font-display whitespace-nowrap text-[clamp(2.6rem,7.6vw,8.2rem)] leading-[0.9]">
             Break the ordinary.
           </div>
           <div className="hero-sub">
-            <p
-              className="mt-12 max-w-xl text-[clamp(0.95rem,1.35vw,1.2rem)] uppercase leading-snug tracking-[0.22em] text-white/90"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
-            >
+            {/* sub-line wears the DISPLAY face now (George) — same cut as the
+                headline, a size down, tight tracking */}
+            <p className="font-display mt-10 max-w-2xl pl-[0.35rem] text-[clamp(1.15rem,2vw,1.8rem)] uppercase leading-snug tracking-[-0.015em] text-white">
               we go where the story is
             </p>
+            {/* bracket CTA — the house [ ] grammar, hover fills solid; glass binned */}
             <Link
               href="/contact"
               onClick={(e) => e.stopPropagation()}
-              className="glass backdrop-blur-md backdrop-saturate-150 mt-10 inline-flex items-center gap-2 rounded-full px-8 py-3.5 text-[clamp(15px,1.4vw,18px)] text-white"
-              style={{ fontFamily: "var(--font-firma), sans-serif" }}
+              className="blink mt-9 text-[clamp(14px,1.3vw,17px)] tracking-[0.05em]"
             >
-              Start here <span aria-hidden>⟶</span>
+              Start here
             </Link>
           </div>
         </div>
@@ -164,7 +160,7 @@ export default function LensIntro() {
           />
           <button
             onClick={closeReel}
-            className="label-mono absolute right-6 top-6 rounded-full border border-[var(--hairline-dark)] bg-black/40 px-5 py-3 text-[#f5f1e6] backdrop-blur-sm transition-colors hover:bg-[var(--fg)] hover:text-[var(--bg)]"
+            className="label-mono absolute right-6 top-6 rounded-full border border-[var(--hairline-dark)] bg-black/40 px-5 py-3 text-[var(--fg)] backdrop-blur-sm transition-colors hover:bg-[var(--fg)] hover:text-[var(--bg)]"
             aria-label="Close showreel"
           >
             Close ✕

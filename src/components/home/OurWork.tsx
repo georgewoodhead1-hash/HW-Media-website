@@ -188,7 +188,7 @@ export default function OurWork() {
       {/* ----- desktop / motion: the stage — heading then bars fly in to the accordion ----- */}
       <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:min-h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
-          className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
+          className="ow-head font-display relative z-10 mb-[2.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
         >
           {"Featured ".split("").map((c, i) => (
             <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
@@ -202,7 +202,7 @@ export default function OurWork() {
 
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
-        <div className="relative z-0 flex h-[52vh] gap-2">
+        <div className="relative z-0 flex h-[64vh] gap-2">
           {WORKS.map((p, i) => (
             <Link
               key={p.slug}

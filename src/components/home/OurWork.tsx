@@ -185,8 +185,20 @@ export default function OurWork() {
       className="relative z-10 bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our work"
     >
+      {/* the depth wash (client): a soft gradient behind the stage so the
+          cards sit IN a space rather than on a flat sheet — the light-mode
+          3D look, adapted to both modes via --fg at low alpha */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 50% 38%, color-mix(in srgb, var(--fg) 7%, transparent) 0%, color-mix(in srgb, var(--fg) 3%, transparent) 45%, transparent 72%)",
+        }}
+      />
+
       {/* ----- desktop / motion: the stage — heading then bars fly in to the accordion ----- */}
-      <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:min-h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
+      <div className="ow-stage relative hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:min-h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
           className="ow-head font-display relative z-10 mb-[3.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
         >
@@ -202,14 +214,14 @@ export default function OurWork() {
 
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
-        <div className="relative z-0 flex h-[52vh] gap-2">
+        <div className="relative z-0 flex h-[60vh] gap-2">
           {WORKS.map((p, i) => (
             <Link
               key={p.slug}
               href={`/work/${p.slug}`}
               onMouseEnter={(e) => { const v = e.currentTarget.querySelector("video"); if (v) v.play().catch(() => {}); }}
               onMouseLeave={(e) => { const v = e.currentTarget.querySelector("video"); if (v) v.pause(); }}
-              className="ow-bar group relative flex-1 overflow-hidden rounded-md ring-1 ring-[var(--hairline-dark)] transition-[flex-grow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:flex-[5]"
+              className="ow-bar group relative flex-1 overflow-hidden rounded-md shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] ring-1 ring-[var(--hairline-dark)] transition-[flex-grow] duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform hover:flex-[5]"
               aria-label={`${p.title} — ${p.client}`}
             >
               <video
@@ -269,7 +281,7 @@ export default function OurWork() {
       <div className="flex flex-col gap-4 px-5 py-[7vh] md:hidden">
         <h2 className="font-display mb-2 text-center text-5xl tracking-[-0.04em]" style={{ fontWeight: 400 }}>Featured Projects<span className="text-[var(--gold-text)]">.</span></h2>
         {WORKS.map((p) => (
-          <Link key={p.slug} href={`/work/${p.slug}`} className="ow-mtile relative block aspect-video overflow-hidden rounded-md">
+          <Link key={p.slug} href={`/work/${p.slug}`} className="ow-mtile relative block aspect-video overflow-hidden rounded-md shadow-[0_18px_40px_-14px_rgba(0,0,0,0.5)]">
             <video className="absolute inset-0 h-full w-full object-cover" src={p.wide} poster={p.posterWide} muted loop playsInline preload="none" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/65 to-transparent" />
             <div className="absolute bottom-3 left-3">

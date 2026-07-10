@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import LensIntro from "@/components/home/LensIntro";
 import TrustedBy from "@/components/home/TrustedBy";
-import ImageBand from "@/components/home/ImageBand";
 import OurWork from "@/components/home/OurWork";
 import Process from "@/components/home/Process";
-import TestimonialsFaqs from "@/components/home/TestimonialsFaqs";
+import Testimonials from "@/components/home/Testimonials";
+import TilesField from "@/components/home/TilesField";
+import Faqs from "@/components/home/Faqs";
 import FeatureBand from "@/components/home/FeatureBand";
 import { jsonLd } from "@/lib/jsonld";
-import WhirlwindGallery from "@/components/home/WhirlwindGallery";
 import FooterReveal from "@/components/shell/FooterReveal";
 import { FAQS } from "@/content/site";
 
@@ -28,10 +28,12 @@ const faqJsonLd = {
   })),
 };
 
-// Home: hero -> trusted by -> photo band -> featured work -> process (1820
-// full-screen panels) -> testimonials -> Defender band -> FAQs -> finale
-// ("Every film is a chance to break the ordinary" spread-and-hold) -> the
-// footer reveals LAYERED BEHIND the page (Stone Visuals sticky reveal).
+// Home (final round order): hero -> trusted by -> featured work -> process
+// (1820 full-screen panels, untouched) -> testimonials -> diagonal tiles band
+// ("Start here") -> FAQs -> Defender band (pen stroke) -> the footer reveals
+// LAYERED BEHIND the page (Stone Visuals sticky reveal). The "creative
+// agency" photo band and the spiral finale are BINNED (spiral saved to
+// Reference/patterns/spinning-animation for reuse).
 export default function Home() {
   return (
     <>
@@ -42,12 +44,12 @@ export default function Home() {
       <main className="relative z-10 bg-[var(--bg)]">
         <LensIntro />
         <TrustedBy />
-        <ImageBand />
         <OurWork />
         <Process />
-        <TestimonialsFaqs />
+        <Testimonials />
+        <TilesField />
+        <Faqs />
         <FeatureBand />
-        <WhirlwindGallery />
       </main>
       <FooterReveal />
     </>

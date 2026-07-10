@@ -11,6 +11,7 @@
   --paper-text: #f5f1e6;
   --gold: #e9e5d8; /* accents now CREAM (George: gold accents annoyed him); logo PNG stays gold */
   --gold-text: #f5f1e6; /* accent text = cream (1820 zero-accent) */
+  --gold-accent: #c9a96a; /* client final round: the HOVER gold — buttons/CTAs fill gold on hover */
   --surface: #100f0e; /* raised sheets (testimonial/FAQ/what-we-do panels) */
   --red: #e9e5d8; /* legacy alias */
   --tint-w: rgba(255, 255, 255, 0.1);
@@ -244,8 +245,9 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
   padding: 0.15em 0.35em;
 }
 .blink:hover {
-  background: var(--fg);
-  color: var(--bg);
+  /* the gold injection (client): buttons fill GOLD on hover */
+  background: var(--gold-accent);
+  color: #0a0a08;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -253,7 +255,8 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
    link and the label should go solid when the card is hovered
    (George: "so people know they can click on it") */
 .group:hover .blink-fill {
-  background: var(--fg);
+  background: var(--gold-accent);
+  color: #0a0a08;
   text-decoration: underline;
   text-underline-offset: 3px;
 }

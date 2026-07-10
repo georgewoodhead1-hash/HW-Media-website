@@ -5,6 +5,7 @@ import { getProject, projects } from "@/content/projects";
 import FooterReveal from "@/components/shell/FooterReveal";
 import { SITE_URL } from "@/content/site";
 import { jsonLd } from "@/lib/jsonld";
+import ForceDark from "@/components/shell/ForceDark";
 
 export function generateStaticParams() {
   return projects.map((p) => ({ slug: p.slug }));
@@ -85,6 +86,8 @@ export default async function CaseStudy({
 
   return (
     <>
+      {/* client: work pages stay dark whatever the site mode */}
+      <ForceDark />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: jsonLd(videoJsonLd) }}

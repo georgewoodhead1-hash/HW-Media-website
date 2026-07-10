@@ -201,7 +201,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      data-mode="dark"
+      data-mode="light"
       suppressHydrationWarning
       className={`${archivo.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} ${leagueGothic.variable} h-full antialiased`}
     >

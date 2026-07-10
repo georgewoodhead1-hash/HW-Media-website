@@ -3,17 +3,20 @@
 import { useEffect, useState } from "react";
 
 // Light/dark switch (George): a little upright rectangle with a knob that
-// slides top (light) / bottom (dark). Dark is the default; the choice
-// persists. Light mode = the cream canvas, near-black type.
+// slides top (light) / bottom (dark). LIGHT is the default (client final
+// round); the choice persists. Light mode = the cream canvas, near-black type.
 export default function ThemeToggle() {
-  const [mode, setMode] = useState<"dark" | "light">("dark");
+  const [mode, setMode] = useState<"dark" | "light">("light");
 
   useEffect(() => {
     let saved: string | null = null;
     try { saved = localStorage.getItem("hw-mode"); } catch {}
-    if (saved === "light") {
-      setMode("light");
-      document.documentElement.dataset.mode = "light";
+    if (saved === "dark") {
+      setMode("dark");
+      document.documentElement.dataset.mode = "dark";
+    } else {
+      // follow whatever the page currently shows (work pages force dark)
+      setMode((document.documentElement.dataset.mode as "dark" | "light") ?? "light");
     }
   }, []);
 

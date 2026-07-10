@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import FooterReveal from "@/components/shell/FooterReveal";
+import ForceDark from "@/components/shell/ForceDark";
 import WorkGallery from "@/components/work/WorkGallery";
 
 const DESC =
@@ -30,6 +31,8 @@ export const metadata: Metadata = {
 export default function WorkIndex() {
   return (
     <>
+      {/* client: the work page stays dark whatever the site mode */}
+      <ForceDark />
       <main data-theme="dark" data-surface="page" className="relative z-10 min-h-screen bg-[var(--bg)] text-[var(--fg)]">
         {/* the page's H1 — the gallery wall is all tiles, so the heading is
             for crawlers and screen readers (the audit's only missing-H1 page) */}

@@ -151,7 +151,7 @@ export default function Nav() {
           <span
             ref={pillRef}
             aria-hidden
-            className="pointer-events-none absolute left-0 top-0 rounded-[3px] bg-[var(--fg)] opacity-0 will-change-transform"
+            className="pointer-events-none absolute left-0 top-0 rounded-[10px] bg-[var(--fg)] opacity-0 will-change-transform"
           />
           {LINKS.map((l) => (
             <Link

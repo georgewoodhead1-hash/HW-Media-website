@@ -220,6 +220,14 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
 }
 /* nav hover = the sliding pill ONLY (George: bubble, not underline) */
 
+/* ---- the NUMBERS face (client final round): League Gothic — the big
+   01/02/03 numerals from Matt Stone's site, for numeric indexes site-wide */
+.num-display {
+  font-family: var(--font-gothic), "Arial Narrow", sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+
 /* ---- small-link treatment sitewide: plain label that becomes a solid block
    with an underline on hover. (Client final round: square brackets removed,
    hover fill kept.) */

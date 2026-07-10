@@ -226,7 +226,7 @@ export default function Testimonials() {
             <blockquote
               data-t-el
               key={`q-${active}`}
-              className="font-display mt-6 max-w-[46rem] text-[clamp(1.6rem,3.2vw,3rem)] leading-[1.04] md:mt-10"
+              className="font-display mt-6 max-w-[50rem] text-[clamp(1.8rem,3.6vw,3.4rem)] leading-[1.04] md:mt-10"
             >
               <span className="tsq-word">&ldquo;</span>
               {TESTIMONIALS[active].quote.split(" ").map((w, i) => (
@@ -244,9 +244,10 @@ export default function Testimonials() {
             </figcaption>
           </div>
 
-          {/* the HUD (George): numbers in BOXES — active/hover fills solid —
-              with the reel progress line running underneath each */}
-          <div data-t-el className="mt-7 flex items-end justify-center gap-5 md:mt-12 md:justify-start">
+          {/* the HUD (client final round): Matt Stone's numbering — big
+              League Gothic 01/02/03, active bright with the reel progress
+              line running underneath each */}
+          <div data-t-el className="mt-7 flex items-end justify-center gap-8 md:mt-12 md:justify-start md:gap-10">
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}
@@ -254,18 +255,18 @@ export default function Testimonials() {
                 onClick={() => goTo(i)}
                 aria-pressed={active === i}
                 aria-label={`Show ${t.brand} testimonial`}
-                className="group flex w-20 flex-col items-stretch gap-2 pb-1 md:w-24"
+                className="group relative flex flex-col items-stretch gap-2 pb-1"
               >
                 <span
-                  className={`label-mono flex items-center justify-center border px-3 py-2 text-[13px] tracking-[0.2em] transition-colors duration-300 ${
+                  className={`num-display block text-6xl leading-none transition-colors duration-300 md:text-7xl ${
                     active === i
-                      ? "border-[var(--fg)] bg-[var(--fg)] text-[var(--bg)]"
-                      : "border-[var(--fg)]/45 text-[var(--fg)] group-hover:border-[var(--fg)] group-hover:bg-[var(--fg)] group-hover:text-[var(--bg)]"
+                      ? "text-[var(--fg)]"
+                      : "text-[var(--fg)]/25 group-hover:text-[var(--fg)]/60"
                   }`}
                 >
                   {String(i + 1).padStart(2, "0")}
                 </span>
-                <span className="relative block h-px w-full overflow-hidden bg-[var(--fg)]/20">
+                <span className="relative block h-[3px] w-full overflow-hidden bg-[var(--fg)]/15">
                   <span
                     ref={(el) => { barRefs.current[i] = el; }}
                     className="absolute inset-0 origin-left scale-x-0 bg-[var(--fg)]"
@@ -276,7 +277,7 @@ export default function Testimonials() {
           </div>
         </div>
 
-        <div className="tst-film mx-auto mt-7 w-full max-w-[520px] md:mx-0 md:mt-0 md:justify-self-end">
+        <div className="tst-film mx-auto mt-7 w-full max-w-[640px] md:mx-0 md:mt-0 md:justify-self-end">
           <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black">
             {TESTIMONIALS.map((t, i) => {
               const film = filmFor(t.slug);

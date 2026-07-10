@@ -82,7 +82,7 @@ export default function ImageBand() {
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={src} alt="" aria-hidden className="aspect-[3/4] w-full object-cover opacity-90" loading="lazy" />
             {/* the numbers (George) — mono index in each still's corner */}
-            <span className="label-mono absolute bottom-3 left-3 text-[11px] tracking-[0.22em] text-[var(--fg)]">
+            <span className="num-display absolute bottom-3 left-3 text-2xl leading-none text-[var(--fg)]">
               {String(STILLS.indexOf(src) + 1).padStart(2, "0")}
             </span>
           </div>

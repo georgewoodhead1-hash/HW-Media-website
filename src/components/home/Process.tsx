@@ -145,8 +145,8 @@ export default function Process({ variant = "a" }: { variant?: ProcessVariant })
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" />
-                <span className="label-mono absolute left-5 top-5 text-[11px] tracking-[0.22em] text-white/85">
-                  {s.n} / 04
+                <span className="num-display absolute left-5 top-5 text-3xl leading-none text-white/90">
+                  {s.n}
                 </span>
                 <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
                   <h3 className="font-display text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[0.95] tracking-[-0.015em] text-white">
@@ -174,8 +174,8 @@ export default function Process({ variant = "a" }: { variant?: ProcessVariant })
                   <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
                 </div>
                 <div className="mt-6">
-                  <p className="label-mono text-[11px] tracking-[0.22em] text-[var(--fg)]">
-                    {s.n} / 04
+                  <p className="num-display text-3xl leading-none text-[var(--fg)]/80">
+                    {s.n}
                   </p>
                   <h3 className="font-display mt-2 text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[0.95] tracking-[-0.015em]">
                     {s.name}

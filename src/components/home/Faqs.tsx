@@ -127,8 +127,8 @@ export default function Faqs() {
               >
                 <span className="flex items-baseline gap-5 md:gap-8">
                   <span
-                    className={`label-mono shrink-0 rounded-[2px] px-1.5 py-0.5 text-[11px] tracking-[0.2em] transition-colors duration-300 ${
-                      isOpen ? "bg-[var(--fg)] text-[var(--bg)]" : "text-[var(--fg)] group-hover:bg-[var(--fg)]/15"
+                    className={`num-display shrink-0 text-3xl leading-none transition-colors duration-300 md:text-4xl ${
+                      isOpen ? "text-[var(--fg)]" : "text-[var(--fg)]/35 group-hover:text-[var(--fg)]/70"
                     }`}
                   >
                     {String(i + 1).padStart(2, "0")}

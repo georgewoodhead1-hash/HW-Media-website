@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Geist_Mono } from "next/font/google";
+import { Archivo, Geist_Mono, League_Gothic } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
@@ -38,6 +38,13 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
+});
+
+// League Gothic — the NUMBERS face (client final round: the big 01/02/03
+// numerals from Matt Stone's site, used for numeric indexes site-wide).
+const leagueGothic = League_Gothic({
+  variable: "--font-gothic",
+  subsets: ["latin"],
 });
 
 // 3) SUBTEXT — Suisse Int'l Book (1820's body face). Paragraphs and quiet text,
@@ -196,7 +203,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
+      className={`${archivo.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} ${leagueGothic.variable} h-full antialiased`}
     >
 
       <body className="min-h-full">

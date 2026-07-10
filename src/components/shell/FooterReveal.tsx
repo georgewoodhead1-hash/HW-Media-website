@@ -3,19 +3,12 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap } from "@/lib/gsap";
-import { safePlay } from "@/lib/video";
 
-// The footer, LAYERED BEHIND the page (sticky reveal). George's spec: the
-// SHOWREEL plays see-through behind everything; the big email + columns
-// (OUR BASE / SOCIALS) sit pushed to the LEFT; the wordmark rides BIG in the
-// bottom-right with the film glowing through it. A dark veil lifts away with
-// the page so the reveal reads as one continuous move. Only grey lives here.
-
-const PAGES: [string, string][] = [
-  ["Work", "/work"],
-  ["About", "/about"],
-  ["Contact", "/contact"],
-];
+// The footer, LAYERED BEHIND the page (sticky reveal), final-round spec:
+// GET IN TOUCH + the email (email in the UI face, sat lower); THREE columns
+// under drawn lines — WORK / ABOUT / CONTACT as clickable titles with their
+// sub-lines beneath (nothing greyed); the wordmark rides BIG bottom-right,
+// SOLID (no film through it). A dark veil lifts away with the page.
 
 export default function FooterReveal() {
   const spacerRef = useRef<HTMLDivElement>(null);
@@ -41,20 +34,7 @@ export default function FooterReveal() {
       .to(zones, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.14, ease: "power2.out" }, 0.05)
       .to(lines, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 0.35);
 
-    // the reel only runs while the footer is actually on show
-    const video = foot.querySelector<HTMLVideoElement>("video");
-    let io: IntersectionObserver | null = null;
-    if (video) {
-      io = new IntersectionObserver(
-        (es) => es.forEach((e) => {
-          if (e.isIntersecting) safePlay(video); else video.pause();
-        }),
-        { threshold: 0.1 },
-      );
-      io.observe(spacer);
-    }
-
-    return () => { tl.scrollTrigger?.kill(); tl.kill(); io?.disconnect(); };
+    return () => { tl.scrollTrigger?.kill(); tl.kill(); };
   }, []);
 
   return (
@@ -76,37 +56,39 @@ export default function FooterReveal() {
             <p className="label-mono mb-4 text-[11px] tracking-[0.22em] text-[var(--fg)]/55">GET IN TOUCH</p>
             <a
               href="mailto:harry@hwmedia.co.uk"
-              className="about-display u-link inline-block text-[clamp(1.7rem,4.2vw,4rem)] leading-none text-[var(--fg)]"
-              style={{ textTransform: "none" }}
+              className="u-link mt-6 inline-block text-[clamp(1.4rem,3vw,2.6rem)] leading-none text-[var(--fg)]"
+              style={{ fontFamily: "var(--font-firma), sans-serif" }}
             >
               harry@hwmedia.co.uk
             </a>
           </div>
-          <nav className="flex flex-col items-start gap-2 md:items-end" aria-label="Footer pages">
-            {PAGES.map(([label, href]) => (
-              <Link
-                key={href}
-                href={href}
-                className="u-link text-[15px] leading-none text-[var(--fg)]"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+
         </div>
 
-        {/* middle zone — the columns, pushed LEFT (half width, left-aligned) */}
-        <div className="ft-zone relative grid max-w-xl grid-cols-1 gap-10 sm:grid-cols-2 sm:gap-8">
+        {/* middle zone — THREE columns under drawn lines: the page titles,
+            clickable and bright, each with its sub-lines beneath */}
+        <div className="ft-zone relative grid max-w-3xl grid-cols-1 gap-10 sm:grid-cols-3 sm:gap-8">
           <div>
             <span className="ft-line mb-6 block h-px w-full bg-[var(--fg)]" />
-            <p className="label-mono mb-5 text-[11px] tracking-[0.22em] text-[var(--fg)]/55">OUR BASE</p>
-            <p className="text-[15px] leading-relaxed text-[var(--fg)]">London</p>
-            <p className="text-[15px] leading-relaxed text-[var(--fg)]">United Kingdom</p>
+            <Link href="/work" className="u-link inline-block text-[19px] leading-none text-[var(--fg)]">
+              Work
+            </Link>
+            <p className="mt-4 text-[15px] leading-relaxed text-[var(--fg)]">The films.</p>
           </div>
           <div>
             <span className="ft-line mb-6 block h-px w-full bg-[var(--fg)]" />
-            <p className="label-mono mb-5 text-[11px] tracking-[0.22em] text-[var(--fg)]/55">SOCIALS</p>
-            <div className="flex flex-col items-start gap-1">
+            <Link href="/about" className="u-link inline-block text-[19px] leading-none text-[var(--fg)]">
+              About
+            </Link>
+            <p className="mt-4 text-[15px] leading-relaxed text-[var(--fg)]">London, United Kingdom</p>
+            <p className="text-[15px] leading-relaxed text-[var(--fg)]">Harry Wallis</p>
+          </div>
+          <div>
+            <span className="ft-line mb-6 block h-px w-full bg-[var(--fg)]" />
+            <Link href="/contact" className="u-link inline-block text-[19px] leading-none text-[var(--fg)]">
+              Contact
+            </Link>
+            <div className="mt-4 flex flex-col items-start gap-1">
               <a href="https://www.instagram.com/hwmedia/" target="_blank" rel="noopener noreferrer" className="u-link inline-block text-[15px] leading-relaxed text-[var(--fg)]">
                 Instagram
               </a>
@@ -133,18 +115,9 @@ export default function FooterReveal() {
           style={{
             WebkitMask: "url(/logos/hwmedia-white.png) right bottom / contain no-repeat",
             mask: "url(/logos/hwmedia-white.png) right bottom / contain no-repeat",
+            background: "var(--fg)",
           }}
-        >
-          <video
-            className="h-full w-full object-cover"
-            src="/videos/showreel-full.mp4"
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden
-          />
-        </div>
+        />
 
         {/* the lift-away dark — scrubbed out as the page reveals the footer */}
         <div aria-hidden className="ft-veil pointer-events-none absolute inset-0 bg-[var(--page-bg)]" />

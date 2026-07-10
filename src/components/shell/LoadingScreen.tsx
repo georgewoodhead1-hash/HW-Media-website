@@ -3,27 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
-// Pre-entry loading screen, v5 (George's spec, final round):
-//   1. the HW mark WRITES ITSELF ON (left→right reveal, like the signature
-//      being written)
-//   2. a circle draws from the BOTTOM up BOTH sides and closes at the top
-//   3. the closed ring becomes THE CAMERA — our own animation, no video:
-//      concentric lens rings resolve around the mark, then the whole lens
-//      drives PAST the viewer (scale blow-out) into a white bloom
-//   4. the bloom fades and the home screen is revealed underneath
-// The hero holds until "hw:reveal" fires, so nothing on the page moves
-// before the loader is done. Reduced-motion and repeat visits skip to a
-// quick dissolve.
+// Pre-entry loading screen, v6 (George's notes):
+//   1. the HW mark WRITES ITSELF OUT — a soft-edged mask sweeps along the
+//      writing direction, so the ink appears gradually (no hard wipe)
+//   2. THEN the two lines draw — you can see them start together at the
+//      bottom and rise up either side to close the circle at the top
+//   3. THEN one single continuous push: the whole lens drives past the
+//      viewer in one accelerating motion (no staged zooms), blooming to
+//      white as it passes — and the site fades in underneath
+// The hero holds until "hw:reveal" fires. Reduced-motion and repeat visits
+// skip to a quick dissolve.
 
 export default function LoadingScreen() {
   const rootRef = useRef<HTMLDivElement>(null);
-  const logoWrapRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
-  const lensRef = useRef<HTMLDivElement>(null);
   const arcLeftRef = useRef<SVGPathElement>(null);
   const arcRightRef = useRef<SVGPathElement>(null);
-  const ring2Ref = useRef<SVGCircleElement>(null);
-  const ring3Ref = useRef<SVGCircleElement>(null);
   const bloomRef = useRef<HTMLDivElement>(null);
   const [done, setDone] = useState(false);
 
@@ -52,17 +48,24 @@ export default function LoadingScreen() {
     }
 
     const ctx = gsap.context(() => {
-      // start states: mark hidden behind a left→right writing wipe, arcs
-      // undrawn, lens rings invisible, bloom off
+      const mask =
+        "linear-gradient(100deg, #000 45%, rgba(0,0,0,0) 65%)";
+      // the ink starts fully off-canvas left; sweeping the gradient right
+      // reveals the mark stroke-by-stroke, soft-edged — the writing feel
       gsap.set(logoRef.current, {
-        clipPath: "inset(0% 100% 0% 0%)",
-        filter: "blur(1.5px)",
+        webkitMaskImage: mask,
+        maskImage: mask,
+        webkitMaskSize: "250% 100%",
+        maskSize: "250% 100%",
+        webkitMaskRepeat: "no-repeat",
+        maskRepeat: "no-repeat",
+        webkitMaskPosition: "-140% 0%",
+        maskPosition: "-140% 0%",
       });
       gsap.set([arcLeftRef.current, arcRightRef.current], {
         strokeDasharray: 1,
         strokeDashoffset: 1,
       });
-      gsap.set([ring2Ref.current, ring3Ref.current], { autoAlpha: 0, scale: 0.92, transformOrigin: "50% 50%" });
       gsap.set(bloomRef.current, { autoAlpha: 0 });
       gsap.set(".ls-meta", { autoAlpha: 0, y: 8 });
 
@@ -73,35 +76,29 @@ export default function LoadingScreen() {
         });
       };
 
-      gsap
-        .timeline({ onComplete: finish })
+      const tl = gsap.timeline({ onComplete: finish });
+      tl
         // room lights on
         .to(".ls-meta", { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0)
-        // 1 — the mark writes itself on
+        // 1 — the mark writes itself out, steady hand
         .to(logoRef.current, {
-          clipPath: "inset(0% 0% 0% 0%)",
-          filter: "blur(0px)",
-          duration: 1.35,
-          ease: "power2.inOut",
-        }, 0.2)
-        // 2 — the circle draws from the bottom, both sides at once
+          webkitMaskPosition: "0% 0%",
+          maskPosition: "0% 0%",
+          duration: 1.7,
+          ease: "power1.inOut",
+        }, 0.25)
+        // 2 — THEN the two lines rise from the bottom and close at the top
         .to([arcLeftRef.current, arcRightRef.current], {
-          strokeDashoffset: 0, duration: 1.3, ease: "power2.inOut",
-        }, 1.25)
-        // 3 — THE CAMERA forms: two more lens rings resolve around the ring
-        .to(ring2Ref.current, { autoAlpha: 0.55, scale: 1, duration: 0.5, ease: "power2.out" }, 2.6)
-        .to(ring3Ref.current, { autoAlpha: 0.3, scale: 1, duration: 0.5, ease: "power2.out" }, 2.72)
-        // a held beat — the lens, assembled
-        .to({}, { duration: 0.25 })
-        // …then the camera drives PAST the viewer: the whole lens blows out
-        // through the frame while the mark falls away behind it
-        .to(logoRef.current, { scale: 0.8, autoAlpha: 0, filter: "blur(10px)", duration: 0.9, ease: "power3.in" }, 3.45)
-        .to(lensRef.current, {
-          scale: 14, autoAlpha: 0, duration: 1.15, ease: "power3.in",
-        }, 3.4)
-        .to(".ls-meta", { autoAlpha: 0, duration: 0.4 }, 3.5)
-        // 4 — the bloom peaks and hands over to the site
-        .to(bloomRef.current, { autoAlpha: 1, duration: 0.55, ease: "power2.in" }, 3.85);
+          strokeDashoffset: 0, duration: 1.5, ease: "power2.inOut",
+        }, 2.05)
+        // 3 — ONE continuous push past the viewer: stage, mark fade and
+        // bloom all keyed inside the same accelerating move
+        .to(stageRef.current, {
+          scale: 16, duration: 1.35, ease: "power3.in", force3D: true,
+        }, 3.75)
+        .to(logoRef.current, { autoAlpha: 0, duration: 1.0, ease: "power3.in" }, 3.75)
+        .to(".ls-meta", { autoAlpha: 0, duration: 0.5 }, 3.8)
+        .to(bloomRef.current, { autoAlpha: 1, duration: 0.7, ease: "power2.in" }, 4.3);
     }, rootRef);
 
     return () => ctx.revert();
@@ -119,33 +116,31 @@ export default function LoadingScreen() {
         LONDON
       </span>
 
-      {/* the stage — mark writing on inside the forming lens */}
+      {/* the stage — everything pushes through the viewer as ONE object */}
       <div className="relative flex h-full w-full items-center justify-center">
-        <div ref={logoWrapRef} className="relative flex items-center justify-center">
-          {/* THE LENS — main ring drawn as two bottom-up arcs, then two more
-              rings resolve to read as a camera lens barrel */}
-          <div ref={lensRef} className="absolute flex h-[19rem] w-[19rem] items-center justify-center will-change-transform md:h-[25rem] md:w-[25rem]">
-            <svg className="absolute inset-0 h-full w-full" viewBox="0 0 200 200" fill="none">
-              <path
-                ref={arcLeftRef}
-                d="M 100 196 A 96 96 0 0 1 100 4"
-                pathLength={1}
-                stroke="rgba(255,255,255,0.9)"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-              />
-              <path
-                ref={arcRightRef}
-                d="M 100 196 A 96 96 0 0 0 100 4"
-                pathLength={1}
-                stroke="rgba(255,255,255,0.9)"
-                strokeWidth={1.5}
-                strokeLinecap="round"
-              />
-              <circle ref={ring2Ref} cx="100" cy="100" r="86" stroke="rgba(255,255,255,0.75)" strokeWidth={0.8} />
-              <circle ref={ring3Ref} cx="100" cy="100" r="74" stroke="rgba(255,255,255,0.55)" strokeWidth={0.6} />
-            </svg>
-          </div>
+        <div ref={stageRef} className="relative flex items-center justify-center will-change-transform">
+          <svg
+            className="absolute h-[19rem] w-[19rem] md:h-[25rem] md:w-[25rem]"
+            viewBox="0 0 200 200"
+            fill="none"
+          >
+            <path
+              ref={arcLeftRef}
+              d="M 100 196 A 96 96 0 0 1 100 4"
+              pathLength={1}
+              stroke="rgba(255,255,255,0.92)"
+              strokeWidth={2}
+              strokeLinecap="round"
+            />
+            <path
+              ref={arcRightRef}
+              d="M 100 196 A 96 96 0 0 0 100 4"
+              pathLength={1}
+              stroke="rgba(255,255,255,0.92)"
+              strokeWidth={2}
+              strokeLinecap="round"
+            />
+          </svg>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             ref={logoRef}

@@ -39,27 +39,27 @@ export default function FeatureBand() {
 
       const st = ScrollTrigger.create({
         trigger: sec,
-        start: "top top",
+        // starts the moment the band enters — the small film sits right
+        // below the FAQ line, already riding (no dead black run-up)
+        start: "top bottom",
         end: "bottom bottom",
-        scrub: 0.5,
+        scrub: 0.8,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
-          // the ride: up out of the depth (y resolves first), then FORWARD
-          // (scale finishes later) — far back -> up -> toward you -> full bleed
-          const up = sm(0.0, 0.55, p);
-          const fwd = sm(0.12, 0.82, p);
+          // ONE MOTION (George): a single eased progress drives y and scale
+          // together — no phase changes, no speed steps, no pauses
+          const e = sm(0.02, 0.88, p);
           gsap.set(frame, {
-            y: (1 - up) * 36 + "vh",
-            scale: 0.24 + fwd * 0.76,
+            y: (1 - e) * 34 + "vh",
+            scale: 0.24 + e * 0.76,
             force3D: true,
           });
-          // the footage settles inside the frame as it arrives
-          if (img) gsap.set(img, { scale: 1.35 - fwd * 0.35 });
-          // the words ride up once the film owns the frame
-          const wIn = sm(0.78, 0.9, p);
+          if (img) gsap.set(img, { scale: 1.35 - e * 0.35 });
+          // the words land as the film does, CTA right on their heels
+          const wIn = sm(0.84, 0.93, p);
           if (line) gsap.set(line, { autoAlpha: wIn, y: (1 - wIn) * 22 });
-          const cIn = sm(0.86, 0.96, p);
+          const cIn = sm(0.87, 0.96, p);
           if (cta) gsap.set(cta, { autoAlpha: cIn, y: (1 - cIn) * 22, pointerEvents: cIn > 0.5 ? "auto" : "none" });
         },
       });
@@ -74,7 +74,7 @@ export default function FeatureBand() {
       ref={root}
       data-theme="dark"
       data-surface="media"
-      className="relative z-[35] bg-[var(--bg)] md:h-[240vh]"
+      className="relative z-[35] bg-[var(--bg)] md:h-[170vh]"
       aria-label="Wherever the story is"
     >
       <div className="overflow-hidden md:sticky md:top-0 md:h-screen">
@@ -99,7 +99,7 @@ export default function FeatureBand() {
               </h2>
             </div>
             <div className="fb-cta">
-              <a href="/contact" className="blink pointer-events-auto text-[clamp(13px,1.2vw,15px)] tracking-[0.05em]">
+              <a href="/contact" className="blink pointer-events-auto text-[clamp(16px,1.6vw,21px)] tracking-[0.05em]">
                 Start here
               </a>
             </div>

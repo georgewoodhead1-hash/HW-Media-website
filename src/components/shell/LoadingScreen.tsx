@@ -28,7 +28,10 @@ export default function LoadingScreen() {
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    const reveal = () => window.dispatchEvent(new Event("hw:reveal"));
+    const reveal = () => {
+      (window as unknown as { __hwRevealed?: boolean }).__hwRevealed = true;
+      window.dispatchEvent(new Event("hw:reveal"));
+    };
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       reveal();
       setDone(true);

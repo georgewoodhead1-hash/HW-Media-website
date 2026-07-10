@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
+import { onPageEntered } from "@/lib/entrance";
 
 // CH.00 — hero. A full-bleed showreel (placeholder until Harry's cut) with the
 // motto "Break the ordinary" TYPING ON in real time and sitting slightly
@@ -51,8 +52,15 @@ export default function LensIntro() {
           .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, ">0.05");
       }, wrap);
     };
-    window.addEventListener("hw:reveal", start, { once: true });
-    const fb = window.setTimeout(start, 6000);
+    // first visit: the loader fires hw:reveal when it finishes. Return
+    // visits (loader long gone): start once the route transition lands.
+    let cancelEnter: (() => void) | null = null;
+    if ((window as unknown as { __hwRevealed?: boolean }).__hwRevealed) {
+      cancelEnter = onPageEntered(start);
+    } else {
+      window.addEventListener("hw:reveal", start, { once: true });
+    }
+    const fb = window.setTimeout(start, 8000);
 
     // iOS: the autoPlay attribute is ignored in Low Power Mode — kick the
     // reel manually on mount and again on the first touch
@@ -61,6 +69,7 @@ export default function LensIntro() {
     window.addEventListener("touchstart", kick, { once: true, passive: true });
 
     return () => {
+      cancelEnter?.();
       window.removeEventListener("hw:reveal", start);
       window.removeEventListener("touchstart", kick);
       window.clearTimeout(fb);

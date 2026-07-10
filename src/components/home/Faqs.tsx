@@ -7,10 +7,9 @@ import TitleRule from "@/components/shell/TitleRule";
 import { FAQS } from "@/content/site";
 
 // 06 — FAQS in plain flow, rows building one by one on their own passage.
-// Split from the old TestimonialsFaqs pair (final round) — behaviour is
-// UNCHANGED: the bottom line never fades, it rides down the page into the
-// Defender band where the pen line picks it up (the 84vh black beat below
-// exists for that desktop pen stroke).
+// The closing line still draws, rides down and WIPES away left→right
+// (George keeps that move) — then a short black beat and the story band's
+// film rises out of the background. The pen stroke is gone.
 
 export default function Faqs() {
   const faqRef = useRef<HTMLElement>(null);
@@ -113,10 +112,9 @@ export default function Faqs() {
       data-theme="dark"
       data-surface="page"
       data-chapter="06 — FAQs"
-      // the 84vh black beat only exists for the DESKTOP pen stroke — the pen
-      // is md-only, so mobile just gets a normal section gap (George: the
-      // mobile black gap "shouldn't be there")
-      className="relative z-30 bg-[var(--bg)] px-5 pb-[14vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[84vh]"
+      // a short black beat after the closer-line wipe (the pen is gone —
+      // the story band's small-film rise follows straight on)
+      className="relative z-30 bg-[var(--bg)] px-5 pb-[14vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[26vh]"
       aria-label="Frequently asked questions"
     >
       {/* header: centred title with dynamic lines either side */}

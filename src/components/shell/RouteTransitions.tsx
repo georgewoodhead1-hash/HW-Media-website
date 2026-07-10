@@ -71,6 +71,9 @@ export default function RouteTransitions() {
         document.body.appendChild(wrap);
         cloneRef.current = wrap;
       }
+      // stamp the blend so page entrances (PageBuild etc.) hold until the
+      // sheet has landed — the second loading animation starts THEN
+      document.documentElement.dataset.transitioning = "1";
       router.push(href);
     };
 
@@ -95,35 +98,42 @@ export default function RouteTransitions() {
     }
 
     window.scrollTo(0, 0);
-    // park it ONE VIEWPORT below, synchronously — before first paint
+    // park it ONE VIEWPORT below, synchronously — before first paint.
+    // CLEAN EDGE (client: the rounded corners + big soft shadow read as a
+    // "weird gradient" — binned; just the sheet, one hairline on its lip)
     gsap.set(main, {
       y: window.innerHeight,
       position: "relative",
       zIndex: 20,
       backgroundColor: "var(--bg)",
-      borderRadius: "1.6rem 1.6rem 0 0",
-      boxShadow: "0 -30px 80px rgba(0,0,0,0.55)",
+      borderTop: "1px solid rgba(245,241,230,0.18)",
     });
-    // THE NAVIGATION (George, final spec): the next page RISES FROM BELOW and
-    // fills the screen IN FRONT of the current page. You can see both the
-    // whole time — the old page stays put underneath (a gentle settle for
-    // depth, never dimmed to black), the new one slides up over it. No cuts,
-    // no veils, no fades.
+    // THE NAVIGATION: the next page RISES FROM BELOW and fills the screen IN
+    // FRONT of the current page — both visible the whole time, the old page
+    // settling gently underneath (never dimmed to black). Once the sheet
+    // lands, "hw:page-entered" fires and the new page runs its own build-in.
     const oldInner = clone.firstElementChild as HTMLElement | null;
     const tl = gsap.timeline({
       onComplete: () => {
         cleanup();
         gsap.set(main, { clearProps: "all" });
+        delete document.documentElement.dataset.transitioning;
+        window.dispatchEvent(new Event("hw:page-entered"));
         ScrollTrigger.refresh();
       },
     });
     if (oldInner) {
-      tl.to(oldInner, { scale: 0.96, duration: 1.0, ease: "power3.inOut" }, 0);
+      tl.to(oldInner, { scale: 0.965, yPercent: -2, duration: 1.15, ease: "power4.inOut" }, 0);
     }
-    tl.to(main, { y: 0, duration: 1.0, ease: "power3.inOut" }, 0)
-      .set(main, { borderRadius: "0", boxShadow: "none" });
+    tl.to(main, { y: 0, duration: 1.15, ease: "power4.inOut" }, 0)
+      .set(main, { borderTop: "none" });
 
-    return () => { tl.kill(); cleanup(); };
+    return () => {
+      tl.kill();
+      cleanup();
+      delete document.documentElement.dataset.transitioning;
+      window.dispatchEvent(new Event("hw:page-entered"));
+    };
   }, [pathname]);
 
   return null;

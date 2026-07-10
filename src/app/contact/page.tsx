@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import FooterReveal from "@/components/shell/FooterReveal";
 import ContactForm from "@/components/contact/ContactForm";
+import PageBuild from "@/components/shell/PageBuild";
 
 const DESC =
   "Start a project with HW Media, London's director-led film production company. Tell us about the film and we'll come back with ideas and a fixed quote within days.";
@@ -36,18 +37,22 @@ export default function Contact() {
         data-surface="page"
         className="relative z-10 flex min-h-screen flex-col items-center justify-center bg-[var(--bg)] px-5 py-32 text-center text-[var(--fg)] md:px-10"
       >
+        <PageBuild />
         <div className="w-full max-w-xl">
-          <h1 className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]">
-            Tell us more<span className="text-[var(--gold-text)]">.</span>
+          <h1 data-enter-words className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]">
+            Tell us more.
           </h1>
           <p
+            data-enter
             className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-[var(--fg)]/70"
             style={{ fontFamily: "var(--font-firma), sans-serif" }}
           >
             Put your details in below and we&rsquo;ll get back to you within 24 hours of your enquiry.
           </p>
 
-          <ContactForm />
+          <div data-enter>
+            <ContactForm />
+          </div>
         </div>
       </main>
       <FooterReveal />

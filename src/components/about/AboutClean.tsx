@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { gsap } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
+import { onPageEntered } from "@/lib/entrance";
 import FooterReveal from "@/components/shell/FooterReveal";
 import TrailField from "@/components/shell/TrailField";
 
@@ -26,13 +27,14 @@ export default function AboutClean() {
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
+    let cancelEnter: (() => void) | null = null;
     const ctx = gsap.context(() => {
-      // the opening line rises out of clip lines on load
-      gsap.fromTo(
-        ".abx-char",
-        { yPercent: 114 },
-        { yPercent: 0, duration: 1.1, ease: "expo.out", stagger: 0.04, delay: 0.35 },
-      );
+      // the opening line rises out of clip lines — but only AFTER the route
+      // transition has landed the page (it used to fire mid-slide, invisible)
+      gsap.set(".abx-char", { yPercent: 114 });
+      cancelEnter = onPageEntered(() => {
+        gsap.to(".abx-char", { yPercent: 0, duration: 1.1, ease: "expo.out", stagger: 0.04, delay: 0.1 });
+      });
       // the opener statement DRIFTS against its footage while you scroll —
       // the layering effect from the process deck
       gsap.fromTo(
@@ -82,7 +84,7 @@ export default function AboutClean() {
     );
     vids.forEach((v) => io.observe(v));
 
-    return () => { ctx.revert(); io.disconnect(); };
+    return () => { cancelEnter?.(); ctx.revert(); io.disconnect(); };
   }, []);
 
   return (

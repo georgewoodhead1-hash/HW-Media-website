@@ -3,23 +3,29 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
-// Pre-entry loading screen, v4 (George): the v3 title card (mark resolving
-// out of blur, hairline + counter running the load) now hands over to THE
-// CAMERA ANIMATION — George's Higgsfield lens push (public/videos/intro.mp4):
-// the frame drives INTO the lens barrel, through the iris, and blows out to
-// white — and the site fades in under the bloom. GSAP runs the handoffs.
-// Fallbacks: reduced-motion and repeat visits skip the film; if the video
-// can't start (decode/autoplay failure) we dissolve straight to the hero.
-const LENS_REVEAL_AT = 2.7; // seconds into the film when the white bloom peaks
+// Pre-entry loading screen, v5 (George's spec, final round):
+//   1. the HW mark WRITES ITSELF ON (left→right reveal, like the signature
+//      being written)
+//   2. a circle draws from the BOTTOM up BOTH sides and closes at the top
+//   3. the closed ring becomes THE CAMERA — our own animation, no video:
+//      concentric lens rings resolve around the mark, then the whole lens
+//      drives PAST the viewer (scale blow-out) into a white bloom
+//   4. the bloom fades and the home screen is revealed underneath
+// The hero holds until "hw:reveal" fires, so nothing on the page moves
+// before the loader is done. Reduced-motion and repeat visits skip to a
+// quick dissolve.
 
 export default function LoadingScreen() {
   const rootRef = useRef<HTMLDivElement>(null);
+  const logoWrapRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLImageElement>(null);
-  const lineRef = useRef<HTMLSpanElement>(null);
-  const countRef = useRef<HTMLSpanElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const lensRef = useRef<HTMLDivElement>(null);
+  const arcLeftRef = useRef<SVGPathElement>(null);
+  const arcRightRef = useRef<SVGPathElement>(null);
+  const ring2Ref = useRef<SVGCircleElement>(null);
+  const ring3Ref = useRef<SVGCircleElement>(null);
+  const bloomRef = useRef<HTMLDivElement>(null);
   const [done, setDone] = useState(false);
-  const [withFilm, setWithFilm] = useState(false);
 
   useEffect(() => {
     const reveal = () => window.dispatchEvent(new Event("hw:reveal"));
@@ -41,99 +47,67 @@ export default function LoadingScreen() {
       });
       return () => { quick.kill(); };
     }
-    setWithFilm(true);
-
-    const logo = logoRef.current;
-    const lineEl = lineRef.current;
-    const count = countRef.current;
-    const n = { v: 0 };
-    let cleanupFilm: (() => void) | null = null;
 
     const ctx = gsap.context(() => {
-      gsap.set(logo, { autoAlpha: 0, scale: 1.06, filter: "blur(16px)" });
-      gsap.set(lineEl, { scaleX: 0, transformOrigin: "left center" });
+      // start states: mark hidden behind a left→right writing wipe, arcs
+      // undrawn, lens rings invisible, bloom off
+      gsap.set(logoRef.current, {
+        clipPath: "inset(0% 100% 0% 0%)",
+        filter: "blur(1.5px)",
+      });
+      gsap.set([arcLeftRef.current, arcRightRef.current], {
+        strokeDasharray: 1,
+        strokeDashoffset: 1,
+      });
+      gsap.set([ring2Ref.current, ring3Ref.current], { autoAlpha: 0, scale: 0.92, transformOrigin: "50% 50%" });
+      gsap.set(bloomRef.current, { autoAlpha: 0 });
       gsap.set(".ls-meta", { autoAlpha: 0, y: 8 });
-      // NOTE: the film's first frame (the lens, parked) is deliberately
-      // visible BEHIND the card during the counter — the HW mark resolves
-      // inside the lens glass. The push only rolls once the counter lands.
 
-      // straight to the hero — used if the film can't run
-      const bail = () => {
+      const finish = () => {
         gsap.to(rootRef.current, {
-          autoAlpha: 0, duration: 0.65, ease: "power2.inOut",
+          autoAlpha: 0, duration: 0.7, ease: "power2.inOut",
           onStart: reveal, onComplete: () => setDone(true),
         });
       };
 
-      // THE CAMERA ANIMATION — plays once the counter lands on 100
-      const rollFilm = () => {
-        const video = videoRef.current;
-        if (!video) return bail();
-        let revealed = false;
-        const finish = () => {
-          if (revealed) return;
-          revealed = true;
-          // the bloom peaks — site fades in underneath the white
-          gsap.to(rootRef.current, {
-            autoAlpha: 0, duration: 0.8, ease: "power2.inOut",
-            onStart: reveal, onComplete: () => setDone(true),
-          });
-        };
-        const onTime = () => { if (video.currentTime >= LENS_REVEAL_AT) finish(); };
-        const onEnded = () => finish();
-        video.addEventListener("timeupdate", onTime);
-        video.addEventListener("ended", onEnded);
-        // stall guard: if the film hasn't actually advanced shortly after
-        // play(), skip it rather than trap the visitor on a frozen frame
-        const stall = window.setTimeout(() => { if (video.currentTime < 0.2) { revealed = true; bail(); } }, 1600);
-        cleanupFilm = () => {
-          window.clearTimeout(stall);
-          video.removeEventListener("timeupdate", onTime);
-          video.removeEventListener("ended", onEnded);
-        };
-        gsap.timeline()
-          .to(".ls-card", { autoAlpha: 0, scale: 1.02, filter: "blur(6px)", duration: 0.4, ease: "power2.in" }, 0)
-          .to(".ls-meta", { autoAlpha: 0, duration: 0.3 }, 0)
-          .to(".ls-film", { autoAlpha: 1, duration: 0.35, ease: "power2.out" }, 0.2);
-        video.play().catch(() => { revealed = true; bail(); });
-      };
-
       gsap
-        .timeline({ onComplete: rollFilm })
-        // the meta corners fade up first — the room lights coming on
+        .timeline({ onComplete: finish })
+        // room lights on
         .to(".ls-meta", { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0)
-        // the mark pulls into focus while the line + counter run the load
-        .to(logo, { autoAlpha: 1, scale: 1, filter: "blur(0px)", duration: 1.5, ease: "power3.inOut" }, 0.15)
-        .to(lineEl, { scaleX: 1, duration: 1.7, ease: "power2.inOut" }, 0.15)
-        .to(n, {
-          v: 100, duration: 1.7, ease: "power2.inOut",
-          onUpdate: () => { if (count) count.textContent = String(Math.round(n.v)).padStart(3, "0"); },
-        }, 0.15)
-        // a held beat with everything resolved, then the film rolls
-        .to({}, { duration: 0.3 });
+        // 1 — the mark writes itself on
+        .to(logoRef.current, {
+          clipPath: "inset(0% 0% 0% 0%)",
+          filter: "blur(0px)",
+          duration: 1.35,
+          ease: "power2.inOut",
+        }, 0.2)
+        // 2 — the circle draws from the bottom, both sides at once
+        .to([arcLeftRef.current, arcRightRef.current], {
+          strokeDashoffset: 0, duration: 1.3, ease: "power2.inOut",
+        }, 1.25)
+        // 3 — THE CAMERA forms: two more lens rings resolve around the ring
+        .to(ring2Ref.current, { autoAlpha: 0.55, scale: 1, duration: 0.5, ease: "power2.out" }, 2.6)
+        .to(ring3Ref.current, { autoAlpha: 0.3, scale: 1, duration: 0.5, ease: "power2.out" }, 2.72)
+        // a held beat — the lens, assembled
+        .to({}, { duration: 0.25 })
+        // …then the camera drives PAST the viewer: the whole lens blows out
+        // through the frame while the mark falls away behind it
+        .to(logoRef.current, { scale: 0.8, autoAlpha: 0, filter: "blur(10px)", duration: 0.9, ease: "power3.in" }, 3.45)
+        .to(lensRef.current, {
+          scale: 14, autoAlpha: 0, duration: 1.15, ease: "power3.in",
+        }, 3.4)
+        .to(".ls-meta", { autoAlpha: 0, duration: 0.4 }, 3.5)
+        // 4 — the bloom peaks and hands over to the site
+        .to(bloomRef.current, { autoAlpha: 1, duration: 0.55, ease: "power2.in" }, 3.85);
     }, rootRef);
 
-    return () => { cleanupFilm?.(); ctx.revert(); };
+    return () => ctx.revert();
   }, []);
 
   if (done) return null;
 
   return (
     <div ref={rootRef} aria-hidden className="fixed inset-0 z-[300] bg-black text-[#f5f1e6]">
-      {/* THE LENS FILM — mounted (and preloading) behind the card so it can
-          roll the instant the counter lands */}
-      {withFilm && (
-        <video
-          ref={videoRef}
-          className="ls-film absolute inset-0 h-full w-full object-cover"
-          src="/videos/intro.mp4"
-          poster="/images/intro-poster.jpg"
-          muted
-          playsInline
-          preload="auto"
-        />
-      )}
-
       {/* corner meta — quiet, technical */}
       <span className="ls-meta label-mono absolute left-6 top-6 text-[10px] tracking-[0.24em] text-white/60 md:left-10 md:top-8">
         HW MEDIA
@@ -142,23 +116,48 @@ export default function LoadingScreen() {
         LONDON
       </span>
 
-      {/* the card — mark resolving out of blur, hairline running the load */}
-      <div className="ls-card relative flex h-full w-full flex-col items-center justify-center">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={logoRef}
-          src="/logos/hwmedia-white.png"
-          alt=""
-          className="h-36 w-auto will-change-[transform,filter] md:h-48"
-        />
-        <div className="mt-12 w-[min(46vw,420px)]">
-          <span ref={lineRef} className="block h-px w-full bg-white/90 will-change-transform" />
-          <div className="mt-3 flex items-baseline justify-between">
-            <span className="ls-meta label-mono text-[10px] tracking-[0.24em] text-white/60">FILMS, NOT CONTENT</span>
-            <span ref={countRef} className="ls-meta label-mono text-[11px] tracking-[0.2em] text-white/85">000</span>
+      {/* the stage — mark writing on inside the forming lens */}
+      <div className="relative flex h-full w-full items-center justify-center">
+        <div ref={logoWrapRef} className="relative flex items-center justify-center">
+          {/* THE LENS — main ring drawn as two bottom-up arcs, then two more
+              rings resolve to read as a camera lens barrel */}
+          <div ref={lensRef} className="absolute flex h-[19rem] w-[19rem] items-center justify-center will-change-transform md:h-[25rem] md:w-[25rem]">
+            <svg className="absolute inset-0 h-full w-full" viewBox="0 0 200 200" fill="none">
+              <path
+                ref={arcLeftRef}
+                d="M 100 196 A 96 96 0 0 1 100 4"
+                pathLength={1}
+                stroke="rgba(255,255,255,0.9)"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+              />
+              <path
+                ref={arcRightRef}
+                d="M 100 196 A 96 96 0 0 0 100 4"
+                pathLength={1}
+                stroke="rgba(255,255,255,0.9)"
+                strokeWidth={1.5}
+                strokeLinecap="round"
+              />
+              <circle ref={ring2Ref} cx="100" cy="100" r="86" stroke="rgba(255,255,255,0.75)" strokeWidth={0.8} />
+              <circle ref={ring3Ref} cx="100" cy="100" r="74" stroke="rgba(255,255,255,0.55)" strokeWidth={0.6} />
+            </svg>
           </div>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            ref={logoRef}
+            src="/logos/hwmedia-white.png"
+            alt=""
+            className="h-32 w-auto will-change-[transform,filter] md:h-44"
+          />
         </div>
+        <span className="ls-meta label-mono absolute bottom-10 text-[10px] tracking-[0.24em] text-white/60">
+          FILMS, NOT CONTENT
+        </span>
       </div>
+
+      {/* the bloom the camera drives into */}
+      <div ref={bloomRef} className="pointer-events-none absolute inset-0 bg-white" />
     </div>
   );
 }

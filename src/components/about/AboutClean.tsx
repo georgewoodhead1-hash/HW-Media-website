@@ -206,10 +206,11 @@ export default function AboutClean() {
           </div>
         </section>
 
-        {/* 3 — BEHIND THE CAMERA — ONE bracketed heading, no film strip
-            (George), a TALL breathing playground: the snake field fills the
-            whole section BEHIND the text, spawning under the cursor / a tap */}
-        <section data-surface="page" className="abx-crew relative z-20 bg-[var(--bg)] py-[26vh] md:py-[30vh]">
+        {/* 3 — BEHIND THE CAMERA — ONE heading, no film strip (George), a
+            TALL breathing playground: the snake field fills the whole section
+            BEHIND the text. Client final round: BLACK BACKGROUND ONLY —
+            locked dark in both modes. */}
+        <section data-surface="media" className="abx-crew relative z-20 bg-[#050505] py-[26vh] text-[#f5f1e6] md:py-[30vh]">
           <TrailField images={["m01", "m02", "m03", "m04", "m05", "m06", "m08", "m10", "m11", "m12"].map((m) => `/videos/micro/posters/${m}.jpg`)} />
           {/* the big three-line stack — no brackets, no bar, no CTA (George):
               just the heading floating in the playground */}

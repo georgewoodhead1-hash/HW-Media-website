@@ -82,17 +82,22 @@ export default function FooterReveal() {
               harry@hwmedia.co.uk
             </a>
           </div>
-          <nav className="flex flex-col items-start gap-2 md:items-end" aria-label="Footer pages">
-            {PAGES.map(([label, href]) => (
-              <Link
-                key={href}
-                href={href}
-                className="u-link text-[15px] leading-none text-[var(--fg)]"
-              >
-                {label}
-              </Link>
-            ))}
-          </nav>
+          {/* one line of page links; the spacer mirrors the email's eyebrow so
+              "Work" tops out level with the K in .uk (client) */}
+          <div>
+            <p aria-hidden className="label-mono invisible mb-4 text-[11px] tracking-[0.22em]">.</p>
+            <nav className="flex items-start gap-7" aria-label="Footer pages">
+              {PAGES.map(([label, href]) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="u-link text-[15px] leading-none text-[var(--fg)]"
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          </div>
         </div>
 
         {/* middle zone — the columns, pushed LEFT (half width, left-aligned) */}
@@ -118,33 +123,22 @@ export default function FooterReveal() {
         </div>
 
         {/* bottom zone — © bottom-left; the WORDMARK is HUGE in the far
-            bottom-right corner and the showreel is visible ONLY through it
-            (the logo is a mask over the playing film) */}
+            bottom-right corner, SOLID (client: no film playing through it) */}
         <div className="ft-zone relative z-10 flex items-end pb-1">
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-xs text-[var(--fg)]/55">
-            <span>© {new Date().getFullYear()} HW MEDIA · LONDON</span>
+            <span>© {new Date().getFullYear()} HW Media · London</span>
             <Link href="/privacy" className="transition-colors hover:text-[var(--fg)]">Privacy Policy</Link>
           </div>
         </div>
         <div
-          className="ft-zone pointer-events-none absolute bottom-4 right-0 h-[clamp(10rem,26vw,22rem)] w-[min(58vw,980px)]"
+          className="ft-zone logo-mark-solid pointer-events-none absolute bottom-4 right-0 h-[clamp(10rem,26vw,22rem)] w-[min(58vw,980px)]"
           role="img"
           aria-label="HW Media"
           style={{
             WebkitMask: "url(/logos/hwmedia-white.png) right bottom / contain no-repeat",
             mask: "url(/logos/hwmedia-white.png) right bottom / contain no-repeat",
           }}
-        >
-          <video
-            className="h-full w-full object-cover"
-            src="/videos/showreel-full.mp4"
-            muted
-            loop
-            playsInline
-            preload="none"
-            aria-hidden
-          />
-        </div>
+        />
 
         {/* the lift-away dark — scrubbed out as the page reveals the footer */}
         <div aria-hidden className="ft-veil pointer-events-none absolute inset-0 bg-[var(--page-bg)]" />

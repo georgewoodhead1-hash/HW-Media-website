@@ -30,9 +30,6 @@ const SCATTER = [
   [-26, 8], [26, 7],
 ];
 
-const LINE_A = "Every film is a chance to ";
-const LINE_B = "break the ordinary.";
-
 const smooth = (a: number, b: number, t: number) => {
   const x = Math.min(1, Math.max(0, (t - a) / (b - a)));
   return x * x * (3 - 2 * x);
@@ -206,7 +203,7 @@ export default function WhirlwindGallery() {
       data-surface="page"
       data-chapter="The finale"
       className="relative z-0 motion-safe:md:-mt-[100vh] motion-safe:md:h-[400vh]"
-      aria-label="Every film is a chance to break the ordinary"
+      aria-label="Selected work finale"
     >
       <div
         className="whirl-stage sticky top-0 hidden h-screen items-center justify-center overflow-hidden will-change-transform md:flex"
@@ -223,43 +220,19 @@ export default function WhirlwindGallery() {
           ))}
         </div>
 
+        {/* the tagline is GONE (client final round) — the ring spins around
+            the lone CTA now */}
         <div className="relative z-10 max-w-2xl px-8 text-center">
-          <p className="font-display text-[clamp(1.7rem,1rem+2vw,3rem)] leading-tight" aria-label={LINE_A + LINE_B}>
-            {LINE_A.trim().split(" ").map((w, wi) => (
-              <span key={`a${wi}`} className="inline-block whitespace-nowrap" aria-hidden>
-                {w.split("").map((c, i) => (
-                  <span key={i} className="type-char">{c}</span>
-                ))}
-                {" "}
-              </span>
-            ))}
-            <span aria-hidden>
-              {LINE_B.split(" ").map((w, wi, arr) => {
-                const isGold = w.replace(/[^a-zA-Z]/g, "").toLowerCase() === "break";
-                return (
-                  <span key={`b${wi}`} className={`inline-block whitespace-nowrap ${isGold ? "" : ""}`}>
-                    {w.split("").map((c, i) => (
-                      <span key={i} className="type-char">{c}</span>
-                    ))}
-                    {wi < arr.length - 1 ? " " : ""}
-                  </span>
-                );
-              })}
-            </span>
-          </p>
-          <Link href="/contact" className="cta-start blink mt-10 inline-block text-[14px] tracking-[0.05em]">
+          <Link href="/contact" className="cta-start blink inline-block text-[14px] tracking-[0.05em]">
             Start here
           </Link>
         </div>
 
       </div>
 
-      {/* mobile/reduced: line + grid + CTA (footer = shell/FooterReveal) */}
+      {/* mobile/reduced: grid + CTA (footer = shell/FooterReveal) */}
       <div className="px-5 py-24 md:hidden">
-        <p className="font-display text-2xl">
-          Every film is a chance to break the ordinary.
-        </p>
-        <div className="mt-8 grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           {TILES.slice(0, 6).map((src, i) => (
             <video key={`${src}-${i}`} className="aspect-video w-full rounded-md object-cover" src={src} muted loop playsInline preload="none" />
           ))}

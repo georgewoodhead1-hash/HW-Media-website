@@ -215,6 +215,14 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-mark,
 html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-mark {
   background: #0a0a08;
 }
+/* solid logo fill wherever a masked mark is drawn outside the nav (footer):
+   gold gradient in dark mode, solid black in light mode (client) */
+.logo-mark-solid {
+  background: linear-gradient(160deg, #ecd98e 0%, #c9a96a 48%, #96763c 100%);
+}
+html[data-mode="light"] .logo-mark-solid {
+  background: #0a0a08;
+}
 .nav-link {
   position: relative;
 }

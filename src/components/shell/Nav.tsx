@@ -198,6 +198,11 @@ export default function Nav() {
             {l.label}
           </Link>
         ))}
+        {/* light/dark switch on mobile too (client: iPhone light mode) */}
+        <div className="mt-4 flex items-center gap-3">
+          <span className="label-mono text-[10px] tracking-[0.24em] text-[var(--fg)]/60">LIGHT / DARK</span>
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* (the persistent bottom-left social rail was removed — socials now live in

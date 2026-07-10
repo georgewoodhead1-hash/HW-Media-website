@@ -52,10 +52,17 @@ export default function LensIntro() {
       }, wrap);
     };
     window.addEventListener("hw:reveal", start, { once: true });
-    const fb = window.setTimeout(start, 500);
+    const fb = window.setTimeout(start, 6000);
+
+    // iOS: the autoPlay attribute is ignored in Low Power Mode — kick the
+    // reel manually on mount and again on the first touch
+    safePlay(videoRef.current);
+    const kick = () => safePlay(videoRef.current);
+    window.addEventListener("touchstart", kick, { once: true, passive: true });
 
     return () => {
       window.removeEventListener("hw:reveal", start);
+      window.removeEventListener("touchstart", kick);
       window.clearTimeout(fb);
       ctx?.revert();
     };
@@ -80,9 +87,9 @@ export default function LensIntro() {
   };
 
   return (
-    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00" className="relative h-screen">
+    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00" className="relative h-[100svh] md:h-screen">
       <div
-        className="on-media isolate sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden bg-black"
+        className="on-media isolate sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden bg-black md:h-screen"
         data-cursor="play"
         onClick={openReel}
         onKeyDown={(e) => {
@@ -148,7 +155,7 @@ export default function LensIntro() {
       <dialog
         ref={dialogRef}
         onClose={closeReel}
-        className="m-0 h-screen max-h-none w-screen max-w-none bg-black p-0 backdrop:bg-black/90"
+        className="m-0 h-[100dvh] max-h-none w-screen max-w-none bg-black p-0 backdrop:bg-black/90"
       >
         <div className="relative flex h-full w-full items-center justify-center">
           <video

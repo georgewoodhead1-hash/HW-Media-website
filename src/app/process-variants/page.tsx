@@ -15,11 +15,11 @@ export default function ProcessVariants() {
       <div className="px-5 pt-[16vh] text-center md:px-10">
         <p className="label-mono text-[11px] tracking-[0.24em]">VARIANT A — EDITORIAL CARDS</p>
       </div>
-      <Process variant="a" />
+      <Process key="variant-a" variant="a" />
       <div className="px-5 pt-[16vh] text-center md:px-10">
         <p className="label-mono text-[11px] tracking-[0.24em]">VARIANT B — CINEMA CARDS</p>
       </div>
-      <Process variant="b" />
+      <Process key="variant-b" variant="b" />
       <div aria-hidden className="h-[12vh]" />
     </main>
   );

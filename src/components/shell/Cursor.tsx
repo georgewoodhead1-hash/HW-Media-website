@@ -3,8 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
-// Custom cursor: crosshair dot everywhere on fine pointers,
-// morphs to a PLAY pill over [data-cursor="play"] surfaces.
+// Custom cursor (client final round): a thin hollow GOLD circle with a
+// little gold dot in the middle on fine pointers; morphs to a PLAY pill
+// over [data-cursor="play"] surfaces.
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
@@ -44,11 +45,15 @@ export default function Cursor() {
         className={`flex items-center justify-center rounded-full transition-all duration-300 ${
           mode === "play"
             ? "h-16 w-16 bg-[var(--cream)] text-[var(--black)] shadow-[0_4px_24px_rgba(0,0,0,0.35)] ring-1 ring-black/10"
-            : "h-2.5 w-2.5 bg-[var(--gold)]"
+            : "h-6 w-6 border border-[var(--gold-accent)] bg-transparent"
         }`}
         style={{ transitionTimingFunction: "var(--ease-expo)" }}
       >
-        {mode === "play" && <span className="label-mono text-[9px]">Play</span>}
+        {mode === "play" ? (
+          <span className="label-mono text-[9px]">Play</span>
+        ) : (
+          <span className="h-[3px] w-[3px] rounded-full bg-[var(--gold-accent)]" />
+        )}
       </div>
     </div>
   );

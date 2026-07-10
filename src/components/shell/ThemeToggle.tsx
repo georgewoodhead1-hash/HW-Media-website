@@ -30,10 +30,10 @@ export default function ThemeToggle() {
       onClick={flip}
       aria-label={`Switch to ${mode === "dark" ? "light" : "dark"} mode`}
       aria-pressed={mode === "light"}
-      className="group relative ml-3 flex h-9 w-5 items-start justify-center rounded-[4px] border border-[var(--fg)]/45 p-[3px] transition-colors duration-300 hover:border-[var(--fg)]"
+      className="group relative ml-3 flex h-9 w-5 items-start justify-center rounded-full border border-[var(--fg)]/45 p-[3px] transition-colors duration-300 hover:border-[var(--fg)]"
     >
       <span
-        className="block h-3.5 w-3 rounded-[2px] bg-[var(--fg)] transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]"
+        className="block h-3.5 w-3 rounded-full bg-[var(--fg)] transition-transform duration-400 ease-[cubic-bezier(0.22,1,0.36,1)]"
         style={{ transform: mode === "light" ? "translateY(0)" : "translateY(13px)" }}
       />
     </button>

@@ -118,8 +118,13 @@ export default function Process() {
       className="relative z-[20] bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our process"
     >
-      <div className="px-5 pt-[2vh] md:px-10">
-        <Rule label="Our process" className="mb-[5vh]" bg="var(--bg)" />
+      {/* the title sits ABOVE the full-width line now, in big type (client:
+          no more small label inside the line) */}
+      <div className="px-5 pt-[4vh] md:px-10">
+        <h2 className="blink-title font-display mb-4 text-[clamp(2rem,4.4vw,4.2rem)] leading-none">
+          Our Process
+        </h2>
+        <Rule className="mb-[5vh]" bg="var(--bg)" />
       </div>
 
       {/* four full-screen stills IN FLOW — they arrive from the bottom and

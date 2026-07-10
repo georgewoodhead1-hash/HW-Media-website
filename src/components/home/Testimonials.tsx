@@ -190,12 +190,12 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative z-30 bg-[var(--bg)] px-5 pb-[7vh] pt-[7vh] text-[var(--fg)] md:px-10 md:pb-[14vh] md:pt-[10vh]"
+      className="relative z-30 bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[8vh]"
       aria-label="Testimonials"
     >
       {/* header: big title (no brackets — titles lost them, small links keep
           them), then the hairline WITH the plusses drawing underneath it */}
-      <div className="tst-rule mb-[8vh]">
+      <div className="tst-rule mb-[5vh]">
         <div className="mb-6 text-center">
           <h2 className="inline-block">
             <span
@@ -209,9 +209,9 @@ export default function Testimonials() {
         <Rule bg="var(--bg)" />
       </div>
 
-      {/* the SQUARE film fills the right half; both columns stretch so the
-          text column's top and bottom line up with the film's edges */}
-      <div className="md:grid md:grid-cols-2 md:items-stretch md:gap-14">
+      {/* square film on the right — capped size (client: it got way too
+          big), text column stretched to meet its top and bottom */}
+      <div className="md:grid md:grid-cols-[1.5fr_1fr] md:items-stretch md:gap-12">
         {/* LEFT — the 1820-style showcase: one voice at a time, big.
             Mobile: compressed + centred (George) */}
         <div className="flex flex-col justify-between text-center md:text-left">
@@ -227,7 +227,7 @@ export default function Testimonials() {
             <blockquote
               data-t-el
               key={`q-${active}`}
-              className="font-display mt-6 max-w-[46rem] text-[clamp(1.6rem,3.2vw,3rem)] leading-[1.04] md:mt-10"
+              className="font-display mt-5 max-w-[46rem] text-[clamp(1.5rem,2.9vw,2.7rem)] leading-[1.04] md:mt-7"
             >
               <span className="tsq-word">&ldquo;</span>
               {TESTIMONIALS[active].quote.split(" ").map((w, i) => (
@@ -247,7 +247,7 @@ export default function Testimonials() {
 
         {/* the HUD: numbers in BOXES (bigger, client) — active/hover fills
             solid — with the reel progress line in GOLD underneath each */}
-          <div data-t-el className="mt-7 flex items-end justify-center gap-6 md:mt-12 md:justify-start">
+          <div data-t-el className="mt-6 flex items-end justify-center gap-6 md:mt-8 md:justify-start">
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}
@@ -277,9 +277,9 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* RIGHT — the SQUARE film window fills its half; the square sets the
-            row height, the text column stretches to match top and bottom */}
-        <div className="tst-film mx-auto mt-7 w-full max-w-[560px] md:mx-0 md:mt-0 md:max-w-none">
+        {/* RIGHT — the SQUARE film window, capped; the square sets the row
+            height, the text column stretches to match top and bottom */}
+        <div className="tst-film mx-auto mt-7 w-full max-w-[480px] md:mx-0 md:mt-0 md:justify-self-end">
           <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black">
             {TESTIMONIALS.map((t, i) => {
               const film = filmFor(t.slug);

@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import Rule from "@/components/shell/Rule";
+import TitleRule from "@/components/shell/TitleRule";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
 // 04 — OUR PROCESS, v7 (George): the images SCROLL WITH THE PAGE — plain
@@ -118,13 +118,9 @@ export default function Process() {
       className="relative z-[20] bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our process"
     >
-      {/* the title sits ABOVE the full-width line now, in big type (client:
-          no more small label inside the line) */}
+      {/* centred title, dynamic lines drawing out either side of the words */}
       <div className="px-5 pt-[4vh] md:px-10">
-        <h2 className="blink-title font-display mb-4 text-[clamp(2rem,4.4vw,4.2rem)] leading-none">
-          Our Process
-        </h2>
-        <Rule className="mb-[5vh]" bg="var(--bg)" />
+        <TitleRule title="Our Process" className="mb-[5vh]" />
       </div>
 
       {/* four full-screen stills IN FLOW — they arrive from the bottom and

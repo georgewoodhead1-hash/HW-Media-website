@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import TitleRule from "@/components/shell/TitleRule";
 // FAQ copy lives in content/site.ts — it doubles as FAQPage JSON-LD on the home page
 import { FAQS } from "@/content/site";
 
@@ -118,16 +119,9 @@ export default function Faqs() {
       className="relative z-30 bg-[var(--bg)] px-5 pb-[14vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[84vh]"
       aria-label="Frequently asked questions"
     >
-      {/* header: just the big title (no brackets), straight into the questions */}
-      <div className="faq-rule mb-[7vh] text-center">
-        <h2 className="inline-block">
-          <span
-            className="blink-title font-display text-[clamp(1.6rem,3vw,2.6rem)] leading-none"
-            style={{ fontFamily: "var(--font-suisse-cond), 'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.015em" }}
-          >
-            FAQs
-          </span>
-        </h2>
+      {/* header: centred title with dynamic lines either side */}
+      <div className="faq-rule mb-[7vh]">
+        <TitleRule title="FAQs" />
       </div>
 
       <div className="w-full">

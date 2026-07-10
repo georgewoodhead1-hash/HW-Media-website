@@ -203,18 +203,17 @@ body {
    light nav on the dark band (light mode), dark nav on the light band. */
 
 
-html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-color { display: none; }
-html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-black { display: block; }
-/* nav logo: colour (gold) mark by default and on dark; the black mark swaps
-   in only in light mode over a page surface (over the dark hero it stays gold) */
-.nav-logo-black {
-  display: none;
+/* nav logo (client final round): one masked mark. GOLD GRADIENT by default
+   (dark mode / over footage); SOLID BLACK in light mode over a page surface
+   or over a light band in dark mode. */
+.nav-logo-mark {
+  -webkit-mask: url("/logos/hwmedia-white.png") center / contain no-repeat;
+  mask: url("/logos/hwmedia-white.png") center / contain no-repeat;
+  background: linear-gradient(160deg, #ecd98e 0%, #c9a96a 48%, #96763c 100%);
 }
-html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-color {
-  display: none;
-}
-html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
-  display: block;
+html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-mark,
+html[data-mode="dark"] .nav-root[data-surface="band"] .nav-logo-mark {
+  background: #0a0a08;
 }
 .nav-link {
   position: relative;

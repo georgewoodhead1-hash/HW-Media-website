@@ -132,7 +132,7 @@ export default function AboutClean() {
         {/* 2 — WHAT WE DO. ONE heading only (George), in the bracket grammar;
             each tile links to its /services page, its name dead-centre in the
             "See the films" face */}
-        <section className="relative z-10 bg-[var(--bg)] pb-[14vh] pt-[10vh]">
+        <section data-surface="page" className="relative z-10 bg-[var(--bg)] pb-[14vh] pt-[10vh]">
           <div data-rise className="text-center">
             <h2 className="inline-block">
               <span
@@ -209,7 +209,7 @@ export default function AboutClean() {
         {/* 3 — BEHIND THE CAMERA — ONE bracketed heading, no film strip
             (George), a TALL breathing playground: the snake field fills the
             whole section BEHIND the text, spawning under the cursor / a tap */}
-        <section className="abx-crew relative z-20 bg-[var(--bg)] py-[26vh] md:py-[30vh]">
+        <section data-surface="page" className="abx-crew relative z-20 bg-[var(--bg)] py-[26vh] md:py-[30vh]">
           <TrailField images={["m01", "m02", "m03", "m04", "m05", "m06", "m08", "m10", "m11", "m12"].map((m) => `/videos/micro/posters/${m}.jpg`)} />
           {/* the big three-line stack — no brackets, no bar, no CTA (George):
               just the heading floating in the playground */}

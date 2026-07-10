@@ -2,15 +2,20 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import Rule from "@/components/shell/Rule";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-// 04 — OUR PROCESS, v7 (George): the images SCROLL WITH THE PAGE — plain
-// full-screen stills in flow, appearing from the bottom and riding up with
-// the scroll like everything else. The words travel with their image but on
-// their own slightly different speed and a whisper of tilt, so the type
-// floats in front of the frame (the 3D feel). No fixed frames, no windows,
-// no stacking.
+// 05 — OUR PROCESS, v8 (client final round): HORIZONTAL SCROLL. A big "Our
+// Process" title (the thin rule + plusses are gone), then the four stage
+// cards ride side by side — the track translates X as the page scrolls
+// through the section. The section pins via CSS STICKY (not ScrollTrigger
+// pin — a pinned ancestor's transform breaks position:fixed children, see
+// HW-MEDIA-RULES).
+//
+// TWO VARIANTS for the client to choose between (both live, /process-variants
+// shows them stacked):
+//   A — editorial cards: framed image on top, number + words below the frame
+//   B — cinema cards: full-bleed image cards, words overlaid at the bottom
+export type ProcessVariant = "a" | "b";
 
 interface Stage {
   n: string;
@@ -44,62 +49,58 @@ const STAGES: Stage[] = [
   },
 ];
 
-export default function Process() {
+export default function Process({ variant = "a" }: { variant?: ProcessVariant }) {
   const rootRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root) return;
+    const track = trackRef.current;
+    if (!root || !track) return;
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
       const kills: (() => void)[] = [];
 
-      gsap.utils.toArray<HTMLElement>(".proc-panel", root).forEach((panel) => {
-        const word = panel.querySelector<HTMLElement>(".proc-word");
-        const num = panel.querySelector<HTMLElement>(".proc-num");
-        const sub = panel.querySelector<HTMLElement>(".proc-sub");
-        const cta = panel.querySelector<HTMLElement>(".proc-cta");
-
-        gsap.set(word, { clipPath: "inset(0% 0% 100% 0%)", y: 44 });
-        gsap.set(num, { autoAlpha: 0, letterSpacing: "0.6em" });
-        gsap.set([sub, cta], { autoAlpha: 0, y: 16 });
-
-        // words build as the panel arrives; reverses cleanly on the way back up
-        const build = gsap.timeline({
-          scrollTrigger: { trigger: panel, start: "top 72%", toggleActions: "play none none reverse" },
+      // the title lifts in as the section arrives
+      const head = root.querySelector<HTMLElement>(".proc-head");
+      if (head) {
+        gsap.set(head, { autoAlpha: 0, y: 34 });
+        const t = gsap.to(head, {
+          autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out",
+          scrollTrigger: { trigger: root, start: "top 70%", toggleActions: "play none none reverse" },
         });
-        build
-          .to(num, { autoAlpha: 1, letterSpacing: "0.22em", duration: 0.5, ease: "power2.out" }, 0)
-          .to(word, { clipPath: "inset(0% 0% 0% 0%)", y: 0, duration: 0.75, ease: "power2.out" }, 0.08)
-          .to(sub, { autoAlpha: 1, y: 0, duration: 0.55, ease: "power2.out" }, 0.4)
-          .to(cta, { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out" }, 0.6);
-        kills.push(() => { build.scrollTrigger?.kill(); build.kill(); });
+        kills.push(() => { t.scrollTrigger?.kill(); t.kill(); });
+      }
 
-        // OUT — the words lift and dissolve as the panel exits through the top
-        const out = ScrollTrigger.create({
-          trigger: panel,
-          start: "bottom 52%",
-          end: "bottom 14%",
-          scrub: true,
+      // the ride: track slides left while the sticky stage holds the frame
+      const slide = ScrollTrigger.create({
+        trigger: root,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.4,
+        invalidateOnRefresh: true,
+        onUpdate: (self) => {
+          const max = Math.max(0, track.scrollWidth - track.clientWidth);
+          gsap.set(track, { x: -max * self.progress, force3D: true });
+        },
+      });
+      kills.push(() => slide.kill());
+
+      // each card eases up slightly as it enters the frame from the right
+      gsap.utils.toArray<HTMLElement>(".proc-card", track).forEach((card, i) => {
+        gsap.set(card, { y: i === 0 ? 0 : 26 });
+        const t = ScrollTrigger.create({
+          trigger: root,
+          start: "top top",
+          end: "bottom bottom",
+          scrub: 0.6,
           onUpdate: (self) => {
-            const t = panel.querySelector<HTMLElement>(".proc-text");
-            if (t) gsap.set(t, { autoAlpha: 1 - self.progress });
+            const lift = Math.min(1, Math.max(0, self.progress * (STAGES.length + 0.5) - i + 0.6));
+            gsap.set(card, { y: (1 - lift) * 26 });
           },
         });
-        kills.push(() => out.kill());
-
-        // the words follow their image at a slightly different speed, with a
-        // whisper of tilt — the 3D float (George)
-        const text = panel.querySelector<HTMLElement>(".proc-text");
-        const img = panel.querySelector<HTMLElement>("img");
-        const drift = gsap.timeline({
-          scrollTrigger: { trigger: panel, start: "top bottom", end: "bottom top", scrub: true },
-        });
-        drift
-          .fromTo(text, { yPercent: 34, rotationX: 7, z: 40 }, { yPercent: -34, rotationX: -7, z: 0, ease: "none" }, 0)
-          .fromTo(img, { yPercent: -8, scale: 1.1 }, { yPercent: 8, scale: 1.0, ease: "none" }, 0);
-        kills.push(() => { drift.scrollTrigger?.kill(); drift.kill(); });
+        kills.push(() => t.kill());
       });
 
       return () => kills.forEach((k) => k());
@@ -108,54 +109,91 @@ export default function Process() {
     return () => mm.revert();
   }, []);
 
+  const isB = variant === "b";
+
   return (
     <section
       ref={rootRef}
       id="process"
       data-theme="dark"
-      data-surface="media"
+      data-surface="page"
       data-chapter="05 — Our process"
-      className="relative z-[20] bg-[var(--bg)] text-[var(--fg)]"
+      // 260vh of scroll room drives the horizontal ride on desktop
+      className="relative z-[20] bg-[var(--bg)] text-[var(--fg)] md:h-[260vh]"
       aria-label="Our process"
     >
-      <div className="px-5 pt-[2vh] md:px-10">
-        <Rule label="Our process" className="mb-[5vh]" bg="var(--bg)" />
-      </div>
-
-      {/* four full-screen stills IN FLOW — they arrive from the bottom and
-          scroll up with the page; the words ride with them */}
-      {STAGES.map((s) => (
-        <div
-          key={s.n}
-          className="proc-panel relative flex h-[80vh] items-center justify-center overflow-hidden md:h-screen"
-          style={{ perspective: "900px" }}
-        >
-          <div className="absolute inset-[-9%]" aria-hidden>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={s.img} alt="" className="h-full w-full object-cover will-change-transform" loading="lazy" />
-            <div className="absolute inset-0 bg-black/35" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
-          </div>
-
-          <div className="proc-text relative z-10 max-w-3xl px-6 text-center will-change-transform">
-            <p className="proc-num label-mono mb-4 text-[11px] tracking-[0.22em] text-[var(--fg)]">
-              {s.n} / 04
-            </p>
-            <h3 className="proc-word font-display text-[clamp(2.2rem,5vw,4.6rem)] leading-[0.95] tracking-[-0.015em]">
-              {s.name}
-              {s.n === "04" && "."}
-            </h3>
-            <p className="proc-sub about-body mx-auto mt-6 max-w-xl text-[14px] leading-relaxed text-[var(--fg)] md:text-[16px]">
-              {s.sub}
-            </p>
-            <p className="proc-cta mt-7">
-              <Link href={s.href} className="blink text-[13px] tracking-[0.05em]">
-                {s.cta}
-              </Link>
-            </p>
-          </div>
+      <div className="flex flex-col justify-center overflow-hidden md:sticky md:top-0 md:h-screen">
+        {/* the title — big, no rule, no plusses (client) */}
+        <div className="proc-head px-5 pb-[4vh] pt-[8vh] md:px-10 md:pt-0">
+          <h2 className="font-display text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em]">
+            Our Process
+          </h2>
         </div>
-      ))}
+
+        {/* the ride — cards side by side; touch devices swipe natively */}
+        <div
+          ref={trackRef}
+          className="flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-[6vh] will-change-transform [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:snap-none md:gap-8 md:overflow-x-visible md:px-[14vw]"
+        >
+          {STAGES.map((s) =>
+            isB ? (
+              /* ── VARIANT B — cinema card: full-bleed image, words overlaid ── */
+              <div
+                key={s.n}
+                className="proc-card relative aspect-[3/4] w-[78vw] shrink-0 snap-center overflow-hidden rounded-lg shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] ring-1 ring-[var(--hairline-dark)] md:aspect-[4/5] md:w-[30vw]"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/10" />
+                <span className="label-mono absolute left-5 top-5 text-[11px] tracking-[0.22em] text-white/85">
+                  {s.n} / 04
+                </span>
+                <div className="absolute inset-x-0 bottom-0 p-6 md:p-7">
+                  <h3 className="font-display text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[0.95] tracking-[-0.015em] text-white">
+                    {s.name}
+                  </h3>
+                  <p className="about-body mt-3 text-[13px] leading-relaxed text-white/85 md:text-[14px]">
+                    {s.sub}
+                  </p>
+                  <p className="mt-5">
+                    <Link href={s.href} className="blink text-[12px] tracking-[0.05em] !text-white">
+                      {s.cta}
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            ) : (
+              /* ── VARIANT A — editorial card: framed image, words below ── */
+              <div
+                key={s.n}
+                className="proc-card w-[78vw] shrink-0 snap-center md:w-[30vw]"
+              >
+                <div className="relative aspect-[16/11] w-full overflow-hidden rounded-lg shadow-[0_28px_60px_-18px_rgba(0,0,0,0.55)] ring-1 ring-[var(--hairline-dark)]">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={s.img} alt="" className="absolute inset-0 h-full w-full object-cover" loading="lazy" />
+                  <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
+                </div>
+                <div className="mt-6">
+                  <p className="label-mono text-[11px] tracking-[0.22em] text-[var(--fg)]">
+                    {s.n} / 04
+                  </p>
+                  <h3 className="font-display mt-2 text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[0.95] tracking-[-0.015em]">
+                    {s.name}
+                  </h3>
+                  <p className="about-body mt-3 max-w-md text-[13px] leading-relaxed text-[var(--fg)] md:text-[14px]">
+                    {s.sub}
+                  </p>
+                  <p className="mt-5">
+                    <Link href={s.href} className="blink text-[12px] tracking-[0.05em]">
+                      {s.cta}
+                    </Link>
+                  </p>
+                </div>
+              </div>
+            ),
+          )}
+        </div>
+      </div>
     </section>
   );
 }

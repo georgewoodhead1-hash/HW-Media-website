@@ -4,7 +4,9 @@ import TrustedBy from "@/components/home/TrustedBy";
 import ImageBand from "@/components/home/ImageBand";
 import OurWork from "@/components/home/OurWork";
 import Process from "@/components/home/Process";
-import TestimonialsFaqs from "@/components/home/TestimonialsFaqs";
+import Testimonials from "@/components/home/Testimonials";
+import Faqs from "@/components/home/Faqs";
+import HomeCTA from "@/components/home/HomeCTA";
 import FeatureBand from "@/components/home/FeatureBand";
 import { jsonLd } from "@/lib/jsonld";
 import WhirlwindGallery from "@/components/home/WhirlwindGallery";
@@ -28,10 +30,10 @@ const faqJsonLd = {
   })),
 };
 
-// Home: hero -> trusted by -> photo band -> featured work -> process (1820
-// full-screen panels) -> testimonials -> Defender band -> FAQs -> finale
-// ("Every film is a chance to break the ordinary" spread-and-hold) -> the
-// footer reveals LAYERED BEHIND the page (Stone Visuals sticky reveal).
+// Home (client final round order): hero -> trusted by -> featured work ->
+// testimonials -> CTA -> process -> mission band ("creative agency") ->
+// Defender band ("Wherever the story is") -> FAQs -> finale -> the footer
+// reveals LAYERED BEHIND the page (Stone Visuals sticky reveal).
 export default function Home() {
   return (
     <>
@@ -42,11 +44,13 @@ export default function Home() {
       <main className="relative z-10 bg-[var(--bg)]">
         <LensIntro />
         <TrustedBy />
-        <ImageBand />
         <OurWork />
+        <Testimonials />
+        <HomeCTA />
         <Process />
-        <TestimonialsFaqs />
+        <ImageBand />
         <FeatureBand />
+        <Faqs />
         <WhirlwindGallery />
       </main>
       <FooterReveal />

@@ -71,7 +71,7 @@ export default function ImageBand() {
       ref={rootRef}
       data-theme="dark"
       data-surface="page"
-      data-chapter="03 — The mission"
+      data-chapter="06 — The mission"
       className="relative flex min-h-[86vh] items-center overflow-hidden bg-[var(--bg)] px-5 py-[12vh] md:px-10"
       aria-label="A creative agency for brands that refuse to be ordinary"
     >

@@ -114,7 +114,7 @@ export default function Process() {
       id="process"
       data-theme="dark"
       data-surface="media"
-      data-chapter="04 — Our process"
+      data-chapter="05 — Our process"
       className="relative z-[20] bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our process"
     >

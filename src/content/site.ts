@@ -22,7 +22,7 @@ export const SOCIALS = {
 // launch nothing needs touching.
 export const SITE_URL = "https://hwmedia.co.uk";
 
-// The FAQ ledger copy — rendered by TestimonialsFaqs AND emitted as FAQPage
+// The FAQ ledger copy — rendered by home/Faqs AND emitted as FAQPage
 // JSON-LD on the homepage (AI answer engines quote these verbatim), so it
 // lives here as the single source of truth.
 export const FAQS: { q: string; a: string }[] = [

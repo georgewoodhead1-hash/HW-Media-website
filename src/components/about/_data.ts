@@ -74,7 +74,7 @@ export const SERVICES: Service[] = [
   { name: "Brand films", line: "One film that says who you are, built to carry you for years.", job: "2–4 shoot days · crew of 1–3" },
   { name: "Documentary", line: "Real people, real stakes, given the time to breathe.", job: "Stay long enough and the truth films itself" },
   { name: "Commercial", line: "Campaign work with cinema standards, every format mastered.", job: "Verticals included" },
-  { name: "Live events", line: "Coverage that feels like being in the room.", job: "Shot, edited and delivered the same night" },
+  { name: "Events", line: "Coverage that feels like being in the room.", job: "Shot, edited and delivered the same night" },
   { name: "Photography", line: "Stills with the same eye as the films.", job: "On film days or on their own" },
 ];
 

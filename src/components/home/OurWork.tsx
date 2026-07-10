@@ -245,7 +245,9 @@ export default function OurWork() {
                     className="max-h-8 w-auto max-w-[80%] object-contain opacity-90"
                   />
                 ) : (
-                  <span className="label-mono rotate-180 whitespace-nowrap text-[11px] tracking-[0.2em] text-white/80 [writing-mode:vertical-rl]">
+                  /* no logo file yet (Otoko etc. — client to supply): a clean
+                     horizontal wordmark stands in so it reads like a mark */
+                  <span className="font-display whitespace-nowrap text-[15px] tracking-[0.14em] text-white/90">
                     {p.client.toUpperCase()}
                   </span>
                 )}

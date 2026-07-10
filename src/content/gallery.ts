@@ -40,7 +40,8 @@ export const FEATURED: GalleryItem[] = [
   { label: "Meta — Campus XR", logo: "meta-logo-white", slug: "meta-campus-xr", video: "/videos/wall/meta-campus-xr.mp4", poster: "/videos/wall/posters/meta-campus-xr.jpg" },
   { label: "Hofmeister — Goffs Video", logo: "hofmeister-png", slug: "hofmeister", video: "/videos/wall/hof-castle-air.mp4", poster: "/videos/wall/posters/hof-castle-air.jpg" },
   { label: "Sans Matin — The Wild Side", logo: "sm-new-logo-design-white-2025", slug: "wild-side", video: "/videos/wall/wild-side.mp4", poster: "/videos/wall/posters/wild-side.jpg" },
-  { label: "Gents Journal — Thomas Straker", logo: "gj-white", mark: "THOMAS STRAKER", slug: "gj-straker" },
+  // client final round: the Gents Journal LOGO replaces the THOMAS STRAKER text mark
+  { label: "Gents Journal — Thomas Straker", logo: "gj-white", slug: "gj-straker" },
   { label: "Spotify Podcast", logo: "spotify-white", slug: "spotify" },
 ];
 

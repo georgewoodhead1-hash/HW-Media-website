@@ -50,7 +50,7 @@ export const SERVICES: Service[] = [
   },
   {
     slug: "live-events",
-    name: "Live events",
+    name: "Events",
     clip: "/videos/micro/m06.mp4",
     blurb:
       "Launches, activations and one-night-only moments, covered as films rather than highlight tapes — cut around the moment that mattered and delivered while it's still news.",
@@ -76,12 +76,13 @@ export const SERVICES: Service[] = [
     related: ["salomon", "otoko"],
   },
   {
-    slug: "social-cutdowns",
-    name: "Social cutdowns",
+    // ⚠ COPY IS PLACEHOLDER — Harry writes the real AI Generation copy pre-launch
+    slug: "ai-generation",
+    name: "AI Generation",
     clip: "/videos/micro/m11.mp4",
     blurb:
-      "Every master comes with the verticals, squares and shorts your channels need — recomposed properly for each frame, never cropped as an afterthought.",
-    deliverables: ["Vertical & square masters", "Platform-length cuts", "Subtitled versions", "Paid-social variants"],
+      "AI-assisted production alongside the filmed work — generated shots, extensions and versions built with the same grade and taste as the rest of the film.",
+    deliverables: ["Generated shots & extensions", "AI-assisted versioning", "Concept visualisation", "Graded to match the master"],
     related: ["am-sw1", "aston-db12", "mac-halloween"],
   },
 ];

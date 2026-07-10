@@ -75,7 +75,7 @@ export default async function ServicePage({
           <div className="relative z-10 pt-[10vh] text-center">
             <h1 className="inline-block">
               <span
-                className="blink font-display text-[clamp(1.9rem,4vw,3.4rem)] leading-none"
+                className="blink-title font-display text-[clamp(1.9rem,4vw,3.4rem)] leading-none"
                 style={{ fontFamily: "var(--font-suisse-cond), 'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.015em" }}
               >
                 {service.name}

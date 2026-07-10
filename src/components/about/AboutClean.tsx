@@ -136,7 +136,7 @@ export default function AboutClean() {
           <div data-rise className="text-center">
             <h2 className="inline-block">
               <span
-                className="blink font-display text-[clamp(1.6rem,3vw,2.6rem)] leading-none"
+                className="blink-title font-display text-[clamp(1.6rem,3vw,2.6rem)] leading-none"
                 style={{ fontFamily: "var(--font-suisse-cond), 'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.015em" }}
               >
                 What we do

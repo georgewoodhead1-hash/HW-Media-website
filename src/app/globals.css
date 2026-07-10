@@ -11,6 +11,7 @@
   --paper-text: #f5f1e6;
   --gold: #e9e5d8; /* accents now CREAM (George: gold accents annoyed him); logo PNG stays gold */
   --gold-text: #f5f1e6; /* accent text = cream (1820 zero-accent) */
+  --gold-accent: #c9a96a; /* final round: the sanctioned gold POP — small-link hovers, cursor, testimonial progress. Minimal use only. */
   --surface: #100f0e; /* raised sheets (testimonial/FAQ/what-we-do panels) */
   --red: #e9e5d8; /* legacy alias */
   --tint-w: rgba(255, 255, 255, 0.1);
@@ -220,8 +221,8 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
 }
 /* nav hover = the sliding pill ONLY (George: bubble, not underline) */
 
-/* ---- 1820 bracket link: [ TEXT ] that becomes a solid cream block with an
-   underline on hover. THE small-link treatment sitewide. */
+/* ---- 1820 bracket link: [ TEXT ] — the SMALL-link treatment sitewide.
+   Hover = solid GOLD block, black text (client final round). */
 .blink {
   position: relative;
   display: inline-flex;
@@ -237,8 +238,8 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
 .blink::before { content: "["; opacity: 0.55; transition: opacity 0.25s; }
 .blink::after { content: "]"; opacity: 0.55; transition: opacity 0.25s; }
 .blink:hover {
-  background: var(--fg);
-  color: var(--bg);
+  background: var(--gold-accent);
+  color: #0a0a08;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
@@ -247,12 +248,23 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
    link and the bracketed label should go solid when the card is hovered
    (George: "so people know they can click on it") */
 .group:hover .blink-fill {
-  background: var(--fg);
+  background: var(--gold-accent);
+  color: #0a0a08;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 .group:hover .blink-fill::before,
 .group:hover .blink-fill::after { opacity: 0; }
+
+/* BIG section titles: same voice, NO brackets, no link hover (client:
+   brackets stay on the small links only) */
+.blink-title {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  color: var(--fg);
+  padding: 0.15em 0.35em;
+}
 
 
 /* ---- Liquid glass (the real thing): translucent panel that refracts what's

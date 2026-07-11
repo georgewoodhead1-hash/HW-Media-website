@@ -4,26 +4,26 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-// Page-to-page transform, v5 — the FULL il capo move (George: the cover must
-// be a moment, not a wipe). Three acts, all overlapping, one fluid motion:
+// Page-to-page transform, v6 — one continuous choreography, no cuts:
 //
-//  CLOSE   the old page RECEDES (scales back, dims) while cream slats sweep
-//          in from both edges over it; as the cover lands, ONE OF HARRY'S
-//          FRAMES scales up in a centre card with the destination name
-//          rising beneath it — a title card, not a blank wall
-//  HOLD    a breath — the frame drifts slowly inside its card
-//  OPEN    the card drives PAST the viewer (the loader's camera push), the
-//          slats clear in a different direction per destination, and the
-//          new page RISES + SETTLES underneath while its own staged build
-//          (PageBuild / hw:page-entered) runs — the page builds as the
-//          cover leaves. Never a static swap, never a blank sheet.
+//  CLOSE  the old page falls back and dims while cream slats WEAVE in —
+//         odd slats drop from the top, even slats rise from the bottom,
+//         edges leading — and as the weave locks, a title card builds ON
+//         the cover: one of Harry's frames wipes open, the destination
+//         name rises out of a clip, a hairline draws beneath it
+//  HOLD   a breath — the frame drifts inside the card
+//  OPEN   the name exits, the card drives PAST the viewer (the loader's
+//         camera move), the slats clear in the destination's direction —
+//         and the NEW PAGE ARRIVES THROUGH THE SAME MOTION: it starts low,
+//         small, dim and soft, and settles to identity while its staged
+//         build (hw:page-entered → PageBuild) runs. Every page enters the
+//         same way. The page is never shown at rest until the motion ends.
 //
-// Directions: /work → slats lift UP · /about + /services → sweep RIGHT ·
-// /contact → part from CENTRE · home → drop DOWN.
+// Directions: /work → up · /about,/services → right · /contact → centre ·
+// home → down. Frames rotate per navigation.
 
 const SLATS = 6;
 
-// the cover frames — Harry's work, rotated per navigation
 const FRAMES = [
   "/videos/wall/posters/ferrari.jpg",
   "/videos/films/posters/mclaren-w.jpg",
@@ -88,24 +88,21 @@ export default function RouteTransitions() {
 
       const slats = overlay.querySelectorAll<HTMLElement>(".rt-slat");
       const card = overlay.querySelector<HTMLElement>(".rt-card");
+      const cardImgWrap = overlay.querySelector<HTMLElement>(".rt-imgwrap");
       const img = overlay.querySelector<HTMLImageElement>(".rt-img");
       const label = overlay.querySelector<HTMLElement>(".rt-label");
+      const rule = overlay.querySelector<HTMLElement>(".rt-rule");
+
+      // arm the overlay in a clean state BEFORE it becomes visible
+      gsap.set(slats, { xPercent: 0 });
+      slats.forEach((s, i) => gsap.set(s, { yPercent: i % 2 === 0 ? -105 : 105 }));
+      gsap.set(card, { autoAlpha: 1, scale: 1, filter: "blur(0px)" });
+      if (cardImgWrap) gsap.set(cardImgWrap, { clipPath: "inset(100% 0% 0% 0%)" });
+      if (img) { img.src = FRAMES[frameCursor++ % FRAMES.length]; gsap.set(img, { scale: 1.22 }); }
+      if (label) { label.textContent = labelFor(path); gsap.set(label, { yPercent: 120 }); }
+      if (rule) gsap.set(rule, { scaleX: 0 });
       overlay.style.pointerEvents = "auto";
       overlay.style.visibility = "visible";
-
-      // fresh frame + label for this ride
-      if (img) img.src = FRAMES[frameCursor++ % FRAMES.length];
-      if (label) label.textContent = labelFor(path);
-
-      // reset states
-      gsap.set(slats, { xPercent: 0, yPercent: 0 });
-      slats.forEach((s, i) => {
-        const fromLeft = i < SLATS / 2;
-        gsap.set(s, { xPercent: fromLeft ? -105 : 105 });
-      });
-      gsap.set(card, { autoAlpha: 0, scale: 0.62, yPercent: 8, filter: "blur(6px)" });
-      if (label) gsap.set(label, { yPercent: 120 });
-      if (img) gsap.set(img, { scale: 1.18 });
 
       const tl = gsap.timeline({
         onComplete: () => {
@@ -114,27 +111,33 @@ export default function RouteTransitions() {
           router.push(href);
         },
       });
-      // the old page recedes under the cover — dims and falls back
+      // the old page falls back under the weave
       if (main) {
-        tl.to(main, { scale: 0.965, filter: "brightness(0.55) blur(2px)", duration: 0.75, ease: "power3.inOut", transformOrigin: "center center" }, 0);
+        tl.to(main, {
+          scale: 0.955, filter: "brightness(0.5) blur(2px)", duration: 0.85,
+          ease: "power3.inOut", transformOrigin: "center center",
+        }, 0);
       }
-      // slats sweep in from both edges, outer ones leading
+      // the WEAVE: odd slats drop, even slats rise, edges leading
       tl.to(slats, {
-        xPercent: 0,
-        duration: 0.62,
+        yPercent: 0,
+        duration: 0.7,
         ease: "power4.inOut",
-        stagger: { each: 0.045, from: "edges" },
-      }, 0.05)
-        // the title card resolves as the cover lands — frame first, name under it
-        .to(card, { autoAlpha: 1, scale: 1, yPercent: 0, filter: "blur(0px)", duration: 0.55, ease: "power3.out" }, 0.42)
-        .to(label, { yPercent: 0, duration: 0.5, ease: "expo.out" }, 0.58)
-        // a breath on the card
-        .to({}, { duration: 0.18 });
+        stagger: { each: 0.055, from: "edges" },
+      }, 0)
+        // the title card BUILDS on the cover: frame wipes open upward…
+        .to(cardImgWrap, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.6, ease: "expo.out" }, 0.55)
+        .to(img, { scale: 1.08, duration: 0.9, ease: "power2.out" }, 0.55)
+        // …the name rises out of its clip, the hairline draws
+        .to(label, { yPercent: 0, duration: 0.55, ease: "expo.out" }, 0.72)
+        .to(rule, { scaleX: 1, duration: 0.5, ease: "expo.out" }, 0.8)
+        // a breath with the card resolved
+        .to({}, { duration: 0.2 });
 
-      // the frame drifts slowly inside the card while covered
+      // the frame keeps drifting while covered
       if (img) {
         kenRef.current?.kill();
-        kenRef.current = gsap.to(img, { scale: 1.06, duration: 2.4, ease: "none" });
+        kenRef.current = gsap.to(img, { scale: 1.02, duration: 3.0, ease: "none", delay: 1.0 });
       }
     };
 
@@ -153,6 +156,7 @@ export default function RouteTransitions() {
     const slats = overlay.querySelectorAll<HTMLElement>(".rt-slat");
     const card = overlay.querySelector<HTMLElement>(".rt-card");
     const label = overlay.querySelector<HTMLElement>(".rt-label");
+    const rule = overlay.querySelector<HTMLElement>(".rt-rule");
     const main = document.querySelector("main");
     const dir = pendingDir.current;
 
@@ -165,42 +169,54 @@ export default function RouteTransitions() {
       ScrollTrigger.refresh();
     };
 
-    // the incoming page arrives from slightly below and settles while the
-    // cover clears — it is MOVING as you first see it
-    if (main) gsap.set(main, { y: 44, scale: 0.985, transformOrigin: "center top" });
+    // the new page waits BENEATH the cover: low, small, dim, soft — it will
+    // arrive through the clearing slats, never appear at rest
+    if (main) {
+      gsap.set(main, {
+        y: 72, scale: 0.965, filter: "brightness(0.55) blur(3px)",
+        transformOrigin: "center top",
+      });
+    }
 
     const tl = gsap.timeline({ onComplete: done });
-    // push THROUGH the title card — the loader's camera move
-    tl.to(label, { yPercent: -120, duration: 0.35, ease: "power2.in" }, 0)
-      .to(card, { scale: 2.6, autoAlpha: 0, filter: "blur(8px)", duration: 0.7, ease: "power3.in" }, 0.02);
-    // slats clear directionally
+    // the card hands over: name drops out, hairline retracts, then the
+    // camera pushes THROUGH the frame
+    tl.to(label, { yPercent: -130, duration: 0.32, ease: "power2.in" }, 0)
+      .to(rule, { scaleX: 0, duration: 0.3, ease: "power2.in" }, 0.02)
+      .to(card, { scale: 2.7, autoAlpha: 0, filter: "blur(9px)", duration: 0.75, ease: "power3.in" }, 0.06);
+    // slats clear toward the destination
     if (dir === "up" || dir === "down") {
       tl.to(slats, {
-        yPercent: dir === "up" ? -104 : 104,
-        duration: 0.75,
+        yPercent: dir === "up" ? -105 : 105,
+        duration: 0.8,
         ease: "power4.inOut",
-        stagger: { each: 0.055, from: dir === "up" ? "start" : "end" },
-      }, 0.3);
+        stagger: { each: 0.06, from: dir === "up" ? "start" : "end" },
+      }, 0.34);
     } else if (dir === "right") {
       tl.to(slats, {
         xPercent: 105,
-        duration: 0.75,
+        duration: 0.8,
         ease: "power4.inOut",
-        stagger: { each: 0.055, from: "start" },
-      }, 0.3);
+        stagger: { each: 0.06, from: "start" },
+      }, 0.34);
     } else {
       tl.to(slats, {
         xPercent: (i: number) => (i < SLATS / 2 ? -105 : 105),
-        duration: 0.75,
+        duration: 0.8,
         ease: "power4.inOut",
-        stagger: { each: 0.055, from: "center" },
-      }, 0.3);
+        stagger: { each: 0.06, from: "center" },
+      }, 0.34);
     }
+    // the new page ARRIVES: rises, brightens, sharpens, settles — timed so
+    // it is still finishing as the last slat leaves
     if (main) {
-      tl.to(main, { y: 0, scale: 1, duration: 1.0, ease: "power3.out" }, 0.38);
+      tl.to(main, {
+        y: 0, scale: 1, filter: "brightness(1) blur(0px)",
+        duration: 1.25, ease: "power3.out",
+      }, 0.42);
     }
-    // the page's staged build starts while the slats are still clearing
-    tl.call(() => window.dispatchEvent(new Event("hw:page-entered")), [], 0.5);
+    // staged page builds run while the cover is still clearing
+    tl.call(() => window.dispatchEvent(new Event("hw:page-entered")), [], 0.55);
 
     return () => { tl.kill(); done(); window.dispatchEvent(new Event("hw:page-entered")); };
   }, [pathname]);
@@ -221,19 +237,18 @@ export default function RouteTransitions() {
           />
         ))}
       </div>
-      {/* the title card — one of Harry's frames + where you're going */}
+      {/* the title card — Harry's frame + where you're going */}
       <div className="rt-card absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center will-change-[transform,opacity,filter]">
-        <div className="h-[34vh] w-[52vw] overflow-hidden md:h-[38vh] md:w-[34vw]">
+        <div className="rt-imgwrap h-[34vh] w-[52vw] overflow-hidden md:h-[40vh] md:w-[36vw]">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="rt-img h-full w-full object-cover will-change-transform" src={FRAMES[0]} alt="" />
         </div>
-        <span className="mt-5 block overflow-hidden">
-          <span
-            className="rt-label font-display block text-[clamp(1.6rem,3vw,2.8rem)] leading-none text-[#0a0a08]"
-          >
+        <span className="mt-6 block overflow-hidden">
+          <span className="rt-label font-display block text-[clamp(1.7rem,3.2vw,3rem)] leading-none text-[#0a0a08]">
             Work
           </span>
         </span>
+        <span aria-hidden className="rt-rule mt-4 block h-px w-[min(20vw,220px)] bg-[#0a0a08]/70" style={{ transformOrigin: "center" }} />
       </div>
     </div>
   );

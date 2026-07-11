@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProject, projects } from "@/content/projects";
 import FooterReveal from "@/components/shell/FooterReveal";
+import PageBuild from "@/components/shell/PageBuild";
 import { SITE_URL } from "@/content/site";
 import { jsonLd } from "@/lib/jsonld";
 
@@ -94,6 +95,7 @@ export default async function CaseStudy({
         dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
       />
       <main data-theme="dark" data-surface="page" className="relative z-10 bg-[var(--bg)] text-[var(--fg)]">
+        <PageBuild />
         <section className="px-5 pt-[16vh] md:px-10">
           <Link href="/work" className="blink text-[12px] tracking-[0.05em]">
             All work

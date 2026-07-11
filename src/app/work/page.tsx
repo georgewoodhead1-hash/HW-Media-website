@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import FooterReveal from "@/components/shell/FooterReveal";
 import WorkGallery from "@/components/work/WorkGallery";
+import PageBuild from "@/components/shell/PageBuild";
 
 const DESC =
   "Brand films, commercials and documentary work by HW Media — films for McLaren, Nike, Aston Martin, Ferrari, Land Rover and Zuma, directed and shot in-house in London.";
@@ -31,6 +32,7 @@ export default function WorkIndex() {
   return (
     <>
       <main data-theme="dark" data-surface="page" className="relative z-10 min-h-screen bg-[var(--bg)] text-[var(--fg)]">
+        <PageBuild />
         {/* the page's H1 — the gallery wall is all tiles, so the heading is
             for crawlers and screen readers (the audit's only missing-H1 page) */}
         <h1 className="sr-only">Work — brand films and commercials by HW Media, London</h1>

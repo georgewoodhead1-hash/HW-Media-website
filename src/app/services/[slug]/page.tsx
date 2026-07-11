@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getService, SERVICES } from "@/content/services";
 import { getProject } from "@/content/projects";
 import FooterReveal from "@/components/shell/FooterReveal";
+import PageBuild from "@/components/shell/PageBuild";
 import { SITE_URL } from "@/content/site";
 import { jsonLd } from "@/lib/jsonld";
 
@@ -59,6 +60,7 @@ export default async function ServicePage({
         dangerouslySetInnerHTML={{ __html: jsonLd(breadcrumbJsonLd) }}
       />
       <main data-theme="dark" data-surface="page" className="relative z-10 bg-[var(--bg)] text-[var(--fg)]">
+        <PageBuild />
         {/* header — the bracketed title over the service's ambient loop */}
         <section className="relative flex min-h-[62vh] items-center justify-center overflow-hidden px-5 md:px-10">
           <video

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 import { onPageEntered } from "@/lib/entrance";
@@ -19,7 +19,9 @@ export default function LensIntro() {
   const fullReelRef = useRef<HTMLVideoElement>(null);
   const [reelOpen, setReelOpen] = useState(false);
 
-  useEffect(() => {
+  // LAYOUT effect: the hides must land BEFORE first paint or the hero
+  // flashes at rest during a route transition (review defect #4)
+  useLayoutEffect(() => {
     const wrap = wrapRef.current;
     if (!wrap) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

@@ -48,9 +48,18 @@ export default function PageBuild() {
     const enters = Array.from(main.querySelectorAll<HTMLElement>("[data-enter]"));
     gsap.set(enters, { autoAlpha: 0, y: 26 });
 
+    let restored = false;
+    const restoreAll = () => {
+      if (restored) return;
+      restored = true;
+      gsap.set(enters, { clearProps: "opacity,visibility,transform" });
+      gsap.set(lines, { clearProps: "transform" });
+      restore.forEach((r) => r());
+    };
+
     let tl: gsap.core.Timeline | null = null;
     const cancel = onPageEntered(() => {
-      tl = gsap.timeline();
+      tl = gsap.timeline({ onComplete: restoreAll });
       let at = 0.05;
       if (risers.length) {
         tl.to(risers, { y: 0, duration: 1.0, ease: "expo.out", stagger: 0.08 }, at);
@@ -68,9 +77,7 @@ export default function PageBuild() {
     return () => {
       cancel();
       tl?.kill();
-      gsap.set(enters, { clearProps: "opacity,visibility,transform" });
-      gsap.set(lines, { clearProps: "transform" });
-      restore.forEach((r) => r());
+      restoreAll();
     };
   }, []);
 

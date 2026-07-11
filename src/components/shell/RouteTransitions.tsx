@@ -3,6 +3,7 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { getLenis, scrollMemory, navIntent } from "@/lib/lenis";
 
 // Page-to-page transform, v6 — one continuous choreography, no cuts:
 //
@@ -60,6 +61,7 @@ export default function RouteTransitions() {
   const pendingDir = useRef<"up" | "right" | "center" | "down">("up");
   const covered = useRef(false);
   const kenRef = useRef<gsap.core.Tween | null>(null);
+  const openTl = useRef<gsap.core.Timeline | null>(null);
 
   // ── CLOSE ──
   useEffect(() => {
@@ -77,11 +79,15 @@ export default function RouteTransitions() {
       e.preventDefault();
       if (navigating.current) return;
       navigating.current = true;
-      if (reduced) { router.push(href); return; }
+      if (reduced) { navIntent.click = true; router.push(href); return; }
 
       const overlay = overlayRef.current;
       const main = document.querySelector("main");
-      if (!overlay) { router.push(href); return; }
+      if (!overlay) { navIntent.click = true; router.push(href); return; }
+
+      // remember where THIS page was scrolled, for the back button —
+      // must happen now, before the cover resets scroll to 0
+      scrollMemory.set(window.location.pathname, window.scrollY);
 
       pendingDir.current = directionFor(path);
       document.documentElement.dataset.transitioning = "1";
@@ -104,19 +110,46 @@ export default function RouteTransitions() {
       overlay.style.pointerEvents = "auto";
       overlay.style.visibility = "visible";
 
+      // a click mid-OPEN: hand the stage over cleanly — kill the running
+      // reveal before arming the new cover (QA: two timelines fighting the
+      // same slats tore the cover)
+      openTl.current?.kill();
+      openTl.current = null;
+
+      const startPath = window.location.pathname;
+      getLenis()?.stop();
       const tl = gsap.timeline({
         onComplete: () => {
+          // if the user hit BACK/FORWARD while the cover was closing, honour
+          // it — abort this navigation instead of overriding theirs (review
+          // defect #1)
+          if (window.location.pathname !== startPath) {
+            overlay.style.pointerEvents = "none";
+            overlay.style.visibility = "hidden";
+            if (main) gsap.set(main, { clearProps: "all" });
+            delete document.documentElement.dataset.transitioning;
+            getLenis()?.start();
+            navigating.current = false;
+            window.dispatchEvent(new Event("hw:page-entered"));
+            return;
+          }
           covered.current = true;
           window.scrollTo(0, 0);
+          getLenis()?.scrollTo(0, { immediate: true });
+          navIntent.click = true;
           router.push(href);
         },
       });
-      // the old page falls back under the weave
+      // the old page falls back under the weave. Start values are PINNED —
+      // tweening filter from computed "none" made GSAP ramp brightness from
+      // 0, blacking the page out on every click (QA finding #2)
       if (main) {
-        tl.to(main, {
-          scale: 0.955, filter: "brightness(0.5) blur(2px)", duration: 0.85,
-          ease: "power3.inOut", transformOrigin: "center center",
-        }, 0);
+        tl.fromTo(main,
+          { scale: 1, filter: "brightness(1) blur(0px)" },
+          {
+            scale: 0.955, filter: "brightness(0.5) blur(2px)", duration: 0.85,
+            ease: "power3.inOut", transformOrigin: "center center",
+          }, 0);
       }
       // the WEAVE: odd slats drop, even slats rise, edges leading
       tl.to(slats, {
@@ -162,6 +195,7 @@ export default function RouteTransitions() {
 
     const done = () => {
       kenRef.current?.kill();
+      getLenis()?.start();
       overlay.style.pointerEvents = "none";
       overlay.style.visibility = "hidden";
       if (main) gsap.set(main, { clearProps: "all" });
@@ -179,6 +213,9 @@ export default function RouteTransitions() {
     }
 
     const tl = gsap.timeline({ onComplete: done });
+    openTl.current = tl;
+    // the cover is decorative from here — never block the arriving page
+    tl.set(overlay, { pointerEvents: "none" }, 0.34);
     // the card hands over: name drops out, hairline retracts, then the
     // camera pushes THROUGH the frame
     tl.to(label, { yPercent: -130, duration: 0.32, ease: "power2.in" }, 0)
@@ -218,7 +255,12 @@ export default function RouteTransitions() {
     // staged page builds run while the cover is still clearing
     tl.call(() => window.dispatchEvent(new Event("hw:page-entered")), [], 0.55);
 
-    return () => { tl.kill(); done(); window.dispatchEvent(new Event("hw:page-entered")); };
+    return () => {
+      // NON-destructive: the next CLOSE arms its own cover — tearing down
+      // the overlay here (at the next route commit) was the works-once bug
+      tl.kill();
+      openTl.current = null;
+    };
   }, [pathname]);
 
   return (

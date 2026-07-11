@@ -4,18 +4,37 @@ import { ReactNode, useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Lenis from "lenis";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
-import { setLenis, getLenis } from "@/lib/lenis";
+import { setLenis, getLenis, scrollMemory, navIntent } from "@/lib/lenis";
 
 export default function SmoothScroll({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
-  // Always land at the TOP when navigating to a new page — never inherit the
-  // previous page's scroll position.
+  // CLICK navigation (marked by RouteTransitions): land at the TOP.
+  // Anything unmarked is a back/forward traversal: restore the position the
+  // user left that page at. The restore waits one frame and resizes Lenis
+  // first — its scroll limit is stale at commit and clamps the restore.
   useEffect(() => {
+    const isClick = navIntent.click;
+    navIntent.click = false;
+    const target = isClick ? 0 : scrollMemory.get(pathname) ?? 0;
     window.scrollTo(0, 0);
     getLenis()?.scrollTo(0, { immediate: true });
-    const id = requestAnimationFrame(() => ScrollTrigger.refresh());
-    return () => cancelAnimationFrame(id);
+    const id = requestAnimationFrame(() => {
+      if (target > 0) {
+        const lenis = getLenis();
+        lenis?.resize();
+        window.scrollTo(0, target);
+        lenis?.scrollTo(target, { immediate: true });
+      }
+      ScrollTrigger.refresh();
+    });
+    return () => {
+      cancelAnimationFrame(id);
+      // leaving on a traversal: remember where this page was. (Click-navs
+      // already reset scroll to 0 under the cover — the >0 guard keeps the
+      // click-time save from RouteTransitions intact in that case.)
+      if (window.scrollY > 0) scrollMemory.set(pathname, window.scrollY);
+    };
   }, [pathname]);
 
   useEffect(() => {

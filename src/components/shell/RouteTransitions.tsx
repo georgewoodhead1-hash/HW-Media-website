@@ -4,19 +4,35 @@ import { useEffect, useLayoutEffect, useRef } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-// Page-to-page blend, v2 (George: no black veil — "you can see the page coming
-// up in real time and overlapping the current page"). On an internal link click
-// the CURRENT page is cloned and frozen in place (videos swapped for their
-// posters), navigation happens immediately, and the NEW page slides up from the
-// bottom edge OVER the frozen old one — a real overlap, like a sheet laid over
-// the last. Reduced-motion users get an instant cut.
+// Page-to-page transform, v4 — the il capo grammar (captured live from
+// ilcapoproduction.com): CREAM PANELS sweep in from the edges over the old
+// page, meet at the centre with the HW mark riding the cover, hold a beat,
+// then the cover breaks into vertical slats that clear in a DIFFERENT
+// DIRECTION per destination — and the new page is fully rendered underneath
+// (no blank sheet). "hw:page-entered" fires as the slats clear so each
+// page's staged build starts right on cue.
+//
+// Directions: /work → slats lift UP · /about → sweep RIGHT · /contact →
+// part from the CENTRE outward · home → drop DOWN.
+
+const SLATS = 4;
+
+function directionFor(path: string): "up" | "right" | "center" | "down" {
+  if (path.startsWith("/work")) return "up";
+  if (path.startsWith("/about") || path.startsWith("/services")) return "right";
+  if (path.startsWith("/contact")) return "center";
+  return "down";
+}
+
 export default function RouteTransitions() {
   const pathname = usePathname();
   const router = useRouter();
   const navigating = useRef(false);
-  const cloneRef = useRef<HTMLDivElement | null>(null);
+  const overlayRef = useRef<HTMLDivElement>(null);
+  const pendingDir = useRef<"up" | "right" | "center" | "down">("up");
+  const covered = useRef(false);
 
-  // EXIT — freeze a visual copy of the page, then navigate straight away
+  // COVER — panels sweep in over the old page, then navigate underneath
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -25,116 +41,127 @@ export default function RouteTransitions() {
       const a = (e.target as HTMLElement).closest("a");
       if (!a) return;
       const href = a.getAttribute("href");
-      if (!href || !href.startsWith("/") || href.startsWith("//")) return; // internal only
+      if (!href || !href.startsWith("/") || href.startsWith("//")) return;
       if (a.target === "_blank" || a.hasAttribute("download")) return;
       const [path] = href.split("#");
-      if (!path || path === pathname) return; // same page / hash — let it be
+      if (!path || path === pathname) return;
       e.preventDefault();
       if (navigating.current) return;
       navigating.current = true;
       if (reduced) { router.push(href); return; }
 
-      const main = document.querySelector("main");
-      if (main) {
-        // freeze the old page: clone it at the current scroll offset, swap the
-        // videos for their posters (a clone can't keep playing), park it under
-        // where the new page will slide in
-        const wrap = document.createElement("div");
-        wrap.setAttribute("aria-hidden", "true");
-        wrap.className = "pointer-events-none fixed inset-0 z-[5] overflow-hidden";
-        const inner = main.cloneNode(true) as HTMLElement;
-        inner.style.transform = `translateY(${-window.scrollY}px)`;
-        inner.style.margin = "0";
-        const origVids = Array.from(main.querySelectorAll("video"));
-        inner.querySelectorAll("video").forEach((v, i) => {
-          const ov = origVids[i];
-          // freeze the LIVE frame onto a CANVAS — canvases paint synchronously,
-          // so the frozen page never blinks black while an image decodes
-          if (ov && ov.videoWidth) {
-            try {
-              const c = document.createElement("canvas");
-              c.width = ov.videoWidth;
-              c.height = ov.videoHeight;
-              c.getContext("2d")?.drawImage(ov, 0, 0);
-              c.className = v.className;
-              v.replaceWith(c);
-              return;
-            } catch { /* cross-origin — fall through to the poster */ }
-          }
-          const img = document.createElement("img");
-          if (v.poster) img.src = v.poster;
-          img.className = v.className;
-          img.alt = "";
-          v.replaceWith(img);
-        });
-        wrap.appendChild(inner);
-        document.body.appendChild(wrap);
-        cloneRef.current = wrap;
-      }
-      // stamp the blend so page entrances (PageBuild etc.) hold until the
-      // sheet has landed — the second loading animation starts THEN
+      const overlay = overlayRef.current;
+      if (!overlay) { router.push(href); return; }
+
+      pendingDir.current = directionFor(path);
       document.documentElement.dataset.transitioning = "1";
-      router.push(href);
+
+      const slats = overlay.querySelectorAll<HTMLElement>(".rt-slat");
+      const mark = overlay.querySelector<HTMLElement>(".rt-mark");
+      overlay.style.pointerEvents = "auto";
+      overlay.style.visibility = "visible";
+
+      // panels close from BOTH edges toward the centre (outer slats lead)
+      gsap.set(slats, { yPercent: 0, borderRadius: 0 });
+      slats.forEach((s, i) => {
+        const fromLeft = i < SLATS / 2;
+        gsap.set(s, { xPercent: fromLeft ? -105 : 105 });
+      });
+      if (mark) gsap.set(mark, { autoAlpha: 0, scale: 0.92 });
+
+      gsap.timeline({
+        onComplete: () => {
+          covered.current = true;
+          window.scrollTo(0, 0);
+          router.push(href);
+        },
+      })
+        .to(slats, {
+          xPercent: 0,
+          duration: 0.6,
+          ease: "power4.inOut",
+          stagger: { each: 0.05, from: "edges" },
+        }, 0)
+        .to(mark, { autoAlpha: 1, scale: 1, duration: 0.35, ease: "power2.out" }, 0.3);
     };
 
     document.addEventListener("click", onClick, true);
     return () => document.removeEventListener("click", onClick, true);
   }, [pathname, router]);
 
-  // ENTER — the new page slides up OVER the frozen old one. LAYOUT effect:
-  // it must park the incoming page below the fold BEFORE the browser paints,
-  // or you see the new page flash at rest for a frame (the "two pages" glitch)
+  // REVEAL — the cover breaks toward the destination's direction; the new
+  // page is already rendered underneath
   useLayoutEffect(() => {
     navigating.current = false;
-    const clone = cloneRef.current;
-    if (!clone) return; // direct load / back-forward — nothing to blend from
-    cloneRef.current = null;
+    if (!covered.current) return;
+    covered.current = false;
 
-    const cleanup = () => { clone.remove(); };
-    const main = document.querySelector("main");
-    if (!main || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      cleanup();
-      return;
-    }
+    const overlay = overlayRef.current;
+    if (!overlay) return;
+    const slats = overlay.querySelectorAll<HTMLElement>(".rt-slat");
+    const mark = overlay.querySelector<HTMLElement>(".rt-mark");
+    const dir = pendingDir.current;
 
-    window.scrollTo(0, 0);
-    // park it ONE VIEWPORT below, synchronously — before first paint.
-    // CLEAN EDGE (client: the rounded corners + big soft shadow read as a
-    // "weird gradient" — binned; just the sheet, one hairline on its lip)
-    gsap.set(main, {
-      y: window.innerHeight,
-      position: "relative",
-      zIndex: 20,
-      backgroundColor: "var(--bg)",
-      borderTop: "1px solid rgba(245,241,230,0.18)",
-    });
-    // THE NAVIGATION: the next page RISES FROM BELOW and fills the screen IN
-    // FRONT of the current page — both visible the whole time, the old page
-    // settling gently underneath (never dimmed to black). Once the sheet
-    // lands, "hw:page-entered" fires and the new page runs its own build-in.
-    const oldInner = clone.firstElementChild as HTMLElement | null;
-    const tl = gsap.timeline({
-      onComplete: () => {
-        cleanup();
-        gsap.set(main, { clearProps: "all" });
-        delete document.documentElement.dataset.transitioning;
-        window.dispatchEvent(new Event("hw:page-entered"));
-        ScrollTrigger.refresh();
-      },
-    });
-    if (oldInner) {
-      tl.to(oldInner, { scale: 0.965, yPercent: -2, duration: 1.15, ease: "power4.inOut" }, 0);
-    }
-    tl.to(main, { y: 0, duration: 1.15, ease: "power4.inOut" }, 0)
-      .set(main, { borderTop: "none" });
-
-    return () => {
-      tl.kill();
-      cleanup();
+    const done = () => {
+      overlay.style.pointerEvents = "none";
+      overlay.style.visibility = "hidden";
       delete document.documentElement.dataset.transitioning;
-      window.dispatchEvent(new Event("hw:page-entered"));
+      ScrollTrigger.refresh();
     };
+
+    const tl = gsap.timeline({ onComplete: done });
+    // a held beat on the cover, then the break
+    tl.to(mark, { autoAlpha: 0, duration: 0.3, ease: "power2.in" }, 0.14);
+    if (dir === "up" || dir === "down") {
+      tl.to(slats, {
+        yPercent: dir === "up" ? -104 : 104,
+        duration: 0.68,
+        ease: "power4.inOut",
+        stagger: { each: 0.06, from: dir === "up" ? "start" : "end" },
+      }, 0.18);
+    } else if (dir === "right") {
+      tl.to(slats, {
+        xPercent: 105,
+        duration: 0.68,
+        ease: "power4.inOut",
+        stagger: { each: 0.06, from: "start" },
+      }, 0.18);
+    } else {
+      // centre: the middle slats part first, outward
+      tl.to(slats, {
+        xPercent: (i: number) => (i < SLATS / 2 ? -105 : 105),
+        duration: 0.68,
+        ease: "power4.inOut",
+        stagger: { each: 0.06, from: "center" },
+      }, 0.18);
+    }
+    // the page's own staged build starts as the cover is clearing
+    tl.call(() => window.dispatchEvent(new Event("hw:page-entered")), [], 0.34);
+
+    return () => { tl.kill(); done(); window.dispatchEvent(new Event("hw:page-entered")); };
   }, [pathname]);
 
-  return null;
+  return (
+    <div
+      ref={overlayRef}
+      aria-hidden
+      className="pointer-events-none fixed inset-0 z-[220] flex"
+      style={{ visibility: "hidden" }}
+    >
+      {Array.from({ length: SLATS }, (_, i) => (
+        <div
+          key={i}
+          className="rt-slat h-full flex-1 bg-[#f5f1e6] will-change-transform"
+          style={{ marginLeft: i === 0 ? 0 : -1 }}
+        />
+      ))}
+      {/* the mark rides the cover */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src="/logos/hwmedia-light.png"
+        alt=""
+        className="rt-mark absolute left-1/2 top-1/2 h-24 w-auto -translate-x-1/2 -translate-y-1/2 md:h-32"
+      />
+    </div>
+  );
 }

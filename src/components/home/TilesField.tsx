@@ -74,7 +74,7 @@ export default function TilesField() {
       ref={section}
       data-theme="dark"
       data-surface="page"
-      className="relative bg-[var(--bg)] text-[var(--fg)]"
+      className="relative bg-[var(--bg)] py-[14vh] text-[var(--fg)]"
       aria-label="Behind the scenes stills"
     >
       <div className="tiles" aria-hidden>

@@ -4,12 +4,13 @@ import { useLayoutEffect } from "react";
 import { gsap } from "@/lib/gsap";
 import { onPageEntered } from "@/lib/entrance";
 
-// The SECOND loading animation (client): once the route transition lands,
-// the page builds itself — headings rise word by word out of clip lines,
-// then everything marked data-enter staggers up in order. Drop this inside
-// any page and mark the elements:
-//   data-enter        — fades + rises in, in DOM order
-//   data-enter-words  — text splits into words that rise one by one (1820)
+// The page's own build-in, v2 — STAGED like the services page (George's
+// reference for "the words come on, then the line, then the page builds"):
+//   1. [data-enter-words]  — heading splits into words that rise from clips
+//   2. [data-enter-line]   — hairlines draw across
+//   3. [data-enter]        — everything else rises in DOM order
+// Runs once the route transition's cover is clearing (hw:page-entered), so
+// the build is what you watch as the slats leave — never a blank page.
 export default function PageBuild() {
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -31,15 +32,18 @@ export default function PageBuild() {
         mask.style.verticalAlign = "bottom";
         const inner = document.createElement("span");
         inner.style.display = "inline-block";
+        inner.style.whiteSpace = "pre";
         inner.style.transform = "translateY(112%)";
-        inner.textContent = w;
+        inner.textContent = w + (i < arr.length - 1 ? " " : "");
         mask.appendChild(inner);
         el.appendChild(mask);
-        if (i < arr.length - 1) el.appendChild(document.createTextNode(" "));
         risers.push(inner);
       });
       restore.push(() => { el.innerHTML = original; });
     });
+
+    const lines = Array.from(main.querySelectorAll<HTMLElement>("[data-enter-line]"));
+    gsap.set(lines, { scaleX: 0, transformOrigin: "left center" });
 
     const enters = Array.from(main.querySelectorAll<HTMLElement>("[data-enter]"));
     gsap.set(enters, { autoAlpha: 0, y: 26 });
@@ -47,11 +51,17 @@ export default function PageBuild() {
     let tl: gsap.core.Timeline | null = null;
     const cancel = onPageEntered(() => {
       tl = gsap.timeline();
+      let at = 0.05;
       if (risers.length) {
-        tl.to(risers, { y: 0, duration: 1.0, ease: "expo.out", stagger: 0.07 }, 0.05);
+        tl.to(risers, { y: 0, duration: 1.0, ease: "expo.out", stagger: 0.08 }, at);
+        at += 0.45;
+      }
+      if (lines.length) {
+        tl.to(lines, { scaleX: 1, duration: 0.8, ease: "expo.out", stagger: 0.1 }, at);
+        at += 0.3;
       }
       if (enters.length) {
-        tl.to(enters, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1 }, risers.length ? 0.35 : 0.05);
+        tl.to(enters, { autoAlpha: 1, y: 0, duration: 0.75, ease: "power3.out", stagger: 0.12 }, at);
       }
     });
 
@@ -59,6 +69,7 @@ export default function PageBuild() {
       cancel();
       tl?.kill();
       gsap.set(enters, { clearProps: "opacity,visibility,transform" });
+      gsap.set(lines, { clearProps: "transform" });
       restore.forEach((r) => r());
     };
   }, []);

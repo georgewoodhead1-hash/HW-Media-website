@@ -42,6 +42,7 @@ export default function Contact() {
           <h1 data-enter-words className="font-display text-[clamp(2.4rem,6vw,4.6rem)] leading-[0.95]">
             Tell us more.
           </h1>
+          <span aria-hidden data-enter-line className="mx-auto mt-6 block h-px w-[min(46vw,360px)] bg-[var(--fg)]/60" />
           <p
             data-enter
             className="mx-auto mt-5 max-w-md text-[15px] leading-relaxed text-[var(--fg)]/70"

@@ -28,7 +28,10 @@ export default function FeatureBand() {
       const cta = sec.querySelector<HTMLElement>(".fb-cta");
       if (!frame) return;
 
-      gsap.set(frame, { scale: 0.24, y: "36vh", transformOrigin: "center center", force3D: true });
+      gsap.set(frame, {
+        scale: 0.24, y: "36vh", transformOrigin: "center center", force3D: true,
+        filter: "blur(6px)", borderRadius: "14px",
+      });
       if (img) gsap.set(img, { scale: 1.35 });
       gsap.set([line, cta], { autoAlpha: 0, y: 22 });
 
@@ -53,6 +56,10 @@ export default function FeatureBand() {
           gsap.set(frame, {
             y: (1 - e) * 34 + "vh",
             scale: 0.24 + e * 0.76,
+            // it sharpens and squares off as it comes forward — emerging
+            // from the depth rather than just growing
+            filter: `blur(${((1 - e) * 6).toFixed(2)}px)`,
+            borderRadius: `${((1 - e) * 14).toFixed(2)}px`,
             force3D: true,
           });
           if (img) gsap.set(img, { scale: 1.35 - e * 0.35 });

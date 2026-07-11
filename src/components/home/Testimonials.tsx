@@ -206,7 +206,7 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative z-30 bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[8vh]"
+      className="relative z-30 -mt-[9vh] bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[10vh]"
       aria-label="Testimonials"
     >
       {/* header: big title (no brackets — titles lost them, small links keep

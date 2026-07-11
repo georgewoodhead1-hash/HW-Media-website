@@ -3,16 +3,19 @@
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
 
-// Pre-entry loading screen, v7. Plays on EVERY full page load (the old
-// once-per-session gate meant every reload showed a static logo + finished
-// circle for half a second — the "no animation" bug).
-// The sequence, three clean beats:
+// Pre-entry loading screen, v8 — THROUGH THE LENS for real (George: "you
+// don't really go through a camera lens — that needs to happen"). Plays on
+// every full load. Three beats, one motion:
 //   1. the HW mark writes itself out (soft ink-edge sweep)
-//   2. the two lines draw from the BOTTOM, rising both sides at once,
-//      closing the circle at the top (DrawSVG, from the same origin point)
-//   3. ONE continuous accelerating push through the lens into white,
-//      and the site is underneath
-// The hero holds until "hw:reveal" fires. Reduced-motion skips to a cut.
+//   2. the two lines draw from the BOTTOM, rising both sides, closing the
+//      circle at the top — the lens, assembled
+//   3. the black IS the camera body: an aperture opens exactly on the
+//      drawn ring and you pass THROUGH it onto the live site — the ring
+//      rides the rim of the opening iris, the mark falls away behind.
+//      No white bloom, no second zoom. The site is already moving as the
+//      iris clears.
+// The hero starts on "hw:reveal", fired the moment the iris begins to
+// open. Reduced-motion skips to a cut.
 
 export default function LoadingScreen() {
   const rootRef = useRef<HTMLDivElement>(null);
@@ -20,7 +23,6 @@ export default function LoadingScreen() {
   const logoRef = useRef<HTMLImageElement>(null);
   const arcLeftRef = useRef<SVGPathElement>(null);
   const arcRightRef = useRef<SVGPathElement>(null);
-  const bloomRef = useRef<HTMLDivElement>(null);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -48,18 +50,25 @@ export default function LoadingScreen() {
       });
       // both arcs hidden, ready to draw from their start point (the bottom)
       gsap.set([arcLeftRef.current, arcRightRef.current], { drawSVG: "0%" });
-      gsap.set(bloomRef.current, { autoAlpha: 0 });
       gsap.set(".ls-meta", { autoAlpha: 0, y: 8 });
 
-      const finish = () => {
-        gsap.to(rootRef.current, {
-          autoAlpha: 0, duration: 0.7, ease: "power2.inOut",
-          onStart: reveal, onComplete: () => setDone(true),
-        });
+      // the APERTURE: a circular hole in the black, opened via mask. The
+      // hole's radius and the drawn ring's scale run off the same value, so
+      // the ring rides the rim of the iris as it opens.
+      const root = rootRef.current;
+      const svgEl = root?.querySelector<SVGSVGElement>(".ls-lens");
+      const R0 = svgEl ? svgEl.getBoundingClientRect().width * 0.48 : 150;
+      const RMAX = Math.hypot(window.innerWidth, window.innerHeight) * 0.62;
+      const iris = { r: 0 };
+      const setMask = (r: number) => {
+        if (!root) return;
+        const m = `radial-gradient(circle at 50% 50%, transparent ${r}px, #000 ${r + 1.5}px)`;
+        root.style.webkitMaskImage = m;
+        root.style.maskImage = m;
       };
 
       gsap
-        .timeline({ onComplete: finish })
+        .timeline({ onComplete: () => setDone(true) })
         // the room lights come up
         .to(".ls-meta", { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0)
         // 1 — the mark writes itself out, steady hand
@@ -73,14 +82,24 @@ export default function LoadingScreen() {
         .to([arcLeftRef.current, arcRightRef.current], {
           drawSVG: "0% 100%", duration: 1.5, ease: "power2.inOut",
         }, 2.1)
-        // 3 — one continuous push: everything accelerates past the viewer,
-        // the mark falls away inside the same move, white blooms at its peak
-        .to(stageRef.current, {
-          scale: 18, duration: 1.4, ease: "power3.in", force3D: true,
-        }, 3.85)
-        .to(logoRef.current, { autoAlpha: 0, duration: 0.9, ease: "power3.in" }, 3.95)
-        .to(".ls-meta", { autoAlpha: 0, duration: 0.5 }, 3.9)
-        .to(bloomRef.current, { autoAlpha: 1, duration: 0.65, ease: "power2.in" }, 4.5);
+        // 3 — THROUGH THE LENS: the site wakes behind, the mark falls away,
+        // and the iris opens on the drawn ring — one accelerating pass
+        .call(reveal, [], 3.78)
+        .to(logoRef.current, { autoAlpha: 0, scale: 0.94, duration: 0.5, ease: "power2.in" }, 3.8)
+        .to(".ls-meta", { autoAlpha: 0, duration: 0.45 }, 3.8)
+        .to(iris, {
+          r: RMAX,
+          duration: 1.35,
+          ease: "power3.in",
+          onUpdate: () => {
+            setMask(iris.r);
+            const k = 1 + (iris.r / R0 - 1);
+            if (stageRef.current) gsap.set(stageRef.current, { scale: Math.max(1, k), force3D: true });
+            // the ring thins out as it flies past the viewer
+            const fade = Math.min(1, Math.max(0, (iris.r - RMAX * 0.55) / (RMAX * 0.35)));
+            if (svgEl) gsap.set(svgEl, { opacity: 1 - fade });
+          },
+        }, 3.95);
     }, rootRef);
 
     return () => ctx.revert();
@@ -102,7 +121,7 @@ export default function LoadingScreen() {
       <div className="relative flex h-full w-full items-center justify-center">
         <div ref={stageRef} className="relative flex items-center justify-center will-change-transform">
           <svg
-            className="absolute h-[19rem] w-[19rem] md:h-[25rem] md:w-[25rem]"
+            className="ls-lens absolute h-[19rem] w-[19rem] md:h-[25rem] md:w-[25rem]"
             viewBox="0 0 200 200"
             fill="none"
           >
@@ -136,8 +155,6 @@ export default function LoadingScreen() {
         </span>
       </div>
 
-      {/* the white the camera drives into */}
-      <div ref={bloomRef} className="pointer-events-none absolute inset-0 bg-white" />
     </div>
   );
 }

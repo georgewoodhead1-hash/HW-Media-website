@@ -128,7 +128,23 @@ export default function OurWork() {
         },
       });
 
-      return () => { enter.kill(); leave.kill(); };
+      // the bars stay ALIVE while you pass — alternating vertical drift,
+      // the accordion breathing against the scroll (depth grammar)
+      const breathe = ScrollTrigger.create({
+        trigger: root,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.8,
+        onUpdate: (self) => {
+          const q = self.progress - 0.5;
+          bars.forEach((bar, i) => {
+            const amp = [10, 22, 14, 26, 12, 20][i % 6];
+            gsap.set(bar, { y: q * -amp, force3D: true });
+          });
+        },
+      });
+
+      return () => { enter.kill(); leave.kill(); breathe.kill(); };
     });
 
     // mobile: the md:hidden tile stack is otherwise static — give each tile a

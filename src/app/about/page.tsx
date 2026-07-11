@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import WhatWeDoOnly from "@/components/about/WhatWeDoOnly";
+import AboutFresh from "@/components/about/AboutFresh";
 
 const DESC =
   "Who's behind the camera. HW Media is a director-led film and photography agency in London founded by Harry Wallis — every film directed, shot and graded in-house.";
@@ -27,5 +27,5 @@ export const metadata: Metadata = {
 // About — rebuilt clean. Big type, one dimmed film, the crew stated plainly, the
 // kept "Let's create". No labels / counters / icon clutter. "About us" intro beat.
 export default function About() {
-  return <WhatWeDoOnly />;
+  return <AboutFresh />;
 }

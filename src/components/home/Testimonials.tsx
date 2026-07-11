@@ -115,7 +115,23 @@ export default function Testimonials() {
         },
       });
 
-      return () => { enter.scrollTrigger?.kill(); enter.kill(); exit.kill(); };
+      // DEPTH (George): the reading layer floats over the media layer —
+      // text column drifts against the scroll, the film barely moves
+      const textCol = root.querySelector<HTMLElement>(".tst-copy");
+      const filmCol = root.querySelector<HTMLElement>(".tst-film");
+      const drift = ScrollTrigger.create({
+        trigger: root,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 0.6,
+        onUpdate: (self) => {
+          const q = self.progress - 0.5;
+          if (textCol) gsap.set(textCol, { y: q * -56, force3D: true });
+          if (filmCol) gsap.set(filmCol, { y: q * -16, force3D: true });
+        },
+      });
+
+      return () => { enter.scrollTrigger?.kill(); enter.kill(); exit.kill(); drift.kill(); };
     });
     return () => mm.revert();
   }, []);
@@ -214,7 +230,7 @@ export default function Testimonials() {
       <div className="md:grid md:grid-cols-[1.5fr_1fr] md:items-stretch md:gap-12">
         {/* LEFT — the 1820-style showcase: one voice at a time, big.
             Mobile: compressed + centred (George) */}
-        <div className="flex flex-col justify-between text-center md:text-left">
+        <div className="tst-copy flex flex-col justify-between text-center will-change-transform md:text-left">
           <div>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img

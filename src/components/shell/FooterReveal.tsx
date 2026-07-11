@@ -24,7 +24,10 @@ export default function FooterReveal() {
     const zones = gsap.utils.toArray<HTMLElement>(".ft-zone", foot);
     const lines = gsap.utils.toArray<HTMLElement>(".ft-line", foot);
 
-    gsap.set(zones, { autoAlpha: 0, y: 44 });
+    // gentle parallax between the footer's layers (George: just a bit of
+    // spice) — top zone travels most, columns less, the wordmark least
+    const travel = [64, 40, 22, 14];
+    zones.forEach((z, i) => gsap.set(z, { autoAlpha: 0, y: travel[i % travel.length] }));
     gsap.set(lines, { scaleX: 0, transformOrigin: "left center" });
 
     const tl = gsap.timeline({

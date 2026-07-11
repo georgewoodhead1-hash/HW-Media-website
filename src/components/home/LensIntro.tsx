@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { gsap } from "@/lib/gsap";
+import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
 import { onPageEntered } from "@/lib/entrance";
 
@@ -52,6 +52,29 @@ export default function LensIntro() {
           .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, ">0.05");
       }, wrap);
     };
+    // DEPTH (George): the process speed-split, applied to the hero — as you
+    // scroll away the words travel faster than the reel, so the layers
+    // separate: headline fast, sub a touch slower, film nearly still
+    const mm = gsap.matchMedia();
+    mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
+      const headline = wrap.querySelector<HTMLElement>(".hero-head-layer");
+      const sub = wrap.querySelector<HTMLElement>(".hero-sub-layer");
+      const bg = wrap.querySelector<HTMLElement>(".hero-bg");
+      const st = ScrollTrigger.create({
+        trigger: wrap,
+        start: "top top",
+        end: "bottom top",
+        scrub: 0.5,
+        onUpdate: (self) => {
+          const p2 = self.progress;
+          if (headline) gsap.set(headline, { yPercent: -p2 * 42, force3D: true });
+          if (sub) gsap.set(sub, { yPercent: -p2 * 26, force3D: true });
+          if (bg) gsap.set(bg, { yPercent: p2 * 8, scale: 1 + p2 * 0.05, force3D: true });
+        },
+      });
+      return () => st.kill();
+    });
+
     // first visit: the loader fires hw:reveal when it finishes. Return
     // visits (loader long gone): start once the route transition lands.
     let cancelEnter: (() => void) | null = null;
@@ -70,6 +93,7 @@ export default function LensIntro() {
 
     return () => {
       cancelEnter?.();
+      mm.revert();
       window.removeEventListener("hw:reveal", start);
       window.removeEventListener("touchstart", kick);
       window.clearTimeout(fb);
@@ -124,7 +148,7 @@ export default function LensIntro() {
         />
         {/* HEADLINE — ONE line, solid WHITE (George binned the difference-blend
             interplay: the heading read brown against the footage) */}
-        <div className="pointer-events-none absolute left-0 top-[39%] px-5 md:px-10">
+        <div className="hero-head-layer pointer-events-none absolute left-0 top-[39%] px-5 will-change-transform md:px-10">
           <h1 className="font-display whitespace-nowrap text-[clamp(2.6rem,7.6vw,8.2rem)] leading-[0.9] text-white" aria-label="Break the ordinary.">
             {LINES.map((line, li) => (
               <span key={li} className="block">
@@ -138,7 +162,7 @@ export default function LensIntro() {
 
         {/* subtitle + CTA — normal layer, left-aligned directly UNDER the headline
             (an invisible copy reserves the headline's height so they line up). */}
-        <div className="absolute left-0 top-[35%] z-10 flex flex-col items-start px-5 text-left md:px-10">
+        <div className="hero-sub-layer absolute left-0 top-[35%] z-10 flex flex-col items-start px-5 text-left will-change-transform md:px-10">
           <div aria-hidden className="invisible font-display whitespace-nowrap text-[clamp(2.6rem,7.6vw,8.2rem)] leading-[0.9]">
             Break the ordinary.
           </div>

@@ -34,7 +34,11 @@ export default function WorkGallery() {
         onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1, overwrite: true }),
       });
 
-      gsap.from("[data-ghead]", { autoAlpha: 0, y: 24, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } });
+      // guard: [data-ghead] only exists on some layouts — targeting it
+      // blind spammed "GSAP target not found" on every visit
+      if (el.querySelector("[data-ghead]")) {
+        gsap.from("[data-ghead]", { autoAlpha: 0, y: 24, ease: "power3.out", scrollTrigger: { trigger: el, start: "top 80%" } });
+      }
       ScrollTrigger.refresh();
     }, el);
     return () => ctx.revert();

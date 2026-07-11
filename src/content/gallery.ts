@@ -41,7 +41,7 @@ export const FEATURED: GalleryItem[] = [
   { label: "Hofmeister — Goffs Video", logo: "hofmeister-png", slug: "hofmeister", video: "/videos/wall/hof-castle-air.mp4", poster: "/videos/wall/posters/hof-castle-air.jpg" },
   { label: "Sans Matin — The Wild Side", logo: "sm-new-logo-design-white-2025", slug: "wild-side", video: "/videos/wall/wild-side.mp4", poster: "/videos/wall/posters/wild-side.jpg" },
   // client final round: the Gents Journal LOGO replaces the THOMAS STRAKER text mark
-  { label: "Gents Journal — Thomas Straker", logo: "gj-white", slug: "gj-straker" },
+  { label: "Gentleman\u2019s Journal", logo: "gj-white", slug: "gj-straker" },
   { label: "Spotify Podcast", logo: "spotify-white", slug: "spotify" },
 ];
 
@@ -58,6 +58,11 @@ export const DISCOVER: GalleryItem[] = [
   { label: "Aston Martin — DB12", logo: "aston-martin-white", mark: "DB12", slug: "aston-db12", video: "/videos/wall/aston-db12.mp4", poster: "/videos/wall/posters/aston-db12.jpg" },
   { label: "Castle Air — AW139", logo: "castle-air-white", mark: "AW139", slug: "aw139", video: "/videos/wall/aw139.mp4", poster: "/videos/wall/posters/aw139.jpg" },
   { label: "Castle Air — AW109", logo: "castle-air-white", mark: "AW109", slug: "aw109", video: "/videos/wall/aw109.mp4", poster: "/videos/wall/posters/aw109.jpg" },
+  // the four Drive films that were transcoded but never wired (George)
+  { label: "Eleven Bibury", slug: "eleven-bibury", video: "/videos/wall/eleven-bibury.mp4", poster: "/videos/wall/posters/eleven-bibury.jpg" },
+  { label: "Pitch Event — Wrap Up", slug: "pitch-event", video: "/videos/wall/pitch-event-wrapup.mp4", poster: "/videos/wall/posters/pitch-event-wrapup.jpg" },
+  { label: "YouTube Winner — Wrap Up", slug: "youtube-winner", video: "/videos/wall/youtube-winner-wrapup.mp4", poster: "/videos/wall/posters/youtube-winner-wrapup.jpg" },
+  { label: "Event Highlights", slug: "event-highlights", video: "/videos/wall/highlight-v2.mp4", poster: "/videos/wall/posters/highlight-v2.jpg" },
 ];
 
 export const COMING: GalleryItem[] = [

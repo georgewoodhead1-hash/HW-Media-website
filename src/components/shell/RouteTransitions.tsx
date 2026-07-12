@@ -100,7 +100,7 @@ export default function RouteTransitions() {
       const rule = overlay.querySelector<HTMLElement>(".rt-rule");
 
       // arm the overlay in a clean state BEFORE it becomes visible
-      gsap.set(slats, { xPercent: 0 });
+      gsap.set(slats, { xPercent: 0, autoAlpha: 1 });
       slats.forEach((s, i) => gsap.set(s, { yPercent: i % 2 === 0 ? -105 : 105 }));
       gsap.set(card, { autoAlpha: 1, scale: 1, filter: "blur(0px)" });
       if (cardImgWrap) gsap.set(cardImgWrap, { clipPath: "inset(100% 0% 0% 0%)" });
@@ -222,9 +222,12 @@ export default function RouteTransitions() {
       .to(rule, { scaleX: 0, duration: 0.3, ease: "power2.in" }, 0.02)
       .to(card, { scale: 2.7, autoAlpha: 0, filter: "blur(9px)", duration: 0.75, ease: "power3.in" }, 0.06);
     // slats clear toward the destination
+    // every slat DISSOLVES through its exit (George: the last bars were
+    // popping off instead of animating out)
     if (dir === "up" || dir === "down") {
       tl.to(slats, {
         yPercent: dir === "up" ? -105 : 105,
+        autoAlpha: 0,
         duration: 0.8,
         ease: "power4.inOut",
         stagger: { each: 0.06, from: dir === "up" ? "start" : "end" },
@@ -232,6 +235,7 @@ export default function RouteTransitions() {
     } else if (dir === "right") {
       tl.to(slats, {
         xPercent: 105,
+        autoAlpha: 0,
         duration: 0.8,
         ease: "power4.inOut",
         stagger: { each: 0.06, from: "start" },
@@ -239,6 +243,7 @@ export default function RouteTransitions() {
     } else {
       tl.to(slats, {
         xPercent: (i: number) => (i < SLATS / 2 ? -105 : 105),
+        autoAlpha: 0,
         duration: 0.8,
         ease: "power4.inOut",
         stagger: { each: 0.06, from: "center" },

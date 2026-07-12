@@ -26,14 +26,14 @@ export default function LensIntro() {
     if (!wrap) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
-      gsap.set(".hero-bg", { autoAlpha: 1, clipPath: "none" });
+      gsap.set(".hero-bg", { autoAlpha: 1 });
       gsap.set(".hero-char", { autoAlpha: 1 });
       gsap.set(".hero-sub", { autoAlpha: 1, y: 0 });
       return;
     }
-    // the LENS: the reel wakes inside a small circle of glass and the lens
-    // opens to full frame on reveal
-    gsap.set(".hero-bg", { autoAlpha: 0, clipPath: "circle(14% at 50% 50%)" });
+    // the reel settles in plainly — the CIRCLE moment belongs to the
+    // loader's iris only (George: no second circle after the bars)
+    gsap.set(".hero-bg", { autoAlpha: 0, scale: 1.06 });
     gsap.set(".hero-char", { autoAlpha: 0 });
     gsap.set(".hero-sub", { autoAlpha: 0, y: 16 });
 
@@ -44,13 +44,10 @@ export default function LensIntro() {
       started = true;
       ctx = gsap.context(() => {
         gsap
-          .timeline({ delay: 0.15 })
-          .to(".hero-bg", { autoAlpha: 1, duration: 0.6, ease: "power2.out" }, 0)
-          // the lens opens — small circle of footage to full frame
-          .to(".hero-bg", { clipPath: "circle(75% at 50% 50%)", duration: 1.5, ease: "expo.inOut" }, 0.15)
-          .set(".hero-bg", { clipPath: "none" })
+          .timeline({ delay: 0.1 })
+          .to(".hero-bg", { autoAlpha: 1, scale: 1, duration: 1.1, ease: "power3.out" }, 0)
           // TYPE the motto on, character by character (no caret — binned)
-          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 1.0)
+          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 0.45)
           .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, ">0.05");
       }, wrap);
     };

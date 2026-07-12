@@ -5,7 +5,9 @@ import { EMAIL } from "@/content/site";
 // Set RESEND_API_KEY (and optionally CONTACT_FROM, a verified sender) in the Vercel
 // project env for delivery to go live.
 const MAX = { name: 80, email: 160, message: 4000 } as const;
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// stricter local part (audit M3): no quotes/angles/commas/semicolons —
+// keeps the reply_to we hand to Resend clean
+const EMAIL_RE = /^[A-Za-z0-9!#$%&*+/=?^_`{|}~.-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
 
 // Best-effort in-memory per-IP rate limit. On serverless this is per warm instance
 // (not global), but it cheaply stops naive floods / email-bomb scripts. For hard
@@ -37,6 +39,23 @@ interface Body {
 }
 
 export async function POST(req: Request): Promise<Response> {
+  // same-origin + strict content type — kills the text/plain JSON-CSRF
+  // flood vector (audit H1); browsers always send Origin on cross-site POST
+  const origin = req.headers.get("origin");
+  const host = req.headers.get("host");
+  if (origin && host && (() => { try { return new URL(origin).host !== host; } catch { return true; } })()) {
+    return NextResponse.json({ error: "Invalid request." }, { status: 403 });
+  }
+  const ctype = req.headers.get("content-type") ?? "";
+  if (!ctype.toLowerCase().startsWith("application/json")) {
+    return NextResponse.json({ error: "Invalid request." }, { status: 415 });
+  }
+  // cheap body cap before parsing (audit L2)
+  const clen = Number(req.headers.get("content-length") ?? 0);
+  if (clen > 20_000) {
+    return NextResponse.json({ error: "Message too large." }, { status: 413 });
+  }
+
   const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "unknown";
   if (rateLimited(ip)) {
     return NextResponse.json({ error: "Too many messages — please try again in a few minutes." }, { status: 429 });
@@ -64,13 +83,20 @@ export async function POST(req: Request): Promise<Response> {
     console.error("RESEND_API_KEY not set — contact form cannot send.");
     return NextResponse.json({ error: `The form isn't connected yet. Please email ${EMAIL} directly for now.` }, { status: 503 });
   }
+  // fail closed like the API key — never silently send from the Resend
+  // sandbox domain (audit L1)
+  const from = process.env.CONTACT_FROM;
+  if (!from) {
+    console.error("CONTACT_FROM not set — contact form cannot send.");
+    return NextResponse.json({ error: `The form isn't connected yet. Please email ${EMAIL} directly for now.` }, { status: 503 });
+  }
 
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        from: process.env.CONTACT_FROM ?? "HW Media <onboarding@resend.dev>",
+        from,
         to: [EMAIL],
         reply_to: email,
         subject: `New enquiry — ${firstName} ${lastName}`.trim(),

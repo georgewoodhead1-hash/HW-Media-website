@@ -56,7 +56,12 @@ export default function RouteTransitions() {
       const a = (e.target as HTMLElement).closest("a");
       if (!a) return;
       const href = a.getAttribute("href");
-      if (!href || !href.startsWith("/") || href.startsWith("//")) return;
+      if (!href || !href.startsWith("/")) return;
+      // origin-verified (audit M1): backslash hrefs normalise to another
+      // origin through the URL parser — never intercept those
+      try {
+        if (new URL(href, window.location.origin).origin !== window.location.origin) return;
+      } catch { return; }
       if (a.target === "_blank" || a.hasAttribute("download")) return;
       const [path] = href.split("#");
       if (!path || path === pathname) return;

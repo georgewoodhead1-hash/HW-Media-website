@@ -53,8 +53,20 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // audit L3: don't advertise the framework
+  poweredByHeader: false,
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [
+      { source: "/(.*)", headers: securityHeaders },
+      // SEO audit #1: the vercel.app host must never be indexed — its
+      // canonicals point at hwmedia.co.uk (pre-cutover). Scoped by host so
+      // the real domain is untouched at launch.
+      {
+        source: "/(.*)",
+        has: [{ type: "host", value: "(.*)\\.vercel\\.app" }],
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ];
   },
 };
 

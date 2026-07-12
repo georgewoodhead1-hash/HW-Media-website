@@ -1,61 +1,76 @@
-# HW Media — SEO Plan
+# HW Media — SEO Strategy
 
-## 1. How SEO works for HW Media
+Updated 12 Jul 2026 after the full pre-launch audit (audit ran read-only against localhost:3006 + source; findings folded in below). One change already shipped with the security deploy: the vercel.app address now sends `X-Robots-Tag: noindex`, so Google cannot index the temporary URL while the real domain still runs the old site. Everything else in this file is still to do.
 
-**Search.** Google ranks pages, not websites. Every phrase a buyer types needs one page built to answer it. The buyers who matter search things like "film production company London" and "commercial video production London". Right now the eight service pages should catch those searches, but each one holds about 40 words, so Google has almost nothing to rank. The fix is not a blog. It is making a small set of money pages genuinely substantial, written in Harry's real voice about real shoots.
+## 1. Where the site stands (audit verdict)
 
-**Video.** Google runs a separate video search layer, and YouTube is the second-biggest search engine. The films are the product, so this is the one channel where HW Media beats generic agencies. On the site, correct video markup and a video sitemap earn film thumbnails in search results. Off the site, a small curated YouTube channel is how video searches and AI engines actually find the work. The current video markup points at placeholder files with made-up dates, so today it does nothing.
+**Solid.** Every page has a unique title, description, canonical, OG and Twitter card, and one H1. Organization, Person and WebSite schema on every page; FAQ schema on home; VideoObject + breadcrumbs on all 34 case pages, and all 136 referenced video/poster files exist. The sitemap lists all 47 real routes. robots.txt is sane and blocks no AI crawlers. Headings, FAQ answers and briefs are real server-rendered text — the animations only mask them after load, so crawlers see everything.
 
-**Local.** When someone searches "film production company London", Google shows a map of three businesses above the normal results. That map runs on Google Business Profile data and reviews, not the website. HW Media has no profile yet. More important for a premium firm: producers who hear about Harry will Google "HW Media", and a profile with reviews from McLaren-tier clients confirms the positioning. An empty result does the opposite.
+**The gap, in one sentence:** the site is technically ready but says almost nothing a buyer searches for — the money phrases appear in zero visible sentences, the eight service pages average ~117 words, and no menu or footer even links to them.
 
-**AI answers.** When someone asks ChatGPT or Perplexity for the best production company in London, the AI looks for a company it recognises as real and quotes short factual passages word for word. Recognition comes mostly from mentions on other sites. AI crawlers do not run JavaScript, so anything hidden behind hover or scroll effects is invisible to them. HW Media's advantage is checkable proof: real films for McLaren, Nike, Ferrari and Land Rover.
+**The audit's ranked findings:**
 
-**Links.** Google trusts a domain partly by counting who links to it. Competitors have years of links; hwmedia.co.uk starts near zero. The good news is that a production company earns links with the work itself. Every film gets published and credited somewhere. The job is making sure each of those moments includes a link back to the site. Client credits on brand channels are the highest-quality links available, and they come from work already done.
+- CRITICAL — vercel.app indexable while canonicals point at the unlaunched domain. **Fixed 12 Jul (noindex header, host-scoped, lifts itself at cutover).**
+- HIGH — "film production company" / "video production" appear 0 times in visible body copy on home, /work and services. Service pages ~117 words each. Services unreachable from nav/footer; their breadcrumbs claim Home > About > Service. Loader blocks first paint ~5.3s on every load; hero is a 7MB video with no poster. Service pages ship no og:image and their descriptions are auto-cut mid-word.
+- MEDIUM — sitemap stamps every URL "modified now" on every fetch. llms.txt covers 6 of 34 case pages and 0 services. Six case pages are missing from the /work gallery (only reachable via next-project links). Video schema uses fake 1-January dates and no duration. Only 1 of 3 testimonials is in the HTML. /work has ~99 visible words.
+- LOW — /work description 12 chars over limit; "Showreel 2025 — Showreel for HW Media — HW Media" double-brand title; duplicate desktop/mobile heading sets; Trusted-by logos have empty alt text.
 
-## 2. Action plan
+## 2. The strategy — five moves, in order
 
-### Phase 0 — launch blockers (nothing counts until these are done)
+### Move 1 — Sprint the code fixes (George, ~1 day, before or at launch)
 
-1. Crawl the current live site on hwmedia.co.uk and build a 301 redirect map from every old URL to its new page, so existing rankings carry over instead of dying at the cutover. **George. High impact.**
-2. Point hwmedia.co.uk at the new site, confirm the vercel.app address redirects properly, and check afterwards that no vercel.app pages stay in Google's index. **George, with Harry supplying registrar access. High impact.**
-3. Verify the domain in Google Search Console and Bing, submit the sitemap, and request indexing on the home, work and all eight service pages. **George. High impact.**
-4. On launch day, test that AI crawlers like GPTBot and PerplexityBot can reach the site, since some DNS providers block them by default. **George. Medium impact, cheap insurance.**
-5. Install analytics and track the contact form submit, so every item below can be measured against real enquiries. **George. High impact — without this nothing can be proven.**
-6. Set up the Google Business Profile once the domain is live, after Harry decides whether to show a street address or register as a service-area business. **Both. High impact.**
+Everything here is mechanical and needs no copy from Harry.
 
-### Quick wins — this month
+1. Add the services to the footer and build a small /services hub; repoint service breadcrumbs to it. Google currently can't crawl to the money pages.
+2. Loader to ~2s and once per session; give the hero video a poster jpg and preload hint. This is the whole site's speed score.
+3. Service page metadata: an og:image per service and a hand-written ~150-character description each (no more auto-slicing).
+4. Sitemap: real per-page dates or drop the field.
+5. Regenerate llms.txt from projects.ts + services.ts so all 34 films and 8 services are listed, and it can never drift again.
+6. Add the six missing films to the /work gallery (or a plain text list of all 34 at the bottom).
+7. Render all three testimonials in the HTML, switch with CSS only.
+8. The small stuff: trim /work description, special-case the Showreel title, name the client logos (alt="McLaren" is entity proof), one visible intro paragraph on /work.
 
-1. Write the keyword map: one target phrase per page, agreed before any copy is written, so pages never compete with each other. **George. High impact.**
-2. Rebuild the eight service pages into real landing pages of 300–500 words each, with the target phrase in the heading, a quotable answer block, client name-drops and proper Service markup; George interviews Harry on a recorded call and drafts from the transcript. **Both. Highest ranking upside on the whole site.**
-3. Build a /services hub page and repoint the breadcrumbs so Google sees a clean cluster of service pages under one parent. **George. Medium impact.**
-4. Cut the loading screen to about two seconds, show it once per session, and give the hero a lightweight poster image, so Google's speed scores stop reading as poor. **George. High impact.**
-5. Fix the sitemap so dates reflect real content changes instead of stamping every page with the build date. **George. Low impact, quick.**
-6. Expand llms.txt from six case studies to all 33 films and all eight services, generated from the project data so it never drifts. **George. Medium impact.**
-7. Lock the exact business name, address and phone number, then put that block in the footer, on the contact page and in the site markup. **Both. Medium impact.**
-8. Run a personal review campaign: Harry sends an individual two-line ask to past client contacts, targeting around twelve reviews over eight weeks, each mentioning the project type in the client's own words. **Harry. High impact.**
-9. Make sure the homepage phrase "film production company in London", the /work page intro and every animation-gated heading exist as plain text in the raw HTML, and add a simple crawlable list of all 33 case links on the work page. **George. Medium impact.**
+### Move 2 — Launch right (George + Harry, cutover week)
 
-### Longer plays — the next quarter
+Order matters here. Nothing else counts until this is done.
 
-1. Move the 33 films to Vimeo, then fix the video markup in one pass with real embed links, true dates and durations, and ship a proper video sitemap; this unlocks film thumbnails in search for every case page. **Harry uploads, George wires. High impact.**
-2. Launch a curated YouTube channel with the 10–12 flagship films, keyworded titles, London set as location, and descriptions that credit Harry and link to the matching case and service pages. **Harry. High impact.**
-3. Deepen the six to eight flagship case studies into 150–250-word production stories with short director's notes, and cross-link every case page to its parent service page. **Harry supplies bullet points, George writes. High impact.**
-4. Build an automotive specialism page, since almost nobody else can show McLaren, Ferrari, Aston Martin and Land Rover together; this is the most defensible ranking on the site. **Both. High impact.**
-5. Run the client credit sweep: Harry asks each past client and agency to credit HW Media with a link wherever the film is already published, and makes the credit line standard in every delivery email going forward. **Harry. High impact.**
-6. Set up the short industry directory list — The Knowledge, KFTV, ProductionHub, Clutch, LBB, a full Vimeo profile, Bing Places and Apple Business Connect — all using the identical business details. **George. Medium impact.**
-7. Upgrade the McLaren case page into a full production breakdown, then pitch "how it was made" stories to Shots, Little Black Book and Directors Notes with that page as the link target. **Both. High impact, slower.**
-8. Enter three or four targeted awards a year and chase a Vimeo Staff Pick, then add every shortlist link to the site. **Harry budgets and enters, George wires. Medium impact.**
-9. Add four to six capped buyer-question pages, such as cost and timeline guides, only after Harry signs off on publishing price ranges. **Both, pending Harry's decision. Medium impact.**
-10. Keep the Business Profile alive with one post per new film and the same five FAQ answers the site already holds. **George. Medium impact, five minutes per film.**
-11. Review Search Console monthly and re-run the target ChatGPT and Perplexity questions quarterly, reporting rankings, AI mentions and form enquiries against the launch baseline. **George. This is how we know what is working.**
+1. Crawl the old hwmedia.co.uk and build a 301 map from every old URL to its new page.
+2. Point the domain at Vercel. The noindex header only matches vercel.app, so the real domain indexes normally from day one. Set the vercel.app URL to redirect to the domain.
+3. Verify in Google Search Console + Bing, submit the sitemap, request indexing on home, /work and all services.
+4. Confirm GPTBot and PerplexityBot can reach the site (some DNS providers block them).
+5. Analytics with the contact-form submit tracked — without this nothing below can be proven.
+6. Create the Google Business Profile (after Harry decides street address vs service-area). Not before the domain moves.
+
+### Move 3 — Say what we sell (George + Harry, the highest-upside work)
+
+The audit's core finding: Google can't rank the site for phrases no page says.
+
+1. Keyword map first: one target phrase per page, agreed before writing, so pages never compete.
+2. Put the exact phrase in one visible sentence or H2 on home, /work and each service page. Plain full sentences, house voice — the no-pitch-copy rule still applies.
+3. Rebuild the eight service pages to 300–500 words each: George records a call with Harry per service, drafts from the transcript. Target phrase in a real H2, a quotable answer block, client name-drops.
+4. Deepen 6–8 flagship case studies to 150–250-word production stories; cross-link each case to its parent service.
+5. Build the automotive page — McLaren, Ferrari, Aston Martin and Land Rover on one page is the most defensible ranking on the site.
+
+### Move 4 — Earn the authority (mostly Harry, the next quarter)
+
+1. Reviews: Harry personally asks past client contacts, two lines each, ~12 reviews over 8 weeks, each naming the project type.
+2. Client credit sweep: every place a film is already published gets an HW Media credit with a link; credit line becomes standard in every delivery email.
+3. Films to Vimeo, then fix the video schema in one pass — real dates, durations, embed links — and ship a video sitemap. This unlocks film thumbnails in search on 34 pages.
+4. Curated YouTube channel: 10–12 flagship films, keyworded titles, London location, descriptions linking to the matching case and service pages.
+5. Industry directories only: The Knowledge, KFTV, ProductionHub, Clutch, LBB, full Vimeo profile, Bing Places, Apple Business Connect — identical business details everywhere.
+6. Pitch "how it was made" stories (McLaren first) to Shots, Little Black Book, Directors Notes; enter 3–4 targeted awards a year; chase a Vimeo Staff Pick.
+
+### Move 5 — Measure (George, ongoing)
+
+Search Console monthly. Re-run the target ChatGPT/Perplexity questions quarterly. Report rankings, AI mentions and form enquiries against the launch baseline. Keep the Business Profile alive with one post per new film.
 
 ## 3. What not to do
 
-1. Do not start a blog or post on a schedule; the site earns its rankings from a small set of deep pages, not volume.
-2. Do not list on Yell, Bark or generic directories, and do not pay for listicle placements; a McLaren-tier brand on those pages damages the positioning and the links are worthless.
-3. Do not buy, incentivise or template review requests; Google suspends profiles for it, and this audience smells automation.
-4. Do not chase "videographer London" searches; that phrase means one person with a camera, which is the opposite of the brand.
-5. Do not promise Harry a branded knowledge panel or a fast local-pack ranking; the profile and branded search are near-certain wins, the rest takes months.
-6. Do not publish pricing anywhere without Harry's explicit sign-off.
-7. Do not create the Business Profile or any directory listing before the domain moves; every listing must point at hwmedia.co.uk from day one.
-8. Do not let sales language creep into SEO copy; plain full sentences in Harry's voice are both the brand rule and what AI engines quote.
+1. No blog, no posting schedule. The site ranks on a small set of deep pages, not volume.
+2. No Yell, Bark, generic directories or paid listicles. Worthless links, damaged positioning.
+3. No bought, incentivised or templated reviews. Google suspends profiles for it.
+4. Don't chase "videographer London" — that phrase means one person with a camera, the opposite of the brand.
+5. Don't promise Harry a knowledge panel or fast local-pack ranking. The profile and branded search are near-certain; the rest takes months.
+6. No pricing published anywhere without Harry's explicit sign-off.
+7. No Business Profile or directory listing before the domain moves.
+8. No sales language in SEO copy. Plain full sentences in Harry's voice are both the brand rule and what AI engines quote.

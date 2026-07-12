@@ -109,13 +109,16 @@ export default function OurWork() {
       // (heading + tiles), not the section: the section carries a 50vh black
       // runway after the stage, and the wipe finishes while Process is still
       // below that runway — tiles gone, a beat of black, THEN Process enters.
-      // runway tightened to 30vh (George: gap was too big) — the wipe window
-      // ends at 74%, Process enters at 70%, so the order still holds
+      // runway tightened to 30vh (George: gap was too big).
+      // HANG TIME (George: "fades away too quickly") — the wipe used to start
+      // the instant the stage bottom appeared (98%). Now the assembled grid
+      // holds for ~24vh of scroll first, and the wipe still completes at 48%,
+      // before Process enters (its top 72% trigger = stage bottom at 42%).
       const stage = root.querySelector<HTMLElement>(".ow-stage");
       const leave = ScrollTrigger.create({
         trigger: stage ?? root,
-        start: "bottom 98%",
-        end: "bottom 78%",
+        start: "bottom 74%",
+        end: "bottom 48%",
         scrub: true,
         onUpdate: (self) => {
           const p = self.progress;

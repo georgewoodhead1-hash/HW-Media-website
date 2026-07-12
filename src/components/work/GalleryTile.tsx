@@ -53,6 +53,9 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
           Coming soon
         </span>
       )}
+      {/* the reveal cover — a cream block that FALLS OFF the tile (the
+          transition builds the wall; parent animates .gt-cover away) */}
+      <span aria-hidden className="gt-cover absolute inset-0 z-10 bg-[#f5f1e6] will-change-transform" />
     </>
   );
 

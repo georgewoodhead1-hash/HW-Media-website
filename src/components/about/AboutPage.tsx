@@ -50,13 +50,25 @@ export default function AboutPage() {
     <>
       <PageBuild />
       <main ref={root} className="relative z-10 overflow-x-clip bg-[var(--bg)] text-[var(--fg)]">
-        {/* ── 1. THE TOP — title and two plain lines, built by the transition ── */}
-        <section data-surface="page" className="relative z-10 bg-[var(--bg)] px-5 pb-[10vh] pt-[24vh] md:px-10">
-          <h1 data-enter-words className="font-display text-[clamp(2.8rem,7vw,7rem)] leading-[0.95]">
+        {/* ── 1. THE TOP — the Monolog grammar (captured live from
+            bymonolog.com): a small geometric ornament over a CENTRED stack,
+            and the giant word bleeding off the bottom edge. Built by the
+            curtain: everything unmasks left-to-right with it. ── */}
+        <section data-surface="page" className="relative z-10 flex min-h-[92svh] flex-col items-center justify-center overflow-hidden bg-[var(--bg)] px-5 pb-[24vh] pt-[18vh] text-center md:min-h-screen md:px-10">
+          {/* the ornament — the house lens, drawn geometry */}
+          <svg data-enter aria-hidden className="mb-8 h-14 w-14 opacity-90" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.1">
+            <circle cx="32" cy="32" r="22" />
+            <ellipse cx="32" cy="32" rx="22" ry="9" />
+            <line x1="32" y1="2" x2="32" y2="12" />
+            <line x1="32" y1="52" x2="32" y2="62" />
+            <line x1="2" y1="32" x2="12" y2="32" />
+            <line x1="52" y1="32" x2="62" y2="32" />
+          </svg>
+          <h1 data-enter-words className="font-display text-[clamp(2.8rem,6.4vw,6.4rem)] leading-[0.95]">
             About HW Media.
           </h1>
-          <span aria-hidden data-enter-line className="mt-8 block h-px w-[min(52vw,640px)] bg-[var(--fg)]/60" />
-          <div className="mt-8 max-w-[58ch]">
+          <span aria-hidden data-enter-line className="mx-auto mt-8 block h-px w-[min(46vw,520px)] bg-[var(--fg)]/60" />
+          <div className="mt-8 max-w-[54ch]">
             <p data-enter className="text-[clamp(1.05rem,1.35vw,1.25rem)] leading-[1.6]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
               {INTRO_A}
             </p>
@@ -64,6 +76,15 @@ export default function AboutPage() {
               {INTRO_B}
             </p>
           </div>
+          {/* the giant word, bleeding off the bottom edge (Monolog) */}
+          <span
+            aria-hidden
+            data-enter
+            className="font-display pointer-events-none absolute bottom-[-0.18em] left-1/2 -translate-x-1/2 whitespace-nowrap text-[21vw] leading-none"
+            style={{ WebkitTextStroke: "1px rgba(245,241,230,0.16)", color: "transparent" }}
+          >
+            ABOUT
+          </span>
         </section>
 
         {/* ── 2. WHAT WE DO (kept) + Discover the work ── */}

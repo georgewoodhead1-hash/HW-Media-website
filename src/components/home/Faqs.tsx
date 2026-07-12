@@ -36,12 +36,13 @@ export default function Faqs() {
         const line = row.querySelector<HTMLElement>(".faq-line");
         const rest = Array.from(row.children).filter((c) => c !== line);
         if (line) gsap.set(line, { scaleX: 0, transformOrigin: "center center" });
-        gsap.set(rest, { autoAlpha: 0, y: 26 });
+        const step = gsap.utils.toArray<HTMLElement>(".faq-row", root).indexOf(row);
+        gsap.set(rest, { autoAlpha: 0, x: -34 - step * 14, y: 10 });
         const tl = gsap.timeline({
           scrollTrigger: { trigger: row, start: "top 86%", toggleActions: "play none none reverse" },
         });
         if (line) tl.to(line, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 0);
-        tl.to(rest, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.15);
+        tl.to(rest, { autoAlpha: 1, x: 0, y: 0, duration: 0.75, ease: "power3.out" }, 0.12);
         kills.push(() => { tl.scrollTrigger?.kill(); tl.kill(); });
       });
 
@@ -126,7 +127,7 @@ export default function Faqs() {
         {FAQS.map((f, i) => {
           const isOpen = open === i;
           return (
-            <div key={f.q} className="faq-row">
+            <div key={f.q} className="faq-row" style={{ marginLeft: `min(${i * 4.5}vw, ${i * 4.5}%)` }}>
               <span aria-hidden className="faq-line block h-px w-full bg-[var(--fg)]" />
               <button
                 type="button"
@@ -136,13 +137,13 @@ export default function Faqs() {
               >
                 <span className="flex items-baseline gap-5 md:gap-8">
                   <span
-                    className={`label-mono shrink-0 rounded-[2px] px-1.5 py-0.5 text-[11px] tracking-[0.2em] transition-colors duration-300 ${
+                    className={`label-mono shrink-0 rounded-[2px] px-2 py-1 text-[14px] tracking-[0.2em] transition-colors duration-300 ${
                       isOpen ? "bg-[var(--fg)] text-[var(--bg)]" : "text-[var(--fg)] group-hover:bg-[var(--fg)]/15"
                     }`}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-[clamp(1.7rem,2.9vw,2.7rem)] leading-[1.05] text-[var(--fg)]">
+                  <span className="font-display text-[clamp(2rem,3.5vw,3.3rem)] leading-[1.05] text-[var(--fg)]">
                     {f.q}
                   </span>
                 </span>
@@ -160,7 +161,7 @@ export default function Faqs() {
                 style={{ gridTemplateRows: isOpen ? "1fr" : "0fr", opacity: isOpen ? 1 : 0 }}
               >
                 <div className="overflow-hidden">
-                  <p className="max-w-2xl pb-6 text-[15px] leading-relaxed text-[var(--fg)] md:pl-[3.2rem] md:text-[17px]">
+                  <p className="max-w-2xl pb-6 text-[16px] leading-relaxed text-[var(--fg)] md:pl-[3.6rem] md:text-[18px]">
                     {f.a}
                   </p>
                 </div>

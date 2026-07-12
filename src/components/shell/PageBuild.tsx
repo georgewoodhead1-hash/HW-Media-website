@@ -4,13 +4,14 @@ import { useLayoutEffect } from "react";
 import { gsap } from "@/lib/gsap";
 import { onPageEntered } from "@/lib/entrance";
 
-// The page's own build-in, v2 — STAGED like the services page (George's
-// reference for "the words come on, then the line, then the page builds"):
+// The page's own build-in, v4 — the page is UNMASKED by the transition,
+// never faded (George):
 //   1. [data-enter-words]  — heading splits into words that rise from clips
 //   2. [data-enter-line]   — hairlines draw across
-//   3. [data-enter]        — everything else rises in DOM order
-// Runs once the route transition's cover is clearing (hw:page-entered), so
-// the build is what you watch as the slats leave — never a blank page.
+//   3. [data-enter]        — clip-path wipes open in the SAME DIRECTION the
+//      cover is clearing (html[data-transition-dir]) — content never moves
+//      or fades, it is revealed in place, like the cover blocks leaving
+// Runs once the route transition's cover is clearing (hw:page-entered).
 export default function PageBuild() {
   useLayoutEffect(() => {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
@@ -45,23 +46,23 @@ export default function PageBuild() {
     const lines = Array.from(main.querySelectorAll<HTMLElement>("[data-enter-line]"));
     gsap.set(lines, { scaleX: 0, transformOrigin: "left center" });
 
-    // the build travels WITH the cover's motion (George: the transition
-    // BUILDS the page — one workflow, not a fade)
+    // the reveal wipes in the SAME direction the cover clears — the
+    // transition literally unmasks the page (no movement, no fade)
     const dir = document.documentElement.dataset.transitionDir ?? "up";
-    const from =
-      dir === "up" ? { y: 84, x: 0 } :
-      dir === "down" ? { y: -64, x: 0 } :
-      dir === "right" ? { y: 0, x: -84 } :
-      { y: 48, x: 0 };
+    const hidden =
+      dir === "up" ? "inset(100% 0% 0% 0%)" :      // reveals bottom → top
+      dir === "down" ? "inset(0% 0% 100% 0%)" :    // reveals top → bottom
+      dir === "right" ? "inset(0% 100% 0% 0%)" :   // reveals left → right
+      "inset(0% 100% 0% 0%)";                       // centre/shades: sweep across
 
     const enters = Array.from(main.querySelectorAll<HTMLElement>("[data-enter]"));
-    gsap.set(enters, { autoAlpha: 0, x: from.x, y: from.y });
+    gsap.set(enters, { clipPath: hidden });
 
     let restored = false;
     const restoreAll = () => {
       if (restored) return;
       restored = true;
-      gsap.set(enters, { clearProps: "opacity,visibility,transform" });
+      gsap.set(enters, { clearProps: "clipPath,opacity,visibility,transform" });
       gsap.set(lines, { clearProps: "transform" });
       restore.forEach((r) => r());
     };
@@ -79,7 +80,7 @@ export default function PageBuild() {
         at += 0.3;
       }
       if (enters.length) {
-        tl.to(enters, { autoAlpha: 1, x: 0, y: 0, duration: 0.85, ease: "power3.out", stagger: 0.12 }, at);
+        tl.to(enters, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.85, ease: "power4.inOut", stagger: 0.12 }, at);
       }
     });
 

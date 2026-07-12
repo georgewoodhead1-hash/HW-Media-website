@@ -26,14 +26,17 @@ export default function LensIntro() {
     if (!wrap) return;
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduced) {
+      gsap.set(".hero-bar", { autoAlpha: 0 });
       gsap.set(".hero-bg", { autoAlpha: 1 });
       gsap.set(".hero-char", { autoAlpha: 1 });
       gsap.set(".hero-sub", { autoAlpha: 1, y: 0 });
       return;
     }
-    // the reel settles in plainly — the CIRCLE moment belongs to the
-    // loader's iris only (George: no second circle after the bars)
-    gsap.set(".hero-bg", { autoAlpha: 0, scale: 1.06 });
+    // BLACK BARS stand in front of the hero; the reveal LIFTS them to
+    // unveil the reel and the headline (George: the section is built by
+    // the transition, never a fade)
+    gsap.set(".hero-bar", { yPercent: 0 });
+    gsap.set(".hero-bg", { autoAlpha: 1, scale: 1.04 });
     gsap.set(".hero-char", { autoAlpha: 0 });
     gsap.set(".hero-sub", { autoAlpha: 0, y: 16 });
 
@@ -44,10 +47,12 @@ export default function LensIntro() {
       started = true;
       ctx = gsap.context(() => {
         gsap
-          .timeline({ delay: 0.1 })
-          .to(".hero-bg", { autoAlpha: 1, scale: 1, duration: 1.1, ease: "power3.out" }, 0)
-          // TYPE the motto on, character by character (no caret — binned)
-          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 0.45)
+          .timeline({ delay: 0.05 })
+          // the bars LIFT one by one — the reel is unveiled beneath them
+          .to(".hero-bar", { yPercent: -101, duration: 0.85, ease: "power4.inOut", stagger: 0.07 }, 0)
+          .to(".hero-bg", { scale: 1, duration: 1.4, ease: "power3.out" }, 0.1)
+          // then the motto TYPES on (the write-in George likes)
+          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 0.75)
           .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, ">0.05");
       }, wrap);
     };
@@ -145,6 +150,13 @@ export default function LensIntro() {
           loop
           playsInline
         />
+        {/* the reveal bars — five black columns that lift away */}
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-20 flex">
+          {Array.from({ length: 5 }, (_, i) => (
+            <div key={i} className="hero-bar h-full flex-1 bg-[#050505] will-change-transform" style={{ marginLeft: i === 0 ? 0 : -1 }} />
+          ))}
+        </div>
+
         {/* HEADLINE — ONE line, solid WHITE (George binned the difference-blend
             interplay: the heading read brown against the footage) */}
         <div className="hero-head-layer pointer-events-none absolute left-0 top-[39%] px-5 will-change-transform md:px-10">

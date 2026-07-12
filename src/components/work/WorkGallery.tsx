@@ -20,23 +20,24 @@ export default function WorkGallery() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     let cancelEnter: (() => void) | null = null;
     const ctx = gsap.context(() => {
-      const tiles = gsap.utils.toArray<HTMLElement>(".gtile");
-      const featured = tiles.slice(0, FEATURED.length);
-      const rest = tiles.slice(FEATURED.length);
+      const covers = gsap.utils.toArray<HTMLElement>(".gt-cover");
+      const featured = covers.slice(0, FEATURED.length);
+      const rest = covers.slice(FEATURED.length);
 
-      gsap.set(tiles, { autoAlpha: 0, y: 96 });
+      gsap.set(covers, { yPercent: 0 });
 
-      // Top tiles BUILD WITH THE TRANSITION: the weave clears upward and the
-      // wall lifts into place beneath it, tile by tile in reading order —
-      // the transition constructs the page (George), never a fade.
+      // THE WALL IS BUILT BY THE TRANSITION (George): every tile sits under
+      // a cream block — the same cream as the cover slats — and the blocks
+      // FALL OFF one by one in reading order as the weave clears upward.
+      // No fades anywhere.
       cancelEnter = onPageEntered(() => {
-        gsap.to(featured, { autoAlpha: 1, y: 0, duration: 0.95, ease: "power3.out", stagger: 0.09, delay: 0.05 });
+        gsap.to(featured, { yPercent: 103, duration: 0.85, ease: "power4.inOut", stagger: 0.09, delay: 0.08 });
       });
 
-      // The rest reveal on scroll as you reach them — snappy, not laboured.
+      // The rest shed their blocks as you reach them.
       ScrollTrigger.batch(rest, {
-        start: "top 96%",
-        onEnter: (els) => gsap.to(els, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out", stagger: 0.1, overwrite: true }),
+        start: "top 92%",
+        onEnter: (els) => gsap.to(els, { yPercent: 103, duration: 0.75, ease: "power4.inOut", stagger: 0.1, overwrite: true }),
       });
 
       // guard: [data-ghead] only exists on some layouts — targeting it

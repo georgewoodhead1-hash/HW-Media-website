@@ -227,7 +227,7 @@ export default function Testimonials() {
 
       {/* square film on the right — capped size (client: it got way too
           big), text column stretched to meet its top and bottom */}
-      <div className="md:grid md:grid-cols-[1.5fr_1fr] md:items-stretch md:gap-12">
+      <div className="md:grid md:grid-cols-[1.15fr_1fr] md:items-start md:gap-10">
         {/* LEFT — the 1820-style showcase: one voice at a time, big.
             Mobile: compressed + centred (George) */}
         <div className="tst-copy flex flex-col justify-between text-center will-change-transform md:text-left">
@@ -293,9 +293,10 @@ export default function Testimonials() {
           </div>
         </div>
 
-        {/* RIGHT — the SQUARE film window, capped; the square sets the row
-            height, the text column stretches to match top and bottom */}
-        <div className="tst-film mx-auto mt-7 w-full max-w-[480px] md:mx-0 md:mt-0 md:justify-self-end">
+        {/* RIGHT — the SQUARE film window: bigger, pulled toward centre,
+            its top aligned with the top of the quote (the mt mirrors the
+            brand-logo row above the quote), sat a touch lower (client) */}
+        <div className="tst-film mx-auto mt-7 w-full max-w-[600px] md:mx-0 md:mt-[4.6rem] md:justify-self-start">
           <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black">
             {TESTIMONIALS.map((t, i) => {
               const film = filmFor(t.slug);

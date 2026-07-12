@@ -46,13 +46,13 @@ export default function FeatureBand() {
         // below the FAQ line, already riding (no dead black run-up)
         start: "top bottom",
         end: "bottom bottom",
-        scrub: 0.8,
+        scrub: 1.4,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
           // ONE MOTION (George): a single eased progress drives y and scale
           // together — no phase changes, no speed steps, no pauses
-          const e = sm(0.02, 0.88, p);
+          const e = sm(0.0, 0.92, p);
           gsap.set(frame, {
             y: (1 - e) * 34 + "vh",
             scale: 0.24 + e * 0.76,

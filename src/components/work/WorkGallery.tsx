@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { onPageEntered } from "@/lib/entrance";
 import { COMING, DISCOVER, FEATURED } from "@/content/gallery";
 import Rule from "@/components/shell/Rule";
 import GalleryTile from "./GalleryTile";
@@ -17,16 +18,20 @@ export default function WorkGallery() {
     const el = root.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let cancelEnter: (() => void) | null = null;
     const ctx = gsap.context(() => {
       const tiles = gsap.utils.toArray<HTMLElement>(".gtile");
       const featured = tiles.slice(0, FEATURED.length);
       const rest = tiles.slice(FEATURED.length);
 
-      gsap.set(tiles, { autoAlpha: 0, y: 56 });
+      gsap.set(tiles, { autoAlpha: 0, y: 96 });
 
-      // Top six — NOT scroll-driven (they sit above the fold). Reveal QUICKLY
-      // once the page lands (George: the films didn't come up fast enough).
-      gsap.to(featured, { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out", stagger: 0.12, delay: 0.55 });
+      // Top tiles BUILD WITH THE TRANSITION: the weave clears upward and the
+      // wall lifts into place beneath it, tile by tile in reading order —
+      // the transition constructs the page (George), never a fade.
+      cancelEnter = onPageEntered(() => {
+        gsap.to(featured, { autoAlpha: 1, y: 0, duration: 0.95, ease: "power3.out", stagger: 0.09, delay: 0.05 });
+      });
 
       // The rest reveal on scroll as you reach them — snappy, not laboured.
       ScrollTrigger.batch(rest, {
@@ -41,7 +46,7 @@ export default function WorkGallery() {
       }
       ScrollTrigger.refresh();
     }, el);
-    return () => ctx.revert();
+    return () => { cancelEnter?.(); ctx.revert(); };
   }, []);
 
   return (

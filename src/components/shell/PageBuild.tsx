@@ -45,8 +45,17 @@ export default function PageBuild() {
     const lines = Array.from(main.querySelectorAll<HTMLElement>("[data-enter-line]"));
     gsap.set(lines, { scaleX: 0, transformOrigin: "left center" });
 
+    // the build travels WITH the cover's motion (George: the transition
+    // BUILDS the page — one workflow, not a fade)
+    const dir = document.documentElement.dataset.transitionDir ?? "up";
+    const from =
+      dir === "up" ? { y: 84, x: 0 } :
+      dir === "down" ? { y: -64, x: 0 } :
+      dir === "right" ? { y: 0, x: -84 } :
+      { y: 48, x: 0 };
+
     const enters = Array.from(main.querySelectorAll<HTMLElement>("[data-enter]"));
-    gsap.set(enters, { autoAlpha: 0, y: 26 });
+    gsap.set(enters, { autoAlpha: 0, x: from.x, y: from.y });
 
     let restored = false;
     const restoreAll = () => {
@@ -70,7 +79,7 @@ export default function PageBuild() {
         at += 0.3;
       }
       if (enters.length) {
-        tl.to(enters, { autoAlpha: 1, y: 0, duration: 0.75, ease: "power3.out", stagger: 0.12 }, at);
+        tl.to(enters, { autoAlpha: 1, x: 0, y: 0, duration: 0.85, ease: "power3.out", stagger: 0.12 }, at);
       }
     });
 

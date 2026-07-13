@@ -70,11 +70,14 @@ export default function OurWork() {
       gsap.set(bars, { autoAlpha: 0, yPercent: 34, scale: 0.97, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
-      // ENTRANCE — type "Featured Projects" like a typewriter AS YOU SCROLL in: the
-      // chars light up tied to scroll, the gold caret fading out as the line finishes.
-      const typeTl = gsap.timeline({ scrollTrigger: { trigger: root, start: "top 55%", end: "top 32%", scrub: 0.7 } });
-      typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.05, ease: "none" }, 0);
-      if (underline) typeTl.to(underline, { scaleX: 1, duration: 0.5, ease: "none" }, 0.1);
+      // ENTRANCE — "Featured Projects" types itself ONCE when the section
+      // arrives (motion review: scrub-typing strands the heading half-written
+      // whenever the user pauses; il capo's text always COMMITS)
+      const typeTl = gsap.timeline({
+        scrollTrigger: { trigger: root, start: "top 55%", toggleActions: "play none none reverse" },
+      });
+      typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.045, ease: "none" }, 0);
+      if (underline) typeTl.to(underline, { scaleX: 1, duration: 0.6, ease: "power2.out" }, 0.2);
 
       // ENTRANCE on passage — the bars fly in one after another as the
       // section arrives; the page NEVER stops (1820: no pins anywhere).

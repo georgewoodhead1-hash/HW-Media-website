@@ -60,7 +60,7 @@ export default function ContactForm() {
         <input name="firstName" placeholder="First name" aria-label="First name" autoComplete="given-name" maxLength={80} className={FIELD} required />
         <input name="lastName" placeholder="Last name (optional)" aria-label="Last name (optional)" autoComplete="family-name" maxLength={80} className={FIELD} />
       </div>
-      <div data-enter>
+      <div data-enter="ltr">
         <input type="email" name="email" placeholder="Email address" aria-label="Email address" autoComplete="email" maxLength={160} className={FIELD} required />
       </div>
       <div data-enter>

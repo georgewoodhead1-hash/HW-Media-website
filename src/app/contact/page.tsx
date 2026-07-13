@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import FooterReveal from "@/components/shell/FooterReveal";
 import ContactForm from "@/components/contact/ContactForm";
 import PageBuild from "@/components/shell/PageBuild";
 
@@ -56,7 +55,7 @@ export default function Contact() {
           <ContactForm />
         </div>
       </main>
-      <FooterReveal />
+      {/* NO footer here (George): the contact page is just the contact page */}
     </>
   );
 }

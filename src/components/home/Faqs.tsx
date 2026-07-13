@@ -75,7 +75,7 @@ export default function Faqs() {
       data-chapter="06 — FAQs"
       // a short black beat after the closer-line wipe (the pen is gone —
       // the story band's small-film rise follows straight on)
-      className="relative z-30 bg-[var(--bg)] px-5 pb-[10vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[12vh]"
+      className="relative z-30 bg-[var(--bg)] px-5 pb-[5vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[7vh]"
       aria-label="Frequently asked questions"
     >
       {/* header: centred title with dynamic lines either side */}

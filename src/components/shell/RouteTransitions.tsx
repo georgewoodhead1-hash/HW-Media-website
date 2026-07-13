@@ -5,37 +5,45 @@ import { usePathname, useRouter } from "next/navigation";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { getLenis, scrollMemory, navIntent } from "@/lib/lenis";
 
-// Page-to-page transform, v7 (George's spec):
+// Page-to-page transform, v8 (George, 2026-07-13):
 //  - the cover carries ONLY the destination word — no photo, no rule
-//  - every destination has its OWN cover style, close and open:
-//      HOME     cascade — columns pour in from the top, sweep out downward
-//      WORK     weave — columns alternate top/bottom, clear UPWARD (and the
-//               work wall builds tile-by-tile in sync with that lift)
-//      ABOUT    curtain — two halves draw in from left and right, then part
-//      CONTACT  shades — horizontal slats slide in alternating sides, then
-//               slide back out (venetian)
-//  - the next page BUILDS out of the motion: PageBuild reads the
-//    transition's direction (html[data-transition-dir]) and constructs
-//    elements travelling WITH the clearing cover — one workflow, no fade
+//  - every destination has its OWN cover, close and open:
+//      HOME     sweep — three skewed layers race in from the left like film
+//               through a gate (cream / dark cream / black), then peel on
+//               through to the right; the hero's own black bars finish the
+//               build ("go crazy, really impressive")
+//      WORK     weave — columns alternate top/bottom, clear UPWARD (the
+//               work wall builds tile-by-tile in sync). UNTOUCHED — the
+//               reference everything else is judged against.
+//      ABOUT    corners — four solid boxes converge gradually from the four
+//               corners, the word lands in the middle, then the whole cover
+//               SPIRALS open like a lens iris and the page unmasks in a
+//               circle from the centre (PageBuild dir "iris")
+//      CONTACT  shades — horizontal slats slide in alternating sides; the
+//               return leg is TIGHTER: slats accelerate out while the form
+//               builds in venetian strips beneath them
+//  - the next page BUILDS out of the motion: PageBuild reads
+//    html[data-transition-dir] and constructs elements travelling WITH the
+//    clearing cover — one workflow, no fade
 //
 // Carries all QA/review fixes: non-destructive OPEN cleanup, open-timeline
 // serialization on interrupt, pinned filter starts (no black flash),
 // back-during-cover abort, navIntent click-marking, Lenis stop/start,
-// slats dissolve through exits, pointer release as the cover clears.
+// URL-origin-verified link interception (audit M1).
 
 const COLS = 6;
 const ROWS = 6;
 
-type Dir = "up" | "right" | "center" | "down";
-type Style = "cascade" | "weave" | "curtain" | "shades";
+type Dir = "up" | "right" | "center" | "down" | "iris";
+type Style = "sweep" | "weave" | "curtain" | "shades" | "corners" | "cascade";
 
 function planFor(path: string): { dir: Dir; style: Style; label: string } {
   if (path.startsWith("/work")) return { dir: "up", style: "weave", label: "Work" };
-  if (path.startsWith("/about")) return { dir: "right", style: "curtain", label: "About" };
-  if (path.startsWith("/services")) return { dir: "right", style: "curtain", label: "Services" };
+  if (path.startsWith("/about")) return { dir: "iris", style: "corners", label: "About" };
+  if (path.startsWith("/services")) return { dir: "iris", style: "corners", label: "Services" };
   if (path.startsWith("/contact")) return { dir: "center", style: "shades", label: "Contact" };
   if (path.startsWith("/privacy")) return { dir: "down", style: "cascade", label: "Privacy" };
-  return { dir: "down", style: "cascade", label: "Home" };
+  return { dir: "right", style: "sweep", label: "Home" };
 }
 
 export default function RouteTransitions() {
@@ -85,23 +93,35 @@ export default function RouteTransitions() {
 
       const cols = overlay.querySelectorAll<HTMLElement>(".rt-col");
       const rows = overlay.querySelectorAll<HTMLElement>(".rt-row");
+      const corners = overlay.querySelectorAll<HTMLElement>(".rt-corner");
+      const cornerWrap = overlay.querySelector<HTMLElement>(".rt-cornerwrap");
+      const sweeps = overlay.querySelectorAll<HTMLElement>(".rt-sweep");
       const label = overlay.querySelector<HTMLElement>(".rt-label");
-      const isRows = plan.style === "shades";
-      const active = isRows ? rows : cols;
-      const idle = isRows ? cols : rows;
 
       // arm a clean stage BEFORE the overlay becomes visible
-      gsap.set(idle, { autoAlpha: 0 });
-      gsap.set(active, { autoAlpha: 1, xPercent: 0, yPercent: 0 });
+      gsap.set([cols, rows, corners, sweeps], { autoAlpha: 0 });
+      gsap.set(cornerWrap, { rotation: 0, scale: 1, autoAlpha: 1 });
+
       if (plan.style === "weave") {
-        active.forEach((s, i) => gsap.set(s, { yPercent: i % 2 === 0 ? -105 : 105 }));
+        gsap.set(cols, { autoAlpha: 1, xPercent: 0 });
+        cols.forEach((s, i) => gsap.set(s, { yPercent: i % 2 === 0 ? -105 : 105 }));
       } else if (plan.style === "cascade") {
-        gsap.set(active, { yPercent: -105 });
-      } else if (plan.style === "curtain") {
-        active.forEach((s, i) => gsap.set(s, { xPercent: i < COLS / 2 ? -105 : 105 }));
+        gsap.set(cols, { autoAlpha: 1, xPercent: 0, yPercent: -105 });
+      } else if (plan.style === "corners") {
+        // four boxes waiting just off their corners
+        const off = [
+          { xPercent: -104, yPercent: -104 }, // top-left
+          { xPercent: 104, yPercent: -104 },  // top-right
+          { xPercent: -104, yPercent: 104 },  // bottom-left
+          { xPercent: 104, yPercent: 104 },   // bottom-right
+        ];
+        corners.forEach((c, i) => gsap.set(c, { autoAlpha: 1, ...off[i], rotation: 0 }));
+      } else if (plan.style === "sweep") {
+        gsap.set(sweeps, { autoAlpha: 1, xPercent: -106, skewX: -9 });
       } else {
         // shades: horizontal slats from alternating sides
-        active.forEach((s, i) => gsap.set(s, { xPercent: i % 2 === 0 ? -105 : 105 }));
+        gsap.set(rows, { autoAlpha: 1, yPercent: 0 });
+        rows.forEach((s, i) => gsap.set(s, { xPercent: i % 2 === 0 ? -105 : 105 }));
       }
       if (label) { label.textContent = plan.label; gsap.set(label, { yPercent: 120 }); }
       overlay.style.pointerEvents = "auto";
@@ -144,22 +164,26 @@ export default function RouteTransitions() {
           0);
       }
 
-      // the cover, in its destination's style — ONE rhythm for all four
-      // (George: "the bars need to be in the same rhythm"): every close is
-      // 0.7s power4.inOut at 0.055 per slat; only the geometry differs
+      // the cover, in its destination's style — one shared rhythm
       if (plan.style === "weave") {
-        tl.to(active, { yPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "edges" } }, 0);
+        tl.to(cols, { yPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "edges" } }, 0);
       } else if (plan.style === "cascade") {
-        tl.to(active, { yPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
-      } else if (plan.style === "curtain") {
-        tl.to(active, { xPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "edges" } }, 0);
+        tl.to(cols, { yPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
+      } else if (plan.style === "corners") {
+        // gradual, weighty convergence (George: "nice and gradually")
+        tl.to(corners, { xPercent: 0, yPercent: 0, duration: 0.9, ease: "power3.inOut", stagger: 0.07 }, 0);
+      } else if (plan.style === "sweep") {
+        // three skewed layers race in and un-skew as they land
+        tl.to(sweeps, { xPercent: 0, skewX: 0, duration: 0.78, ease: "power4.inOut", stagger: 0.085 }, 0);
       } else {
-        tl.to(active, { xPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
+        tl.to(rows, { xPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
       }
 
-      // the word — just the word, centred
-      tl.to(label, { yPercent: 0, duration: 0.6, ease: "expo.out" }, 0.55)
-        .to({}, { duration: 0.22 });
+      // the word — just the word, centred. It NEVER parks (motion review:
+      // an absolute freeze reads as loading; il capo's hold drifts) — it
+      // lands, keeps drifting, and the open picks the drift up seamlessly.
+      tl.to(label, { yPercent: 0, duration: 0.55, ease: "expo.out" }, 0.5)
+        .to(label, { yPercent: -8, duration: 0.22, ease: "none" }, 1.05);
     };
 
     document.addEventListener("click", onClick, true);
@@ -176,10 +200,12 @@ export default function RouteTransitions() {
     if (!overlay) return;
     const cols = overlay.querySelectorAll<HTMLElement>(".rt-col");
     const rows = overlay.querySelectorAll<HTMLElement>(".rt-row");
+    const corners = overlay.querySelectorAll<HTMLElement>(".rt-corner");
+    const cornerWrap = overlay.querySelector<HTMLElement>(".rt-cornerwrap");
+    const sweeps = overlay.querySelectorAll<HTMLElement>(".rt-sweep");
     const label = overlay.querySelector<HTMLElement>(".rt-label");
     const main = document.querySelector("main");
     const { style } = pending.current;
-    const active = style === "shades" ? rows : cols;
 
     const done = () => {
       getLenis()?.start();
@@ -200,42 +226,52 @@ export default function RouteTransitions() {
     openTl.current = tl;
     tl.set(overlay, { pointerEvents: "none" }, 0.3);
 
-    // the word leaves first
-    tl.to(label, { yPercent: -130, duration: 0.32, ease: "power2.in" }, 0);
+    // the word picks its drift straight back up — no freeze between legs
+    tl.fromTo(label, { yPercent: -8 }, { yPercent: -130, duration: 0.3, ease: "power2.in" }, 0);
 
-    // the cover leaves in its own style, dissolving as it goes — same
-    // 0.78s / 0.055 rhythm on every open, matching the close
+    // the cover leaves in its own style — OPAQUE the whole way (motion
+    // review: a panel you can see through mid-slide stops reading as a
+    // curtain and starts reading as a compositing artifact; il capo's
+    // covers are solid until they're gone)
     if (style === "weave") {
       // clears UPWARD — the work wall lifts into place beneath it
-      tl.to(active, { yPercent: -105, autoAlpha: 0, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0.22);
+      tl.to(cols, { yPercent: -105, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0.14);
     } else if (style === "cascade") {
-      // pours on DOWN in the same left-to-right order it arrived — one
-      // continuous rhythm through the whole cover (George)
-      tl.to(active, { yPercent: 105, autoAlpha: 0, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0.22);
-    } else if (style === "curtain") {
-      tl.to(active, {
-        xPercent: (i: number) => (i < COLS / 2 ? -105 : 105),
-        autoAlpha: 0,
-        duration: 0.78,
-        ease: "power4.inOut",
-        stagger: { each: 0.055, from: "center" },
-      }, 0.22);
+      tl.to(cols, { yPercent: 105, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0.14);
+    } else if (style === "corners") {
+      // THE LENS SPIRAL (George): the whole cover rotates about the centre
+      // while the four blades fly back out through their corners — an iris
+      // opening — and the page unmasks in a circle beneath it
+      const off = [
+        { xPercent: -140, yPercent: -140 },
+        { xPercent: 140, yPercent: -140 },
+        { xPercent: -140, yPercent: 140 },
+        { xPercent: 140, yPercent: 140 },
+      ];
+      tl.to(cornerWrap, { rotation: 80, scale: 1.18, duration: 1.0, ease: "power3.inOut" }, 0.12);
+      corners.forEach((c, i) => {
+        tl.to(c, { ...off[i], rotation: -22, duration: 0.9, ease: "power3.in" }, 0.18 + i * 0.05);
+      });
+    } else if (style === "sweep") {
+      // the layers keep travelling — in from the left, out through the
+      // right, last-in first-out; one continuous pass across the screen
+      tl.to(sweeps, { xPercent: 106, skewX: 7, duration: 0.8, ease: "power4.inOut", stagger: { each: 0.075, from: "end" } }, 0.14);
     } else {
-      // shades slide back out the way they came
-      tl.to(active, {
+      // shades slide back out the way they came — solid, fast, dense
+      tl.to(rows, {
         xPercent: (i: number) => (i % 2 === 0 ? 105 : -105),
-        autoAlpha: 0,
-        duration: 0.78,
+        duration: 0.68,
         ease: "power4.inOut",
-        stagger: { each: 0.055, from: "start" },
-      }, 0.22);
+        stagger: { each: 0.045, from: "start" },
+      }, 0.12);
     }
 
     if (main) {
       tl.to(main, { y: 0, duration: 1.0, ease: "power3.out" }, 0.3);
     }
-    // the page's build runs WITH the clearing cover
-    tl.call(() => window.dispatchEvent(new Event("hw:page-entered")), [], 0.34);
+    // the page's build runs WITH the clearing cover — early, so the
+    // destination is already alive as it's revealed (motion review)
+    tl.call(() => window.dispatchEvent(new Event("hw:page-entered")), [], style === "shades" ? 0.2 : 0.28);
 
     return () => {
       // NON-destructive: the next CLOSE arms its own cover
@@ -251,7 +287,7 @@ export default function RouteTransitions() {
       className="pointer-events-none fixed inset-0 z-[220]"
       style={{ visibility: "hidden" }}
     >
-      {/* vertical columns — cascade / weave / curtain */}
+      {/* vertical columns — weave / cascade */}
       <div className="absolute inset-0 flex">
         {Array.from({ length: COLS }, (_, i) => (
           <div key={`c${i}`} className="rt-col h-full flex-1 bg-[#f5f1e6] will-change-transform" style={{ marginLeft: i === 0 ? 0 : -1 }} />
@@ -262,6 +298,20 @@ export default function RouteTransitions() {
         {Array.from({ length: ROWS }, (_, i) => (
           <div key={`r${i}`} className="rt-row w-full flex-1 bg-[#f5f1e6] will-change-transform" style={{ marginTop: i === 0 ? 0 : -1 }} />
         ))}
+      </div>
+      {/* four corner blades — corners (About/Services); oversized so the
+          spiral never shows a gap mid-rotation */}
+      <div className="rt-cornerwrap absolute inset-[-12%] will-change-transform">
+        <div className="rt-corner absolute left-0 top-0 h-[52%] w-[52%] bg-[#f5f1e6] will-change-transform" />
+        <div className="rt-corner absolute right-0 top-0 h-[52%] w-[52%] bg-[#f5f1e6] will-change-transform" />
+        <div className="rt-corner absolute bottom-0 left-0 h-[52%] w-[52%] bg-[#f5f1e6] will-change-transform" />
+        <div className="rt-corner absolute bottom-0 right-0 h-[52%] w-[52%] bg-[#f5f1e6] will-change-transform" />
+      </div>
+      {/* three sweep layers — home */}
+      <div className="absolute inset-0">
+        <div className="rt-sweep absolute inset-0 bg-[#0a0a08] will-change-transform" />
+        <div className="rt-sweep absolute inset-0 bg-[#e9e5d8] will-change-transform" />
+        <div className="rt-sweep absolute inset-0 bg-[#f5f1e6] will-change-transform" />
       </div>
       {/* the word — nothing else */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden">

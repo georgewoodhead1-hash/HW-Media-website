@@ -4,27 +4,24 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import TitleRule from "@/components/shell/TitleRule";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { safePlay } from "@/lib/video";
 
-// 04 — OUR PROCESS, v9 (George, 2026-07-13): HORIZONTAL, with the words
-// FRONT AND CENTRE. The four frames conjoin side by side and the scroll
-// pulls the strip across the screen. The IMAGE carries the movement — each
-// stage's words come to the SCREEN CENTRE quickly, PARK there while their
-// frame passes underneath, then hand back to the frame on the way out
-// (v8's ride-along words crossed the viewport too fast to read). The
-// words counter-translate against the track: screen offset s(t) =
-// frameOffset(t) × (1 − hold(t)), where hold ramps in by t=0.38 and out
-// after t=0.62. No numbers.
+// 04 — OUR PROCESS, v10 (George, 2026-07-13 round 2): NO DEAD STOP.
+// The strip never parks — the Deliver frame KEEPS SCROLLING out to the
+// left (its trailing right edge fades into black) while the parked word
+// scramble-writes into "Testimonials". As the last sliver leaves, the
+// hairlines draw OUT OF THE WORD to either side with the house plusses —
+// that IS the Testimonials title (the section below has none) — and the
+// testimony rises from the bottom on the next scroll.
 //
-// THE OUTRO: after the last frame, the image sinks to black while the
-// letters of "Deliver." scramble and lock, left to right, into
-// "Testimonials" — the word writes itself, then the testimony arrives
-// (the Testimonials section rides up beneath it). Scroll-driven and fully
-// reversible: scroll back and it unwrites into Deliver.
+// Words: come to the screen centre quickly, park while their frame passes,
+// hand back late. The image carries the motion. No numbers.
 //
-// Geometry: 640vh runway; sticky window; 400vw track. Strip travel is done
-// at 78% of the runway; the outro morph owns 80% → 96%. Sticky, not pin —
-// a pinned (transformed) section ancestor breaks position:fixed elsewhere
-// (house gotcha). Mobile keeps the plain vertical stack.
+// Geometry: 640vh runway, sticky window, 400vw track. Track runs a FULL
+// −100% (four frame-widths: the last frame exits), done at p=0.90. Morph
+// owns p 0.62→0.80 (while the image exits beneath it); the title lines
+// draw p 0.83→0.92. Sticky, not pin (transformed-ancestor gotcha). Mobile
+// keeps the plain vertical stack.
 
 interface Stage {
   name: string;
@@ -38,27 +35,27 @@ const STAGES: Stage[] = [
   {
     name: "Pre-production",
     sub: "Brief, treatment, casting, locations, schedule. The film is planned to the minute before a frame is shot.",
-    cta: "Start a project", href: "/contact", img: "/videos/posters/loop-01.jpg",
+    cta: "Start a project", href: "/contact", img: "/videos/loop-01.mp4",
   },
   {
     name: "Production",
     sub: "Direction and cinematography on location. If it can be done in-camera, it's done in-camera.",
-    cta: "Behind the scenes", href: "/about", img: "/videos/posters/loop-02.jpg",
+    cta: "Behind the scenes", href: "/about", img: "/videos/loop-02.mp4",
   },
   {
     name: "Edit",
     sub: "Edit, grade, sound and motion under one roof. The film finds its rhythm.",
-    cta: "See the films", href: "/work", img: "/videos/posters/loop-03.jpg",
+    cta: "See the films", href: "/work", img: "/videos/loop-03.mp4",
   },
   {
     name: "Deliver",
     sub: "The master film plus every vertical, square and short-form cutdown your channels need — mastered properly, never cropped as an afterthought.",
-    cta: "Start here", href: "/contact", img: "/videos/posters/loop-04.jpg",
+    cta: "Start here", href: "/contact", img: "/videos/loop-04.mp4",
   },
 ];
 
 const N = STAGES.length;
-const TRAVEL_END = 0.78; // strip parked by here; the rest is the outro's
+const TRAVEL_END = 0.92; // full −100% track travel lands here
 const MORPH_TARGET = "Testimonials";
 const SCRAMBLE = "aeimnorstuv";
 
@@ -73,6 +70,18 @@ export default function Process() {
   useEffect(() => {
     const root = rootRef.current;
     if (!root) return;
+
+    // the loops only spin while the strip is anywhere near the viewport
+    // (autoplay defers on below-fold media; battery says pause when gone)
+    const media = Array.from(root.querySelectorAll<HTMLVideoElement>(".proc-media"));
+    const io = new IntersectionObserver(
+      (es) => es.forEach((e) => {
+        if (e.isIntersecting) media.forEach((v) => safePlay(v));
+        else media.forEach((v) => v.pause());
+      }),
+      { rootMargin: "300px 0px" },
+    );
+    io.observe(root);
 
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
@@ -107,12 +116,17 @@ export default function Process() {
       kills.push(() => first.kill());
 
       const texts = panels.map((p) => p.querySelector<HTMLElement>(".proc-text"));
-      const imgs = panels.map((p) => p.querySelector<HTMLElement>("img"));
+      const imgs = panels.map((p) => p.querySelector<HTMLElement>(".proc-media"));
       const lastWord = panels[N - 1].querySelector<HTMLElement>(".proc-word");
       const lastSub = panels[N - 1].querySelector<HTMLElement>(".proc-sub");
       const lastCta = panels[N - 1].querySelector<HTMLElement>(".proc-cta");
-      const blackout = panels[N - 1].querySelector<HTMLElement>(".proc-blackout");
-      let morphShown: string | null = null; // last text written (skip no-op writes)
+      const mLineL = panels[N - 1].querySelector<HTMLElement>(".pm-line-l");
+      const mLineR = panels[N - 1].querySelector<HTMLElement>(".pm-line-r");
+      const mPlus = panels[N - 1].querySelectorAll<HTMLElement>(".pm-plus");
+      gsap.set(mLineL, { scaleX: 0, transformOrigin: "right center" });
+      gsap.set(mLineR, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(mPlus, { autoAlpha: 0, scale: 0.4 });
+      let morphShown: string | null = null;
 
       // ONE scrub drives the strip, every frame's depth, and the outro
       const drive = ScrollTrigger.create({
@@ -122,32 +136,36 @@ export default function Process() {
         scrub: true,
         onUpdate: (self) => {
           const p = self.progress;
+          // continuous travel — the last frame EXITS, never parks (George:
+          // "the image just keeps scrolling")
           const travel = Math.min(1, p / TRAVEL_END);
-          gsap.set(track, { xPercent: (-100 * (N - 1)) / N * travel, force3D: true });
+          gsap.set(track, { xPercent: -100 * travel, force3D: true });
 
           const vw = window.innerWidth / 100;
           panels.forEach((panel, i) => {
-            // transit t: 0 = fully right of frame, 0.5 = centred, 1 = fully left
-            const t = Math.min(1, Math.max(0, (travel * (N - 1) - (i - 1)) / 2));
+            const last = i === N - 1;
+            // frame centre offset (vw): +100 entering right, 0 centred, −100 gone left
+            const c = i * 100 - 400 * travel;
+            // transit t: 0 → entering, 0.5 → centred, 1 → fully left
+            const t = Math.min(1, Math.max(0, (100 - c) / 200));
             const text = texts[i];
             const img = imgs[i];
-            // WORDS PARK AT THE SCREEN CENTRE: the frame's own screen offset
-            // is c = 100 − 200t (vw). The words' screen offset flattens to 0
-            // while hold() is up — they arrive quickly, sit front-and-centre
-            // as the image passes beneath, and hand back to the frame late.
             if (text) {
-              const c = 100 - 200 * t;
-              const hold = sm(0.2, 0.38, t) * (1 - sm(0.62, 0.8, t));
+              // words park at the screen centre while the frame passes; the
+              // LAST word never hands back — it stays parked and becomes
+              // the Testimonials title while its image leaves underneath
+              const hold = last
+                ? sm(0.2, 0.38, t)
+                : sm(0.2, 0.38, t) * (1 - sm(0.62, 0.8, t));
               const s = c * (1 - hold);
               gsap.set(text, {
                 x: (s - c) * vw,
                 rotationY: Math.max(-3, Math.min(3, -s / 10)),
                 z: 30 * hold,
-                autoAlpha: 1 - sm(0.86, 0.98, t),
+                autoAlpha: last ? 1 : 1 - sm(0.86, 0.98, t),
                 force3D: true,
               });
             }
-            // IMAGE: unchanged — the frame carries the motion
             if (img) gsap.set(img, { xPercent: -8 + 16 * t, scale: 1.1 - 0.1 * t, force3D: true });
             if (i > 0) {
               const tl = builds[i];
@@ -159,11 +177,10 @@ export default function Process() {
             }
           });
 
-          // ── THE OUTRO — image to black, the word rewrites itself ──
-          const q = (p - 0.8) / 0.16; // 0→1 across the morph zone
-          if (blackout) gsap.set(blackout, { opacity: sm(0, 0.9, q) });
-          if (lastSub) gsap.set(lastSub, { autoAlpha: q > 0 ? 1 - sm(0, 0.25, q) : 1 });
-          if (lastCta) gsap.set(lastCta, { autoAlpha: q > 0 ? 1 - sm(0, 0.25, q) : 1 });
+          // ── THE OUTRO — the word rewrites itself while its image leaves ──
+          const q = (p - 0.62) / 0.18;
+          if (lastSub) gsap.set(lastSub, { autoAlpha: q > 0 ? 1 - sm(0, 0.22, q) : 1 });
+          if (lastCta) gsap.set(lastCta, { autoAlpha: q > 0 ? 1 - sm(0, 0.22, q) : 1 });
           if (lastWord) {
             let out: string;
             if (q <= 0) {
@@ -175,7 +192,7 @@ export default function Process() {
               // word literally writes itself into "Testimonials"
               out = MORPH_TARGET.split("")
                 .map((ch, i) => {
-                  const lockAt = 0.12 + 0.78 * (i / (MORPH_TARGET.length - 1));
+                  const lockAt = 0.1 + 0.8 * (i / (MORPH_TARGET.length - 1));
                   if (q >= lockAt) return ch;
                   const g = SCRAMBLE[Math.floor(Math.random() * SCRAMBLE.length)];
                   return i === 0 ? g.toUpperCase() : g;
@@ -184,9 +201,16 @@ export default function Process() {
             }
             if (out !== morphShown && (q > 0 && q < 1 ? true : out !== lastWord.textContent)) {
               lastWord.textContent = out;
-              morphShown = q > 0 && q < 1 ? null : out; // mid-morph always rewrites (scramble ticks)
+              morphShown = q > 0 && q < 1 ? null : out;
             }
           }
+          // the title takes its lines: hairlines draw OUT OF the word to
+          // either side, plusses landing at the ends (scroll-driven)
+          const lp = sm(0.83, 0.92, p);
+          if (mLineL) gsap.set(mLineL, { scaleX: lp });
+          if (mLineR) gsap.set(mLineR, { scaleX: lp });
+          const pp = sm(0.89, 0.95, p);
+          mPlus.forEach((el) => gsap.set(el, { autoAlpha: pp, scale: 0.4 + 0.6 * pp }));
         },
       });
       kills.push(() => drive.kill());
@@ -194,7 +218,10 @@ export default function Process() {
       return () => kills.forEach((k) => k());
     });
 
-    return () => mm.revert();
+    return () => {
+      io.disconnect();
+      mm.revert();
+    };
   }, []);
 
   return (
@@ -217,41 +244,81 @@ export default function Process() {
       <div className="proc-runway relative md:h-[640vh]">
         <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden">
           <div className="proc-track md:flex md:h-screen md:w-[400vw] md:will-change-transform">
-            {STAGES.map((s, i) => (
-              <div
-                key={s.name}
-                className="proc-panel relative flex h-[80vh] items-center justify-center overflow-hidden md:h-full md:w-screen md:flex-none md:overflow-visible"
-                style={{ perspective: "900px" }}
-              >
-                {/* the image clips inside its own holder, so the parked
-                    words are free to hang past the frame edge un-clipped */}
-                <div className="absolute inset-0 overflow-hidden" aria-hidden>
-                  <div className="absolute inset-y-0 inset-x-[-9%]">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={s.img} alt="" className="h-full w-full object-cover will-change-transform" loading="lazy" />
-                    <div className="absolute inset-0 bg-black/35" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
-                    {/* the outro's fall to black lives on the last frame only */}
-                    {i === N - 1 && <div className="proc-blackout absolute inset-0 bg-black opacity-0" />}
+            {STAGES.map((s, i) => {
+              const last = i === N - 1;
+              return (
+                <div
+                  key={s.name}
+                  className="proc-panel relative flex h-[80vh] items-center justify-center overflow-hidden md:h-full md:w-screen md:flex-none md:overflow-visible"
+                  style={{ perspective: "900px" }}
+                >
+                  {/* the image clips inside its own holder, so the parked
+                      words are free to hang past the frame edge un-clipped.
+                      The LAST frame wears a right-edge fade — its trailing
+                      edge dissolves into black as it scrolls out (George). */}
+                  <div
+                    className="absolute inset-0 overflow-hidden"
+                    aria-hidden
+                    style={
+                      last
+                        ? {
+                            WebkitMaskImage: "linear-gradient(to right, black 62%, transparent 100%)",
+                            maskImage: "linear-gradient(to right, black 62%, transparent 100%)",
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="absolute inset-y-0 inset-x-[-9%]">
+                      {/* LIVING frames (motion review: a film company's
+                          process can't be frozen JPEGs — every held
+                          composition contains playing film) */}
+                      <video
+                        src={s.img}
+                        className="proc-media h-full w-full object-cover will-change-transform"
+                        poster={s.img.replace("/videos/", "/videos/posters/").replace(".mp4", ".jpg")}
+                        autoPlay
+                        muted
+                        loop
+                        playsInline
+                        preload="metadata"
+                        aria-hidden
+                      />
+                      <div className="absolute inset-0 bg-black/35" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+                    </div>
+                  </div>
+
+                  <div className={`proc-text relative z-10 px-6 text-center will-change-transform ${last ? "w-full max-w-none md:px-10" : "max-w-3xl"}`}>
+                    {last ? (
+                      /* the last word carries the TITLE ROW: after the morph,
+                         hairlines + plusses draw out of it (TitleRule grammar) */
+                      <div className="flex w-full items-center gap-4 md:gap-6">
+                        <style>{`@keyframes pmSpin { to { transform: rotate(360deg); } } .pm-plus{ animation: pmSpin 26s linear infinite; } @media (prefers-reduced-motion: reduce){ .pm-plus{ animation: none; } }`}</style>
+                        <span aria-hidden className="pm-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+                        <span aria-hidden className="pm-line-l block h-px flex-1 bg-[var(--fg)] will-change-transform" />
+                        <h3 className="proc-word font-display shrink-0 text-[clamp(2.4rem,5.4vw,5rem)] leading-[0.98]">
+                          {s.name}.
+                        </h3>
+                        <span aria-hidden className="pm-line-r block h-px flex-1 bg-[var(--fg)] will-change-transform" />
+                        <span aria-hidden className="pm-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+                      </div>
+                    ) : (
+                      <h3 className="proc-word font-display text-[clamp(2.4rem,5.4vw,5rem)] leading-[0.98]">
+                        {s.name}
+                      </h3>
+                    )}
+                    <p className={`proc-sub about-body mx-auto mt-6 max-w-xl text-[14px] leading-relaxed text-[var(--fg)] md:text-[16px]`}>
+                      {s.sub}
+                    </p>
+                    <p className="proc-cta mt-7">
+                      <Link href={s.href} className="blink text-[13px] tracking-[0.05em]">
+                        {s.cta}
+                      </Link>
+                    </p>
                   </div>
                 </div>
-
-                <div className="proc-text relative z-10 max-w-3xl px-6 text-center will-change-transform">
-                  <h3 className="proc-word font-display text-[clamp(2.4rem,5.4vw,5rem)] leading-[0.98]">
-                    {s.name}
-                    {i === N - 1 && "."}
-                  </h3>
-                  <p className="proc-sub about-body mx-auto mt-6 max-w-xl text-[14px] leading-relaxed text-[var(--fg)] md:text-[16px]">
-                    {s.sub}
-                  </p>
-                  <p className="proc-cta mt-7">
-                    <Link href={s.href} className="blink text-[13px] tracking-[0.05em]">
-                      {s.cta}
-                    </Link>
-                  </p>
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       </div>

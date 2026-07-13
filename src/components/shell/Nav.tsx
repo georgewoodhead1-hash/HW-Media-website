@@ -101,11 +101,16 @@ export default function Nav() {
     return () => { window.clearTimeout(settle); triggers.forEach((t) => t.kill()); };
   }, [pathname]);
 
-  // hide on scroll-down, reveal on scroll-up (whole site). Stays put near the
-  // top so the hero always shows it.
+  // hide on scroll-down, reveal on scroll-up (whole site) — EXCEPT the
+  // contact page (George: Home/Work/About/Contact must always sit top right
+  // there, never leaving on scroll). Stays put near the top everywhere.
   useEffect(() => {
     const nav = rootRef.current;
     if (!nav) return;
+    if (pathname.startsWith("/contact")) {
+      gsap.set(nav, { yPercent: 0 });
+      return;
+    }
     let hidden = false;
     const st = ScrollTrigger.create({
       start: 0,
@@ -121,7 +126,7 @@ export default function Nav() {
       },
     });
     return () => st.kill();
-  }, []);
+  }, [pathname]);
 
   return (
     <>

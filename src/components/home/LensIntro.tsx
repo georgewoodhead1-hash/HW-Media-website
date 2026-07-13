@@ -18,6 +18,14 @@ export default function LensIntro() {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const fullReelRef = useRef<HTMLVideoElement>(null);
   const [reelOpen, setReelOpen] = useState(false);
+  // desktop gets the 1080p master; coarse pointers keep the light file.
+  // SSR renders the light file, the effect upgrades before the loader lifts.
+  const [heroSrc, setHeroSrc] = useState("/videos/showreel-full.mp4");
+  useEffect(() => {
+    if (window.matchMedia("(min-width: 768px) and (pointer: fine)").matches) {
+      setHeroSrc("/videos/showreel-full-hq.mp4");
+    }
+  }, []);
 
   // LAYOUT effect: the hides must land BEFORE first paint or the hero
   // flashes at rest during a route transition (review defect #4)
@@ -49,10 +57,11 @@ export default function LensIntro() {
         gsap
           .timeline({ delay: 0.05 })
           // the bars LIFT one by one — the reel is unveiled beneath them
-          .to(".hero-bar", { yPercent: -101, duration: 0.85, ease: "power4.inOut", stagger: 0.07 }, 0)
+          .to(".hero-bar", { yPercent: -101, duration: 0.8, ease: "power4.inOut", stagger: 0.06 }, 0)
           .to(".hero-bg", { scale: 1, duration: 1.4, ease: "power3.out" }, 0.1)
-          // then the motto TYPES on (the write-in George likes)
-          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.055, ease: "none" }, 0.75)
+          // the motto types WHILE the bars are still lifting — the page is
+          // alive before it's fully revealed (motion review: never land dead)
+          .to(".hero-char", { autoAlpha: 1, duration: 0.01, stagger: 0.05, ease: "none" }, 0.35)
           .to(".hero-sub", { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, ">0.05");
       }, wrap);
     };
@@ -139,12 +148,14 @@ export default function LensIntro() {
         role="button"
         aria-label="Play showreel with sound"
       >
-        {/* full-bleed hero footage — placeholder until Harry's final cut */}
+        {/* full-bleed hero footage — 1080p/5.5Mbps master on desktop
+            (George: "really high end"); phones keep the light 720p file */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
         <video
           ref={videoRef}
           className="hero-bg pointer-events-none absolute inset-0 h-full w-full object-cover"
-          src="/videos/showreel-full.mp4"
+          src={heroSrc}
+          poster="/videos/posters/showreel-poster.jpg"
           autoPlay
           muted
           loop
@@ -205,7 +216,7 @@ export default function LensIntro() {
           <video
             ref={fullReelRef}
             className="h-full w-full object-contain"
-            src="/videos/showreel-full.mp4"
+            src={heroSrc}
             controls={reelOpen}
             playsInline
           />

@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import Rule from "@/components/shell/Rule";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { projects } from "@/content/projects";
 import { safePlay } from "@/lib/video";
@@ -206,24 +205,13 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative z-30 -mt-[9vh] bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[10vh]"
+      className="relative z-30 -mt-[14vh] bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[10vh]"
       aria-label="Testimonials"
     >
-      {/* header: big title (no brackets — titles lost them, small links keep
-          them), then the hairline WITH the plusses drawing underneath it */}
-      <div className="tst-rule mb-[5vh]">
-        <div className="mb-6 text-center">
-          <h2 className="inline-block">
-            <span
-              className="blink-title font-display text-[clamp(1.6rem,3vw,2.6rem)] leading-none"
-              style={{ fontFamily: "var(--font-suisse-cond), 'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.015em" }}
-            >
-              Testimonials
-            </span>
-          </h2>
-        </div>
-        <Rule bg="var(--bg)" />
-      </div>
+      {/* NO title here — the Process outro's morphed word ("Deliver." →
+          "Testimonials", lines + plusses drawing out of it) IS this
+          section's title (George: "there's two testimonial titles, get rid
+          of the bottom one"). The content rises from the bottom beneath it. */}
 
       {/* square film on the right — capped size (client: it got way too
           big), text column stretched to meet its top and bottom */}
@@ -261,9 +249,10 @@ export default function Testimonials() {
             </figcaption>
           </div>
 
-        {/* the HUD: numbers in BOXES (bigger, client) — active/hover fills
-            solid — with the reel progress line in GOLD underneath each */}
-          <div data-t-el className="mt-6 flex items-end justify-center gap-6 md:mt-8 md:justify-start">
+        {/* the HUD: BIG bare numerals, the Stone Visuals treatment (George:
+            "big 01 02 03 in big writing, not little boxes") — active is full
+            cream, idle sits back; the gold reel-progress line runs under each */}
+          <div data-t-el className="mt-6 flex items-end justify-center gap-8 md:mt-8 md:justify-start md:gap-10">
             {TESTIMONIALS.map((t, i) => (
               <button
                 key={t.slug}
@@ -271,13 +260,11 @@ export default function Testimonials() {
                 onClick={() => goTo(i)}
                 aria-pressed={active === i}
                 aria-label={`Show ${t.brand} testimonial`}
-                className="group flex w-24 flex-col items-stretch gap-2.5 pb-1 md:w-28"
+                className="group flex flex-col items-stretch gap-3 pb-1"
               >
                 <span
-                  className={`label-mono flex items-center justify-center border px-4 py-3 text-[16px] tracking-[0.2em] transition-colors duration-300 ${
-                    active === i
-                      ? "border-[var(--fg)] bg-[var(--fg)] text-[var(--bg)]"
-                      : "border-[var(--fg)]/45 text-[var(--fg)] group-hover:border-[var(--fg)] group-hover:bg-[var(--fg)] group-hover:text-[var(--bg)]"
+                  className={`font-display text-5xl leading-none transition-colors duration-300 md:text-6xl ${
+                    active === i ? "text-[var(--fg)]" : "text-[var(--fg)]/25 group-hover:text-[var(--fg)]/60"
                   }`}
                 >
                   {String(i + 1).padStart(2, "0")}

@@ -55,21 +55,28 @@ export default function ContactForm() {
 
   return (
     <form onSubmit={onSubmit} className="mt-12 flex flex-col gap-4 text-left" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {/* each row is its own venetian strip on entry (PageBuild data-enter) */}
+      <div data-enter className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <input name="firstName" placeholder="First name" aria-label="First name" autoComplete="given-name" maxLength={80} className={FIELD} required />
         <input name="lastName" placeholder="Last name (optional)" aria-label="Last name (optional)" autoComplete="family-name" maxLength={80} className={FIELD} />
       </div>
-      <input type="email" name="email" placeholder="Email address" aria-label="Email address" autoComplete="email" maxLength={160} className={FIELD} required />
-      <textarea name="message" rows={5} placeholder="Message" aria-label="Message" maxLength={4000} className={FIELD} required />
-      <button
-        type="submit"
-        disabled={status === "sending"}
-        className="blink mt-2 self-center text-[15px] tracking-[0.05em] disabled:opacity-60"
-      >
-        {status === "sending" ? "Sending…" : "Send"}
-      </button>
+      <div data-enter>
+        <input type="email" name="email" placeholder="Email address" aria-label="Email address" autoComplete="email" maxLength={160} className={FIELD} required />
+      </div>
+      <div data-enter>
+        <textarea name="message" rows={5} placeholder="Message" aria-label="Message" maxLength={4000} className={FIELD} required />
+      </div>
+      <div data-enter className="flex justify-center">
+        <button
+          type="submit"
+          disabled={status === "sending"}
+          className="blink mt-2 text-[15px] tracking-[0.05em] disabled:opacity-60"
+        >
+          {status === "sending" ? "Sending…" : "Send"}
+        </button>
+      </div>
       {status === "error" && <p className="text-[14px] text-[#e0795f]">{error}</p>}
-      <div className="mt-8 border-t border-[var(--fg)]/60 pt-7 text-center">
+      <div data-enter className="mt-8 border-t border-[var(--fg)]/60 pt-7 text-center">
         <p className="label-mono mb-4 text-[11px] tracking-[0.22em] text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>
           PREFER EMAIL? REACH HARRY DIRECTLY
         </p>

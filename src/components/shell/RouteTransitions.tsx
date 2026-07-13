@@ -144,15 +144,17 @@ export default function RouteTransitions() {
           0);
       }
 
-      // the cover, in its destination's style
+      // the cover, in its destination's style — ONE rhythm for all four
+      // (George: "the bars need to be in the same rhythm"): every close is
+      // 0.7s power4.inOut at 0.055 per slat; only the geometry differs
       if (plan.style === "weave") {
         tl.to(active, { yPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "edges" } }, 0);
       } else if (plan.style === "cascade") {
-        tl.to(active, { yPercent: 0, duration: 0.65, ease: "power4.inOut", stagger: { each: 0.06, from: "start" } }, 0);
+        tl.to(active, { yPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
       } else if (plan.style === "curtain") {
-        tl.to(active, { xPercent: 0, duration: 0.72, ease: "power4.inOut", stagger: { each: 0.05, from: "edges" } }, 0);
+        tl.to(active, { xPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "edges" } }, 0);
       } else {
-        tl.to(active, { xPercent: 0, duration: 0.62, ease: "power4.inOut", stagger: { each: 0.06, from: "start" } }, 0);
+        tl.to(active, { xPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
       }
 
       // the word — just the word, centred
@@ -201,28 +203,31 @@ export default function RouteTransitions() {
     // the word leaves first
     tl.to(label, { yPercent: -130, duration: 0.32, ease: "power2.in" }, 0);
 
-    // the cover leaves in its own style, dissolving as it goes
+    // the cover leaves in its own style, dissolving as it goes — same
+    // 0.78s / 0.055 rhythm on every open, matching the close
     if (style === "weave") {
       // clears UPWARD — the work wall lifts into place beneath it
       tl.to(active, { yPercent: -105, autoAlpha: 0, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0.22);
     } else if (style === "cascade") {
-      tl.to(active, { yPercent: 105, autoAlpha: 0, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "end" } }, 0.22);
+      // pours on DOWN in the same left-to-right order it arrived — one
+      // continuous rhythm through the whole cover (George)
+      tl.to(active, { yPercent: 105, autoAlpha: 0, duration: 0.78, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0.22);
     } else if (style === "curtain") {
       tl.to(active, {
         xPercent: (i: number) => (i < COLS / 2 ? -105 : 105),
         autoAlpha: 0,
-        duration: 0.8,
+        duration: 0.78,
         ease: "power4.inOut",
-        stagger: { each: 0.05, from: "center" },
+        stagger: { each: 0.055, from: "center" },
       }, 0.22);
     } else {
       // shades slide back out the way they came
       tl.to(active, {
         xPercent: (i: number) => (i % 2 === 0 ? 105 : -105),
         autoAlpha: 0,
-        duration: 0.72,
+        duration: 0.78,
         ease: "power4.inOut",
-        stagger: { each: 0.05, from: "start" },
+        stagger: { each: 0.055, from: "start" },
       }, 0.22);
     }
 

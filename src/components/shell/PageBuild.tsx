@@ -43,26 +43,45 @@ export default function PageBuild() {
       restore.push(() => { el.innerHTML = original; });
     });
 
-    const lines = Array.from(main.querySelectorAll<HTMLElement>("[data-enter-line]"));
-    gsap.set(lines, { scaleX: 0, transformOrigin: "left center" });
-
-    // the reveal wipes in the SAME direction the cover clears — the
-    // transition literally unmasks the page (no movement, no fade)
+    // the reveal is built FROM the cover's own motion — every destination
+    // unmasks in its transition's grammar (no movement, no fade):
+    //   up    (weave)   — strips clear upward → content reveals bottom-up
+    //   down  (cascade) — cover pours down    → content reveals top-down
+    //   right (curtain) — halves part from centre → content OPENS CENTRE-OUT
+    //   center (shades) — venetian slats     → content reveals in ALTERNATING
+    //                     left/right strips, element by element
     const dir = document.documentElement.dataset.transitionDir ?? "up";
-    const hidden =
-      dir === "up" ? "inset(100% 0% 0% 0%)" :      // reveals bottom → top
-      dir === "down" ? "inset(0% 0% 100% 0%)" :    // reveals top → bottom
-      dir === "right" ? "inset(0% 100% 0% 0%)" :   // reveals left → right
-      "inset(0% 100% 0% 0%)";                       // centre/shades: sweep across
 
-    const enters = Array.from(main.querySelectorAll<HTMLElement>("[data-enter]"));
-    gsap.set(enters, { clipPath: hidden });
+    const lines = Array.from(main.querySelectorAll<HTMLElement>("[data-enter-line]"));
+    gsap.set(lines, {
+      scaleX: 0,
+      // curtain + shades draw their hairlines from the centre outward, the
+      // same axis the cover moves on; vertical covers keep the left draw
+      transformOrigin: dir === "right" || dir === "center" ? "center center" : "left center",
+    });
+
+    const all = Array.from(main.querySelectorAll<HTMLElement>("[data-enter]"));
+    // "pop" variant — small geometry (ornaments, marks) scales into place
+    // instead of unmasking; a clip wipe is invisible at ornament size
+    const pops = all.filter((el) => el.dataset.enter === "pop");
+    const enters = all.filter((el) => el.dataset.enter !== "pop");
+    gsap.set(pops, { scale: 0.4, autoAlpha: 0, transformOrigin: "center center" });
+    enters.forEach((el, i) => {
+      const hidden =
+        dir === "up" ? "inset(100% 0% 0% 0%)" :
+        dir === "down" ? "inset(0% 0% 100% 0%)" :
+        dir === "right" ? "inset(0% 50% 0% 50%)" :          // curtain: centre-out
+        i % 2 === 0 ? "inset(0% 100% 0% 0%)" :               // shades: L → R…
+        "inset(0% 0% 0% 100%)";                              // …then R → L
+      gsap.set(el, { clipPath: hidden });
+    });
 
     let restored = false;
     const restoreAll = () => {
       if (restored) return;
       restored = true;
       gsap.set(enters, { clearProps: "clipPath,opacity,visibility,transform" });
+      gsap.set(pops, { clearProps: "opacity,visibility,transform" });
       gsap.set(lines, { clearProps: "transform" });
       restore.forEach((r) => r());
     };
@@ -71,6 +90,10 @@ export default function PageBuild() {
     const cancel = onPageEntered(() => {
       tl = gsap.timeline({ onComplete: restoreAll });
       let at = 0.05;
+      if (pops.length) {
+        tl.to(pops, { scale: 1, autoAlpha: 1, duration: 0.7, ease: "back.out(1.7)", stagger: 0.1 }, at);
+        at += 0.15;
+      }
       if (risers.length) {
         tl.to(risers, { y: 0, duration: 1.0, ease: "expo.out", stagger: 0.08 }, at);
         at += 0.45;

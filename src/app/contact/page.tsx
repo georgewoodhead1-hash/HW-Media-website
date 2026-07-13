@@ -51,9 +51,9 @@ export default function Contact() {
             Put your details in below and we&rsquo;ll get back to you within 24 hours of your enquiry.
           </p>
 
-          <div data-enter>
-            <ContactForm />
-          </div>
+          {/* the form's rows carry their own data-enter marks — they build in
+              alternating venetian strips with the shades cover (PageBuild) */}
+          <ContactForm />
         </div>
       </main>
       <FooterReveal />

@@ -56,7 +56,7 @@ export default function AboutPage() {
             curtain: everything unmasks left-to-right with it. ── */}
         <section data-surface="page" className="relative z-10 flex min-h-[92svh] flex-col items-center justify-center overflow-hidden bg-[var(--bg)] px-5 pb-[24vh] pt-[18vh] text-center md:min-h-screen md:px-10">
           {/* the ornament — the house lens, drawn geometry */}
-          <svg data-enter aria-hidden className="mb-8 h-14 w-14 opacity-90" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.1">
+          <svg data-enter="pop" aria-hidden className="mb-8 h-14 w-14 opacity-90" viewBox="0 0 64 64" fill="none" stroke="currentColor" strokeWidth="1.1">
             <circle cx="32" cy="32" r="22" />
             <ellipse cx="32" cy="32" rx="22" ry="9" />
             <line x1="32" y1="2" x2="32" y2="12" />

@@ -117,23 +117,15 @@ body {
 }
 
 /* ---- Type roles ----
-   Display voice = Suisse Int'l Condensed SemiBold — the 1820 display face
-   (George, 2026-07-02: "the font isn't the 1820, and it needs to be").
-   Archivo Expanded survives ONLY on the contact "Tell us more." heading
-   (via .display-archivo). */
+   Display voice = League Gothic — the Stone Visuals main face (George,
+   2026-07-13: "change the big font to the one on Stone Visuals"). Ultra-
+   condensed, so tracking runs slightly POSITIVE and weight stays 400 —
+   the condensation carries the weight. Subfont (Suisse via --font-firma)
+   and body (Suisse Book) untouched. */
 .font-display {
-  font-family: var(--font-suisse-cond), "Helvetica Neue", Arial, sans-serif;
-  font-weight: 600;
-  letter-spacing: -0.015em;
-  text-transform: uppercase;
-  line-height: 0.92;
-}
-.display-archivo {
-  /* the kept "Tell us more." face */
-  font-family: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
-  font-variation-settings: "wdth" 118;
-  font-weight: 600;
-  letter-spacing: -0.005em;
+  font-family: var(--font-gothic), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   line-height: 0.9;
 }
@@ -221,13 +213,13 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
 }
 /* nav hover = the sliding pill ONLY (George: bubble, not underline) */
 
-/* ---- 1820 bracket link: [ TEXT ] — the SMALL-link treatment sitewide.
+/* ---- Small-link treatment sitewide. Brackets REMOVED everywhere (George,
+   2026-07-13: "get rid of any brackets, keep the hover box + underline").
    Hover = solid GOLD block, black text (client final round). */
 .blink {
   position: relative;
   display: inline-flex;
   align-items: baseline;
-  gap: 0.45em;
   font-family: var(--font-firma), sans-serif;
   text-transform: uppercase;
   letter-spacing: -0.01em;
@@ -235,17 +227,14 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
   transition: background 0.25s var(--ease-expo), color 0.25s var(--ease-expo);
   padding: 0.15em 0.35em;
 }
-.blink::before { content: "["; opacity: 0.55; transition: opacity 0.25s; }
-.blink::after { content: "]"; opacity: 0.55; transition: opacity 0.25s; }
 .blink:hover {
   background: var(--gold-accent);
   color: #0a0a08;
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.blink:hover::before, .blink:hover::after { opacity: 0; }
 /* blink fill driven by a PARENT hover — for tiles where the whole card is the
-   link and the bracketed label should go solid when the card is hovered
+   link and the label should go solid when the card is hovered
    (George: "so people know they can click on it") */
 .group:hover .blink-fill {
   background: var(--gold-accent);
@@ -253,8 +242,6 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.group:hover .blink-fill::before,
-.group:hover .blink-fill::after { opacity: 0; }
 
 /* BIG section titles: same voice, NO brackets, no link hover (client:
    brackets stay on the small links only) */
@@ -775,11 +762,11 @@ html[data-mode="dark"] .seam-out-band {
   font-family: var(--font-suisse-book), "Helvetica Neue", Arial, sans-serif;
 }
 .about-display {
-  font-family: var(--font-suisse-cond), "Helvetica Neue", Arial, sans-serif;
-  font-weight: 600;
+  font-family: var(--font-gothic), "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
   text-transform: uppercase;
-  letter-spacing: -0.015em;
-  line-height: 0.92;
+  letter-spacing: 0.01em;
+  line-height: 0.9;
 }
 .about-label {
   font-family: var(--font-firma), "Helvetica Neue", Arial, sans-serif;

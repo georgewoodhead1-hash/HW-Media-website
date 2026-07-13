@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, Geist_Mono } from "next/font/google";
+import { League_Gothic, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
@@ -11,12 +11,13 @@ import Cursor from "@/components/shell/Cursor";
 import RouteTransitions from "@/components/shell/RouteTransitions";
 import { EMAIL, SITE_URL, SOCIALS } from "@/content/site";
 
-// THE 3-FONT SYSTEM (George, 2026-07-02). Nothing else loads.
-// 1) DISPLAY — Archivo Expanded (the "TELL US MORE" face). Big headings only.
-const archivo = Archivo({
-  variable: "--font-archivo",
+// THE 3-FONT SYSTEM (George, 2026-07-02; display face swapped 2026-07-13).
+// Nothing else loads.
+// 1) DISPLAY — League Gothic, the Stone Visuals main face (George: "change
+//    the big font to the one on Stone Visuals"). Big headings only.
+const leagueGothic = League_Gothic({
+  variable: "--font-gothic",
   subsets: ["latin"],
-  axes: ["wdth"],
 });
 
 // 2) MAIN — Suisse Int'l Medium (1820 Productions' main face). All UI, nav,
@@ -196,7 +197,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${archivo.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
+      className={`${leagueGothic.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
     >
 
       <body className="min-h-full">

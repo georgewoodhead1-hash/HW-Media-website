@@ -117,17 +117,16 @@ body {
 }
 
 /* ---- Type roles ----
-   Display voice = League Gothic — the Stone Visuals main face (George,
-   2026-07-13: "change the big font to the one on Stone Visuals"). Ultra-
-   condensed, so tracking runs slightly POSITIVE and weight stays 400 —
-   the condensation carries the weight. Subfont (Suisse via --font-firma)
-   and body (Suisse Book) untouched. */
+   Display voice = Inter Display — Stone Visuals' "Selected work" face
+   (their .display: Inter w/ optical sizing, weight 450, -0.04em, sentence
+   case — NO uppercase transform; headings render as authored). Subfont
+   (Suisse via --font-firma) and body (Suisse Book) untouched. */
 .font-display {
-  font-family: var(--font-gothic), "Helvetica Neue", Arial, sans-serif;
-  font-weight: 400;
-  letter-spacing: 0.01em;
-  text-transform: uppercase;
-  line-height: 0.9;
+  font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 450;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
 }
 
 /* Editorial-restraint display scale — nothing on the site exceeds display-xl. */
@@ -762,11 +761,11 @@ html[data-mode="dark"] .seam-out-band {
   font-family: var(--font-suisse-book), "Helvetica Neue", Arial, sans-serif;
 }
 .about-display {
-  font-family: var(--font-gothic), "Helvetica Neue", Arial, sans-serif;
-  font-weight: 400;
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
-  line-height: 0.9;
+  font-family: var(--font-inter), "Helvetica Neue", Arial, sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 450;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
 }
 .about-label {
   font-family: var(--font-firma), "Helvetica Neue", Arial, sans-serif;

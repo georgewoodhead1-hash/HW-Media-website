@@ -1,15 +1,15 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 import TitleRule from "@/components/shell/TitleRule";
 // FAQ copy lives in content/site.ts — it doubles as FAQPage JSON-LD on the home page
 import { FAQS } from "@/content/site";
 
 // 06 — FAQS in plain flow, rows building one by one on their own passage.
-// The closing line still draws, rides down and WIPES away left→right
-// (George keeps that move) — then a short black beat and the story band's
-// film rises out of the background. The pen stroke is gone.
+// NO exit fades of any kind (George, 2026-07-13) — the rows scroll away
+// naturally; the closing line draws across the page and the story band
+// follows. The pen stroke is gone.
 
 export default function Faqs() {
   const faqRef = useRef<HTMLElement>(null);
@@ -46,7 +46,12 @@ export default function Faqs() {
         kills.push(() => { tl.scrollTrigger?.kill(); tl.kill(); });
       });
 
-      // the closing line draws when it arrives…
+      // the closing line draws across the page when it arrives — and that is
+      // the ONLY exit event. NO fade-outs anywhere (George, 2026-07-13: "the
+      // FAQs fade out way too soon… we don't need them to fade out. The only
+      // thing that needs to happen is that line animation, then the
+      // wherever-the-story-is band comes up"). The rows and the title simply
+      // scroll away with the page.
       const closer = root.querySelector<HTMLElement>(".faq-closer");
       if (closer) {
         gsap.set(closer, { scaleX: 0, transformOrigin: "center center" });
@@ -55,51 +60,6 @@ export default function Faqs() {
           scrollTrigger: { trigger: closer, start: "top 92%", toggleActions: "play none none reverse" },
         });
         kills.push(() => { t.scrollTrigger?.kill(); t.kill(); });
-
-        // …then WIPES AWAY left → right off the screen (George: it must be
-        // gone, with a black beat, BEFORE the pen line comes down and loops)
-        const wipe = ScrollTrigger.create({
-          trigger: closer,
-          start: "top 44%",
-          end: "top 16%",
-          scrub: true,
-          onUpdate: (self) => {
-            const p = self.progress;
-            gsap.set(closer, { clipPath: `inset(0% 0% 0% ${(p * 100).toFixed(2)}%)` });
-          },
-        });
-        kills.push(() => wipe.kill());
-      }
-
-      // exit: EACH ROW dissipates as it reaches the top of the viewport —
-      // you watch them disappear one by one while the page keeps moving.
-      // The closing line is exempt: it rides on into the band.
-      gsap.utils.toArray<HTMLElement>(".faq-row", root).forEach((row) => {
-        const line = row.querySelector<HTMLElement>(".faq-line");
-        const rest = Array.from(row.children).filter((c) => c !== line);
-        const t = ScrollTrigger.create({
-          trigger: row,
-          start: "top 34%",
-          end: "top 4%",
-          scrub: true,
-          onUpdate: (self) => {
-            const p = self.progress;
-            gsap.set(rest, { autoAlpha: 1 - p });
-            if (line) gsap.set(line, { autoAlpha: 1 - p });
-          },
-        });
-        kills.push(() => t.kill());
-      });
-      // the rule dissipates the same way
-      if (rule) {
-        const t = ScrollTrigger.create({
-          trigger: rule,
-          start: "top 30%",
-          end: "top 4%",
-          scrub: true,
-          onUpdate: (self) => gsap.set(rule, { autoAlpha: 1 - self.progress }),
-        });
-        kills.push(() => t.kill());
       }
 
       return () => kills.forEach((k) => k());

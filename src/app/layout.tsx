@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { League_Gothic, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
 import SmoothScroll from "@/components/shell/SmoothScroll";
@@ -11,13 +11,16 @@ import Cursor from "@/components/shell/Cursor";
 import RouteTransitions from "@/components/shell/RouteTransitions";
 import { EMAIL, SITE_URL, SOCIALS } from "@/content/site";
 
-// THE 3-FONT SYSTEM (George, 2026-07-02; display face swapped 2026-07-13).
+// THE 3-FONT SYSTEM (George, 2026-07-02; display face corrected 2026-07-13).
 // Nothing else loads.
-// 1) DISPLAY — League Gothic, the Stone Visuals main face (George: "change
-//    the big font to the one on Stone Visuals"). Big headings only.
-const leagueGothic = League_Gothic({
-  variable: "--font-gothic",
+// 1) DISPLAY — Inter with the opsz axis = Inter Display at heading sizes:
+//    the EXACT face behind Stone Visuals' "Selected work" (their .display
+//    voice — Inter 450, tight tracking, sentence case). NOT the gothic;
+//    that is only their wordmark moments.
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
+  axes: ["opsz"],
 });
 
 // 2) MAIN — Suisse Int'l Medium (1820 Productions' main face). All UI, nav,
@@ -197,7 +200,7 @@ export default function RootLayout({
       lang="en"
       data-mode="dark"
       suppressHydrationWarning
-      className={`${leagueGothic.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
+      className={`${inter.variable} ${geistMono.variable} ${suisseMain.variable} ${suisseBook.variable} ${suisseCond.variable} h-full antialiased`}
     >
 
       <body className="min-h-full">

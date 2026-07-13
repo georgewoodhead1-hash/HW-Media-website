@@ -3,15 +3,14 @@
 import { useEffect, useRef } from "react";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 
-// The Defender band, v3 (George's spec, final round): NO pen stroke, no
-// lines, nothing drawn. The film starts SMALL and FAR BACK — as you scroll
-// it rises and comes FORWARD, expanding up and over itself until it fills
-// the frame. "Wherever the story is." and Start here arrive with it. Then
-// the page scrolls straight into the footer reveal. Simple.
-//
-// Sticky inner (CSS sticky, never ScrollTrigger pin — a pinned ancestor's
-// transform breaks position:fixed children, see HW-MEDIA-RULES); the section
-// height provides the scroll runway that drives the growth.
+// The Defender band, v4 — the IL CAPO reveal (George, 2026-07-13: "the
+// images come up… it kind of goes out a little bit before it then takes
+// the frame… copy that"). Probed live from ilcapoproduction.com: media
+// waits at clip-path inset(50%), and on entry the box OPENS FROM THE
+// CENTRE to inset(0) over ~1.4s on an expo-style S-curve — it creeps open
+// first, then accelerates and takes the whole frame; opacity snaps in
+// during the first beat. Time-based on entry (not scrubbed), reversible.
+// "Wherever the story is." and Start here land as the frame completes.
 
 export default function FeatureBand() {
   const root = useRef<HTMLElement>(null);
@@ -28,50 +27,29 @@ export default function FeatureBand() {
       const cta = sec.querySelector<HTMLElement>(".fb-cta");
       if (!frame) return;
 
-      gsap.set(frame, {
-        scale: 0.24, y: "36vh", transformOrigin: "center center", force3D: true,
-        filter: "blur(6px)", borderRadius: "14px",
-      });
-      if (img) gsap.set(img, { scale: 1.35 });
+      gsap.set(frame, { clipPath: "inset(50%)", autoAlpha: 0 });
+      if (img) gsap.set(img, { scale: 1.12 });
       gsap.set([line, cta], { autoAlpha: 0, y: 22 });
 
-      const sm = (a: number, b: number, t: number) => {
-        const x = Math.min(1, Math.max(0, (t - a) / (b - a)));
-        return x * x * (3 - 2 * x);
-      };
+      const tl = gsap.timeline({ paused: true });
+      tl.to(frame, { autoAlpha: 1, duration: 0.2, ease: "none" }, 0)
+        // the il capo box: barely opens, hesitates, then takes the frame
+        .to(frame, { clipPath: "inset(0%)", duration: 1.45, ease: "expo.inOut" }, 0)
+        .to(img, { scale: 1, duration: 1.45, ease: "expo.inOut" }, 0)
+        .to(line, { autoAlpha: 1, y: 0, duration: 0.7, ease: "power3.out" }, 0.95)
+        .to(cta, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 1.1);
 
       const st = ScrollTrigger.create({
         trigger: sec,
-        // starts the moment the band enters — the small film sits right
-        // below the FAQ line, already riding (no dead black run-up)
-        start: "top bottom",
-        end: "bottom bottom",
-        scrub: 1.4,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-          // ONE MOTION (George): a single eased progress drives y and scale
-          // together — no phase changes, no speed steps, no pauses
-          const e = sm(0.0, 0.92, p);
-          gsap.set(frame, {
-            y: (1 - e) * 34 + "vh",
-            scale: 0.24 + e * 0.76,
-            // it sharpens and squares off as it comes forward — emerging
-            // from the depth rather than just growing
-            filter: `blur(${((1 - e) * 6).toFixed(2)}px)`,
-            borderRadius: `${((1 - e) * 14).toFixed(2)}px`,
-            force3D: true,
-          });
-          if (img) gsap.set(img, { scale: 1.35 - e * 0.35 });
-          // the words land as the film does, CTA right on their heels
-          const wIn = sm(0.84, 0.93, p);
-          if (line) gsap.set(line, { autoAlpha: wIn, y: (1 - wIn) * 22 });
-          const cIn = sm(0.87, 0.96, p);
-          if (cta) gsap.set(cta, { autoAlpha: cIn, y: (1 - cIn) * 22, pointerEvents: cIn > 0.5 ? "auto" : "none" });
-        },
+        start: "top 62%",
+        onEnter: () => tl.play(),
+        onLeaveBack: () => tl.reverse(),
       });
 
-      return () => st.kill();
+      return () => {
+        st.kill();
+        tl.kill();
+      };
     });
     return () => mm.revert();
   }, []);
@@ -81,13 +59,13 @@ export default function FeatureBand() {
       ref={root}
       data-theme="dark"
       data-surface="media"
-      className="relative z-[35] bg-[var(--bg)] md:h-[170vh]"
+      className="relative z-[35] bg-[var(--bg)] md:h-[130vh]"
       aria-label="Wherever the story is"
     >
       <div className="overflow-hidden md:sticky md:top-0 md:h-screen">
         <div className="fb-stage relative flex h-[80vh] items-center justify-center md:h-screen">
-          {/* the film — small and far back, growing up and over itself */}
-          <div className="fb-frame absolute inset-0 overflow-hidden will-change-transform">
+          {/* the film — the box opens from the centre and takes the frame */}
+          <div className="fb-frame absolute inset-0 overflow-hidden will-change-[clip-path]">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src="/images/harry-field.jpg"

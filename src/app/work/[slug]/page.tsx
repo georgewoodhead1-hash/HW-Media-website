@@ -106,18 +106,20 @@ export default async function CaseStudy({
           <p className="mt-4 max-w-xl text-lg text-[var(--fg)]/70">{project.tagline}</p>
         </section>
 
-        {/* the film — Vimeo embed slot (local master as placeholder) */}
+        {/* the film — plays like every other film on the site: auto, silent,
+            no default browser chrome (polish review: the flagship film sat
+            paused behind a stock Chromium player). Vimeo embed slot later. */}
         <section className="px-5 py-[6vh] md:px-10">
           <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black">
             <video
               className="h-full w-full object-cover"
               src={project.wide}
               poster={project.posterWide}
-              controls
+              autoPlay
               playsInline
               muted
               loop
-              preload="none"
+              preload="metadata"
             />
           </div>
         </section>

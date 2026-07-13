@@ -9,6 +9,9 @@ import { gsap } from "@/lib/gsap";
 export default function Cursor() {
   const dotRef = useRef<HTMLDivElement>(null);
   const [enabled, setEnabled] = useState(false);
+  // invisible until the pointer actually moves — otherwise the ring idles
+  // at 0,0 as a stray arc in the corner on every fresh load (polish review)
+  const [seen, setSeen] = useState(false);
   const [mode, setMode] = useState<"dot" | "play">("dot");
 
   useEffect(() => {
@@ -26,6 +29,7 @@ export default function Cursor() {
     const onMove = (e: PointerEvent) => {
       xTo(e.clientX);
       yTo(e.clientY);
+      setSeen(true);
       const playTarget = (e.target as HTMLElement | null)?.closest?.('[data-cursor="play"]');
       setMode(playTarget ? "play" : "dot");
     };
@@ -39,7 +43,7 @@ export default function Cursor() {
     <div
       ref={dotRef}
       aria-hidden
-      className="pointer-events-none fixed left-0 top-0 z-[60] -translate-x-1/2 -translate-y-1/2"
+      className={`pointer-events-none fixed left-0 top-0 z-[60] -translate-x-1/2 -translate-y-1/2 ${seen ? "" : "opacity-0"}`}
     >
       <div
         className={`flex items-center justify-center rounded-full transition-all duration-300 ${

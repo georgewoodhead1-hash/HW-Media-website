@@ -191,8 +191,8 @@ export default function LensIntro() {
           <div className="hero-sub">
             {/* sub-line wears the DISPLAY face now (George) — same cut as the
                 headline, a size down, tight tracking */}
-            <p className="font-display mt-10 max-w-2xl pl-[0.35rem] text-[clamp(1.15rem,2vw,1.8rem)] uppercase leading-snug tracking-[-0.015em] text-white">
-              we go where the story is
+            <p className="font-display mt-10 max-w-2xl pl-[0.35rem] text-[clamp(1.15rem,2vw,1.8rem)] leading-snug text-white">
+              We go where the story is
             </p>
             {/* bracket CTA — the house [ ] grammar, hover fills solid; glass binned */}
             <Link

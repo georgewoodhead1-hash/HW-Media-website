@@ -68,5 +68,4 @@ export const DISCOVER: GalleryItem[] = [
 export const COMING: GalleryItem[] = [
   { label: "Norton", comingSoon: true },
   { label: "Black Crows", logo: "logo-black-crows-white", comingSoon: true },
-  { label: "TBC", comingSoon: true },
 ];

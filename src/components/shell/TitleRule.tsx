@@ -18,7 +18,9 @@ export default function TitleRule({ title, className = "" }: { title: string; cl
     const plus = el.querySelectorAll(".tr-plus");
     const word = el.querySelector(".tr-word");
     const tl = gsap.timeline({
-      scrollTrigger: { trigger: el, start: "top 92%", end: "top 40%", scrub: 1.2 },
+      // completes by 58% of the viewport — the old 40% end left ~1.3
+      // viewports of near-black before headings resolved (polish review)
+      scrollTrigger: { trigger: el, start: "top 94%", end: "top 58%", scrub: 1.2 },
     });
     tl.fromTo(word, { autoAlpha: 0, y: 18 }, { autoAlpha: 1, y: 0, ease: "none" }, 0)
       .fromTo(left, { scaleX: 0 }, { scaleX: 1, ease: "none", transformOrigin: "right center" }, 0.15)

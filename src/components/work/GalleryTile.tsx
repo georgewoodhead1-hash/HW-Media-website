@@ -48,11 +48,9 @@ export default function GalleryTile({ item }: { item: GalleryItem }) {
       )}
       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/25 to-black/45 transition-opacity duration-500 group-hover:opacity-30" />
       {Mark}
-      {item.comingSoon && (
-        <span className="label-mono absolute bottom-3 left-3 text-[10px] tracking-[0.22em] text-white/75">
-          Coming soon
-        </span>
-      )}
+      {/* no per-tile "Coming soon" caption — the divider above the strip
+          already says it once (polish review: the phrase appeared 4× in one
+          viewport; house rule: no tiny subtext under tiles) */}
       {/* the reveal cover — a cream block that FALLS OFF the tile (the
           transition builds the wall; parent animates .gt-cover away) */}
       <span aria-hidden className="gt-cover absolute inset-0 z-10 bg-[#f5f1e6] will-change-transform" />

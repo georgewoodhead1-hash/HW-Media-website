@@ -233,15 +233,17 @@ export default function Testimonials() {
               key={`q-${active}`}
               className="font-display mt-5 max-w-[46rem] text-[clamp(1.5rem,2.9vw,2.7rem)] leading-[1.04] md:mt-7"
             >
-              <span className="tsq-word">&ldquo;</span>
-              {TESTIMONIALS[active].quote.split(" ").map((w, i) => (
-                <span key={`${active}-${i}`} className="tsq-word">{w}{" "}</span>
+              {TESTIMONIALS[active].quote.split(" ").map((w, i, arr) => (
+                <span key={`${active}-${i}`} className="tsq-word">
+                  {i === 0 && "“"}
+                  {w}
+                  {i === arr.length - 1 ? "”" : " "}
+                </span>
               ))}
-              <span className="tsq-word">&rdquo;</span>
             </blockquote>
             <figcaption data-t-el className="mt-5 flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 md:mt-8 md:justify-start">
               <span className="label-mono text-[11px] tracking-[0.2em] text-[var(--fg)]">
-                {TESTIMONIALS[active].role} · {TESTIMONIALS[active].sector}
+                {TESTIMONIALS[active].role}
               </span>
               <Link href={`/work/${TESTIMONIALS[active].slug}`} className="blink text-[11px] tracking-[0.05em]">
                 View project

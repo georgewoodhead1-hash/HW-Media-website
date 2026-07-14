@@ -173,12 +173,13 @@ export default function TrustedBy() {
             small-caps face so it stays the condensed display cut. */}
         {/* inline font so .blink's small-caps face can't win the cascade —
             the heading stays the condensed display cut. Sized down (George). */}
+        {/* ROUND-8 (George): BIGGER + ALL CAPS */}
         <h2 className="inline-block">
           <span
-            className="blink-title font-display text-[clamp(1.6rem,3vw,2.6rem)] leading-none"
+            className="blink-title font-display text-[clamp(2.2rem,4.4vw,3.9rem)] leading-none"
             style={{ fontFamily: "var(--font-suisse-cond), 'Helvetica Neue', Arial, sans-serif", letterSpacing: "-0.015em" }}
           >
-            Trusted by
+            TRUSTED BY
           </span>
         </h2>
       </div>
@@ -188,8 +189,8 @@ export default function TrustedBy() {
         <Row logos={ROW_B} reverse trackRef={trackBRef} tweenRef={tweenBRef} />
       </div>
 
-      {/* closing hairline — the line between this and the next section (George) */}
-      <Rule className="mt-[10vh]" bg="var(--bg)" />
+      {/* closing hairline — draws QUICK and low (George: "takes too long to load in") */}
+      <Rule className="mt-[10vh]" bg="var(--bg)" fast />
     </section>
   );
 }

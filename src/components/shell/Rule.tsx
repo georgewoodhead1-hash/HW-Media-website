@@ -6,7 +6,7 @@ import { gsap } from "@/lib/gsap";
 // The 1820 hairline grammar: a line that draws FROM THE CENTRE outward with a
 // small + mark at each end (and an optional tiny centred label). The one
 // repeating divider used sitewide — no other separators.
-export default function Rule({ className = "", label, bg = "var(--bg)" }: { className?: string; label?: string; bg?: string }) {
+export default function Rule({ className = "", label, bg = "var(--bg)", fast = false }: { className?: string; label?: string; bg?: string; fast?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -17,13 +17,15 @@ export default function Rule({ className = "", label, bg = "var(--bg)" }: { clas
     const plus = el.querySelectorAll(".rule-plus");
     const lab = el.querySelector(".rule-label");
     const tl = gsap.timeline({
-      scrollTrigger: { trigger: el, start: "top 96%", end: "top 30%", scrub: 1.3 },
+      // fast = fully drawn while still low in the viewport (George: the
+      // trusted-by closing line "takes too long to load in")
+      scrollTrigger: { trigger: el, start: "top 96%", end: fast ? "top 72%" : "top 30%", scrub: fast ? 0.5 : 1.3 },
     });
     tl.fromTo(line, { scaleX: 0 }, { scaleX: 1, ease: "none", transformOrigin: "center center" }, 0)
       .fromTo(plus, { autoAlpha: 0, scale: 0.4 }, { autoAlpha: 1, scale: 1, ease: "none" }, 0.5);
     if (lab) tl.fromTo(lab, { autoAlpha: 0, letterSpacing: "0.55em" }, { autoAlpha: 1, letterSpacing: "0.22em", ease: "none" }, 0.25);
     return () => { tl.scrollTrigger?.kill(); tl.kill(); };
-  }, []);
+  }, [fast]);
 
   return (
     <div ref={ref} aria-hidden className={`relative flex items-center gap-3 ${className}`}>

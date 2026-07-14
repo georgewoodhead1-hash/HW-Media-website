@@ -23,7 +23,9 @@ const WORKS = FEATURED_SLUGS.map((s) => projects.find((p) => p.slug === s)).filt
 // the hand-off tile — its film is also frame 1 of Our Process (the match-cut)
 const HERA = WORKS.find((p) => p.slug === "hera");
 
-// brand logos for the collapsed tiles (client: logos, not text labels)
+// brand logos for the collapsed tiles (client: logos, not text labels).
+// ROUND-8: Sans Matin + Castle Air wired (files exist); Otoko has no logo
+// file yet — wordmark fallback until the client supplies one.
 const LOGO: Record<string, string> = {
   McLaren: "mclaren-logo",
   Nike: "nike-white",
@@ -31,6 +33,8 @@ const LOGO: Record<string, string> = {
   Salomon: "salomon-logo-white",
   Defender: "defender-white",
   "Black Crows": "logo-black-crows-white",
+  "Sans Matin": "sm-new-logo-design-white-2025",
+  "Castle Air": "castle-air-white",
 };
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -63,23 +67,20 @@ export default function OurWork() {
 
       const cta = root.querySelector<HTMLElement>(".ow-cta");
       const chars = gsap.utils.toArray<HTMLElement>(".ow-char", root);
-      const underline = root.querySelector<HTMLElement>(".ow-underline");
       gsap.set(head, { autoAlpha: 1, yPercent: 0 });
       gsap.set(chars, { opacity: 0 });
-      gsap.set(bars, { autoAlpha: 0, yPercent: 34, scale: 0.97, force3D: true });
-      if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
-      if (underline) gsap.set(underline, { scaleX: 0, transformOrigin: "center center" });
       gsap.set(bars, { autoAlpha: 0, yPercent: 34, scale: 0.97, force3D: true });
       if (cta) gsap.set(cta, { autoAlpha: 0, y: 16 });
 
       // ENTRANCE — "Featured Projects" types itself ONCE when the section
       // arrives (motion review: scrub-typing strands the heading half-written
-      // whenever the user pauses; il capo's text always COMMITS)
+      // whenever the user pauses; il capo's text always COMMITS).
+      // ROUND-8: the underline is GONE from the load-in — it lives on the
+      // heading's HOVER now (gold bar), pure CSS.
       const typeTl = gsap.timeline({
         scrollTrigger: { trigger: root, start: "top 55%", toggleActions: "play none none reverse" },
       });
       typeTl.to(chars, { opacity: 1, duration: 0.01, stagger: 0.045, ease: "none" }, 0);
-      if (underline) typeTl.to(underline, { scaleX: 1, duration: 0.6, ease: "power2.out" }, 0.2);
 
       // ENTRANCE on passage — the bars fly in one after another as the
       // section arrives; the page NEVER stops (1820: no pins anywhere).
@@ -151,7 +152,6 @@ export default function OurWork() {
           // buffer first (George: "almost freeze"), then the heading lifts away
           const headP = sm(0.06, 0.3, p);
           gsap.set(head, { autoAlpha: 1 - headP, yPercent: -headP * 30 });
-          if (underline) gsap.set(underline, { autoAlpha: 1 - headP });
           if (cta) gsap.set(cta, { autoAlpha: 1 - headP });
           // EVEN pairs, outermost first — each pair moves as one
           dropP[0] = dropP[5] = sm(0.08, 0.34, p);
@@ -315,18 +315,24 @@ export default function OurWork() {
       <div className="ow-runway relative motion-safe:md:h-[280vh]">
         <div className="ow-pin relative md:sticky md:top-0">
       <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
-        <h2
-          className="ow-head font-display relative z-10 mb-[2.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
-        >
-          {"Featured ".split("").map((c, i) => (
-            <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
-          ))}
-          {"Projects".split("").map((c, i) => (
-            <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--fg)]">{c}</span>
-          ))}
-        </h2>
-        {/* the underline (George) — a bright hairline drawn under the heading */}
-        <span aria-hidden className="ow-underline relative z-10 mx-auto -mt-[2vh] mb-[3vh] block h-px w-[min(46vw,540px)] bg-[var(--fg)]" />
+        {/* ROUND-8 (George): no resting underline — hover the heading and
+            the GOLD bar draws in under it */}
+        <div className="group relative z-10 mx-auto mb-[3vh] w-fit">
+          <h2
+            className="ow-head font-display whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
+          >
+            {"Featured ".split("").map((c, i) => (
+              <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
+            ))}
+            {"Projects".split("").map((c, i) => (
+              <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--fg)]">{c}</span>
+            ))}
+          </h2>
+          <span
+            aria-hidden
+            className="mx-auto mt-3 block h-[3px] w-[min(46vw,540px)] origin-left scale-x-0 bg-[var(--gold-accent)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100"
+          />
+        </div>
 
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
@@ -351,19 +357,20 @@ export default function OurWork() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30 transition-colors duration-500 group-hover:from-black/65" />
 
-              {/* collapsed — brand logo (text only on hover/expand, client) */}
+              {/* collapsed — brand logo (text only on hover/expand, client).
+                  ROUND-8: logos BIGGER */}
               <span className="pointer-events-none absolute inset-0 flex items-center justify-center p-3 opacity-100 transition-opacity duration-300 group-hover:opacity-0">
                 {LOGO[p.client] ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={`/logos/${LOGO[p.client]}.png`}
                     alt={p.client}
-                    className="max-h-8 w-auto max-w-[80%] object-contain opacity-90"
+                    className="max-h-12 w-auto max-w-[82%] object-contain opacity-90"
                   />
                 ) : (
-                  /* no logo file yet (Otoko etc. — client to supply): a clean
+                  /* no logo file yet (Otoko — client to supply): a clean
                      horizontal wordmark stands in so it reads like a mark */
-                  <span className="font-display whitespace-nowrap text-[15px] tracking-[0.14em] text-white/90">
+                  <span className="font-display whitespace-nowrap text-[17px] tracking-[0.14em] text-white/90">
                     {p.client.toUpperCase()}
                   </span>
                 )}
@@ -383,9 +390,10 @@ export default function OurWork() {
           ))}
         </div>
 
+        {/* ROUND-8: bigger, no underline (hover box stays) */}
         <Link
           href="/work"
-          className="ow-cta blink relative z-10 mt-6 self-center text-[14px] font-medium"
+          className="ow-cta blink blink-bare relative z-10 mt-6 self-center text-[17px] font-medium"
         >
           Discover more
         </Link>

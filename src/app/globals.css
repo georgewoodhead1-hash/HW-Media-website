@@ -246,6 +246,12 @@ html[data-mode="light"] .nav-root[data-surface="page"] .nav-logo-black {
   text-underline-offset: 3px;
 }
 
+/* blink WITHOUT the hover underline (George, ROUND-8: Discover more keeps
+   the gold hover box, loses the underline) */
+.blink-bare:hover {
+  text-decoration: none;
+}
+
 /* BIG section titles: same voice, NO brackets, no link hover (client:
    brackets stay on the small links only) */
 .blink-title {

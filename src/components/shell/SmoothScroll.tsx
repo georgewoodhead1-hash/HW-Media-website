@@ -50,10 +50,12 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const lenis = new Lenis({
-      // lerp .06 = il capo's smoothing. Their 0.3 wheel weight was WAY too
-      // slow on our long runways (George: "the scroll just takes so long")
-      // — back to the 0.55 he was happy with.
-      lerp: 0.06,
+      // ROUND-8 (George: "it doesn't scroll, suddenly goes quite quickly,
+      // clunky"): lerp .06 was the dead-then-rush — input pooled behind the
+      // heavy smoothing and released in a lump at section boundaries.
+      // 0.095 ≈ monolog directness; still smooth, but the page answers the
+      // wheel. 0.55 wheel weight stays (0.3-0.35 was "way too slow").
+      lerp: 0.095,
       wheelMultiplier: 0.55,
       smoothWheel: true,
     });

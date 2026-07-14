@@ -80,10 +80,13 @@ export default function AboutPanel() {
         className="absolute inset-0 bg-black/55 backdrop-blur-md"
       />
 
-      {/* the panel — rides in from the right */}
+      {/* the panel — rides in from the right. data-lenis-prevent lets it
+          scroll natively (Lenis hijacks the wheel globally, so without this
+          the panel wouldn't scroll — George) */}
       <div
         ref={panelRef}
-        className="absolute right-0 top-0 flex h-full w-[min(600px,94vw)] flex-col overflow-y-auto border-l border-[var(--hairline-dark)] bg-[#0a0a09] px-7 py-8 text-[#f5f1e6] md:px-12 md:py-12"
+        data-lenis-prevent
+        className="absolute right-0 top-0 flex h-full w-[min(600px,94vw)] flex-col overflow-y-auto overscroll-contain border-l border-[var(--hairline-dark)] bg-[#0a0a09] px-7 py-8 text-[#f5f1e6] md:px-12 md:py-12"
       >
         <div data-ap-row className="mb-[7vh] flex items-center justify-between">
           <span className="label-mono text-[10px] tracking-[0.24em] text-white/55">ABOUT</span>
@@ -107,8 +110,8 @@ export default function AboutPanel() {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           data-ap-row
-          src="/images/harry-color.jpg"
-          alt="Harry Wallis on set"
+          src="/images/harry-field.jpg"
+          alt="Harry Wallis on location"
           className="mt-8 aspect-[3/2] w-full rounded-md object-cover"
         />
 

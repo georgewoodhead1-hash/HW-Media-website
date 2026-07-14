@@ -81,12 +81,17 @@ export default function Process() {
     if (!root) return;
 
     const media = Array.from(root.querySelectorAll<HTMLVideoElement>(".proc-media"));
+    // ROUND-8 audit fix: warm the videos WELL before the section is on
+    // screen. The hand-off frame (panel 0 = the match-cut film) was paused
+    // off-screen and only got play() at the seam, so it painted black for a
+    // beat before decoding. A big top/bottom margin means frame 1 is already
+    // decoded and playing by the time the Featured pin hands over — no gap.
     const io = new IntersectionObserver(
       (es) => es.forEach((e) => {
         if (e.isIntersecting) media.forEach((v) => safePlay(v));
         else media.forEach((v) => v.pause());
       }),
-      { rootMargin: "300px 0px" },
+      { rootMargin: "1600px 0px" },
     );
     io.observe(root);
 

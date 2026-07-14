@@ -93,6 +93,17 @@ html[data-mode="dark"] {
   color: #f5f1e6;
 }
 
+/* The process STRIP is always full-bleed footage, so its words must stay
+   cream in BOTH modes (ROUND-8 audit: in light mode the headings + body
+   flipped near-black over the footage and went unreadable). Scoped to the
+   travelling track only — the section bg and the embedded testimonials
+   still follow the global mode. */
+.proc-track {
+  --fg: #f5f1e6;
+  --hairline-dark: rgba(245, 241, 230, 0.14);
+  color: #f5f1e6;
+}
+
 /* ---- Contrasting bands (Trusted by, FAQs) ----
    Always take the OPPOSITE palette to the global mode, so they read as a
    distinct band whichever way the toggle is set: a dark band on the light

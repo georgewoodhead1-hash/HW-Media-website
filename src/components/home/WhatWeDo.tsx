@@ -57,17 +57,18 @@ export default function WhatWeDo() {
               onMouseEnter={(e) => { const v = e.currentTarget.querySelector("video"); if (v) { v.currentTime = 0; v.play().catch(() => {}); } }}
               onMouseLeave={(e) => e.currentTarget.querySelector("video")?.pause()}
             >
-              {/* the still — darkens + blurs behind the rising film */}
+              {/* the still — darkens + blurs behind the rising film (slow) */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={poster}
                 alt=""
                 aria-hidden
-                className="absolute inset-0 h-full w-full object-cover transition-[filter,transform,opacity] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-105 group-hover:opacity-40 group-hover:blur-md"
+                className="absolute inset-0 h-full w-full object-cover transition-[filter,transform,opacity] duration-[900ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-[1.06] group-hover:opacity-30 group-hover:blur-lg"
               />
-              {/* the film — rises up from the bottom in front (the slot) */}
+              {/* the film — FULL-SIZE, revealed rising from the bottom via a
+                  clip (never a small box), nice and slow (monolog feel) */}
               <video
-                className="absolute inset-0 h-full w-full translate-y-full object-cover transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform group-hover:translate-y-0"
+                className="absolute inset-0 h-full w-full object-cover [clip-path:inset(100%_0_0_0)] transition-[clip-path] duration-[850ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-[clip-path] group-hover:[clip-path:inset(0%_0_0_0)]"
                 src={s.clip}
                 poster={poster}
                 muted

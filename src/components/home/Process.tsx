@@ -61,7 +61,7 @@ const N = STAGES.length;
 // Featured pin (md:-mt-[100vh]); the first 100vh is a DEAD ZONE (the strip
 // holds still while Featured's exit still owns the screen). ROUND-9: runway
 // shortened 740→560vh (George: the hold "only lets go after a while").
-const RUNWAY_VH = 560;
+const RUNWAY_VH = 480;
 const DEAD = 100 / RUNWAY_VH;
 // travel completes at TRAVEL_END (Deliver fully off-screen left = the
 // curtain fully pulled). Deliver reaches CENTRE at travel 0.75 → p' 0.66.
@@ -160,14 +160,21 @@ export default function Process() {
                 force3D: true,
               });
             }
-            if (img) gsap.set(img, { xPercent: -8 + 16 * t, scale: 1.1 - 0.1 * t, force3D: true });
+            // ROUND-10: frame 1 (i=0) does NOT zoom — it sits at scale 1 to
+            // match the grown hera clone (seamless click, no zoom). The rest
+            // keep the parallax drift.
+            if (img) {
+              if (i === 0) gsap.set(img, { xPercent: 0, scale: 1, force3D: true });
+              else gsap.set(img, { xPercent: -8 + 16 * t, scale: 1.1 - 0.1 * t, force3D: true });
+            }
             const tl = builds[i];
             if (i === 0) {
-              // Pre-production writes in just AFTER the hand-off (dead zone
-              // over), so you actually watch it build onto the frame
-              if (p > 0.03) {
+              // Pre-production writes in the MOMENT the dead zone ends (the
+              // corners have hit the edges) — George: "as soon as it gets to
+              // all four corners, Pre-production should be loading in already"
+              if (p > 0.006) {
                 if (tl.reversed() || (!tl.isActive() && tl.progress() === 0)) tl.play();
-              } else if (p < 0.012) {
+              } else if (p < 0.002) {
                 if (!tl.reversed() && (tl.isActive() || tl.progress() > 0)) tl.reverse();
               }
             } else {
@@ -216,20 +223,35 @@ export default function Process() {
           is already on screen when Featured stops painting. The match-cut. */}
 
       {/* THE STRIP — four frames conjoined side by side. Mobile: vertical.
-          ROUND-9 runway 740→560vh (shorter hold). */}
-      <div className="proc-runway relative md:h-[560vh]">
+          ROUND-10 runway 560→480vh (George: takes ages to scroll off). */}
+      <div className="proc-runway relative md:h-[480vh]">
         <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden">
           {/* the track rides ABOVE the testimonials (z-20) so the Deliver
               frame is the CURTAIN that pulls back to reveal them */}
           <div className="proc-track md:relative md:z-20 md:flex md:h-screen md:w-[400vw] md:will-change-transform">
-            {STAGES.map((s) => (
+            {STAGES.map((s, i) => (
               <div
                 key={s.name}
+                // ROUND-10 CURTAIN: Deliver (the last frame) feathers its
+                // RIGHT edge to transparent so, as it pulls back over the
+                // testimonials behind it, they're revealed through a soft
+                // dark gradient instead of a hard film cut (George).
                 className="proc-panel relative flex h-[80vh] items-center justify-center overflow-hidden md:h-full md:w-screen md:flex-none md:overflow-visible"
-                style={{ perspective: "900px" }}
+                style={
+                  i === N - 1
+                    ? {
+                        perspective: "900px",
+                        WebkitMaskImage: "linear-gradient(to right, #000 62%, transparent 100%)",
+                        maskImage: "linear-gradient(to right, #000 62%, transparent 100%)",
+                      }
+                    : { perspective: "900px" }
+                }
               >
+                {/* ROUND-10: frame 1 sits FULL-BLEED (inset-0, no parallax
+                    inset) so it matches the grown hera clone exactly — the
+                    click into Our Process is seamless, no zoom (George) */}
                 <div className="absolute inset-0 overflow-hidden" aria-hidden>
-                  <div className="absolute inset-y-0 inset-x-[-9%]">
+                  <div className={i === 0 ? "absolute inset-0" : "absolute inset-y-0 inset-x-[-9%]"}>
                     <video
                       src={s.img}
                       className="proc-media h-full w-full object-cover will-change-transform"

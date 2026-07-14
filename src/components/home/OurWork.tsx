@@ -122,6 +122,7 @@ export default function OurWork() {
       const clone = root.querySelector<HTMLElement>(".ow-heroclone");
       const cloneVid = clone?.querySelector("video") ?? null;
       const cloneSkin = clone?.querySelector<HTMLElement>(".ow-heroclone-skin") ?? null;
+      const procTitle = root.querySelector<HTMLElement>(".ow-proc-title");
       const sm = (a: number, b: number, v: number) => {
         const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
         return t * t * (3 - 2 * t);
@@ -153,10 +154,12 @@ export default function OurWork() {
           const headP = sm(0.06, 0.3, p);
           gsap.set(head, { autoAlpha: 1 - headP, yPercent: -headP * 30 });
           if (cta) gsap.set(cta, { autoAlpha: 1 - headP });
-          // EVEN pairs, outermost first — each pair moves as one
-          dropP[0] = dropP[5] = sm(0.08, 0.34, p);
-          dropP[1] = dropP[4] = sm(0.2, 0.46, p);
-          dropP[3] = sm(0.32, 0.58, p);
+          // ROUND-10: ALL the other films leave FIRST, in even pairs, and
+          // are FULLY GONE (~p 0.42) before hera does anything — George:
+          // "the Salomon one is barely leaving before Sans Martin starts".
+          dropP[0] = dropP[5] = sm(0.05, 0.22, p);
+          dropP[1] = dropP[4] = sm(0.14, 0.32, p);
+          dropP[3] = sm(0.24, 0.42, p);
 
           // HERA: swap the in-layout tile for the clone, then square → full-bleed
           const heraBar = bars[2];
@@ -190,11 +193,11 @@ export default function OurWork() {
               const iw = window.innerWidth;
               const ih = window.innerHeight;
               const S = ih * 0.44; // the square, centred
-              // shrink-to-square QUICKER (George); the square then holds a
-              // beat. ROUND-9: the GROW is widened (0.55→1.0) so the
-              // dramatic full-bleed part reads slower / less abrupt
-              const sqP = sm(0.26, 0.4, p);
-              const grP = sm(0.55, 1.0, p);
+              // ROUND-10: hera only starts AFTER the others are gone (0.42).
+              // Square 0.44→0.56, hold a beat, then grow 0.6→0.98 — the
+              // corners travel out to the screen edges.
+              const sqP = sm(0.44, 0.56, p);
+              const grP = sm(0.6, 0.98, p);
               const lp = (a: number, b: number, t: number) => a + (b - a) * t;
               const l1 = lp(rect0.l, (iw - S) / 2, sqP);
               const t1 = lp(rect0.t, (ih - S) / 2, sqP);
@@ -209,16 +212,25 @@ export default function OurWork() {
               });
               // the tile's gradient + wordmark dissolve as the square forms
               if (cloneSkin) gsap.set(cloneSkin, { autoAlpha: 1 - sm(0, 0.5, sqP) });
-              // near the hand-off, put the strip's first frame on the SAME
-              // frame of the film so the seam between the two is invisible
-              if (p >= 0.85 && !synced && cloneVid) {
+              // OUR PROCESS title (George): appears once the SQUARE is
+              // formed, then FADES OUT as the square grows to the edges —
+              // and the strip's Pre-production takes over from there
+              if (procTitle) {
+                const titleAlpha = sm(0.5, 0.6, p) * (1 - sm(0.66, 0.8, p));
+                gsap.set(procTitle, { autoAlpha: titleAlpha, scale: lp(1, 1.12, grP) });
+              }
+              // keep the strip's first frame on the SAME frame of the film
+              // through the whole grow so the swap at release is invisible
+              if (p >= 0.6 && cloneVid) {
                 const stripVid = document.querySelector<HTMLVideoElement>(".proc-media");
-                if (stripVid && stripVid.readyState >= 1) {
+                if (stripVid && stripVid.readyState >= 1 && !synced) {
                   stripVid.currentTime = cloneVid.currentTime;
                   synced = true;
                 }
               }
-              if (p < 0.85) synced = false;
+              if (p < 0.6) synced = false;
+            } else if (procTitle) {
+              gsap.set(procTitle, { autoAlpha: 0 });
             }
           }
         },
@@ -318,24 +330,18 @@ export default function OurWork() {
       <div className="ow-runway relative motion-safe:md:h-[360vh]">
         <div className="ow-pin relative md:sticky md:top-0">
       <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
-        {/* ROUND-8 (George): no resting underline — hover the heading and
-            the GOLD bar draws in under it */}
-        <div className="group relative z-10 mx-auto mb-[3vh] w-fit">
-          <h2
-            className="ow-head font-display whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
-          >
-            {"Featured ".split("").map((c, i) => (
-              <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
-            ))}
-            {"Projects".split("").map((c, i) => (
-              <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--fg)]">{c}</span>
-            ))}
-          </h2>
-          <span
-            aria-hidden
-            className="mx-auto mt-3 block h-[3px] w-[min(46vw,540px)] origin-left scale-x-0 bg-[var(--gold-accent)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100"
-          />
-        </div>
+        {/* ROUND-10 (George): NO line at all — resting or hover. Just the
+            heading. */}
+        <h2
+          className="ow-head font-display relative z-10 mx-auto mb-[3vh] w-fit whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
+        >
+          {"Featured ".split("").map((c, i) => (
+            <span key={`f-${i}`} className="ow-char inline-block whitespace-pre">{c}</span>
+          ))}
+          {"Projects".split("").map((c, i) => (
+            <span key={`p-${i}`} className="ow-char inline-block whitespace-pre text-[var(--fg)]">{c}</span>
+          ))}
+        </h2>
 
 
         {/* the accordion row — final layout; each film reveals in place with a masked wipe */}
@@ -416,15 +422,32 @@ export default function OurWork() {
               preload="metadata"
               aria-hidden
             />
-            {/* the tile's skin (gradient + wordmark) so the swap is invisible */}
+            {/* the SAME overlays the Process strip's frame 1 wears, PERSISTENT
+                — so the grown clone matches frame 1 exactly and the click
+                into Our Process is seamless (no darkening jump, George) */}
+            <div aria-hidden className="absolute inset-0 bg-black/35" />
+            <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/30" />
+            {/* the tile's skin (tile gradient + wordmark) — this fades as the
+                square forms, leaving just film + the persistent overlays */}
             <div className="ow-heroclone-skin absolute inset-0" aria-hidden>
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
               <span className="absolute inset-0 flex items-center justify-center p-3">
                 <span className="font-display whitespace-nowrap text-[15px] tracking-[0.14em] text-white/90">
                   {HERA?.client.toUpperCase()}
                 </span>
               </span>
             </div>
+          </div>
+
+          {/* OUR PROCESS transient title — appears when the hera square is
+              formed, fades away as it grows to the screen edges (George) */}
+          <div
+            aria-hidden
+            className="ow-proc-title pointer-events-none absolute inset-0 z-30 hidden items-center justify-center opacity-0 motion-safe:md:flex"
+          >
+            <span className="font-display text-center text-[clamp(2.4rem,6vw,5.6rem)] leading-[0.9] tracking-[-0.04em] text-white">
+              Our Process
+            </span>
           </div>
         </div>
       </div>

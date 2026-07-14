@@ -92,34 +92,26 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
       const words = quote ? Array.from(quote.querySelectorAll<HTMLElement>(".tsq-word")) : [];
       const film = root.querySelector<HTMLElement>(".tst-film");
       const ttWord = root.querySelector<HTMLElement>(".tt-word");
-      const ttLineL = root.querySelector<HTMLElement>(".tt-line-l");
-      const ttLineR = root.querySelector<HTMLElement>(".tt-line-r");
-      const ttPlus = root.querySelectorAll<HTMLElement>(".tt-plus");
 
       gsap.set(pieces, { autoAlpha: 0, y: 24 });
       if (quote) gsap.set(quote, { autoAlpha: 1 });
       gsap.set(words, { autoAlpha: 0 });
       if (film) gsap.set(film, { clipPath: "inset(50%)" });
       if (ttWord) gsap.set(ttWord, { yPercent: 115 });
-      gsap.set(ttLineL, { scaleX: 0, transformOrigin: "right center" });
-      gsap.set(ttLineR, { scaleX: 0, transformOrigin: "left center" });
-      gsap.set(ttPlus, { autoAlpha: 0, scale: 0.4 });
 
+      // ROUND-10: the lines either side of the title are GONE (George); the
+      // whole compose is SLOWER so it settles in nicely as the Deliver
+      // curtain pulls back (George: "they load in too quickly")
       const enter = gsap.timeline({ paused: true });
       enter
-        // the title: word rises, then the LINES DRAW OUTWARD from it with
-        // the plusses landing at the ends — the dynamic TitleRule move
-        // (George: not a fade)
-        .to(ttWord, { yPercent: 0, duration: 0.7, ease: "expo.out" }, 0)
-        .to([ttLineL, ttLineR], { scaleX: 1, duration: 0.8, ease: "power4.inOut" }, 0.25)
-        .to(ttPlus, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 0.85)
+        .to(ttWord, { yPercent: 0, duration: 1.0, ease: "expo.out" }, 0)
         // the content beneath it
-        .to(pieces[0] ?? [], { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.35)
-        // the quote writes itself out
-        .to(words, { autoAlpha: 1, duration: 0.05, stagger: 0.05, ease: "none" }, 0.5)
-        .to(pieces.slice(1), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.85)
+        .to(pieces[0] ?? [], { autoAlpha: 1, y: 0, duration: 0.9, ease: "power3.out" }, 0.4)
+        // the quote writes itself out, word by word (slower)
+        .to(words, { autoAlpha: 1, duration: 0.05, stagger: 0.09, ease: "none" }, 0.65)
+        .to(pieces.slice(1), { autoAlpha: 1, y: 0, duration: 0.9, stagger: 0.16, ease: "power3.out" }, 1.1)
         // the film opens centre-out (the house reveal), no slide
-        .to(film, { clipPath: "inset(0%)", duration: 1.1, ease: "power4.inOut" }, 0.55);
+        .to(film, { clipPath: "inset(0%)", duration: 1.5, ease: "power4.inOut" }, 0.7);
 
       const onTst = (e: Event) => {
         const dir = (e as CustomEvent).detail;
@@ -251,18 +243,14 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
       }
       aria-label="Testimonials"
     >
-      {/* the title — its lines draw OUTWARD from the word with plusses at
-          the ends (the dynamic move, part of the load-in; George) */}
-      <div className="mb-[5vh] flex items-center gap-4 md:mb-[6vh] md:gap-6">
-        <span className="tt-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
-        <span className="tt-line-l block h-px flex-1 bg-[var(--fg)] will-change-transform" />
-        <h2 className="shrink-0 overflow-hidden text-center">
+      {/* the title — ROUND-10: just the word, centred; no lines either side
+          (George) */}
+      <div className="mb-[5vh] flex justify-center md:mb-[6vh]">
+        <h2 className="overflow-hidden text-center">
           <span className="tt-word font-display block text-[clamp(1.8rem,3.6vw,3.4rem)] leading-none">
             Testimonials
           </span>
         </h2>
-        <span className="tt-line-r block h-px flex-1 bg-[var(--fg)] will-change-transform" />
-        <span className="tt-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
       </div>
 
       {/* the composition sits centred as one block: quote column and the

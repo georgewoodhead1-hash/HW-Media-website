@@ -72,7 +72,7 @@ export default function FeatureBand() {
       ref={root}
       data-theme="dark"
       data-surface="media"
-      className="relative z-[35] bg-[var(--bg)] md:h-[130vh]"
+      className="relative z-[35] bg-[var(--bg)] md:h-[115vh]"
       aria-label="Wherever the story is"
     >
       <div className="overflow-hidden md:sticky md:top-0 md:h-screen">

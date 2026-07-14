@@ -57,16 +57,21 @@ const STAGES: Stage[] = [
 ];
 
 const N = STAGES.length;
-// ROUND-8 SEAMLESS HAND-OFF: the section is pulled up 100vh under the
-// Featured pin (md:-mt-[100vh]) so frame 1 is already pinned when the
-// Featured section stops painting. The runway grew 640→740vh; the first
-// 100vh (the covered overlap) is a DEAD ZONE — the strip must not move
-// while Featured's exit still owns the screen.
-const DEAD = 100 / 740;
-// remaining thresholds are fractions of the LIVE part (unchanged feel)
-const TRAVEL_END = 0.75;
-const TST_IN = 0.735; // testimonials load (same absolute point as before)
-const TST_OUT = 0.71;
+// ROUND-8/9 hand-off + curtain. The section is pulled up 100vh under the
+// Featured pin (md:-mt-[100vh]); the first 100vh is a DEAD ZONE (the strip
+// holds still while Featured's exit still owns the screen). ROUND-9: runway
+// shortened 740→560vh (George: the hold "only lets go after a while").
+const RUNWAY_VH = 560;
+const DEAD = 100 / RUNWAY_VH;
+// travel completes at TRAVEL_END (Deliver fully off-screen left = the
+// curtain fully pulled). Deliver reaches CENTRE at travel 0.75 → p' 0.66.
+const TRAVEL_END = 0.88;
+// ROUND-9 CURTAIN: the testimonials sit BEHIND the strip and compose while
+// the Deliver frame still covers the centre (fires a touch before Deliver
+// fully centres), then the last of the travel pulls Deliver off like a
+// curtain to reveal them — no more "both animating at once".
+const TST_IN = 0.6;
+const TST_OUT = 0.55;
 
 const sm = (a: number, b: number, v: number) => {
   const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
@@ -117,13 +122,11 @@ export default function Process() {
         return tl;
       });
 
-      const first = ScrollTrigger.create({
-        trigger: runway,
-        start: "top 72%",
-        onEnter: () => builds[0].play(),
-        onLeaveBack: () => builds[0].reverse(),
-      });
-      kills.push(() => first.kill());
+      // ROUND-9: Pre-production must WRITE ITSELF IN after the hand-off, not
+      // appear pre-built (George). The old `first` trigger fired during the
+      // covered overlap, so the word was already done when revealed. It's
+      // now driven from the scrub below — it plays only once the dead zone
+      // ends and the strip is live in front of you.
 
       const texts = panels.map((p) => p.querySelector<HTMLElement>(".proc-text"));
       const imgs = panels.map((p) => p.querySelector<HTMLElement>(".proc-media"));
@@ -158,8 +161,16 @@ export default function Process() {
               });
             }
             if (img) gsap.set(img, { xPercent: -8 + 16 * t, scale: 1.1 - 0.1 * t, force3D: true });
-            if (i > 0) {
-              const tl = builds[i];
+            const tl = builds[i];
+            if (i === 0) {
+              // Pre-production writes in just AFTER the hand-off (dead zone
+              // over), so you actually watch it build onto the frame
+              if (p > 0.03) {
+                if (tl.reversed() || (!tl.isActive() && tl.progress() === 0)) tl.play();
+              } else if (p < 0.012) {
+                if (!tl.reversed() && (tl.isActive() || tl.progress() > 0)) tl.reverse();
+              }
+            } else {
               if (t > 0.3) {
                 if (tl.reversed() || (!tl.isActive() && tl.progress() === 0)) tl.play();
               } else if (t < 0.24) {
@@ -204,10 +215,13 @@ export default function Process() {
           the strip pins UNDER the Featured exit (the -mt overlap): frame 1
           is already on screen when Featured stops painting. The match-cut. */}
 
-      {/* THE STRIP — four frames conjoined side by side. Mobile: vertical. */}
-      <div className="proc-runway relative md:h-[740vh]">
+      {/* THE STRIP — four frames conjoined side by side. Mobile: vertical.
+          ROUND-9 runway 740→560vh (shorter hold). */}
+      <div className="proc-runway relative md:h-[560vh]">
         <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden">
-          <div className="proc-track md:flex md:h-screen md:w-[400vw] md:will-change-transform">
+          {/* the track rides ABOVE the testimonials (z-20) so the Deliver
+              frame is the CURTAIN that pulls back to reveal them */}
+          <div className="proc-track md:relative md:z-20 md:flex md:h-screen md:w-[400vw] md:will-change-transform">
             {STAGES.map((s) => (
               <div
                 key={s.name}
@@ -249,11 +263,11 @@ export default function Process() {
             ))}
           </div>
 
-          {/* THE TESTIMONY — on md+ it loads up on the black after the
-              strip, vertically centred in this sticky screen (hw:tst
-              events); on mobile these wrappers are plain flow after the
-              stacked panels */}
-          <div className="md:pointer-events-none md:absolute md:inset-0 md:z-10 md:flex md:items-center">
+          {/* THE TESTIMONY — ROUND-9: it sits BEHIND the strip (z-0) and
+              composes while the Deliver frame still covers it; the last of
+              the travel pulls Deliver off like a curtain to reveal it. On
+              mobile these wrappers are plain flow after the stacked panels. */}
+          <div className="md:pointer-events-none md:absolute md:inset-0 md:z-0 md:flex md:items-center">
             <div className="w-full md:pointer-events-auto">
               <Testimonials embedded />
             </div>

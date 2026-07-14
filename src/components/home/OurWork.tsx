@@ -190,10 +190,11 @@ export default function OurWork() {
               const iw = window.innerWidth;
               const ih = window.innerHeight;
               const S = ih * 0.44; // the square, centred
-              // ROUND-8: shrink-to-square QUICKER (George: "takes too
-              // long"); the square then holds a beat before the grow
+              // shrink-to-square QUICKER (George); the square then holds a
+              // beat. ROUND-9: the GROW is widened (0.55→1.0) so the
+              // dramatic full-bleed part reads slower / less abrupt
               const sqP = sm(0.26, 0.4, p);
-              const grP = sm(0.6, 0.96, p);
+              const grP = sm(0.55, 1.0, p);
               const lp = (a: number, b: number, t: number) => a + (b - a) * t;
               const l1 = lp(rect0.l, (iw - S) / 2, sqP);
               const t1 = lp(rect0.t, (ih - S) / 2, sqP);
@@ -312,7 +313,9 @@ export default function OurWork() {
       {/* ----- desktop / motion: the PINNED stage (ROUND-7) — the runway's
           extra height is the scroll the exit owns; the stage stays frozen
           on screen while the whole choreography plays in front of you ----- */}
-      <div className="ow-runway relative motion-safe:md:h-[280vh]">
+      {/* ROUND-9: runway 280→360vh so the exit + hera hand-off play SLOWER
+          (George: the fade-out and the Sans Matin grow were too fast) */}
+      <div className="ow-runway relative motion-safe:md:h-[360vh]">
         <div className="ow-pin relative md:sticky md:top-0">
       <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         {/* ROUND-8 (George): no resting underline — hover the heading and

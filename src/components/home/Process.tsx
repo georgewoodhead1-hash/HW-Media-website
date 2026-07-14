@@ -62,7 +62,12 @@ const N = STAGES.length;
 // holds still while Featured's exit still owns the screen). ROUND-9: runway
 // shortened 740→560vh (George: the hold "only lets go after a while").
 const RUNWAY_VH = 480;
-const DEAD = 100 / RUNWAY_VH;
+// ROUND-10.1: the covered overlap (dead scroll) drops 100→40vh so there's
+// far less nothing-happening scroll between the square filling the screen
+// and Pre-production writing in (George: "it fills the screen and then it
+// takes a lot to get there").
+const OVERLAP_VH = 40;
+const DEAD = OVERLAP_VH / RUNWAY_VH;
 // travel completes at TRAVEL_END (Deliver fully off-screen left = the
 // curtain fully pulled). Deliver reaches CENTRE at travel 0.75 → p' 0.66.
 const TRAVEL_END = 0.88;
@@ -169,10 +174,10 @@ export default function Process() {
             }
             const tl = builds[i];
             if (i === 0) {
-              // Pre-production writes in the MOMENT the dead zone ends (the
-              // corners have hit the edges) — George: "as soon as it gets to
-              // all four corners, Pre-production should be loading in already"
-              if (p > 0.006) {
+              // Pre-production writes in the MOMENT the (now short) dead zone
+              // ends — George: "as soon as it gets to all four corners,
+              // Pre-production should be loading in already"
+              if (p > 0.002) {
                 if (tl.reversed() || (!tl.isActive() && tl.progress() === 0)) tl.play();
               } else if (p < 0.002) {
                 if (!tl.reversed() && (tl.isActive() || tl.progress() > 0)) tl.reverse();
@@ -215,7 +220,7 @@ export default function Process() {
       data-theme="dark"
       data-surface="media"
       data-chapter="04 — Our process"
-      className="relative z-[20] bg-[var(--bg)] text-[var(--fg)] md:-mt-[100vh]"
+      className="relative z-[20] bg-[var(--bg)] text-[var(--fg)] md:-mt-[40vh]"
       aria-label="Our process and testimonials"
     >
       {/* the "Our Process" banner is GONE (ROUND-7: "getting in the way") —

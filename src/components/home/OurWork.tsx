@@ -154,12 +154,13 @@ export default function OurWork() {
           const headP = sm(0.06, 0.3, p);
           gsap.set(head, { autoAlpha: 1 - headP, yPercent: -headP * 30 });
           if (cta) gsap.set(cta, { autoAlpha: 1 - headP });
-          // ROUND-10: ALL the other films leave FIRST, in even pairs, and
-          // are FULLY GONE (~p 0.42) before hera does anything — George:
-          // "the Salomon one is barely leaving before Sans Martin starts".
-          dropP[0] = dropP[5] = sm(0.05, 0.22, p);
-          dropP[1] = dropP[4] = sm(0.14, 0.32, p);
-          dropP[3] = sm(0.24, 0.42, p);
+          // ROUND-10.1 (George): Salomon (3) drops WITH the two on the
+          // RIGHT (nike 4, castle-air 5), not as a lone straggler. Left
+          // pair (0,1) drops too. All gone (~0.36) before hera moves.
+          // layout L→R: otoko0 mclaren1 [HERA2] salomon3 nike4 castle5
+          dropP[0] = dropP[5] = sm(0.06, 0.26, p); // far ends
+          dropP[1] = dropP[4] = sm(0.12, 0.32, p); // inner
+          dropP[3] = sm(0.14, 0.34, p);            // salomon — with the right
 
           // HERA: swap the in-layout tile for the clone, then square → full-bleed
           const heraBar = bars[2];
@@ -192,12 +193,13 @@ export default function OurWork() {
             if (swapped) {
               const iw = window.innerWidth;
               const ih = window.innerHeight;
-              const S = ih * 0.44; // the square, centred
-              // ROUND-10: hera only starts AFTER the others are gone (0.42).
-              // Square 0.44→0.56, hold a beat, then grow 0.6→0.98 — the
-              // corners travel out to the screen edges.
-              const sqP = sm(0.44, 0.56, p);
-              const grP = sm(0.6, 0.98, p);
+              const S = ih * 0.46; // the square, centred
+              // ROUND-10.1: hera starts only after the others are gone. The
+              // rectangle→square reshape is SLOWER/WIDER (0.4→0.6) so it
+              // reads smoothly, then a beat, then grow 0.66→0.98. NO rounded
+              // corners (George).
+              const sqP = sm(0.4, 0.6, p);
+              const grP = sm(0.66, 0.98, p);
               const lp = (a: number, b: number, t: number) => a + (b - a) * t;
               const l1 = lp(rect0.l, (iw - S) / 2, sqP);
               const t1 = lp(rect0.t, (ih - S) / 2, sqP);
@@ -208,16 +210,16 @@ export default function OurWork() {
                 top: lp(t1, 0, grP),
                 width: lp(w1, iw, grP),
                 height: lp(h1, ih, grP),
-                borderRadius: 6 * (1 - grP),
+                borderRadius: 0,
               });
               // the tile's gradient + wordmark dissolve as the square forms
               if (cloneSkin) gsap.set(cloneSkin, { autoAlpha: 1 - sm(0, 0.5, sqP) });
-              // OUR PROCESS title (George): appears once the SQUARE is
-              // formed, then FADES OUT as the square grows to the edges —
-              // and the strip's Pre-production takes over from there
+              // OUR PROCESS title (George): appears ONCE THE SQUARE IS FULLY
+              // FORMED (0.62), as you start scrolling out; fades as the
+              // square grows to the edges. Pre-production takes over after.
               if (procTitle) {
-                const titleAlpha = sm(0.5, 0.6, p) * (1 - sm(0.66, 0.8, p));
-                gsap.set(procTitle, { autoAlpha: titleAlpha, scale: lp(1, 1.12, grP) });
+                const titleAlpha = sm(0.62, 0.7, p) * (1 - sm(0.8, 0.9, p));
+                gsap.set(procTitle, { autoAlpha: titleAlpha, scale: lp(1, 1.1, grP) });
               }
               // keep the strip's first frame on the SAME frame of the film
               // through the whole grow so the swap at release is invisible
@@ -325,9 +327,9 @@ export default function OurWork() {
       {/* ----- desktop / motion: the PINNED stage (ROUND-7) — the runway's
           extra height is the scroll the exit owns; the stage stays frozen
           on screen while the whole choreography plays in front of you ----- */}
-      {/* ROUND-9: runway 280→360vh so the exit + hera hand-off play SLOWER
-          (George: the fade-out and the Sans Matin grow were too fast) */}
-      <div className="ow-runway relative motion-safe:md:h-[360vh]">
+      {/* ROUND-10.1: runway 360→300vh — enough for a smooth exit + grow,
+          but less "takes so long to scroll" to reach Pre-production. */}
+      <div className="ow-runway relative motion-safe:md:h-[300vh]">
         <div className="ow-pin relative md:sticky md:top-0">
       <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         {/* ROUND-10 (George): NO line at all — resting or hover. Just the
@@ -411,7 +413,7 @@ export default function OurWork() {
           {/* the HERA hand-off layer — swaps in for the real tile at exit
               start, morphs to a SQUARE, then grows full-bleed. Frame 1 of
               Our Process plays the same film: the match-cut. */}
-          <div className="ow-heroclone invisible pointer-events-none absolute left-0 top-0 z-20 hidden overflow-hidden rounded-md opacity-0 motion-safe:md:block">
+          <div className="ow-heroclone invisible pointer-events-none absolute left-0 top-0 z-20 hidden overflow-hidden opacity-0 motion-safe:md:block">
             <video
               className="h-full w-full object-cover"
               src={HERA?.wide}

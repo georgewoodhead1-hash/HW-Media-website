@@ -2,19 +2,21 @@
 
 import { useEffect, useRef, useState } from "react";
 import { gsap } from "@/lib/gsap";
+import { createLensDive, type LensDive } from "@/components/shell/lensDive";
 
-// Pre-entry loading screen, v9 — THE FULL LENS (George, 2026-07-14: "a
-// proper, cleverly animated lens sequence before we enter"). Plays on
-// every full load. Five beats, one machine:
+// Pre-entry loading screen, v10 — THE 3D DIVE (George, 2026-07-14 round 8:
+// "needs to feel like you are diving through an actual camera lens").
+// The write-on stays EXACTLY as v9 (George: "really good"):
 //   1. the HW mark writes itself out LEFT TO RIGHT, unhurried
 //   2. the two ring lines rise from the bottom, closing at the top
-//   3. the APERTURE assembles — six blades draw across the ring into a
-//      hexagonal iris while the focus ring's ticks pull round (the lens
-//      being built and focused)
-//   4. the blades rotate OPEN, spinning out past the ring
-//   5. …and the iris itself opens: the black is the camera body, the site
-//      is already moving as you pass through the glass.
-// "Films, not content" is gone. Reduced-motion skips to a cut.
+//   3. the APERTURE assembles — blades draw in, the focus ticks pull round
+// …then the flat iris is GONE. In its place:
+//   4. the drawn lens flies past you and the camera TRAVELS down a real 3D
+//      lens barrel (three.js) — machined rings, glass elements, an 8-blade
+//      aperture swinging open as you reach it
+//   5. at the far end of the barrel the SHOWREEL is playing; the dive lands
+//      inside it and the loader hands straight to the hero reel beneath.
+// WebGL unavailable → the v9 2D iris plays instead. Reduced-motion cuts.
 
 // hexagon chord endpoints on the ring (r = 78 about 100,100)
 const HEX = [
@@ -27,6 +29,7 @@ export default function LoadingScreen() {
   const logoRef = useRef<HTMLImageElement>(null);
   const arcLeftRef = useRef<SVGPathElement>(null);
   const arcRightRef = useRef<SVGPathElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -39,6 +42,19 @@ export default function LoadingScreen() {
       setDone(true);
       return;
     }
+
+    // the 3D barrel builds in the background WHILE the mark writes — by the
+    // time the dive is due it has its first frame ready and the showreel
+    // buffering. If WebGL/three fails, dive stays null and the 2D iris runs.
+    let dive: LensDive | null = null;
+    let disposed = false;
+    if (canvasRef.current) {
+      createLensDive(canvasRef.current).then((d) => {
+        if (disposed) { d?.dispose(); return; }
+        dive = d;
+      });
+    }
+    let endTl: gsap.core.Timeline | null = null;
 
     const ctx = gsap.context(() => {
       // same ink-edge gradient as v8, but the position runs from +140%
@@ -73,8 +89,56 @@ export default function LoadingScreen() {
         root.style.maskImage = m;
       };
 
+      // ── the ENDINGS, picked when the write-on finishes ──
+      // A: the 3D dive — the drawn lens flies past, the camera travels the
+      // barrel, the aperture opens mid-flight, the reel takes the frame
+      const diveEnding = (d: LensDive) => {
+        const state = { p: 0 };
+        d.begin();
+        endTl = gsap
+          .timeline({ onComplete: () => setDone(true) })
+          // fly PAST the 2D lens you just built — it scales out around you
+          .to(canvasRef.current, { autoAlpha: 1, duration: 0.5, ease: "power1.inOut" }, 0)
+          .to(stageRef.current, { scale: 2.3, autoAlpha: 0, duration: 0.75, ease: "power2.in" }, 0)
+          .to(".ls-meta", { autoAlpha: 0, duration: 0.4 }, 0.05)
+          // THE DIVE — one eased travel, the barrel does the talking
+          .to(state, {
+            p: 1,
+            duration: 2.35,
+            ease: "power2.inOut",
+            onUpdate: () => d.apply(state.p),
+          }, 0.15)
+          // the site wakes beneath while we land inside the reel…
+          .call(reveal, [], 1.9)
+          // …and the loader hands over to the live hero
+          .to(rootRef.current, { autoAlpha: 0, duration: 0.4, ease: "power1.out" }, 2.45);
+      };
+
+      // B: fallback (no WebGL) — the v9 flat iris
+      const irisEnding = () => {
+        endTl = gsap
+          .timeline({ onComplete: () => setDone(true) })
+          .to(".ls-blades", { rotation: 55, scale: 1.5, autoAlpha: 0, duration: 0.85, ease: "power3.in" }, 0)
+          .to(".ls-ticks", { autoAlpha: 0, rotation: 60, duration: 0.6, ease: "power2.in" }, 0)
+          .call(reveal, [], 0.15)
+          .to(logoRef.current, { autoAlpha: 0, scale: 0.94, duration: 0.5, ease: "power2.in" }, 0.2)
+          .to(".ls-meta", { autoAlpha: 0, duration: 0.45 }, 0.2)
+          .to(iris, {
+            r: RMAX,
+            duration: 1.3,
+            ease: "power3.in",
+            onUpdate: () => {
+              setMask(iris.r);
+              const k = 1 + (iris.r / R0 - 1);
+              if (stageRef.current) gsap.set(stageRef.current, { scale: Math.max(1, k), force3D: true });
+              const fade = Math.min(1, Math.max(0, (iris.r - RMAX * 0.55) / (RMAX * 0.35)));
+              if (svgEl) gsap.set(svgEl, { opacity: 1 - fade });
+            },
+          }, 0.3);
+      };
+
       gsap
-        .timeline({ onComplete: () => setDone(true) })
+        .timeline({ onComplete: () => (dive ? diveEnding(dive) : irisEnding()) })
         // the room lights come up
         .to(".ls-meta", { autoAlpha: 1, y: 0, duration: 0.5, ease: "power2.out", stagger: 0.08 }, 0)
         // 1 — the mark writes itself, left to right, unhurried
@@ -96,29 +160,16 @@ export default function LoadingScreen() {
         .to(".ls-ticks", { rotation: 32, duration: 1.05, ease: "power2.inOut" }, 3.5)
         // the mark dims a touch behind the closed aperture — focus found
         .to(logoRef.current, { autoAlpha: 0.75, duration: 0.4 }, 3.9)
-        // 4 — the blades rotate OPEN and spin out past the glass
-        .to(".ls-blades", { rotation: 55, scale: 1.5, autoAlpha: 0, duration: 0.85, ease: "power3.in" }, 4.75)
-        .to(".ls-ticks", { autoAlpha: 0, rotation: 60, duration: 0.6, ease: "power2.in" }, 4.75)
-        // 5 — THROUGH THE LENS: the site wakes behind, the iris opens on
-        // the drawn ring, the mark falls away
-        .call(reveal, [], 4.9)
-        .to(logoRef.current, { autoAlpha: 0, scale: 0.94, duration: 0.5, ease: "power2.in" }, 4.95)
-        .to(".ls-meta", { autoAlpha: 0, duration: 0.45 }, 4.95)
-        .to(iris, {
-          r: RMAX,
-          duration: 1.3,
-          ease: "power3.in",
-          onUpdate: () => {
-            setMask(iris.r);
-            const k = 1 + (iris.r / R0 - 1);
-            if (stageRef.current) gsap.set(stageRef.current, { scale: Math.max(1, k), force3D: true });
-            const fade = Math.min(1, Math.max(0, (iris.r - RMAX * 0.55) / (RMAX * 0.35)));
-            if (svgEl) gsap.set(svgEl, { opacity: 1 - fade });
-          },
-        }, 5.05);
+        // a held breath at full focus, then the ending takes it
+        .to({}, { duration: 0.55 }, 4.4);
     }, rootRef);
 
-    return () => ctx.revert();
+    return () => {
+      disposed = true;
+      endTl?.kill();
+      dive?.dispose();
+      ctx.revert();
+    };
   }, []);
 
   if (done) return null;
@@ -132,6 +183,10 @@ export default function LoadingScreen() {
       <span className="ls-meta label-mono absolute right-6 top-6 text-[10px] tracking-[0.24em] text-white/60 md:right-10 md:top-8">
         LONDON
       </span>
+
+      {/* the 3D barrel — sits under the 2D stage, fades in as the dive
+          starts (the drawn lens flies out over it) */}
+      <canvas ref={canvasRef} className="pointer-events-none absolute inset-0 h-full w-full opacity-0" aria-hidden />
 
       {/* the stage — mark + lens push through the viewer as ONE object */}
       <div className="relative flex h-full w-full items-center justify-center">

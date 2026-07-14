@@ -48,14 +48,16 @@ export default function FeatureBand() {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
-          // slow creep in, strong middle, settled by 0.82 — the il capo
-          // character, owned entirely by the scroll
-          const e = Math.max(0.001, sm(0, 1, sm(0.02, 0.82, p)));
+          // ROUND-7 retune: the expansion starts once the section is
+          // properly on its way in (0.25 — it used to build the moment the
+          // edge appeared) and is STILL finishing as the pin releases
+          // (0.96) — so there is never a dead-frozen stretch at the end
+          const e = Math.max(0.001, sm(0, 1, sm(0.25, 0.96, p)));
           gsap.set(frame, { autoAlpha: Math.min(1, e * 12), scaleX: e, scaleY: e, force3D: true });
           if (img) gsap.set(img, { scale: (1.12 - 0.12 * e) / e, force3D: true });
-          const wIn = sm(0.72, 0.86, p);
+          const wIn = sm(0.82, 0.93, p);
           if (line) gsap.set(line, { autoAlpha: wIn, y: 22 * (1 - wIn) });
-          const cIn = sm(0.78, 0.92, p);
+          const cIn = sm(0.87, 0.97, p);
           if (cta) gsap.set(cta, { autoAlpha: cIn, y: 22 * (1 - cIn), pointerEvents: cIn > 0.5 ? "auto" : "none" });
         },
       });

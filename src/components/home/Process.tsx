@@ -2,7 +2,6 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
-import TitleRule from "@/components/shell/TitleRule";
 import Testimonials from "@/components/home/Testimonials";
 import { gsap, ScrollTrigger } from "@/lib/gsap";
 import { safePlay } from "@/lib/video";
@@ -20,8 +19,8 @@ import { safePlay } from "@/lib/video";
 // HAND-OFF: frame 1 plays the SAME film as the featured tile that closes
 // the Featured Projects exit (hera) — the sections match-cut.
 //
-// Runway scrub p: 0–0.86 strip travel (full −100%); ≥0.84 testimonials in
-// (out <0.81). Sticky, not pin. Mobile: vertical stack, testimonials flow.
+// Runway scrub p: 0–TRAVEL_END strip travel (full −100%); ≥TST_IN
+// testimonials in (out <TST_OUT). Sticky, not pin. Mobile: vertical stack.
 
 interface Stage {
   name: string;
@@ -58,7 +57,11 @@ const STAGES: Stage[] = [
 ];
 
 const N = STAGES.length;
-const TRAVEL_END = 0.86;
+// ROUND-7: runway 560→640vh so the testimonials HOLD longer once revealed.
+// Travel still completes at the same absolute scroll (~480vh): 480/640 = 0.75.
+const TRAVEL_END = 0.75;
+const TST_IN = 0.735; // testimonials load (same absolute point as before)
+const TST_OUT = 0.71;
 
 const sm = (a: number, b: number, v: number) => {
   const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
@@ -154,11 +157,12 @@ export default function Process() {
             }
           });
 
-          // the testimony loads on the black once the strip has gone
-          if (p >= 0.84 && !tstShown) {
+          // the testimony loads on the black once the strip has gone —
+          // then HOLDS (~170vh of runway left after the reveal, George)
+          if (p >= TST_IN && !tstShown) {
             tstShown = true;
             window.dispatchEvent(new CustomEvent("hw:tst", { detail: "in" }));
-          } else if (p < 0.81 && tstShown) {
+          } else if (p < TST_OUT && tstShown) {
             tstShown = false;
             window.dispatchEvent(new CustomEvent("hw:tst", { detail: "out" }));
           }
@@ -185,13 +189,11 @@ export default function Process() {
       className="relative z-[20] bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our process and testimonials"
     >
-      {/* centred title, dynamic lines drawing out either side of the words */}
-      <div className="px-5 pt-[2vh] md:px-10">
-        <TitleRule title="Our Process" className="mb-[3vh]" />
-      </div>
+      {/* the "Our Process" banner is GONE (ROUND-7: "getting in the way") —
+          the strip now sits flush against the Featured pin: the match-cut */}
 
       {/* THE STRIP — four frames conjoined side by side. Mobile: vertical. */}
-      <div className="proc-runway relative md:h-[560vh]">
+      <div className="proc-runway relative md:h-[640vh]">
         <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden">
           <div className="proc-track md:flex md:h-screen md:w-[400vw] md:will-change-transform">
             {STAGES.map((s) => (

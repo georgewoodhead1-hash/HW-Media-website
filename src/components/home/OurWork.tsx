@@ -20,6 +20,8 @@ const FEATURED_SLUGS = ["otoko", "mclaren", "hera", "salomon", "nike", "castle-a
 const WORKS = FEATURED_SLUGS.map((s) => projects.find((p) => p.slug === s)).filter(
   (p): p is (typeof projects)[number] => Boolean(p),
 );
+// the hand-off tile — its film is also frame 1 of Our Process (the match-cut)
+const HERA = WORKS.find((p) => p.slug === "hera");
 
 // brand logos for the collapsed tiles (client: logos, not text labels)
 const LOGO: Record<string, string> = {
@@ -107,44 +109,114 @@ export default function OurWork() {
         },
       });
 
-      // EXIT on passage, v2 (George, 2026-07-14): the TRIANGLE DROP — the
-      // two outermost tiles fall first, then the next pair, the middle two
-      // last, and it plays EARLY, while the grid is still fully on screen
-      // (the old curtain fired after the section was half gone). The HERA
-      // tile (index 2) doesn't drop: it CONDENSES — shrinking and travelling
-      // down toward Our Process, whose first frame plays the SAME film —
-      // the match-cut hand-off George asked for.
-      const stage = root.querySelector<HTMLElement>(".ow-stage");
+      // EXIT v3 (ROUND-7): the section PINS and the exit plays IN PLACE.
+      // The runway holds the sticky stage frozen on screen; ONE scrub owns
+      // the whole choreography: a short buffer, the heading lifts away,
+      // then the tiles drop in EVEN PAIRS — {0,5}, then {1,4}, then {3} —
+      // while HERA (index 2) swaps for a free clone layer that morphs to a
+      // SQUARE and then GROWS to full-bleed. Full-bleed hera IS the first
+      // frame of Our Process (same film) — the match-cut hand-off.
+      const runway = root.querySelector<HTMLElement>(".ow-runway");
+      const pinWin = root.querySelector<HTMLElement>(".ow-pin");
+      const clone = root.querySelector<HTMLElement>(".ow-heroclone");
+      const cloneVid = clone?.querySelector("video") ?? null;
+      const cloneSkin = clone?.querySelector<HTMLElement>(".ow-heroclone-skin") ?? null;
       const sm = (a: number, b: number, v: number) => {
         const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
         return t * t * (3 - 2 * t);
       };
       const dropP = new Array(bars.length).fill(0);
-      let condenseP = 0;
-      const leave = ScrollTrigger.create({
-        trigger: stage ?? root,
-        start: "bottom 88%",
-        end: "bottom 50%",
+      let driftKill = 0; // the breathe drift dies as the exit starts (the wobble)
+      let exitP = 0;
+      let swapped = false;
+      let synced = false;
+      const rect0 = { l: 0, t: 0, w: 0, h: 0 };
+      const exit = ScrollTrigger.create({
+        trigger: runway ?? root,
+        start: "top top",
+        end: "bottom bottom",
         scrub: true,
         onUpdate: (self) => {
           const p = self.progress;
-          gsap.set(head, { autoAlpha: 1 - p, yPercent: -p * 30 });
-          if (underline) gsap.set(underline, { autoAlpha: 1 - p, scaleX: Math.max(0.001, 1 - p) });
-          if (cta) gsap.set(cta, { autoAlpha: 1 - p });
-          bars.forEach((bar, i) => {
-            if (i === 2) {
-              condenseP = sm(0.35, 1, p);
-              return;
+          exitP = p;
+          driftKill = sm(0, 0.08, p);
+          // buffer first (George: "almost freeze"), then the heading lifts away
+          const headP = sm(0.06, 0.3, p);
+          gsap.set(head, { autoAlpha: 1 - headP, yPercent: -headP * 30 });
+          if (underline) gsap.set(underline, { autoAlpha: 1 - headP });
+          if (cta) gsap.set(cta, { autoAlpha: 1 - headP });
+          // EVEN pairs, outermost first — each pair moves as one
+          dropP[0] = dropP[5] = sm(0.08, 0.34, p);
+          dropP[1] = dropP[4] = sm(0.2, 0.46, p);
+          dropP[3] = sm(0.32, 0.58, p);
+
+          // HERA: swap the in-layout tile for the clone, then square → full-bleed
+          const heraBar = bars[2];
+          if (clone && pinWin && heraBar) {
+            if (p > 0.02 && !swapped) {
+              const br = heraBar.getBoundingClientRect();
+              const wr = pinWin.getBoundingClientRect();
+              rect0.l = br.left - wr.left;
+              rect0.t = br.top - wr.top;
+              rect0.w = br.width;
+              rect0.h = br.height;
+              gsap.set(clone, {
+                autoAlpha: 1,
+                left: rect0.l, top: rect0.t, width: rect0.w, height: rect0.h,
+              });
+              gsap.set(heraBar, { autoAlpha: 0 });
+              if (cloneSkin) gsap.set(cloneSkin, { autoAlpha: 1 });
+              if (cloneVid) {
+                cloneVid.currentTime = vids[2]?.currentTime ?? 0;
+                safePlay(cloneVid);
+              }
+              swapped = true;
+            } else if (p <= 0.02 && swapped) {
+              gsap.set(clone, { autoAlpha: 0 });
+              gsap.set(heraBar, { autoAlpha: 1 });
+              cloneVid?.pause();
+              swapped = false;
+              synced = false;
             }
-            const d = Math.min(i, bars.length - 1 - i); // distance from edge
-            dropP[i] = sm(d * 0.2, d * 0.2 + 0.55, p);
-          });
+            if (swapped) {
+              const iw = window.innerWidth;
+              const ih = window.innerHeight;
+              const S = ih * 0.44; // the square, centred
+              const sqP = sm(0.26, 0.56, p);
+              const grP = sm(0.6, 0.96, p);
+              const lp = (a: number, b: number, t: number) => a + (b - a) * t;
+              const l1 = lp(rect0.l, (iw - S) / 2, sqP);
+              const t1 = lp(rect0.t, (ih - S) / 2, sqP);
+              const w1 = lp(rect0.w, S, sqP);
+              const h1 = lp(rect0.h, S, sqP);
+              gsap.set(clone, {
+                left: lp(l1, 0, grP),
+                top: lp(t1, 0, grP),
+                width: lp(w1, iw, grP),
+                height: lp(h1, ih, grP),
+                borderRadius: 6 * (1 - grP),
+              });
+              // the tile's gradient + wordmark dissolve as the square forms
+              if (cloneSkin) gsap.set(cloneSkin, { autoAlpha: 1 - sm(0, 0.5, sqP) });
+              // near the hand-off, put the strip's first frame on the SAME
+              // frame of the film so the seam between the two is invisible
+              if (p >= 0.85 && !synced && cloneVid) {
+                const stripVid = document.querySelector<HTMLVideoElement>(".proc-media");
+                if (stripVid && stripVid.readyState >= 1) {
+                  stripVid.currentTime = cloneVid.currentTime;
+                  synced = true;
+                }
+              }
+              if (p < 0.85) synced = false;
+            }
+          }
         },
       });
 
-      // ONE writer for every bar transform — the breathe drift, the
-      // triangle drop and the hera condense compose here (two triggers
-      // writing y separately would fight each other tick by tick)
+      // ONE writer for every bar transform — the breathe drift and the pair
+      // drops compose here (two triggers writing y separately would fight
+      // each other tick by tick). Opacity is only touched once the exit is
+      // live, so the entrance fade keeps sole ownership until then.
       const vh = () => window.innerHeight / 100;
       const breathe = ScrollTrigger.create({
         trigger: root,
@@ -156,26 +228,21 @@ export default function OurWork() {
           bars.forEach((bar, i) => {
             const amp = [10, 22, 14, 26, 12, 20][i % 6];
             if (i === 2) {
-              // the hand-off: condense + travel down toward the strip
-              gsap.set(bar, {
-                y: q * -amp + condenseP * 44 * vh(),
-                scale: 1 - condenseP * 0.66,
-                autoAlpha: 1 - sm(0.85, 1, condenseP),
-                transformOrigin: "center center",
-                force3D: true,
-              });
+              // hera never drops — the clone carries it from here
+              gsap.set(bar, { y: q * -amp * (1 - driftKill), force3D: true });
               return;
             }
-            gsap.set(bar, {
-              y: q * -amp + dropP[i] * 120 * vh(),
-              autoAlpha: 1 - sm(0.7, 1, dropP[i]),
+            const props: gsap.TweenVars = {
+              y: q * -amp * (1 - driftKill) + dropP[i] * 120 * vh(),
               force3D: true,
-            });
+            };
+            if (exitP > 0) props.autoAlpha = 1 - sm(0.5, 1, dropP[i]);
+            gsap.set(bar, props);
           });
         },
       });
 
-      return () => { enter.kill(); leave.kill(); breathe.kill(); };
+      return () => { enter.kill(); exit.kill(); breathe.kill(); };
     });
 
     // mobile: the md:hidden tile stack is otherwise static — give each tile a
@@ -232,8 +299,12 @@ export default function OurWork() {
       className="relative z-10 bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our work"
     >
-      {/* ----- desktop / motion: the stage — heading then bars fly in to the accordion ----- */}
-      <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:min-h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
+      {/* ----- desktop / motion: the PINNED stage (ROUND-7) — the runway's
+          extra height is the scroll the exit owns; the stage stays frozen
+          on screen while the whole choreography plays in front of you ----- */}
+      <div className="ow-runway relative motion-safe:md:h-[280vh]">
+        <div className="ow-pin relative md:sticky md:top-0">
+      <div className="ow-stage hidden overflow-hidden px-5 motion-safe:md:flex motion-safe:md:h-screen motion-safe:md:flex-col motion-safe:md:justify-center md:px-10">
         <h2
           className="ow-head font-display relative z-10 mb-[2.5vh] whitespace-nowrap text-center text-[clamp(2.6rem,6vw,5.8rem)] leading-[0.9] tracking-[-0.05em] will-change-transform"
         >
@@ -310,9 +381,32 @@ export default function OurWork() {
         </Link>
       </div>
 
-      {/* the exit runway — tightened to 12vh (George: too much gap to
-          finish BEFORE Process enters the frame (tightened from 50vh, George) */}
-      <div aria-hidden className="hidden h-[12vh] md:block" />
+          {/* the HERA hand-off layer — swaps in for the real tile at exit
+              start, morphs to a SQUARE, then grows full-bleed. Frame 1 of
+              Our Process plays the same film: the match-cut. */}
+          <div className="ow-heroclone invisible pointer-events-none absolute left-0 top-0 z-20 hidden overflow-hidden rounded-md opacity-0 motion-safe:md:block">
+            <video
+              className="h-full w-full object-cover"
+              src={HERA?.wide}
+              poster={HERA?.posterWide}
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden
+            />
+            {/* the tile's skin (gradient + wordmark) so the swap is invisible */}
+            <div className="ow-heroclone-skin absolute inset-0" aria-hidden>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-black/30" />
+              <span className="absolute inset-0 flex items-center justify-center p-3">
+                <span className="font-display whitespace-nowrap text-[15px] tracking-[0.14em] text-white/90">
+                  {HERA?.client.toUpperCase()}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* mobile stack — centred + tighter (George's mobile pass) */}
       <div className="flex flex-col gap-4 px-5 py-[7vh] md:hidden">

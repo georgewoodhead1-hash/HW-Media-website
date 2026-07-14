@@ -134,11 +134,12 @@ export default function Nav() {
         ref={rootRef}
         className="nav-root fixed inset-x-0 top-3 z-50 flex items-center justify-between px-5 py-2.5 md:top-4 md:px-10"
       >
-        {/* LEFT — the real HW Media logo. Colour (gold) on dark; the black mark
-            swaps in only in light mode over a page surface. */}
+        {/* LEFT — the real HW Media logo, GOLD (George: the moment it's
+            white, it's gold); the black mark swaps in only in light mode
+            over a page surface. */}
         <Link href="/" className="nav-enter block shrink-0" aria-label="HW Media — home">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logos/hwmedia-white.png" alt="HW Media" className="nav-logo-color h-16 w-auto mix-blend-difference md:h-20" />
+          <img src="/logos/hwmedia-dark.png" alt="HW Media" className="nav-logo-color h-16 w-auto md:h-20" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logos/hwmedia-light.png" alt="" aria-hidden className="nav-logo-black h-16 w-auto md:h-20" />
         </Link>

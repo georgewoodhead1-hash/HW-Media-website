@@ -14,45 +14,51 @@ interface Testimonial {
   slug: string;
   brand: string;
   quote: string;
+  name: string;
   role: string;
-  sector: string;
 }
 
+// REAL testimonials (George, 14 Jul 2026 — five planned, three in hand; the
+// remaining two drop straight into this list). Each slug ties the voice to
+// its OWN film. Norton's full quote runs three paragraphs — the strongest
+// sentence carries the layout; the full text is on file for the case page.
 const TESTIMONIALS: Testimonial[] = [
   {
-    slug: "mclaren",
-    brand: "McLaren",
-    quote: "The film outlived the campaign. Two years on we still open every pitch with it.",
-    role: "Brand Director",
-    sector: "Heritage Motoring",
+    slug: "chasing-the-salt",
+    brand: "Norton",
+    quote:
+      "They are real perfectionists when it comes to lighting, camera angles and audio, and that attention to detail really shone through in the final edit.",
+    name: "Hollie",
+    role: "Marketing Manager",
   },
   {
-    slug: "nike",
-    brand: "Nike",
-    quote: "Cinema standards on a social budget. We haven't gone anywhere else since.",
-    role: "Brand Lead",
-    sector: "Sportswear",
+    slug: "hera",
+    brand: "Sans Matin",
+    quote:
+      "Working with HW Media was such a pleasure! Harry and his team went above and beyond to execute the vision with boundless creativity and immaculate attention to detail.",
+    name: "Willow",
+    role: "Creative Director",
   },
   {
-    slug: "zuma",
-    brand: "Zuma",
-    quote: "They turned a product launch into a film people actually chose to watch.",
-    role: "Founder",
-    sector: "Hospitality",
+    slug: "ferrari",
+    brand: "Ferrari",
+    quote:
+      "I knew bringing HW Media into this project they would create something amazing, but they have exceeded my expectations again!",
+    name: "Kelly",
+    role: "Marketing Manager",
   },
 ];
 
+// brand logo files that exist in /public/logos — brands without one fall
+// back to a clean wordmark (no broken images)
 const LOGO: Record<string, { file: string; h: string }> = {
-  mclaren: { file: "mclaren-logo", h: "h-8 md:h-10" },
-  nike: { file: "nike-white", h: "h-6 md:h-7" },
-  zuma: { file: "zuma-white", h: "h-7 md:h-8" },
+  hera: { file: "sm-new-logo-design-white-2025", h: "h-7 md:h-8" },
 };
 
 const HOLD = 7; // seconds per testimonial before the reel advances
 
-// The film for the showcase window — SQUARE now (client: "make it a square
-// format taking up the right side"), so the wide master is centre-cropped by
-// object-cover inside a 1:1 frame.
+// The film for the showcase window — classic 16:9 (ROUND-7), the wide
+// master sits native in the frame.
 function filmFor(slug: string): { loop: string; poster: string } {
   const project = projects.find((p) => p.slug === slug);
   return {
@@ -122,6 +128,9 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
         const liveWords = root.querySelectorAll<HTMLElement>(".tsq-word");
         if (dir === "in") {
           visibleRef.current = true;
+          // the section root exists (paints, takes pointer events) ONLY from
+          // here — before this it must be nothing at all (the black bar)
+          gsap.set(root, { autoAlpha: 1 });
           enter.play();
           gsap.fromTo(liveWords, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.05, stagger: 0.05, delay: 0.2, ease: "none", overwrite: "auto" });
           advanceRef.current?.play();
@@ -130,11 +139,15 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
           visibleRef.current = false;
           enter.reverse();
           gsap.to(liveWords, { autoAlpha: 0, duration: 0.25, overwrite: "auto" });
+          gsap.to(root, { autoAlpha: 0, duration: 0.25, overwrite: "auto" });
           advanceRef.current?.pause();
         }
       };
 
       if (embedded) {
+        // hidden from the first frame (the md:invisible class guards the
+        // pre-effect paint; this inline write owns it from here)
+        gsap.set(root, { autoAlpha: 0 });
         window.addEventListener("hw:tst", onTst);
         return () => {
           window.removeEventListener("hw:tst", onTst);
@@ -223,12 +236,17 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
   return (
     <section
       ref={testiRef}
-      data-theme="dark"
+      // embedded: NO data-theme — the `[data-theme] { background: var(--bg) }`
+      // rule painted a full-width black band over the strip even while the
+      // content was hidden (ROUND-7 black bar). The strip's own theme vars
+      // cascade in; this section paints nothing of its own.
+      data-theme={embedded ? undefined : "dark"}
       data-surface="page"
       data-chapter="05 — Testimonials"
+      style={embedded ? { background: "transparent" } : undefined}
       className={
         embedded
-          ? "relative z-30 px-5 pb-[8vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-0 md:pt-0"
+          ? "relative z-30 px-5 pb-[8vh] pt-[6vh] text-[var(--fg)] md:invisible md:px-10 md:pb-0 md:pt-0"
           : "relative z-30 bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[10vh]"
       }
       aria-label="Testimonials"
@@ -254,18 +272,31 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
             Mobile: compressed + centred (George) */}
         <div className="tst-copy flex flex-col justify-between text-center will-change-transform md:text-left">
           <div>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              data-t-el
-              key={`logo-${active}`}
-              src={`/logos/${LOGO[TESTIMONIALS[active].slug]?.file ?? TESTIMONIALS[active].slug}.png`}
-              alt={TESTIMONIALS[active].brand}
-              className={`${LOGO[TESTIMONIALS[active].slug]?.h ?? "h-8"} mx-auto w-auto object-contain md:mx-0`}
-            />
+            {LOGO[TESTIMONIALS[active].slug] ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img
+                data-t-el
+                key={`logo-${active}`}
+                src={`/logos/${LOGO[TESTIMONIALS[active].slug].file}.png`}
+                alt={TESTIMONIALS[active].brand}
+                className={`${LOGO[TESTIMONIALS[active].slug].h} mx-auto w-auto object-contain md:mx-0`}
+              />
+            ) : (
+              /* no logo file yet — a clean wordmark stands in (never a broken image) */
+              <span
+                data-t-el
+                key={`logo-${active}`}
+                className="font-display block text-[17px] tracking-[0.14em] text-white/90"
+              >
+                {TESTIMONIALS[active].brand.toUpperCase()}
+              </span>
+            )}
+            {/* ROUND-7: narrowed to ~30rem + a step up in size so the quote
+                wraps to ~4 lines and reads with real thickness */}
             <blockquote
               data-t-el
               key={`q-${active}`}
-              className="font-display mt-5 max-w-[46rem] text-[clamp(1.5rem,2.9vw,2.7rem)] leading-[1.04] md:mt-7"
+              className="font-display mt-5 max-w-[33rem] text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[1.08] md:mt-7"
             >
               {TESTIMONIALS[active].quote.split(" ").map((w, i, arr) => (
                 <span key={`${active}-${i}`} className="tsq-word">
@@ -277,7 +308,7 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
             </blockquote>
             <figcaption data-t-el className="mt-5 flex flex-wrap items-baseline justify-center gap-x-4 gap-y-1 md:mt-8 md:justify-start">
               <span className="label-mono text-[11px] tracking-[0.2em] text-[var(--fg)]">
-                {TESTIMONIALS[active].role}
+                {TESTIMONIALS[active].name} — {TESTIMONIALS[active].role}
               </span>
               <Link href={`/work/${TESTIMONIALS[active].slug}`} className="blink text-[11px] tracking-[0.05em]">
                 View project
@@ -316,10 +347,11 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
           </div>
         </div>
 
-        {/* RIGHT — the SQUARE film window, locked level with the quote
-            column (items-center on the grid keeps the block balanced) */}
-        <div className="tst-film mx-auto mt-7 w-full max-w-[480px] md:mx-0 md:mt-0 md:justify-self-end">
-          <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black">
+        {/* RIGHT — the film window, CLASSIC 16:9 (ROUND-7), sitting a touch
+            further left than the old square (no justify-self-end hug — the
+            grid gap does the separation) */}
+        <div className="tst-film mx-auto mt-7 w-full max-w-[640px] md:mx-0 md:mt-0">
+          <div className="relative aspect-video w-full overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black">
             {TESTIMONIALS.map((t, i) => {
               const film = filmFor(t.slug);
               return (

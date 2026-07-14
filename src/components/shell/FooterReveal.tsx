@@ -111,16 +111,12 @@ export default function FooterReveal() {
             <Link href="/privacy" className="transition-colors hover:text-[var(--fg)]">Privacy Policy</Link>
           </div>
         </div>
-        <div
-          className="ft-zone pointer-events-none absolute bottom-4 right-0 h-[clamp(10rem,26vw,22rem)] w-[min(58vw,980px)]"
-          role="img"
-          aria-label="HW Media"
-          style={{
-            WebkitMask: "url(/logos/hwmedia-white.png) right bottom / contain no-repeat",
-            mask: "url(/logos/hwmedia-white.png) right bottom / contain no-repeat",
-            background: "var(--fg)",
-          }}
-        />
+        {/* the wordmark is the real GOLD mark (George: it was rendering
+            white — the old mask painted it in var(--fg)) */}
+        <div className="ft-zone pointer-events-none absolute bottom-4 right-0 flex h-[clamp(10rem,26vw,22rem)] w-[min(58vw,980px)] items-end justify-end">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logos/hwmedia-dark.png" alt="HW Media" className="h-full w-auto object-contain" />
+        </div>
 
         {/* the lift-away dark — scrubbed out as the page reveals the footer */}
         <div aria-hidden className="ft-veil pointer-events-none absolute inset-0 bg-[var(--page-bg)]" />

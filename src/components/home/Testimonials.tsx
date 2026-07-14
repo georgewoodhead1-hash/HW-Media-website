@@ -85,20 +85,35 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
       const quote = root.querySelector<HTMLElement>("blockquote");
       const words = quote ? Array.from(quote.querySelectorAll<HTMLElement>(".tsq-word")) : [];
       const film = root.querySelector<HTMLElement>(".tst-film");
+      const ttWord = root.querySelector<HTMLElement>(".tt-word");
+      const ttLineL = root.querySelector<HTMLElement>(".tt-line-l");
+      const ttLineR = root.querySelector<HTMLElement>(".tt-line-r");
+      const ttPlus = root.querySelectorAll<HTMLElement>(".tt-plus");
 
       gsap.set(pieces, { autoAlpha: 0, y: 24 });
       if (quote) gsap.set(quote, { autoAlpha: 1 });
       gsap.set(words, { autoAlpha: 0 });
       if (film) gsap.set(film, { clipPath: "inset(50%)" });
+      if (ttWord) gsap.set(ttWord, { yPercent: 115 });
+      gsap.set(ttLineL, { scaleX: 0, transformOrigin: "right center" });
+      gsap.set(ttLineR, { scaleX: 0, transformOrigin: "left center" });
+      gsap.set(ttPlus, { autoAlpha: 0, scale: 0.4 });
 
       const enter = gsap.timeline({ paused: true });
       enter
-        .to(pieces[0] ?? [], { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0)
+        // the title: word rises, then the LINES DRAW OUTWARD from it with
+        // the plusses landing at the ends — the dynamic TitleRule move
+        // (George: not a fade)
+        .to(ttWord, { yPercent: 0, duration: 0.7, ease: "expo.out" }, 0)
+        .to([ttLineL, ttLineR], { scaleX: 1, duration: 0.8, ease: "power4.inOut" }, 0.25)
+        .to(ttPlus, { autoAlpha: 1, scale: 1, duration: 0.4, ease: "back.out(1.7)" }, 0.85)
+        // the content beneath it
+        .to(pieces[0] ?? [], { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.35)
         // the quote writes itself out
-        .to(words, { autoAlpha: 1, duration: 0.05, stagger: 0.05, ease: "none" }, 0.2)
-        .to(pieces.slice(1), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.55)
+        .to(words, { autoAlpha: 1, duration: 0.05, stagger: 0.05, ease: "none" }, 0.5)
+        .to(pieces.slice(1), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.85)
         // the film opens centre-out (the house reveal), no slide
-        .to(film, { clipPath: "inset(0%)", duration: 1.1, ease: "power4.inOut" }, 0.25);
+        .to(film, { clipPath: "inset(0%)", duration: 1.1, ease: "power4.inOut" }, 0.55);
 
       const onTst = (e: Event) => {
         const dir = (e as CustomEvent).detail;
@@ -218,14 +233,23 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
       }
       aria-label="Testimonials"
     >
-      {/* NO title here — the Process outro's morphed word ("Deliver." →
-          "Testimonials", lines + plusses drawing out of it) IS this
-          section's title (George: "there's two testimonial titles, get rid
-          of the bottom one"). The content rises from the bottom beneath it. */}
+      {/* the title — its lines draw OUTWARD from the word with plusses at
+          the ends (the dynamic move, part of the load-in; George) */}
+      <div className="mb-[5vh] flex items-center gap-4 md:mb-[6vh] md:gap-6">
+        <span className="tt-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+        <span className="tt-line-l block h-px flex-1 bg-[var(--fg)] will-change-transform" />
+        <h2 className="shrink-0 overflow-hidden text-center">
+          <span className="tt-word font-display block text-[clamp(1.8rem,3.6vw,3.4rem)] leading-none">
+            Testimonials
+          </span>
+        </h2>
+        <span className="tt-line-r block h-px flex-1 bg-[var(--fg)] will-change-transform" />
+        <span className="tt-plus shrink-0 text-[19px] leading-none text-[var(--fg)]" style={{ fontFamily: "var(--font-firma), sans-serif" }}>+</span>
+      </div>
 
-      {/* square film on the right — capped size (client: it got way too
-          big), text column stretched to meet its top and bottom */}
-      <div className="md:grid md:grid-cols-[1.15fr_1fr] md:items-start md:gap-10">
+      {/* the composition sits centred as one block: quote column and the
+          square film locked to each other (no dead space below) */}
+      <div className="md:grid md:grid-cols-[1.2fr_1fr] md:items-center md:gap-12">
         {/* LEFT — the 1820-style showcase: one voice at a time, big.
             Mobile: compressed + centred (George) */}
         <div className="tst-copy flex flex-col justify-between text-center will-change-transform md:text-left">
@@ -292,10 +316,9 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
           </div>
         </div>
 
-        {/* RIGHT — the SQUARE film window: bigger, pulled toward centre,
-            its top aligned with the top of the quote (the mt mirrors the
-            brand-logo row above the quote), sat a touch lower (client) */}
-        <div className="tst-film mx-auto mt-7 w-full max-w-[600px] md:mx-0 md:mt-[4.6rem] md:justify-self-start">
+        {/* RIGHT — the SQUARE film window, locked level with the quote
+            column (items-center on the grid keeps the block balanced) */}
+        <div className="tst-film mx-auto mt-7 w-full max-w-[480px] md:mx-0 md:mt-0 md:justify-self-end">
           <div className="relative aspect-square w-full overflow-hidden rounded-xl border border-[var(--hairline-dark)] bg-black">
             {TESTIMONIALS.map((t, i) => {
               const film = filmFor(t.slug);

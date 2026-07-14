@@ -36,13 +36,12 @@ export default function Faqs() {
         const line = row.querySelector<HTMLElement>(".faq-line");
         const rest = Array.from(row.children).filter((c) => c !== line);
         if (line) gsap.set(line, { scaleX: 0, transformOrigin: "center center" });
-        const step = gsap.utils.toArray<HTMLElement>(".faq-row", root).indexOf(row);
-        gsap.set(rest, { autoAlpha: 0, x: -34 - step * 14, y: 10 });
+        gsap.set(rest, { autoAlpha: 0, y: 14 });
         const tl = gsap.timeline({
           scrollTrigger: { trigger: row, start: "top 86%", toggleActions: "play none none reverse" },
         });
         if (line) tl.to(line, { scaleX: 1, duration: 0.9, ease: "expo.out" }, 0);
-        tl.to(rest, { autoAlpha: 1, x: 0, y: 0, duration: 0.75, ease: "power3.out" }, 0.12);
+        tl.to(rest, { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0.1);
         kills.push(() => { tl.scrollTrigger?.kill(); tl.kill(); });
       });
 
@@ -87,7 +86,7 @@ export default function Faqs() {
         {FAQS.map((f, i) => {
           const isOpen = open === i;
           return (
-            <div key={f.q} className="faq-row" style={{ marginLeft: `min(${i * 4.5}vw, ${i * 4.5}%)` }}>
+            <div key={f.q} className="faq-row">
               <span aria-hidden className="faq-line block h-px w-full bg-[var(--fg)]" />
               {/* hover = the WHOLE bar fills solid cream, text flips to ink
                   (George, 2026-07-14: "the whole of that bar goes solid white") */}
@@ -95,17 +94,16 @@ export default function Faqs() {
                 type="button"
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
-                className="group flex w-full items-center justify-between gap-6 px-4 py-5 text-left transition-colors duration-300 hover:bg-[#f5f1e6] md:px-6 md:py-6"
+                className="group flex w-full items-center justify-between gap-6 px-4 py-5 text-left transition-colors duration-150 hover:bg-[#f5f1e6] md:px-6 md:py-6"
               >
-                <span className="flex items-baseline gap-5 md:gap-8">
+                <span className="flex items-center gap-5 md:gap-7">
                   <span
-                    className={`label-mono shrink-0 rounded-[2px] px-2 py-1 text-[14px] tracking-[0.2em] transition-colors duration-300 ${
-                      isOpen ? "bg-[var(--fg)] text-[var(--bg)] group-hover:bg-[#0a0a08] group-hover:text-[#f5f1e6]" : "text-[var(--fg)] group-hover:text-[#0a0a08]"
+                    aria-hidden
+                    className={`h-2 w-2 shrink-0 rounded-full transition-colors duration-150 ${
+                      isOpen ? "bg-[var(--gold-accent)]" : "bg-[var(--fg)] group-hover:bg-[#0a0a08]"
                     }`}
-                  >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  <span className="font-display text-[clamp(2rem,3.5vw,3.3rem)] leading-[1.05] text-[var(--fg)] transition-colors duration-300 group-hover:text-[#0a0a08]">
+                  />
+                  <span className="font-display text-[clamp(2rem,3.5vw,3.3rem)] leading-[1.05] text-[var(--fg)] transition-colors duration-150 group-hover:text-[#0a0a08]">
                     {f.q}
                   </span>
                 </span>

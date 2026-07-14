@@ -128,7 +128,7 @@ export default function LensIntro() {
   };
 
   return (
-    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00" className="relative h-[100svh] md:h-screen">
+    <div ref={wrapRef} data-theme="dark" data-surface="media" data-chapter="CH.00" className="on-media relative h-[100svh] md:h-screen">
       <div
         className="on-media isolate sticky top-0 flex h-[100svh] w-full items-center justify-center overflow-hidden bg-black md:h-screen"
         data-cursor="play"

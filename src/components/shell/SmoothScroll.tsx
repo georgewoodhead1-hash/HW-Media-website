@@ -50,11 +50,11 @@ export default function SmoothScroll({ children }: { children: ReactNode }) {
     if (window.matchMedia("(pointer: coarse)").matches) return;
 
     const lenis = new Lenis({
-      // il capo's exact scroll weight (probed from their bundle):
-      // lerp .06 — we already matched it; wheelMultiplier .3 is their
-      // heaviness, lifted a touch to .35 for our longer runways
+      // lerp .06 = il capo's smoothing. Their 0.3 wheel weight was WAY too
+      // slow on our long runways (George: "the scroll just takes so long")
+      // — back to the 0.55 he was happy with.
       lerp: 0.06,
-      wheelMultiplier: 0.35,
+      wheelMultiplier: 0.55,
       smoothWheel: true,
     });
     setLenis(lenis);

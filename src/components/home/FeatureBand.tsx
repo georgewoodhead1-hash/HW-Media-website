@@ -31,8 +31,13 @@ export default function FeatureBand() {
       const cta = sec.querySelector<HTMLElement>(".fb-cta");
       if (!frame) return;
 
-      gsap.set(frame, { clipPath: "inset(50%)", autoAlpha: 0 });
-      if (img) gsap.set(img, { scale: 1.12 });
+      // GPU-ONLY box reveal: the frame SCALES open while the film inside
+      // counter-scales — pure transforms (the old clip-path repainted the
+      // whole screen every frame: the lag George felt riding into the
+      // footer). Expansion is done by p=0.82, so it settles with a beat to
+      // spare — no clunk at the release.
+      gsap.set(frame, { scaleX: 0.001, scaleY: 0.001, autoAlpha: 0, transformOrigin: "center center", force3D: true });
+      if (img) gsap.set(img, { scale: 400, transformOrigin: "center center", force3D: true });
       gsap.set([line, cta], { autoAlpha: 0, y: 22 });
 
       const st = ScrollTrigger.create({
@@ -43,14 +48,14 @@ export default function FeatureBand() {
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const p = self.progress;
-          // double-smoothed: slow creep in, strong middle, soft landing —
-          // the il capo character, but owned by the scroll
-          const e = sm(0, 1, sm(0.04, 0.9, p));
-          gsap.set(frame, { autoAlpha: Math.min(1, e * 8), clipPath: `inset(${(50 * (1 - e)).toFixed(3)}%)` });
-          if (img) gsap.set(img, { scale: 1.12 - 0.12 * e, force3D: true });
-          const wIn = sm(0.78, 0.9, p);
+          // slow creep in, strong middle, settled by 0.82 — the il capo
+          // character, owned entirely by the scroll
+          const e = Math.max(0.001, sm(0, 1, sm(0.02, 0.82, p)));
+          gsap.set(frame, { autoAlpha: Math.min(1, e * 12), scaleX: e, scaleY: e, force3D: true });
+          if (img) gsap.set(img, { scale: (1.12 - 0.12 * e) / e, force3D: true });
+          const wIn = sm(0.72, 0.86, p);
           if (line) gsap.set(line, { autoAlpha: wIn, y: 22 * (1 - wIn) });
-          const cIn = sm(0.84, 0.95, p);
+          const cIn = sm(0.78, 0.92, p);
           if (cta) gsap.set(cta, { autoAlpha: cIn, y: 22 * (1 - cIn), pointerEvents: cIn > 0.5 ? "auto" : "none" });
         },
       });

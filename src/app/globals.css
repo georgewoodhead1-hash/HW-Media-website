@@ -78,8 +78,12 @@ html[data-mode="dark"] {
   /* white client marks would vanish on cream — invert them to ink */
   filter: invert(1) hue-rotate(180deg);
 }
-.on-media,
-section[data-surface="media"] {
+/* .on-media forces the dark palette in BOTH modes — for sections that are
+   always full-bleed film (the hero). data-surface="media" alone no longer
+   forces it (George: "light mode — the Our Process banner stays dark"):
+   those sections follow the global mode; their footage overlays stay dark
+   on their own. The attribute still drives the nav's over-media styling. */
+.on-media {
   --bg: #050505;
   --fg: #f5f1e6;
   --ink: #f5f1e6;

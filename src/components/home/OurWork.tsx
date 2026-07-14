@@ -107,35 +107,45 @@ export default function OurWork() {
         },
       });
 
-      // EXIT on passage — the show-curtain drop George likes. It must COMPLETE
-      // BEFORE the next section shows up (George), so the trigger is the STAGE
-      // (heading + tiles), not the section: the section carries a 50vh black
-      // runway after the stage, and the wipe finishes while Process is still
-      // below that runway — tiles gone, a beat of black, THEN Process enters.
-      // runway tightened to 30vh (George: gap was too big).
-      // HANG TIME (George: "fades away too quickly") — the wipe used to start
-      // the instant the stage bottom appeared (98%). Now the assembled grid
-      // holds for ~24vh of scroll first, and the wipe still completes at 48%,
-      // before Process enters (its top 72% trigger = stage bottom at 42%).
+      // EXIT on passage, v2 (George, 2026-07-14): the TRIANGLE DROP — the
+      // two outermost tiles fall first, then the next pair, the middle two
+      // last, and it plays EARLY, while the grid is still fully on screen
+      // (the old curtain fired after the section was half gone). The HERA
+      // tile (index 2) doesn't drop: it CONDENSES — shrinking and travelling
+      // down toward Our Process, whose first frame plays the SAME film —
+      // the match-cut hand-off George asked for.
       const stage = root.querySelector<HTMLElement>(".ow-stage");
+      const sm = (a: number, b: number, v: number) => {
+        const t = Math.min(1, Math.max(0, (v - a) / (b - a)));
+        return t * t * (3 - 2 * t);
+      };
+      const dropP = new Array(bars.length).fill(0);
+      let condenseP = 0;
       const leave = ScrollTrigger.create({
         trigger: stage ?? root,
-        start: "bottom 74%",
-        end: "bottom 48%",
+        start: "bottom 88%",
+        end: "bottom 50%",
         scrub: true,
         onUpdate: (self) => {
           const p = self.progress;
           gsap.set(head, { autoAlpha: 1 - p, yPercent: -p * 30 });
           if (underline) gsap.set(underline, { autoAlpha: 1 - p, scaleX: Math.max(0.001, 1 - p) });
           if (cta) gsap.set(cta, { autoAlpha: 1 - p });
-          bars.forEach((bar) => {
-            gsap.set(bar, { clipPath: `inset(${(p * 100).toFixed(2)}% 0% 0% 0% round 0.375rem)` });
+          bars.forEach((bar, i) => {
+            if (i === 2) {
+              condenseP = sm(0.35, 1, p);
+              return;
+            }
+            const d = Math.min(i, bars.length - 1 - i); // distance from edge
+            dropP[i] = sm(d * 0.2, d * 0.2 + 0.55, p);
           });
         },
       });
 
-      // the bars stay ALIVE while you pass — alternating vertical drift,
-      // the accordion breathing against the scroll (depth grammar)
+      // ONE writer for every bar transform — the breathe drift, the
+      // triangle drop and the hera condense compose here (two triggers
+      // writing y separately would fight each other tick by tick)
+      const vh = () => window.innerHeight / 100;
       const breathe = ScrollTrigger.create({
         trigger: root,
         start: "top bottom",
@@ -145,7 +155,22 @@ export default function OurWork() {
           const q = self.progress - 0.5;
           bars.forEach((bar, i) => {
             const amp = [10, 22, 14, 26, 12, 20][i % 6];
-            gsap.set(bar, { y: q * -amp, force3D: true });
+            if (i === 2) {
+              // the hand-off: condense + travel down toward the strip
+              gsap.set(bar, {
+                y: q * -amp + condenseP * 44 * vh(),
+                scale: 1 - condenseP * 0.66,
+                autoAlpha: 1 - sm(0.85, 1, condenseP),
+                transformOrigin: "center center",
+                force3D: true,
+              });
+              return;
+            }
+            gsap.set(bar, {
+              y: q * -amp + dropP[i] * 120 * vh(),
+              autoAlpha: 1 - sm(0.7, 1, dropP[i]),
+              force3D: true,
+            });
           });
         },
       });
@@ -285,9 +310,9 @@ export default function OurWork() {
         </Link>
       </div>
 
-      {/* the exit runway — just enough black scroll room for the curtain to
+      {/* the exit runway — tightened to 12vh (George: too much gap to
           finish BEFORE Process enters the frame (tightened from 50vh, George) */}
-      <div aria-hidden className="hidden h-[30vh] md:block" />
+      <div aria-hidden className="hidden h-[12vh] md:block" />
 
       {/* mobile stack — centred + tighter (George's mobile pass) */}
       <div className="flex flex-col gap-4 px-5 py-[7vh] md:hidden">

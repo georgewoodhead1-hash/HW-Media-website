@@ -9,6 +9,7 @@ import Grain from "@/components/shell/Grain";
 import { jsonLd } from "@/lib/jsonld";
 import Cursor from "@/components/shell/Cursor";
 import RouteTransitions from "@/components/shell/RouteTransitions";
+import AboutPanel from "@/components/shell/AboutPanel";
 import { EMAIL, SITE_URL, SOCIALS } from "@/content/site";
 
 // THE 3-FONT SYSTEM (George, 2026-07-02; display face corrected 2026-07-13).
@@ -229,6 +230,7 @@ export default function RootLayout({
           <Grain />
           <Cursor />
           <RouteTransitions />
+          <AboutPanel />
         </SmoothScroll>
       </body>
     </html>

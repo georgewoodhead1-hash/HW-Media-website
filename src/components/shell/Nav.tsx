@@ -164,6 +164,15 @@ export default function Nav() {
               key={l.label}
               href={l.href}
               onMouseEnter={movePill}
+              onClick={(e) => {
+                // ABOUT is a PANEL, not a page (ROUND-8, the monolog move):
+                // the page blurs and the story slides in from the right
+                if (l.href === "/about") {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  window.dispatchEvent(new Event("hw:about"));
+                }
+              }}
               className="nav-link relative px-4 py-2 text-[14px] font-medium uppercase tracking-[0.01em] text-[var(--fg)] transition-colors duration-300 hover:text-[var(--bg)] active:text-[#c9a96a]"
             >
               {l.label}
@@ -198,7 +207,14 @@ export default function Nav() {
           <Link
             key={l.label}
             href={l.href}
-            onClick={() => setMenuOpen(false)}
+            onClick={(e) => {
+              setMenuOpen(false);
+              if (l.href === "/about") {
+                e.preventDefault();
+                e.stopPropagation();
+                window.dispatchEvent(new Event("hw:about"));
+              }
+            }}
             className="font-display text-[clamp(2rem,9vw,3rem)] uppercase tracking-[-0.01em] text-[var(--fg)] transition-colors duration-150 active:text-[#c9a96a]"
           >
             {l.label}

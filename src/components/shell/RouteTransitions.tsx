@@ -73,6 +73,13 @@ export default function RouteTransitions() {
       if (a.target === "_blank" || a.hasAttribute("download")) return;
       const [path] = href.split("#");
       if (!path || path === pathname) return;
+      // ABOUT is a PANEL, not a route (ROUND-8, the monolog move) — any
+      // /about link anywhere opens it in place; no cover, no navigation
+      if (path === "/about") {
+        e.preventDefault();
+        window.dispatchEvent(new Event("hw:about"));
+        return;
+      }
       e.preventDefault();
       if (navigating.current) return;
       navigating.current = true;

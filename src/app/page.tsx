@@ -3,7 +3,7 @@ import LensIntro from "@/components/home/LensIntro";
 import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
 import Process from "@/components/home/Process";
-import TilesField from "@/components/home/TilesField";
+import WhatWeDo from "@/components/home/WhatWeDo";
 import Faqs from "@/components/home/Faqs";
 import FeatureBand from "@/components/home/FeatureBand";
 import { jsonLd } from "@/lib/jsonld";
@@ -46,7 +46,9 @@ export default function Home() {
         <OurWork />
         {/* Testimonials render INSIDE Process — the strip's outro screen composes the title + testimony (George, 2026-07-14) */}
         <Process />
-        <TilesField />
+        {/* ROUND-8: the diagonal tiles band is GONE — What we do moved here
+            from About (all the services on the home page, George) */}
+        <WhatWeDo />
         <Faqs />
         <FeatureBand />
       </main>

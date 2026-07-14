@@ -57,8 +57,13 @@ const STAGES: Stage[] = [
 ];
 
 const N = STAGES.length;
-// ROUND-7: runway 560→640vh so the testimonials HOLD longer once revealed.
-// Travel still completes at the same absolute scroll (~480vh): 480/640 = 0.75.
+// ROUND-8 SEAMLESS HAND-OFF: the section is pulled up 100vh under the
+// Featured pin (md:-mt-[100vh]) so frame 1 is already pinned when the
+// Featured section stops painting. The runway grew 640→740vh; the first
+// 100vh (the covered overlap) is a DEAD ZONE — the strip must not move
+// while Featured's exit still owns the screen.
+const DEAD = 100 / 740;
+// remaining thresholds are fractions of the LIVE part (unchanged feel)
 const TRAVEL_END = 0.75;
 const TST_IN = 0.735; // testimonials load (same absolute point as before)
 const TST_OUT = 0.71;
@@ -125,7 +130,8 @@ export default function Process() {
         end: "bottom bottom",
         scrub: true,
         onUpdate: (self) => {
-          const p = self.progress;
+          // dead-zone remap: p stays 0 through the covered overlap
+          const p = Math.max(0, (self.progress - DEAD) / (1 - DEAD));
           const travel = Math.min(1, p / TRAVEL_END);
           gsap.set(track, { xPercent: -100 * travel, force3D: true });
 
@@ -186,14 +192,15 @@ export default function Process() {
       data-theme="dark"
       data-surface="media"
       data-chapter="04 — Our process"
-      className="relative z-[20] bg-[var(--bg)] text-[var(--fg)]"
+      className="relative z-[20] bg-[var(--bg)] text-[var(--fg)] md:-mt-[100vh]"
       aria-label="Our process and testimonials"
     >
       {/* the "Our Process" banner is GONE (ROUND-7: "getting in the way") —
-          the strip now sits flush against the Featured pin: the match-cut */}
+          the strip pins UNDER the Featured exit (the -mt overlap): frame 1
+          is already on screen when Featured stops painting. The match-cut. */}
 
       {/* THE STRIP — four frames conjoined side by side. Mobile: vertical. */}
-      <div className="proc-runway relative md:h-[640vh]">
+      <div className="proc-runway relative md:h-[740vh]">
         <div className="md:sticky md:top-0 md:h-screen md:overflow-hidden">
           <div className="proc-track md:flex md:h-screen md:w-[400vw] md:will-change-transform">
             {STAGES.map((s) => (

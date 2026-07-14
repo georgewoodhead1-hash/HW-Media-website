@@ -136,6 +136,14 @@ export default function OurWork() {
         start: "top top",
         end: "bottom bottom",
         scrub: true,
+        // ROUND-8 SEAMLESS HAND-OFF: the Process runway is pulled up under
+        // this section (md:-mt-[100vh]) so its frame 1 — same film,
+        // frame-synced, word already built — is PINNED beneath us before
+        // the exit completes. At release the whole section simply stops
+        // painting: no scroll seam, no second frame, you're just looking
+        // at Our Process.
+        onLeave: () => gsap.set(root, { autoAlpha: 0 }),
+        onEnterBack: () => gsap.set(root, { autoAlpha: 1 }),
         onUpdate: (self) => {
           const p = self.progress;
           exitP = p;
@@ -182,7 +190,9 @@ export default function OurWork() {
               const iw = window.innerWidth;
               const ih = window.innerHeight;
               const S = ih * 0.44; // the square, centred
-              const sqP = sm(0.26, 0.56, p);
+              // ROUND-8: shrink-to-square QUICKER (George: "takes too
+              // long"); the square then holds a beat before the grow
+              const sqP = sm(0.26, 0.4, p);
               const grP = sm(0.6, 0.96, p);
               const lp = (a: number, b: number, t: number) => a + (b - a) * t;
               const l1 = lp(rect0.l, (iw - S) / 2, sqP);
@@ -296,7 +306,7 @@ export default function OurWork() {
       data-theme="dark"
       data-surface="page"
       data-chapter="03 — Our work"
-      className="relative z-10 bg-[var(--bg)] text-[var(--fg)]"
+      className="relative z-30 bg-[var(--bg)] text-[var(--fg)]"
       aria-label="Our work"
     >
       {/* ----- desktop / motion: the PINNED stage (ROUND-7) — the runway's

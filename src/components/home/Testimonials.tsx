@@ -272,31 +272,37 @@ export default function Testimonials({ embedded = false }: { embedded?: boolean 
             Mobile: compressed + centred (George) */}
         <div className="tst-copy flex flex-col justify-between text-center will-change-transform md:text-left">
           <div>
-            {LOGO[TESTIMONIALS[active].slug] ? (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img
-                data-t-el
-                key={`logo-${active}`}
-                src={`/logos/${LOGO[TESTIMONIALS[active].slug].file}.png`}
-                alt={TESTIMONIALS[active].brand}
-                className={`${LOGO[TESTIMONIALS[active].slug].h} mx-auto w-auto object-contain md:mx-0`}
-              />
-            ) : (
-              /* no logo file yet — a clean wordmark stands in (never a broken image) */
-              <span
-                data-t-el
-                key={`logo-${active}`}
-                className="font-display block text-[17px] tracking-[0.14em] text-white/90"
-              >
-                {TESTIMONIALS[active].brand.toUpperCase()}
-              </span>
-            )}
-            {/* ROUND-7: narrowed to ~30rem + a step up in size so the quote
-                wraps to ~4 lines and reads with real thickness */}
+            {/* fixed-height logo slot — img and wordmark brands sit in the
+                same box so the swap never nudges the layout below */}
+            <div className="flex h-10 items-center justify-center md:justify-start">
+              {LOGO[TESTIMONIALS[active].slug] ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  data-t-el
+                  key={`logo-${active}`}
+                  src={`/logos/${LOGO[TESTIMONIALS[active].slug].file}.png`}
+                  alt={TESTIMONIALS[active].brand}
+                  className={`${LOGO[TESTIMONIALS[active].slug].h} w-auto object-contain`}
+                />
+              ) : (
+                /* no logo file yet — a clean wordmark stands in (never a broken image) */
+                <span
+                  data-t-el
+                  key={`logo-${active}`}
+                  className="font-display block text-[17px] tracking-[0.14em] text-white/90"
+                >
+                  {TESTIMONIALS[active].brand.toUpperCase()}
+                </span>
+              )}
+            </div>
+            {/* ROUND-7: narrowed + sized up so the quote wraps to ~4 lines.
+                ROUND-8: fixed min-height (fits the longest quote) so 1/2/3
+                clicks NEVER move the numerals or the film — only the text
+                inside this box changes */}
             <blockquote
               data-t-el
               key={`q-${active}`}
-              className="font-display mt-5 max-w-[33rem] text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[1.08] md:mt-7"
+              className="font-display mt-5 max-w-[33rem] text-[clamp(1.6rem,2.4vw,2.4rem)] leading-[1.08] md:mt-7 md:min-h-[13.5rem]"
             >
               {TESTIMONIALS[active].quote.split(" ").map((w, i, arr) => (
                 <span key={`${active}-${i}`} className="tsq-word">

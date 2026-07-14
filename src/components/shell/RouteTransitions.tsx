@@ -8,10 +8,10 @@ import { getLenis, scrollMemory, navIntent } from "@/lib/lenis";
 // Page-to-page transform, v8 (George, 2026-07-13):
 //  - the cover carries ONLY the destination word — no photo, no rule
 //  - every destination has its OWN cover, close and open:
-//      HOME     sweep — three skewed layers race in from the left like film
-//               through a gate (cream / dark cream / black), then peel on
-//               through to the right; the hero's own black bars finish the
-//               build ("go crazy, really impressive")
+//      HOME     lens — CIRCLES take over the screen (George, 2026-07-14),
+//               merging into one cream field; then the cover opens as a
+//               CAMERA-LENS IRIS (the loader's through-the-lens move) while
+//               the hero zooms 1.2 -> 1 into "Break the ordinary"
 //      WORK     weave — columns alternate top/bottom, clear UPWARD (the
 //               work wall builds tile-by-tile in sync). UNTOUCHED — the
 //               reference everything else is judged against.
@@ -35,7 +35,7 @@ const COLS = 6;
 const ROWS = 6;
 
 type Dir = "up" | "right" | "center" | "down" | "iris";
-type Style = "sweep" | "weave" | "curtain" | "shades" | "corners" | "cascade";
+type Style = "lens" | "weave" | "curtain" | "shades" | "corners" | "cascade";
 
 function planFor(path: string): { dir: Dir; style: Style; label: string } {
   if (path.startsWith("/work")) return { dir: "up", style: "weave", label: "Work" };
@@ -43,7 +43,7 @@ function planFor(path: string): { dir: Dir; style: Style; label: string } {
   if (path.startsWith("/services")) return { dir: "iris", style: "corners", label: "Services" };
   if (path.startsWith("/contact")) return { dir: "center", style: "shades", label: "Contact" };
   if (path.startsWith("/privacy")) return { dir: "down", style: "cascade", label: "Privacy" };
-  return { dir: "right", style: "sweep", label: "Home" };
+  return { dir: "iris", style: "lens", label: "Home" };
 }
 
 export default function RouteTransitions() {
@@ -95,11 +95,14 @@ export default function RouteTransitions() {
       const rows = overlay.querySelectorAll<HTMLElement>(".rt-row");
       const corners = overlay.querySelectorAll<HTMLElement>(".rt-corner");
       const cornerWrap = overlay.querySelector<HTMLElement>(".rt-cornerwrap");
-      const sweeps = overlay.querySelectorAll<HTMLElement>(".rt-sweep");
+      const circles = overlay.querySelectorAll<HTMLElement>(".rt-circle");
       const label = overlay.querySelector<HTMLElement>(".rt-label");
 
-      // arm a clean stage BEFORE the overlay becomes visible
-      gsap.set([cols, rows, corners, sweeps], { autoAlpha: 0 });
+      // arm a clean stage BEFORE the overlay becomes visible (and clear any
+      // leftover iris mask from a previous open)
+      overlay.style.webkitMaskImage = "";
+      overlay.style.maskImage = "";
+      gsap.set([cols, rows, corners, circles], { autoAlpha: 0 });
       gsap.set(cornerWrap, { rotation: 0, scale: 1, autoAlpha: 1 });
 
       if (plan.style === "weave") {
@@ -116,8 +119,8 @@ export default function RouteTransitions() {
           { xPercent: 104, yPercent: 104 },   // bottom-right
         ];
         corners.forEach((c, i) => gsap.set(c, { autoAlpha: 1, ...off[i], rotation: 0 }));
-      } else if (plan.style === "sweep") {
-        gsap.set(sweeps, { autoAlpha: 1, xPercent: -106, skewX: -9 });
+      } else if (plan.style === "lens") {
+        gsap.set(circles, { autoAlpha: 1, scale: 0, transformOrigin: "center center" });
       } else {
         // shades: horizontal slats from alternating sides
         gsap.set(rows, { autoAlpha: 1, yPercent: 0 });
@@ -172,9 +175,9 @@ export default function RouteTransitions() {
       } else if (plan.style === "corners") {
         // gradual, weighty convergence (George: "nice and gradually")
         tl.to(corners, { xPercent: 0, yPercent: 0, duration: 0.9, ease: "power3.inOut", stagger: 0.07 }, 0);
-      } else if (plan.style === "sweep") {
-        // three skewed layers race in and un-skew as they land
-        tl.to(sweeps, { xPercent: 0, skewX: 0, duration: 0.78, ease: "power4.inOut", stagger: 0.085 }, 0);
+      } else if (plan.style === "lens") {
+        // circles take over the screen, merging into one cream field
+        tl.to(circles, { scale: 3.4, duration: 0.8, ease: "power3.inOut", stagger: 0.06 }, 0);
       } else {
         tl.to(rows, { xPercent: 0, duration: 0.7, ease: "power4.inOut", stagger: { each: 0.055, from: "start" } }, 0);
       }
@@ -202,7 +205,6 @@ export default function RouteTransitions() {
     const rows = overlay.querySelectorAll<HTMLElement>(".rt-row");
     const corners = overlay.querySelectorAll<HTMLElement>(".rt-corner");
     const cornerWrap = overlay.querySelector<HTMLElement>(".rt-cornerwrap");
-    const sweeps = overlay.querySelectorAll<HTMLElement>(".rt-sweep");
     const label = overlay.querySelector<HTMLElement>(".rt-label");
     const main = document.querySelector("main");
     const { style } = pending.current;
@@ -252,10 +254,25 @@ export default function RouteTransitions() {
       corners.forEach((c, i) => {
         tl.to(c, { ...off[i], rotation: -22, duration: 0.9, ease: "power3.in" }, 0.18 + i * 0.05);
       });
-    } else if (style === "sweep") {
-      // the layers keep travelling — in from the left, out through the
-      // right, last-in first-out; one continuous pass across the screen
-      tl.to(sweeps, { xPercent: 106, skewX: 7, duration: 0.8, ease: "power4.inOut", stagger: { each: 0.075, from: "end" } }, 0.14);
+    } else if (style === "lens") {
+      // THE LENS: an iris opens through the cover — the loader's own
+      // through-the-lens move — while the hero zooms out beneath it
+      const iris = { r: 0 };
+      const RMAX = Math.hypot(window.innerWidth, window.innerHeight) * 0.7;
+      tl.to(iris, {
+        r: RMAX,
+        duration: 1.0,
+        ease: "power4.inOut",
+        onUpdate: () => {
+          const m = `radial-gradient(circle at 50% 50%, transparent ${iris.r}px, black ${iris.r + 1.5}px)`;
+          overlay.style.webkitMaskImage = m;
+          overlay.style.maskImage = m;
+        },
+        onComplete: () => {
+          overlay.style.webkitMaskImage = "";
+          overlay.style.maskImage = "";
+        },
+      }, 0.16);
     } else {
       // shades slide back out the way they came — solid, fast, dense
       tl.to(rows, {
@@ -307,11 +324,22 @@ export default function RouteTransitions() {
         <div className="rt-corner absolute bottom-0 left-0 h-[52%] w-[52%] bg-[#f5f1e6] will-change-transform" />
         <div className="rt-corner absolute bottom-0 right-0 h-[52%] w-[52%] bg-[#f5f1e6] will-change-transform" />
       </div>
-      {/* three sweep layers — home */}
+      {/* the circle field — home (lens): six discs scale up and merge */}
       <div className="absolute inset-0">
-        <div className="rt-sweep absolute inset-0 bg-[#0a0a08] will-change-transform" />
-        <div className="rt-sweep absolute inset-0 bg-[#e9e5d8] will-change-transform" />
-        <div className="rt-sweep absolute inset-0 bg-[#f5f1e6] will-change-transform" />
+        {[
+          { left: "14%", top: "18%" },
+          { left: "82%", top: "12%" },
+          { left: "50%", top: "50%" },
+          { left: "16%", top: "82%" },
+          { left: "86%", top: "78%" },
+          { left: "55%", top: "96%" },
+        ].map((pos, i) => (
+          <div
+            key={`ci${i}`}
+            className="rt-circle absolute h-[46vmax] w-[46vmax] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#f5f1e6] will-change-transform"
+            style={pos}
+          />
+        ))}
       </div>
       {/* the word — nothing else */}
       <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 overflow-hidden">

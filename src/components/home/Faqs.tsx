@@ -89,27 +89,29 @@ export default function Faqs() {
           return (
             <div key={f.q} className="faq-row" style={{ marginLeft: `min(${i * 4.5}vw, ${i * 4.5}%)` }}>
               <span aria-hidden className="faq-line block h-px w-full bg-[var(--fg)]" />
+              {/* hover = the WHOLE bar fills solid cream, text flips to ink
+                  (George, 2026-07-14: "the whole of that bar goes solid white") */}
               <button
                 type="button"
                 onClick={() => setOpen(isOpen ? null : i)}
                 aria-expanded={isOpen}
-                className="group flex w-full items-center justify-between gap-6 py-5 text-left transition-transform duration-300 hover:translate-x-2 md:py-6"
+                className="group flex w-full items-center justify-between gap-6 px-4 py-5 text-left transition-colors duration-300 hover:bg-[#f5f1e6] md:px-6 md:py-6"
               >
                 <span className="flex items-baseline gap-5 md:gap-8">
                   <span
                     className={`label-mono shrink-0 rounded-[2px] px-2 py-1 text-[14px] tracking-[0.2em] transition-colors duration-300 ${
-                      isOpen ? "bg-[var(--fg)] text-[var(--bg)]" : "text-[var(--fg)] group-hover:bg-[var(--fg)]/15"
+                      isOpen ? "bg-[var(--fg)] text-[var(--bg)] group-hover:bg-[#0a0a08] group-hover:text-[#f5f1e6]" : "text-[var(--fg)] group-hover:text-[#0a0a08]"
                     }`}
                   >
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <span className="font-display text-[clamp(2rem,3.5vw,3.3rem)] leading-[1.05] text-[var(--fg)]">
+                  <span className="font-display text-[clamp(2rem,3.5vw,3.3rem)] leading-[1.05] text-[var(--fg)] transition-colors duration-300 group-hover:text-[#0a0a08]">
                     {f.q}
                   </span>
                 </span>
                 <span
                   aria-hidden
-                  className={`shrink-0 text-2xl leading-none text-[var(--fg)] transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                  className={`shrink-0 text-2xl leading-none text-[var(--fg)] transition-[transform,color] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:text-[#0a0a08] ${
                     isOpen ? "rotate-[135deg]" : "rotate-0 group-hover:rotate-90"
                   }`}
                 >

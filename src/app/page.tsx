@@ -3,7 +3,6 @@ import LensIntro from "@/components/home/LensIntro";
 import TrustedBy from "@/components/home/TrustedBy";
 import OurWork from "@/components/home/OurWork";
 import Process from "@/components/home/Process";
-import Testimonials from "@/components/home/Testimonials";
 import TilesField from "@/components/home/TilesField";
 import Faqs from "@/components/home/Faqs";
 import FeatureBand from "@/components/home/FeatureBand";
@@ -45,8 +44,8 @@ export default function Home() {
         <LensIntro />
         <TrustedBy />
         <OurWork />
+        {/* Testimonials render INSIDE Process — the strip's outro screen composes the title + testimony (George, 2026-07-14) */}
         <Process />
-        <Testimonials />
         <TilesField />
         <Faqs />
         <FeatureBand />

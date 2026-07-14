@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { gsap, ScrollTrigger } from "@/lib/gsap";
+import { gsap } from "@/lib/gsap";
 import { projects } from "@/content/projects";
 import { safePlay } from "@/lib/video";
 
@@ -61,7 +61,7 @@ function filmFor(slug: string): { loop: string; poster: string } {
   };
 }
 
-export default function Testimonials() {
+export default function Testimonials({ embedded = false }: { embedded?: boolean }) {
   const testiRef = useRef<HTMLElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const barRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -69,71 +69,72 @@ export default function Testimonials() {
   const visibleRef = useRef(false);
   const [active, setActive] = useState(0);
 
-  // ── rise in on passage, dissipate on the way out ──
+  // ── the build (George, 2026-07-14): the content APPEARS IN PLACE under
+  // the morphed title — the quote WRITES ITSELF word by word, the film
+  // opens with the centre-out clip reveal, nothing slides up from the
+  // bottom. Embedded mode (inside the Process outro screen) is driven by
+  // "hw:tst" events from the strip's scrub; standalone keeps a trigger. ──
   useEffect(() => {
     const root = testiRef.current;
     if (!root) return;
     const mm = gsap.matchMedia();
     mm.add("(min-width: 768px) and (prefers-reduced-motion: no-preference)", () => {
-      const pieces = gsap.utils.toArray<HTMLElement>("[data-t-el]", root);
+      const pieces = gsap.utils
+        .toArray<HTMLElement>("[data-t-el]", root)
+        .filter((el) => el.tagName !== "BLOCKQUOTE");
+      const quote = root.querySelector<HTMLElement>("blockquote");
+      const words = quote ? Array.from(quote.querySelectorAll<HTMLElement>(".tsq-word")) : [];
       const film = root.querySelector<HTMLElement>(".tst-film");
-      const rule = root.querySelector<HTMLElement>(".tst-rule");
 
-      gsap.set(pieces, { autoAlpha: 0, y: 30 });
-      gsap.set(film, { autoAlpha: 0, y: 30 });
+      gsap.set(pieces, { autoAlpha: 0, y: 24 });
+      if (quote) gsap.set(quote, { autoAlpha: 1 });
+      gsap.set(words, { autoAlpha: 0 });
+      if (film) gsap.set(film, { clipPath: "inset(50%)" });
 
-      const enter = gsap.timeline({
+      const enter = gsap.timeline({ paused: true });
+      enter
+        .to(pieces[0] ?? [], { autoAlpha: 1, y: 0, duration: 0.6, ease: "power3.out" }, 0)
+        // the quote writes itself out
+        .to(words, { autoAlpha: 1, duration: 0.05, stagger: 0.05, ease: "none" }, 0.2)
+        .to(pieces.slice(1), { autoAlpha: 1, y: 0, duration: 0.6, stagger: 0.12, ease: "power3.out" }, 0.55)
+        // the film opens centre-out (the house reveal), no slide
+        .to(film, { clipPath: "inset(0%)", duration: 1.1, ease: "power4.inOut" }, 0.25);
+
+      const onTst = (e: Event) => {
+        const dir = (e as CustomEvent).detail;
+        // the quote spans are re-keyed when the reel advances — target the
+        // LIVE ones on every event, not the mount-time list
+        const liveWords = root.querySelectorAll<HTMLElement>(".tsq-word");
+        if (dir === "in") {
+          visibleRef.current = true;
+          enter.play();
+          gsap.fromTo(liveWords, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.05, stagger: 0.05, delay: 0.2, ease: "none", overwrite: "auto" });
+          advanceRef.current?.play();
+          if (videoRefs.current[0]) safePlay(videoRefs.current[0]!);
+        } else {
+          visibleRef.current = false;
+          enter.reverse();
+          gsap.to(liveWords, { autoAlpha: 0, duration: 0.25, overwrite: "auto" });
+          advanceRef.current?.pause();
+        }
+      };
+
+      if (embedded) {
+        window.addEventListener("hw:tst", onTst);
+        return () => {
+          window.removeEventListener("hw:tst", onTst);
+          enter.kill();
+        };
+      }
+      // standalone fallback: play on passage
+      const st = gsap.timeline({
         scrollTrigger: { trigger: root, start: "top 72%", toggleActions: "play none none reverse" },
       });
-      enter
-        .to(pieces, { autoAlpha: 1, y: 0, duration: 0.8, stagger: 0.1, ease: "power3.out" }, 0)
-        .to(film, { autoAlpha: 1, y: 0, duration: 0.8, ease: "power3.out" }, 0.25);
-
-      // dissipate WHILE leaving — writing first, then the lines, all in motion
-      const exit = ScrollTrigger.create({
-        trigger: root,
-        start: "bottom 62%",
-        end: "bottom 10%",
-        scrub: true,
-        onUpdate: (self) => {
-          const p = self.progress;
-          const sm = (a: number, b: number) => {
-            const x = Math.min(1, Math.max(0, (p - a) / (b - a)));
-            return x * x * (3 - 2 * x);
-          };
-          // PURE FADE on the way out (George: no dipping above the screen)
-          pieces.forEach((el, i) => {
-            const o = sm(0 + i * 0.03, 0.5 + i * 0.03);
-            gsap.set(el, { autoAlpha: 1 - o });
-          });
-          if (film) gsap.set(film, { autoAlpha: 1 - sm(0.05, 0.55) });
-          if (rule) gsap.set(rule, { autoAlpha: 1 - sm(0.4, 0.85) });
-          const live = p < 0.2 && visibleRef.current;
-          if (live) advanceRef.current?.play();
-          else advanceRef.current?.pause();
-        },
-      });
-
-      // DEPTH (George): the reading layer floats over the media layer —
-      // text column drifts against the scroll, the film barely moves
-      const textCol = root.querySelector<HTMLElement>(".tst-copy");
-      const filmCol = root.querySelector<HTMLElement>(".tst-film");
-      const drift = ScrollTrigger.create({
-        trigger: root,
-        start: "top bottom",
-        end: "bottom top",
-        scrub: 0.6,
-        onUpdate: (self) => {
-          const q = self.progress - 0.5;
-          if (textCol) gsap.set(textCol, { y: q * -56, force3D: true });
-          if (filmCol) gsap.set(filmCol, { y: q * -16, force3D: true });
-        },
-      });
-
-      return () => { enter.scrollTrigger?.kill(); enter.kill(); exit.kill(); drift.kill(); };
+      st.call(() => enter.play(), [], 0);
+      return () => { st.scrollTrigger?.kill(); st.kill(); enter.kill(); };
     });
     return () => mm.revert();
-  }, []);
+  }, [embedded]);
 
   const goTo = useCallback((i: number) => {
     setActive((prev) => (i === prev ? prev : i));
@@ -142,9 +143,11 @@ export default function Testimonials() {
   // the reel: crossfade the film, run the progress line, advance
   useEffect(() => {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    // the quote writes itself in on every switch
+    // the quote writes itself in on every switch — but never before the
+    // section has been revealed (this ran on mount and un-hid the quote
+    // inside the strip's sticky screen before its cue)
     const words = document.querySelectorAll<HTMLElement>(".tsq-word");
-    if (words.length && !reduced) {
+    if (words.length && !reduced && visibleRef.current) {
       gsap.fromTo(words, { opacity: 0.25 }, { opacity: 1, duration: 0.45, stagger: 0.04, ease: "power1.out", overwrite: "auto" });
     }
     videoRefs.current.forEach((video, i) => {
@@ -177,8 +180,11 @@ export default function Testimonials() {
     return () => { advanceRef.current?.kill(); };
   }, [active, goTo]);
 
-  // only run media while the testimonials are on screen
+  // only run media while the testimonials are on screen. Embedded mode gets
+  // its visibility from the hw:tst events instead (the IO would fire the
+  // moment the strip pins, long before the reveal).
   useEffect(() => {
+    if (embedded) return;
     const root = testiRef.current;
     if (!root) return;
     const io = new IntersectionObserver(
@@ -197,7 +203,7 @@ export default function Testimonials() {
     );
     io.observe(root);
     return () => io.disconnect();
-  }, [active]);
+  }, [active, embedded]);
 
   return (
     <section
@@ -205,7 +211,11 @@ export default function Testimonials() {
       data-theme="dark"
       data-surface="page"
       data-chapter="05 — Testimonials"
-      className="relative z-30 -mt-[14vh] bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[10vh]"
+      className={
+        embedded
+          ? "relative z-30 px-5 pb-[8vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-0 md:pt-0"
+          : "relative z-30 bg-[var(--bg)] px-5 pb-[6vh] pt-[6vh] text-[var(--fg)] md:px-10 md:pb-[9vh] md:pt-[10vh]"
+      }
       aria-label="Testimonials"
     >
       {/* NO title here — the Process outro's morphed word ("Deliver." →
